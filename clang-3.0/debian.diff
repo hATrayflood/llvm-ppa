@@ -12,8 +12,8 @@ diff -urN debian/changelog clang-3.0/debian/changelog
  
    * Improve the soname patch
 diff -urN debian/control clang-3.0/debian/control
---- debian/control	2012-02-25 23:13:43.000000000 +0900
-+++ clang-3.0/debian/control	2013-01-10 16:40:21.477754588 +0900
+--- debian/control	2013-01-11 00:42:54.672293729 +0900
++++ clang-3.0/debian/control	2013-01-11 01:23:14.913564553 +0900
 @@ -1,24 +1,21 @@
 -Source: clang
 +Source: clang-3.0
@@ -28,11 +28,12 @@ diff -urN debian/control clang-3.0/debian/control
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
      lsb-release, patchutils, diffstat, xz-utils, llvm-3.0-dev (>= 3.0), llvm-3.0-source (>= 3.0)
- Build-Conflicts: oprofile, ocaml, ocaml-nox
+-Build-Conflicts: oprofile, ocaml, ocaml-nox
 -Standards-Version: 3.9.2
 -Homepage: http://www.llvm.org/
 -Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/clang/trunk/
 -Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/clang/trunk/
++Build-Conflicts: oprofile, ocaml
 +Standards-Version: 3.9.3
 +Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
 +Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
@@ -250,3 +251,26 @@ diff -urN debian/debhelper.in/libclang1.install clang-3.0/debian/debhelper.in/li
 @@ -1 +1 @@
 -debian/@TMP@/@PF@/lib/libclang.so.1                       @PF@/lib/
 +debian/@TMP@/@PF@/lib/libclang.so.1                       @PF@/lib/llvm-3.0/lib/
+diff -urN debian/packages.d/tools.mk clang-3.0/debian/packages.d/tools.mk
+--- debian/packages.d/tools.mk	2013-01-11 00:43:06.520352483 +0900
++++ clang-3.0/debian/packages.d/tools.mk	2013-01-11 00:43:35.616496767 +0900
+@@ -6,7 +6,7 @@
+ 
+ BUILDDEPS	:= \
+ 	llvm-$(UVERSION)-dev (>= $(dev_version)), llvm-$(UVERSION)-source (>= $(dev_version))
+-BUILDCONFLICTS	:= ocaml, ocaml-nox
++BUILDCONFLICTS	:= ocaml
+ 
+ PF		:= /usr
+ 
+diff -urN debian/rules.d/build.mk clang-3.0/debian/rules.d/build.mk
+--- debian/rules.d/build.mk	2012-02-25 22:05:16.000000000 +0900
++++ clang-3.0/debian/rules.d/build.mk	2013-01-11 01:03:51.883797418 +0900
+@@ -21,6 +21,7 @@
+ 	dh_clean
+ 	find $(srcdir)/test/Bindings/Ocaml -type f \
+ 	  -name "*.o" -or -name "*.cmx" | xargs $(RM)
++	$(RM) -r tools/clang/include/clang/Debian
+ 	$(RM) -r $(D)/debian/tmp-*
+ 	$(RM) $(D)/test/Bindings/Ocaml/*.cm[io]
+ 	$(RM) $(D)/debian/log-check-* $(D)/debian/logwatch-*.pid

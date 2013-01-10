@@ -6,7 +6,7 @@ endif
 
 BUILDDEPS	:= \
 	llvm-$(UVERSION)-dev (>= $(dev_version)), llvm-$(UVERSION)-source (>= $(dev_version))
-BUILDCONFLICTS	:= ocaml, ocaml-nox
+BUILDCONFLICTS	:= ocaml
 
 PF		:= /usr
 
