@@ -1,0 +1,4 @@
+debian/@TMP@/@PF@/bin/clang			@PF@/lib/llvm-3.0/bin/
+debian/@TMP@/@PF@/bin/clang++			@PF@/lib/llvm-3.0/bin/
+tools/clang/tools/scan-build			@PF@/lib/llvm-3.0/share/
+tools/clang/tools/scan-view			@PF@/lib/llvm-3.0/share/

@@ -1,0 +1,35 @@
+--- 3.0.orig/configure	(révision 144213)
++++ 3.0/configure	(copie de travail)
+@@ -578,7 +578,7 @@
+ PACKAGE_TARNAME='-llvm-'
+ PACKAGE_VERSION='3.0'
+ PACKAGE_STRING='llvm 3.0'
+-PACKAGE_BUGREPORT='llvmbugs@cs.uiuc.edu'
++PACKAGE_BUGREPORT='pkg-llvm-team@lists.alioth.debian.org'
+ 
+ ac_unique_file="lib/VMCore/Module.cpp"
+ # Factoring default headers for most tests.
+--- 3.0.orig/lib/Support/Makefile	(révision 144213)
++++ 3.0/lib/Support/Makefile	(copie de travail)
+@@ -14,6 +14,9 @@
+ ## FIXME: This only requires RTTI because tblgen uses it.  Fix that.
+ REQUIRES_RTTI = 1
+ 
++# -DLLVM_DEBIAN_INFO='" ($(OS) $(VERSION))"'
++CPP.Flags = $(DebianOpts)
++
+ EXTRA_DIST = Unix Win32 README.txt
+ 
+ include $(LEVEL)/Makefile.common
+--- 3.0.orig/lib/Support/CommandLine.cpp	(révision 144213)
++++ 3.0/lib/Support/CommandLine.cpp	(copie de travail)
+@@ -1355,6 +1355,9 @@
+     OS << LLVM_VERSION_INFO;
+ #endif
+     OS << "\n  ";
++#ifdef LLVM_DEBIAN_INFO
++    OS << LLVM_DEBIAN_INFO;
++#endif
+ #ifndef __OPTIMIZE__
+     OS << "DEBUG build";
+ #else

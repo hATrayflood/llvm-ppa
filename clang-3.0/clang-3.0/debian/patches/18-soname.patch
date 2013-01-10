@@ -1,0 +1,18 @@
+Index: clang-3.0/tools/clang/tools/libclang/Makefile
+===================================================================
+--- clang-3.0.orig/tools/clang/tools/libclang/Makefile	(révision 148136)
++++ clang-3.0/tools/clang/tools/libclang/Makefile	(copie de travail)
+@@ -14,7 +14,13 @@
+ 
+ LINK_LIBS_IN_SHARED = 1
+ SHARED_LIBRARY = 1
++SONAME_MAJOR=1
+ 
++
++ifneq (,$(filter $(HOST_OS),Darwin))
++	LDFLAGS += -Wl,-soname,libclang.so.$(SONAME_MAJOR)
++endif
++
+ LINK_COMPONENTS := support mc
+ USEDLIBS = clangARCMigrate.a clangRewrite.a clangFrontend.a clangDriver.a \
+      clangSerialization.a \

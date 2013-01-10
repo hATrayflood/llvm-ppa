@@ -1,0 +1,8 @@
+18-soname.patch
+19-clang_debian_version.patch
+20-vendor.patch
+21-searchPathHeaders.diff
+22-debian-name.diff
+23-strlcpy_strlcat_warning_removed.diff
+24-path-multiarch.diff
+25-amdfam10.diff

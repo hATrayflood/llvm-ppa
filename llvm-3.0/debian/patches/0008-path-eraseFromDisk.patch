@@ -1,0 +1,34 @@
+--- 3.0.orig/lib/Support/Unix/Path.inc	(révision 144213)
++++ 3.0/lib/Support/Unix/Path.inc	(copie de travail)
+@@ -60,6 +60,10 @@
+ #include <mach-o/dyld.h>
+ #endif
+ 
++#if HAVE_UNISTD_H
++#include <unistd.h>
++#endif
++
+ // Put in a hack for Cygwin which falsely reports that the mkdtemp function
+ // is available when it is not.
+ #ifdef __CYGWIN__
+@@ -722,9 +722,18 @@
+   }
+ 
+   if (remove_contents) {
++    int rv;
+     // Recursively descend the directory to remove its contents.
+-    std::string cmd = "/bin/rm -rf " + path;
+-    if (system(cmd.c_str()) != 0) {
++    switch (fork()) {
++    case -1:
++      return MakeErrMsg(ErrStr, path + ": failed to fork (recursively removing drectory).");
++    case 0:
++      execl("/bin/rm", "/bin/rm", "-rf", "--", path.c_str(), (char *) 0);
++      exit(1);
++    default:
++      wait(&rv);
++    }
++    if (rv != 0) {
+       MakeErrMsg(ErrStr, path + ": failed to recursively remove directory.");
+       return true;
+     }

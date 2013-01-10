@@ -1,0 +1,3 @@
+@PF@/bin
+usr/share/man/man1
+usr/share/doc/llvm-@UVERSION@

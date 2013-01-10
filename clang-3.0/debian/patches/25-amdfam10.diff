@@ -1,0 +1,99 @@
+--- plop/clang-3.0/tools/clang/lib/Basic/Targets.cpp	2011-10-18 19:22:17.000000000 +0200
++++ clang-3.0/tools/clang/lib/Basic/Targets.cpp	2012-02-25 14:44:19.000000000 +0100
+@@ -1163,7 +1163,7 @@
+ // most of the implementation can be shared.
+ class X86TargetInfo : public TargetInfo {
+   enum X86SSEEnum {
+-    NoSSE, SSE1, SSE2, SSE3, SSSE3, SSE41, SSE42
++      NoSSE, SSE1, SSE2, SSE3, SSSE3, SSE41, SSE42, SSE4A
+   } SSELevel;
+   enum MMX3DNowEnum {
+     NoMMX3DNow, MMX, AMD3DNow, AMD3DNowAthlon
+@@ -1282,6 +1282,7 @@
+     CK_K8SSE3,
+     CK_Opteron,
+     CK_OpteronSSE3,
++    CK_AMDFAM10,
+ 
+     /// This specification is deprecated and will be removed in the future.
+     /// Users should prefer \see CK_K8.
+@@ -1381,6 +1382,7 @@
+       .Case("k8-sse3", CK_K8SSE3)
+       .Case("opteron", CK_Opteron)
+       .Case("opteron-sse3", CK_OpteronSSE3)
++      .Case("amdfam10", CK_AMDFAM10)
+       .Case("x86-64", CK_x86_64)
+       .Case("geode", CK_Geode)
+       .Default(CK_Generic);
+@@ -1441,6 +1443,7 @@
+     case CK_K8SSE3:
+     case CK_Opteron:
+     case CK_OpteronSSE3:
++    case CK_AMDFAM10:
+     case CK_x86_64:
+       return true;
+     }
+@@ -1459,12 +1462,10 @@
+   Features["ssse3"] = false;
+   Features["sse41"] = false;
+   Features["sse42"] = false;
++  Features["sse4a"] = false;
+   Features["aes"] = false;
+   Features["avx"] = false;
+ 
+-  // LLVM does not currently recognize this.
+-  // Features["sse4a"] = false;
+-
+   // FIXME: This *really* should not be here.
+ 
+   // X86_64 always has SSE2.
+@@ -1561,6 +1562,11 @@
+     setFeatureEnabled(Features, "sse3", true);
+     setFeatureEnabled(Features, "3dnowa", true);
+     break;
++  case CK_AMDFAM10:
++    setFeatureEnabled(Features, "sse3", true);
++    setFeatureEnabled(Features, "sse4a", true);
++    setFeatureEnabled(Features, "3dnowa", true);
++    break;
+   case CK_C3_2:
+     setFeatureEnabled(Features, "mmx", true);
+     setFeatureEnabled(Features, "sse", true);
+@@ -1595,6 +1601,8 @@
+     else if (Name == "sse4.1")
+       Features["sse"] = Features["sse2"] = Features["sse3"] =
+         Features["ssse3"] = Features["sse41"] = true;
++    else if (Name == "sse4a")
++      Features["sse4a"] = true;
+     else if (Name == "3dnow")
+       Features["mmx"] = Features["3dnow"] = true;
+     else if (Name == "3dnowa")
+@@ -1630,6 +1638,8 @@
+       Features["aes"] = false;
+     else if (Name == "avx")
+       Features["avx"] = false;
++    else if (Name == "sse4a")
++      Features["sse4a"] = false;
+   }
+ 
+   return true;
+@@ -1658,6 +1668,7 @@
+ 
+     assert(Features[i][0] == '+' && "Invalid target feature!");
+     X86SSEEnum Level = llvm::StringSwitch<X86SSEEnum>(Features[i].substr(1))
++      .Case("sse4a", SSE4A)
+       .Case("sse42", SSE42)
+       .Case("sse41", SSE41)
+       .Case("ssse3", SSSE3)
+@@ -1826,6 +1837,11 @@
+     Builder.defineMacro("__k8__");
+     Builder.defineMacro("__tune_k8__");
+     break;
++  case CK_AMDFAM10:
++    Builder.defineMacro("__amdfam10");
++    Builder.defineMacro("__amdfam10__");
++    Builder.defineMacro("__tune_amdfam10__");
++    break;
+   case CK_Geode:
+     Builder.defineMacro("__geode");
+     Builder.defineMacro("__geode__");

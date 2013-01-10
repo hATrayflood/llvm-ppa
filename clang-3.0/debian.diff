@@ -1,0 +1,252 @@
+diff -urN debian/changelog clang-3.0/debian/changelog
+--- debian/changelog	2012-02-25 22:05:54.000000000 +0900
++++ clang-3.0/debian/changelog	2013-01-09 19:27:34.030753921 +0900
+@@ -1,3 +1,9 @@
++clang-3.0 (3.0-6ppa1) precise; urgency=low
++
++  * ppa for precise
++
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Wed, 9 Jan 2013 19:23:29 +0900
++
+ clang (3.0-6) unstable; urgency=low
+ 
+   * Improve the soname patch
+diff -urN debian/control clang-3.0/debian/control
+--- debian/control	2012-02-25 23:13:43.000000000 +0900
++++ clang-3.0/debian/control	2013-01-10 16:40:21.477754588 +0900
+@@ -1,24 +1,21 @@
+-Source: clang
++Source: clang-3.0
+ Section: devel
+-Priority: optional
+-Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
+-Uploaders: Arthur Loiret <aloiret@debian.org>,
+- Sylvestre Ledru <sylvestre@debian.org>
++Priority: extra
++Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
+ Build-Depends: debhelper (>= 6.0.0), flex, bison, dejagnu, tcl8.5, expect,
+     autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
+     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
+     lsb-release, patchutils, diffstat, xz-utils, llvm-3.0-dev (>= 3.0), llvm-3.0-source (>= 3.0)
+ Build-Conflicts: oprofile, ocaml, ocaml-nox
+-Standards-Version: 3.9.2
+-Homepage: http://www.llvm.org/
+-Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/clang/trunk/
+-Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/clang/trunk/
++Standards-Version: 3.9.3
++Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
++Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
+ 
+ 
+-Package: clang
++Package: clang-3.0
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
+- libclang-common-dev
++ libclang-3.0-common-dev
+ Recommends: llvm-3.0-dev, python
+ Description: Low-Level Virtual Machine (LLVM), C language family frontend
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+@@ -56,7 +53,7 @@
+     * A single unified parser for C, Objective C, C++, and Objective C++
+     * Conformance with C/C++/ObjC and their variants
+ 
+-Package: libclang1
++Package: libclang1-3.0
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev
+ Description: clang library
+@@ -97,11 +94,11 @@
+  .
+  This package contains the clang library.
+ 
+-Package: libclang-dev
++Package: libclang-3.0-dev
+ Architecture: any
+ Section: libdevel
+ Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
+- libclang1 (= ${binary:Version}), libclang-common-dev
++ libclang1-3.0 (= ${binary:Version}), libclang-3.0-common-dev
+ Description: clang library - Development package
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+@@ -140,9 +137,9 @@
+  .
+  This package contains the clang headers to develop extensions over libclang.
+ 
+-Package: libclang-common-dev
++Package: libclang-3.0-common-dev
+ Architecture: any
+-Replaces: libclang-dev
++Replaces: libclang-3.0-dev
+ Section: libdevel
+ Description: clang library - Common development package
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+diff -urN debian/control.in/clang clang-3.0/debian/control.in/clang
+--- debian/control.in/clang	2011-12-20 22:40:25.000000000 +0900
++++ clang-3.0/debian/control.in/clang	2013-01-09 17:43:51.913503459 +0900
+@@ -1,7 +1,7 @@
+-Package: clang
++Package: clang-@UVERSION@
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
+- libclang-common-dev
++ libclang-@UVERSION@-common-dev
+ Recommends: llvm-@UVERSION@-dev, python
+ Description: Low-Level Virtual Machine (LLVM), C language family frontend
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+diff -urN debian/control.in/libclang-common-dev clang-3.0/debian/control.in/libclang-common-dev
+--- debian/control.in/libclang-common-dev	2011-12-26 08:50:52.000000000 +0900
++++ clang-3.0/debian/control.in/libclang-common-dev	2013-01-09 17:42:53.785215365 +0900
+@@ -1,7 +1,7 @@
+ 
+-Package: libclang-common-dev
++Package: libclang-@UVERSION@-common-dev
+ Architecture: any
+-Replaces: libclang-dev
++Replaces: libclang-@UVERSION@-dev
+ Section: libdevel
+ Description: clang library - Common development package
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+diff -urN debian/control.in/libclang-dev clang-3.0/debian/control.in/libclang-dev
+--- debian/control.in/libclang-dev	2011-12-20 22:38:39.000000000 +0900
++++ clang-3.0/debian/control.in/libclang-dev	2013-01-09 17:43:24.029365302 +0900
+@@ -1,9 +1,9 @@
+ 
+-Package: libclang-dev
++Package: libclang-@UVERSION@-dev
+ Architecture: any
+ Section: libdevel
+ Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
+- libclang1 (= ${binary:Version}), libclang-common-dev
++ libclang1-@UVERSION@ (= ${binary:Version}), libclang-@UVERSION@-common-dev
+ Description: clang library - Development package
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+diff -urN debian/control.in/libclang1 clang-3.0/debian/control.in/libclang1
+--- debian/control.in/libclang1	2011-10-08 01:14:48.000000000 +0900
++++ clang-3.0/debian/control.in/libclang1	2013-01-09 17:43:37.657432844 +0900
+@@ -1,4 +1,4 @@
+-Package: libclang1
++Package: libclang1-@UVERSION@
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev
+ Description: clang library
+diff -urN debian/control.in/source clang-3.0/debian/control.in/source
+--- debian/control.in/source	2011-12-08 00:39:17.000000000 +0900
++++ clang-3.0/debian/control.in/source	2013-01-10 16:40:31.509804341 +0900
+@@ -1,17 +1,14 @@
+ Source: @PKGSOURCE@
+ Section: devel
+-Priority: optional
+-Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
+-Uploaders: Arthur Loiret <aloiret@debian.org>,
+- Sylvestre Ledru <sylvestre@debian.org>
++Priority: extra
++Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
+ Build-Depends: debhelper (>= 6.0.0), flex, bison, dejagnu, tcl8.5, expect,
+     autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
+     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
+     lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@
+ Build-Conflicts: oprofile @BUILDCONFLICTS@
+-Standards-Version: 3.9.2
+-Homepage: http://www.llvm.org/
+-Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/clang/trunk/
+-Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/clang/trunk/
++Standards-Version: 3.9.3
++Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
++Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
+ 
+ 
+diff -urN debian/debhelper.in/clang.install clang-3.0/debian/debhelper.in/clang.install
+--- debian/debhelper.in/clang.install	2011-09-23 05:02:23.000000000 +0900
++++ clang-3.0/debian/debhelper.in/clang.install	2013-01-09 17:36:23.467279839 +0900
+@@ -1,5 +1,4 @@
+-debian/@TMP@/@PF@/bin/clang			@PF@/bin/
+-debian/@TMP@/@PF@/bin/clang++			@PF@/bin/
+-tools/clang/tools/scan-build			@PF@/share/clang/
+-tools/clang/tools/scan-view			@PF@/share/clang/
+-debian/@TMP@/@PF@/share/man/man1/clang.1	usr/share/man/man1/
++debian/@TMP@/@PF@/bin/clang			@PF@/lib/llvm-3.0/bin/
++debian/@TMP@/@PF@/bin/clang++			@PF@/lib/llvm-3.0/bin/
++tools/clang/tools/scan-build			@PF@/lib/llvm-3.0/share/
++tools/clang/tools/scan-view			@PF@/lib/llvm-3.0/share/
+diff -urN debian/debhelper.in/clang.links clang-3.0/debian/debhelper.in/clang.links
+--- debian/debhelper.in/clang.links	2011-06-27 17:12:38.000000000 +0900
++++ clang-3.0/debian/debhelper.in/clang.links	2013-01-09 18:56:43.672474508 +0900
+@@ -1,5 +1,7 @@
+-usr/share/man/man1/clang.1.gz		usr/share/man/man1/llvm-clang.1.gz
+-usr/share/man/man1/clang.1.gz		usr/share/man/man1/clang++.1.gz
+-@PF@/share/clang/scan-build/scan-build	@PF@/bin/scan-build
+-@PF@/share/clang/scan-view/scan-view	@PF@/bin/scan-view
+-@PF@/bin/clang				@PF@/bin/llvm-clang
++@PF@/lib/llvm-3.0/bin/clang				@PF@/bin/llvm-clang-3.0
++@PF@/lib/llvm-3.0/bin/clang				@PF@/bin/clang-3.0
++@PF@/lib/llvm-3.0/bin/clang++				@PF@/bin/clang++-3.0
++@PF@/lib/llvm-3.0/share/scan-build/scan-build		@PF@/bin/scan-build-3.0
++@PF@/lib/llvm-3.0/share/scan-view/scan-view		@PF@/bin/scan-view-3.0
++@PF@/share/man/man1/clang-3.0.1.gz			@PF@/share/man/man1/llvm-clang-3.0.1.gz
++@PF@/share/man/man1/clang-3.0.1.gz			@PF@/share/man/man1/clang++-3.0.1.gz
+diff -urN debian/debhelper.in/clang.manpages clang-3.0/debian/debhelper.in/clang.manpages
+--- debian/debhelper.in/clang.manpages	2011-06-27 17:12:38.000000000 +0900
++++ clang-3.0/debian/debhelper.in/clang.manpages	2013-01-09 17:36:09.591211032 +0900
+@@ -1 +1,3 @@
+-debian/man/scan*.1
++debian/man/scan-build.1
++debian/man/scan-view.1
++debian/@TMP@/@PF@/share/man/man1/clang.1
+diff -urN debian/debhelper.in/clang.postinst clang-3.0/debian/debhelper.in/clang.postinst
+--- debian/debhelper.in/clang.postinst	2011-06-27 17:12:38.000000000 +0900
++++ clang-3.0/debian/debhelper.in/clang.postinst	1970-01-01 09:00:00.000000000 +0900
+@@ -1,19 +0,0 @@
+-#! /bin/sh -e
+-
+-prio=10
+-
+-update-alternatives --quiet \
+-	--install /usr/bin/c++ \
+-		c++ \
+-		/usr/bin/clang++ \
+-		$prio
+-
+-update-alternatives --quiet \
+-	--install /usr/bin/cc \
+-		cc \
+-		/usr/bin/clang \
+-		$prio
+-
+-#DEBHELPER#
+-
+-exit 0
+diff -urN debian/debhelper.in/clang.prerm clang-3.0/debian/debhelper.in/clang.prerm
+--- debian/debhelper.in/clang.prerm	2011-06-27 17:12:38.000000000 +0900
++++ clang-3.0/debian/debhelper.in/clang.prerm	1970-01-01 09:00:00.000000000 +0900
+@@ -1,12 +0,0 @@
+-#!/bin/sh
+-
+-set -e
+-
+-if [ "$1" = "remove" ] || [ "$1" = "deconfigure" ]; then
+-    update-alternatives --quiet --remove cc /usr/bin/clang
+-    update-alternatives --quiet --remove c++ /usr/bin/clang++
+-fi
+-
+-#DEBHELPER#
+-
+-exit 0
+diff -urN debian/debhelper.in/libclang-dev.install clang-3.0/debian/debhelper.in/libclang-dev.install
+--- debian/debhelper.in/libclang-dev.install	2011-12-20 22:41:09.000000000 +0900
++++ clang-3.0/debian/debhelper.in/libclang-dev.install	2013-01-09 12:44:38.832123037 +0900
+@@ -1,3 +1,3 @@
+-debian/@TMP@/@PF@/include/clang                  @PF@/include/
+-debian/@TMP@/@PF@/include/clang-c                  @PF@/include/
+-debian/@TMP@/@PF@/lib/libclang.so                       @PF@/lib/
++debian/@TMP@/@PF@/include/clang                  @PF@/lib/llvm-3.0/include/
++debian/@TMP@/@PF@/include/clang-c                @PF@/lib/llvm-3.0/include/
++debian/@TMP@/@PF@/lib/libclang.so                @PF@/lib/llvm-3.0/lib/
+diff -urN debian/debhelper.in/libclang1.install clang-3.0/debian/debhelper.in/libclang1.install
+--- debian/debhelper.in/libclang1.install	2011-10-08 01:14:24.000000000 +0900
++++ clang-3.0/debian/debhelper.in/libclang1.install	2013-01-09 12:44:55.324204819 +0900
+@@ -1 +1 @@
+-debian/@TMP@/@PF@/lib/libclang.so.1                       @PF@/lib/
++debian/@TMP@/@PF@/lib/libclang.so.1                       @PF@/lib/llvm-3.0/lib/

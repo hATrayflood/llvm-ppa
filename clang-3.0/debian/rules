@@ -1,0 +1,40 @@
+#!/usr/bin/make -f
+
+include debian/rules.d/vars.mk
+
+tools := clang #vmkit
+include debian/packages.d/tools.mk
+
+$(foreach build,$(builds),$(eval \
+  $(build)_builddir ?= build-$(build)))
+ifeq (,$(strip $(tarball)))
+  srcdir	:= .
+else
+  ifeq (,$(strip $(srcdir)))
+    $(error undefined srcdir)
+  endif
+endif
+
+define pkgname
+  $(shell cat $(D)/debian/control.in/$1 | awk '/^Package: / {print $$2}' | \
+  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(gcc_version)/;s/@PKG_VERSION@/$(pkg_version)/')
+endef
+
+define buildof
+  $(foreach build,$(builds),$(if $(filter $1,$($(build)_packages)),$(build),))
+endef
+
+include debian/rules.d/control.mk
+include debian/rules.d/unpack.mk
+include debian/rules.d/build.mk
+include debian/rules.d/binary.mk
+
+clean:
+	$(RM) -r $(stampdir) $(foreach build,$(builds),$($(build)_builddir))
+ifneq (,$(strip $(tarball)))
+	$(RM) -r $(srcdir)
+endif
+	$(RM) -r $(D)/debian/ccache
+	find utils -name '*.py[co]' | xargs rm -f
+
+.PHONY: clean

@@ -1,0 +1,20 @@
+Index: clang-3.0/tools/clang/lib/Driver/ToolChains.cpp
+===================================================================
+--- clang-3.0.orig/tools/clang/lib/Driver/ToolChains.cpp	2012-02-25 13:20:26.235542936 +0100
++++ clang-3.0/tools/clang/lib/Driver/ToolChains.cpp	2012-02-25 13:21:02.951542117 +0100
+@@ -1785,6 +1785,15 @@
+     if (llvm::sys::fs::exists(SysRoot + "/lib/x86_64-unknown-linux-gnu"))
+       return "x86_64-unknown-linux-gnu";
+     return TargetTriple.str();
++  case llvm::Triple::ppc:
++    if (llvm::sys::fs::exists(SysRoot + "/lib/powerpc-linux-gnu"))
++      return "powerpc-linux-gnu";
++    return TargetTriple.str();
++  case llvm::Triple::arm:
++    if (llvm::sys::fs::exists(SysRoot + "/lib/arm-linux-gnueabi"))
++      return "arm-linux-gnueabi";
++    return TargetTriple.str();
++
+   }
+ }
+ 

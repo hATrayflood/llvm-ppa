@@ -1,0 +1,33 @@
+Index: llvm-3.0-3.0/include/llvm/ADT/Triple.h
+===================================================================
+--- llvm-3.0-3.0.orig/include/llvm/ADT/Triple.h	2011-09-20 18:09:37.000000000 +0000
++++ llvm-3.0-3.0/include/llvm/ADT/Triple.h	2011-12-10 17:59:39.702932121 +0000
+@@ -106,6 +106,7 @@
+ 
+     GNU,
+     GNUEABI,
++    GNUEABIHF,
+     EABI,
+     MachO
+   };
+Index: llvm-3.0-3.0/lib/Support/Triple.cpp
+===================================================================
+--- llvm-3.0-3.0.orig/lib/Support/Triple.cpp	2011-09-20 18:09:37.000000000 +0000
++++ llvm-3.0-3.0/lib/Support/Triple.cpp	2011-12-10 18:14:28.344235475 +0000
+@@ -126,6 +126,7 @@
+   switch (Kind) {
+   case UnknownEnvironment: return "unknown";
+   case GNU: return "gnu";
++  case GNUEABIHF: return "gnueabihf";
+   case GNUEABI: return "gnueabi";
+   case EABI: return "eabi";
+   case MachO: return "macho";
+@@ -393,6 +394,8 @@
+ Triple::EnvironmentType Triple::ParseEnvironment(StringRef EnvironmentName) {
+   if (EnvironmentName.startswith("eabi"))
+     return EABI;
++  else if (EnvironmentName.startswith("gnueabihf"))
++    return GNUEABIHF;
+   else if (EnvironmentName.startswith("gnueabi"))
+     return GNUEABI;
+   else if (EnvironmentName.startswith("gnu"))

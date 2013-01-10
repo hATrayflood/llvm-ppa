@@ -1,0 +1,5 @@
+@PF@/lib
+@PF@/build
+@PF@/include
+usr/share/doc/llvm-@UVERSION@-dev
+usr/share/emacs/site-lisp/llvm-@UVERSION@

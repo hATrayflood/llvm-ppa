@@ -1,0 +1,46 @@
+--- 3.0.orig/autoconf/configure.ac	(révision 144213)
++++ 3.0/autoconf/configure.ac	(copie de travail)
+@@ -188,7 +188,7 @@
+     llvm_cv_no_link_all_option="-Wl,-noall_load"
+     llvm_cv_os_type="Minix"
+     llvm_cv_platform_type="Unix" ;;
+-  *-*-freebsd*)
++  *-*-freebsd* | *-*-kfreebsd-gnu)
+     llvm_cv_link_all_option="-Wl,--whole-archive"
+     llvm_cv_no_link_all_option="-Wl,--no-whole-archive"
+     llvm_cv_os_type="FreeBSD"
+@@ -223,6 +223,11 @@
+     llvm_cv_no_link_all_option="-Wl,--no-whole-archive"
+     llvm_cv_os_type="Linux"
+     llvm_cv_platform_type="Unix" ;;
++  *-*-gnu*)
++    llvm_cv_link_all_option="-Wl,--whole-archive"
++    llvm_cv_no_link_all_option="-Wl,--no-whole-archive"
++    llvm_cv_os_type="GNU"
++    llvm_cv_platform_type="Unix" ;;
+   *-*-solaris*)
+     llvm_cv_link_all_option="-Wl,-z,allextract"
+     llvm_cv_no_link_all_option="-Wl,-z,defaultextract"
+--- 3.0.orig/configure	(révision 144213)
++++ 3.0/configure	(copie de travail)
+@@ -3527,7 +3527,7 @@
+     llvm_cv_no_link_all_option="-Wl,-noall_load"
+     llvm_cv_os_type="Minix"
+     llvm_cv_platform_type="Unix" ;;
+-  *-*-freebsd*)
++  *-*-freebsd* | *-*-kfreebsd-gnu)
+     llvm_cv_link_all_option="-Wl,--whole-archive"
+     llvm_cv_no_link_all_option="-Wl,--no-whole-archive"
+     llvm_cv_os_type="FreeBSD"
+@@ -3562,6 +3562,11 @@
+     llvm_cv_no_link_all_option="-Wl,--no-whole-archive"
+     llvm_cv_os_type="Linux"
+     llvm_cv_platform_type="Unix" ;;
++  *-*-gnu*)
++    llvm_cv_link_all_option="-Wl,--whole-archive"
++    llvm_cv_no_link_all_option="-Wl,--no-whole-archive"
++    llvm_cv_os_type="GNU"
++    llvm_cv_platform_type="Unix" ;;
+   *-*-solaris*)
+     llvm_cv_link_all_option="-Wl,-z,allextract"
+     llvm_cv_no_link_all_option="-Wl,-z,defaultextract"

@@ -1,0 +1,17 @@
+Source: @PKGSOURCE@
+Section: devel
+Priority: optional
+Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
+Uploaders: Arthur Loiret <aloiret@debian.org>,
+ Sylvestre Ledru <sylvestre@debian.org>
+Build-Depends: debhelper (>= 6.0.0), flex, bison, dejagnu, tcl8.5, expect,
+    autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
+    sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
+    lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@
+Build-Conflicts: oprofile @BUILDCONFLICTS@
+Standards-Version: 3.9.2
+Homepage: http://www.llvm.org/
+Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/clang/trunk/
+Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/clang/trunk/
+
+
