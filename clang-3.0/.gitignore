@@ -1,3 +1,5 @@
+*.deb
+clang-3.0_3.0-*
 clang-3.0/*
 !clang-3.0/debian
 clang-3.0/debian/files
@@ -7,5 +9,3 @@ clang-3.0/debian/clang-3.0*
 clang-3.0/debian/libclang-3.0-common-dev*
 clang-3.0/debian/libclang-3.0-dev*
 clang-3.0/debian/libclang1-3.0*
-*.deb
-clang-3.0_*

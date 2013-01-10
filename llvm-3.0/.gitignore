@@ -1,3 +1,5 @@
+*.deb
+llvm-3.0_3.0-*
 llvm-3.0.src/*
 !llvm-3.0.src/debian
 llvm-3.0.src/debian/files
@@ -11,5 +13,3 @@ llvm-3.0.src/debian/llvm-3.0-examples*
 llvm-3.0.src/debian/llvm-3.0-runtime*
 llvm-3.0.src/debian/llvm-3.0-source*
 llvm-3.0.src/debian/llvm-3.0*
-*.deb
-llvm-3.0_*
