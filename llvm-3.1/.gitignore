@@ -1,0 +1,15 @@
+*.deb
+llvm-3.1_3.1-*
+llvm-3.1-3.1/*
+!llvm-3.1-3.1/debian
+llvm-3.1-3.1/debian/files
+llvm-3.1-3.1/debian/stamps
+llvm-3.1-3.1/debian/tmp-llvm
+llvm-3.1-3.1/debian/libllvm-3.1-ocaml-dev*
+llvm-3.1-3.1/debian/libllvm3.1*
+llvm-3.1-3.1/debian/llvm-3.1-dev*
+llvm-3.1-3.1/debian/llvm-3.1-doc*
+llvm-3.1-3.1/debian/llvm-3.1-examples*
+llvm-3.1-3.1/debian/llvm-3.1-runtime*
+llvm-3.1-3.1/debian/llvm-3.1-source*
+llvm-3.1-3.1/debian/llvm-3.1*

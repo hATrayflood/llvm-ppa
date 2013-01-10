@@ -1,0 +1,28 @@
+Index: llvm-3.1-3.1~+rc3/lib/Support/Makefile
+===================================================================
+--- llvm-3.1-3.1~+rc3.orig/lib/Support/Makefile	2012-05-20 16:04:51.000000000 +0200
++++ llvm-3.1-3.1~+rc3/lib/Support/Makefile	2012-05-20 16:15:44.970258968 +0200
+@@ -14,6 +14,9 @@
+ ## FIXME: This only requires RTTI because tblgen uses it.  Fix that.
+ REQUIRES_RTTI = 1
+ 
++# -DLLVM_DEBIAN_INFO='" ($(OS) $(VERSION))"'
++CPP.Flags = $(DebianOpts)
++
+ EXTRA_DIST = Unix Win32 README.txt
+ 
+ include $(LEVEL)/Makefile.common
+Index: llvm-3.1-3.1~+rc3/lib/Support/CommandLine.cpp
+===================================================================
+--- llvm-3.1-3.1~+rc3.orig/lib/Support/CommandLine.cpp	2012-05-20 16:04:51.000000000 +0200
++++ llvm-3.1-3.1~+rc3/lib/Support/CommandLine.cpp	2012-05-20 16:15:44.970258968 +0200
+@@ -1351,6 +1351,9 @@
+     OS << LLVM_VERSION_INFO;
+ #endif
+     OS << "\n  ";
++#ifdef LLVM_DEBIAN_INFO
++    OS << LLVM_DEBIAN_INFO;
++#endif
+ #ifndef __OPTIMIZE__
+     OS << "DEBUG build";
+ #else

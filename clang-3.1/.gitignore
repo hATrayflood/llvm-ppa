@@ -1,0 +1,11 @@
+*.deb
+clang-3.1_3.1-*
+clang-3.1/*
+!clang-3.1/debian
+clang-3.1/debian/files
+clang-3.1/debian/stamps
+clang-3.1/debian/tmp-clang
+clang-3.1/debian/clang-3.1*
+clang-3.1/debian/libclang-3.1-common-dev*
+clang-3.1/debian/libclang-3.1-dev*
+clang-3.1/debian/libclang1-3.1*

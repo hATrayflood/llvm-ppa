@@ -1,0 +1,43 @@
+Index: llvm-3.1-3.1~+rc3/lib/Target/PowerPC/MCTargetDesc/PPCMCTargetDesc.h
+===================================================================
+--- llvm-3.1-3.1~+rc3.orig/lib/Target/PowerPC/MCTargetDesc/PPCMCTargetDesc.h	2012-05-20 16:17:39.218257527 +0200
++++ llvm-3.1-3.1~+rc3/lib/Target/PowerPC/MCTargetDesc/PPCMCTargetDesc.h	2012-05-20 16:17:55.346257323 +0200
+@@ -42,6 +42,10 @@
+                                          uint8_t OSABI);
+ } // End llvm namespace
+ 
++// Generated files will use "namespace PPC". To avoid symbol clash,
++// undefine PPC here. PPC may be predefined on some hosts.
++#undef PPC
++
+ // Defines symbolic names for PowerPC registers.  This defines a mapping from
+ // register name to register number.
+ //
+Index: llvm-3.1-3.1~+rc3/lib/Target/PowerPC/MCTargetDesc/PPCPredicates.h
+===================================================================
+--- llvm-3.1-3.1~+rc3.orig/lib/Target/PowerPC/MCTargetDesc/PPCPredicates.h	2012-05-20 16:17:39.218257527 +0200
++++ llvm-3.1-3.1~+rc3/lib/Target/PowerPC/MCTargetDesc/PPCPredicates.h	2012-05-20 16:17:55.346257323 +0200
+@@ -14,6 +14,10 @@
+ #ifndef LLVM_TARGET_POWERPC_PPCPREDICATES_H
+ #define LLVM_TARGET_POWERPC_PPCPREDICATES_H
+ 
++// Generated files will use "namespace PPC". To avoid symbol clash,
++// undefine PPC here. PPC may be predefined on some hosts.
++#undef PPC
++
+ namespace llvm {
+ namespace PPC {
+   /// Predicate - These are "(BI << 5) | BO"  for various predicates.
+Index: llvm-3.1-3.1~+rc3/lib/Target/PowerPC/MCTargetDesc/PPCFixupKinds.h
+===================================================================
+--- llvm-3.1-3.1~+rc3.orig/lib/Target/PowerPC/MCTargetDesc/PPCFixupKinds.h	2012-05-20 16:17:39.218257527 +0200
++++ llvm-3.1-3.1~+rc3/lib/Target/PowerPC/MCTargetDesc/PPCFixupKinds.h	2012-05-20 16:17:55.346257323 +0200
+@@ -12,6 +12,8 @@
+ 
+ #include "llvm/MC/MCFixup.h"
+ 
++#undef PPC
++
+ namespace llvm {
+ namespace PPC {
+ enum Fixups {

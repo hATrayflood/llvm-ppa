@@ -1,0 +1,101 @@
+Index: llvm.svn.test/lib/Support/Unix/Path.inc
+===================================================================
+--- llvm.svn.test.orig/lib/Support/Unix/Path.inc	2012-03-26 09:38:16.000000000 +0200
++++ llvm.svn.test/lib/Support/Unix/Path.inc	2012-03-26 09:40:20.000000000 +0200
+@@ -64,6 +64,11 @@
+ #include <unistd.h>
+ #endif
+ 
++// For GNU Hurd
++#if defined(__GNU__) && !defined(MAXPATHLEN)
++# define MAXPATHLEN 4096
++#endif
++
+ // Put in a hack for Cygwin which falsely reports that the mkdtemp function
+ // is available when it is not.
+ #ifdef __CYGWIN__
+Index: llvm.svn.test/lib/Support/Unix/Process.inc
+===================================================================
+--- llvm.svn.test.orig/lib/Support/Unix/Process.inc	2012-03-25 21:25:14.000000000 +0200
++++ llvm.svn.test/lib/Support/Unix/Process.inc	2012-03-26 09:40:20.000000000 +0200
+@@ -136,7 +136,7 @@
+   return getgid();
+ }
+ 
+-#ifdef HAVE_MACH_MACH_H
++#if defined(HAVE_MACH_MACH_H) && !defined(__GNU__)
+ #include <mach/mach.h>
+ #endif
+ 
+@@ -150,7 +150,7 @@
+   setrlimit(RLIMIT_CORE, &rlim);
+ #endif
+ 
+-#ifdef HAVE_MACH_MACH_H
++#if defined(HAVE_MACH_MACH_H) && !defined(__GNU__)
+   // Disable crash reporting on Mac OS X 10.0-10.4
+ 
+   // get information about the original set of exception ports for the task
+Index: llvm.svn.test/lib/Support/Unix/PathV2.inc
+===================================================================
+--- llvm.svn.test.orig/lib/Support/Unix/PathV2.inc	2012-03-25 21:25:14.000000000 +0200
++++ llvm.svn.test/lib/Support/Unix/PathV2.inc	2012-03-26 09:40:20.000000000 +0200
+@@ -46,6 +46,11 @@
+ #include <limits.h>
+ #endif
+ 
++// For GNU Hurd
++#if defined(__GNU__) && !defined(PATH_MAX)
++# define PATH_MAX 4096
++#endif
++
+ using namespace llvm;
+ 
+ namespace {
+@@ -96,7 +101,11 @@
+ namespace fs {
+ 
+ error_code current_path(SmallVectorImpl<char> &result) {
++#ifdef MAXPATHLEN
+   result.reserve(MAXPATHLEN);
++#else
++  result.reserve(1024);
++#endif
+ 
+   while (true) {
+     if (::getcwd(result.data(), result.capacity()) == 0) {
+Index: llvm.svn.test/Makefile.rules
+===================================================================
+--- llvm.svn.test.orig/Makefile.rules	2012-03-25 21:25:16.000000000 +0200
++++ llvm.svn.test/Makefile.rules	2012-03-26 09:40:20.000000000 +0200
+@@ -1432,7 +1432,7 @@
+ endif
+ endif
+ 
+-ifeq ($(HOST_OS), $(filter $(HOST_OS), Linux NetBSD FreeBSD))
++ifeq ($(HOST_OS), $(filter $(HOST_OS), Linux NetBSD FreeBSD GNU))
+ ifneq ($(ARCH), Mips)
+   LD.Flags += -Wl,--version-script=$(LLVM_SRC_ROOT)/autoconf/ExportMap.map
+ endif
+Index: llvm-3.1/tools/llvm-shlib/Makefile
+===================================================================
+--- llvm-3.1.orig/tools/llvm-shlib/Makefile	2012-04-05 22:08:19.000000000 +0200
++++ llvm-3.1/tools/llvm-shlib/Makefile	2012-04-05 22:10:13.000000000 +0200
+@@ -63,7 +63,7 @@
+     endif
+ endif
+ 
+-ifeq ($(HOST_OS), $(filter $(HOST_OS), Linux FreeBSD OpenBSD))
++ifeq ($(HOST_OS), $(filter $(HOST_OS), Linux FreeBSD OpenBSD GNU))
+     # Include everything from the .a's into the shared library.
+     LLVMLibsOptions := -Wl,--whole-archive $(LLVMLibsOptions) \
+                        -Wl,--no-whole-archive
+@@ -71,7 +71,7 @@
+     LLVMLibsOptions += -Wl,--soname,lib$(LIBRARYNAME)$(SHLIBEXT)
+ endif
+ 
+-ifeq ($(HOST_OS),Linux)
++ifeq ($(HOST_OS), $(filter $(HOST_OS), Linux GNU))
+     # Don't allow unresolved symbols.
+     LLVMLibsOptions += -Wl,--no-undefined
+ endif

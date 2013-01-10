@@ -1,0 +1,7 @@
+@PF@/lib/llvm-3.1/bin/clang			@PF@/bin/llvm-clang-3.1
+@PF@/lib/llvm-3.1/bin/clang			@PF@/bin/clang-3.1
+@PF@/lib/llvm-3.1/bin/clang++			@PF@/bin/clang++-3.1
+@PF@/lib/llvm-3.1/share/scan-build/scan-build	@PF@/bin/scan-build-3.1
+@PF@/lib/llvm-3.1/share/scan-view/scan-view	@PF@/bin/scan-view-3.1
+@PF@/share/man/man1/clang-3.1.1.gz		@PF@/share/man/man1/llvm-clang-3.1.1.gz
+@PF@/share/man/man1/clang-3.1.1.gz		@PF@/share/man/man1/clang++-3.1.1.gz

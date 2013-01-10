@@ -1,0 +1,2 @@
+debian/@TMP@/@OCAML_STDLIB_DIR@/llvm-@UVERSION@	@OCAML_STDLIB_DIR@/
+debian/@TMP@/@PF@/docs/llvm/ocamldoc/html	usr/share/doc/libllvm-@UVERSION@-ocaml-dev/

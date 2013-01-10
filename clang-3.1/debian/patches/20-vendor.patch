@@ -1,0 +1,15 @@
+Index: clang-3.1~+rc3/tools/clang/Makefile
+===================================================================
+--- clang-3.1~+rc3.orig/tools/clang/Makefile	2012-05-20 16:58:56.730226258 +0200
++++ clang-3.1~+rc3/tools/clang/Makefile	2012-05-20 16:59:05.742226144 +0200
+@@ -43,9 +43,7 @@
+ 
+ # Set common Clang build flags.
+ CPP.Flags += -I$(PROJ_SRC_DIR)/$(CLANG_LEVEL)/include -I$(PROJ_OBJ_DIR)/$(CLANG_LEVEL)/include
+-ifdef CLANG_VENDOR
+-CPP.Flags += -DCLANG_VENDOR='"$(CLANG_VENDOR) "'
+-endif
++CPP.Flags += -DCLANG_VENDOR='"Debian "'
+ ifdef CLANG_REPOSITORY_STRING
+ CPP.Flags += -DCLANG_REPOSITORY_STRING='"$(CLANG_REPOSITORY_STRING)"'
+ endif
