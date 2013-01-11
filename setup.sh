@@ -20,5 +20,10 @@ apt-get -y install autotools-dev
 apt-get -y install libffi-dev
 apt-get -y install binutils-dev
 apt-get -y install dh-ocaml
+apt-get -y install python-sphinx
+apt-get -y install dh-autoreconf
+apt-get -y install libpipeline-dev
 apt-get -y install binfmt-support
 EOC
+(cd dh-exec && ./build.sh)
+sudo dpkg -i dh-exec/*.deb
