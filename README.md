@@ -1,7 +1,7 @@
 LLVM/clang PPA
 ==============
 
-Porting from http://packages.qa.debian.org/c/clang.html to Ubuntu 12.04.
+Porting from http://packages.qa.debian.org/c/clang.html to Ubuntu 12.04
 
 provides
 --------
@@ -9,6 +9,8 @@ provides
     /usr/bin/clang++-3.0
     /usr/bin/clang-3.1
     /usr/bin/clang++-3.1
+    /usr/bin/clang-3.2
+    /usr/bin/clang++-3.2
 
 usage
 -----
@@ -16,6 +18,7 @@ usage
     sudo apt-get update
     sudo apt-get install clang-3.0
     sudo apt-get install clang-3.1
+    sudo apt-get install clang-3.2
 
 launchpad
 ---------
