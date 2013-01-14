@@ -1,4 +1,4 @@
-llvm-3.0 (3.0-10ppa1) precise; urgency=low
+llvm-3.0 (3.0-debian10ppa1) precise; urgency=low
 
   * ppa for precise
 
