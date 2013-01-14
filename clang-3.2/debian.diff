@@ -1,33 +1,37 @@
 diff -urN debian/changelog clang-3.2/debian/changelog
---- debian/changelog	2013-01-06 17:41:20.000000000 +0900
-+++ clang-3.2/debian/changelog	2013-01-11 17:24:51.454081249 +0900
+--- debian/changelog	2013-01-12 23:14:33.000000000 +0900
++++ clang-3.2/debian/changelog	2013-01-14 14:18:16.024878741 +0900
 @@ -1,3 +1,9 @@
-+clang-3.2 (3.2-1ppa1~exp3) precise; urgency=low
++clang-3.2 (3.2-debian1ppa1~exp4) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 11 Jan 2013 17:58:33 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Mon, 14 Jan 2013 13:45:54 +0900
 +
- clang (3.2-1~exp3) experimental; urgency=low
+ clang (3.2-1~exp4) experimental; urgency=low
  
-   * Install asan_symbolize in compiler-rt to extract results from the
+   * Also install clang-check & clang-tblgen in the clang-3.2 package
 diff -urN debian/clang-3.2.install clang-3.2/debian/clang-3.2.install
---- debian/clang-3.2.install	2012-11-29 00:58:14.000000000 +0900
-+++ clang-3.2/debian/clang-3.2.install	2013-01-11 17:33:49.368748512 +0900
-@@ -1,5 +1,4 @@
+--- debian/clang-3.2.install	2013-01-13 16:27:28.000000000 +0900
++++ clang-3.2/debian/clang-3.2.install	2013-01-14 13:54:00.581664600 +0900
+@@ -1,7 +1,6 @@
 -usr/bin/clang			/usr/bin/
 -usr/bin/clang++			/usr/bin/
+-usr/bin/clang-check			/usr/bin/
+-usr/bin/clang-tblgen			/usr/bin/
 -tools/clang/tools/scan-build			/usr/share/clang/
 -tools/clang/tools/scan-view			/usr/share/clang/
 -usr/share/man/man1/clang.1	usr/share/man/man1/
 +usr/bin/clang			/usr/lib/llvm-3.2/bin/
 +usr/bin/clang++			/usr/lib/llvm-3.2/bin/
++usr/bin/clang-check		/usr/lib/llvm-3.2/bin/
++usr/bin/clang-tblgen		/usr/lib/llvm-3.2/bin/
 +tools/clang/tools/scan-build	/usr/lib/llvm-3.2/share/
 +tools/clang/tools/scan-view	/usr/lib/llvm-3.2/share/
 diff -urN debian/clang-3.2.links clang-3.2/debian/clang-3.2.links
---- debian/clang-3.2.links	2012-11-29 00:58:14.000000000 +0900
-+++ clang-3.2/debian/clang-3.2.links	2013-01-11 17:36:39.677592873 +0900
-@@ -1,5 +1,7 @@
+--- debian/clang-3.2.links	2013-01-08 00:33:16.000000000 +0900
++++ clang-3.2/debian/clang-3.2.links	2013-01-14 13:55:11.150014597 +0900
+@@ -1,5 +1,9 @@
 -usr/share/man/man1/clang.1.gz		usr/share/man/man1/llvm-clang.1.gz
 -usr/share/man/man1/clang.1.gz		usr/share/man/man1/clang++.1.gz
 -/usr/share/clang/scan-build/scan-build	/usr/bin/scan-build
@@ -36,12 +40,14 @@ diff -urN debian/clang-3.2.links clang-3.2/debian/clang-3.2.links
 +/usr/lib/llvm-3.2/bin/clang			/usr/bin/llvm-clang-3.2
 +/usr/lib/llvm-3.2/bin/clang			/usr/bin/clang-3.2
 +/usr/lib/llvm-3.2/bin/clang++			/usr/bin/clang++-3.2
++/usr/lib/llvm-3.2/bin/clang-check		/usr/bin/clang-check-3.2
++/usr/lib/llvm-3.2/bin/clang-tblgen		/usr/bin/clang-tblgen-3.2
 +/usr/lib/llvm-3.2/share/scan-build/scan-build	/usr/bin/scan-build-3.2
 +/usr/lib/llvm-3.2/share/scan-view/scan-view	/usr/bin/scan-view-3.2
 +usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/llvm-clang-3.2.1.gz
 +usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/clang++-3.2.1.gz
 diff -urN debian/clang-3.2.manpages clang-3.2/debian/clang-3.2.manpages
---- debian/clang-3.2.manpages	2012-11-29 00:58:14.000000000 +0900
+--- debian/clang-3.2.manpages	2013-01-13 16:26:41.000000000 +0900
 +++ clang-3.2/debian/clang-3.2.manpages	2013-01-12 17:27:42.152258197 +0900
 @@ -1 +1,3 @@
 -debian/man/scan*.1
@@ -49,7 +55,7 @@ diff -urN debian/clang-3.2.manpages clang-3.2/debian/clang-3.2.manpages
 +debian/tmp/usr/share/man/man1/scan-view-3.2.1
 +debian/tmp/usr/share/man/man1/clang-3.2.1
 diff -urN debian/clang-3.2.postinst clang-3.2/debian/clang-3.2.postinst
---- debian/clang-3.2.postinst	2012-11-29 00:58:19.000000000 +0900
+--- debian/clang-3.2.postinst	2013-01-08 00:33:16.000000000 +0900
 +++ clang-3.2/debian/clang-3.2.postinst	1970-01-01 09:00:00.000000000 +0900
 @@ -1,31 +0,0 @@
 -#! /bin/sh -e
@@ -84,7 +90,7 @@ diff -urN debian/clang-3.2.postinst clang-3.2/debian/clang-3.2.postinst
 -
 -exit 0
 diff -urN debian/clang-3.2.prerm clang-3.2/debian/clang-3.2.prerm
---- debian/clang-3.2.prerm	2013-01-06 16:12:54.000000000 +0900
+--- debian/clang-3.2.prerm	2013-01-08 00:33:16.000000000 +0900
 +++ clang-3.2/debian/clang-3.2.prerm	1970-01-01 09:00:00.000000000 +0900
 @@ -1,14 +0,0 @@
 -#!/bin/sh
@@ -114,8 +120,8 @@ diff -urN debian/compiler-rt-3.2.links clang-3.2/debian/compiler-rt-3.2.links
 @@ -0,0 +1 @@
 +usr/lib/clang/3.2/bin/asan_symbolize	usr/bin/asan_symbolize-3.2
 diff -urN debian/control clang-3.2/debian/control
---- debian/control	2013-01-06 20:11:50.000000000 +0900
-+++ clang-3.2/debian/control	2013-01-12 17:45:19.877504130 +0900
+--- debian/control	2013-01-12 23:14:13.000000000 +0900
++++ clang-3.2/debian/control	2013-01-14 17:27:24.035948014 +0900
 @@ -1,8 +1,7 @@
 -Source: clang
 +Source: clang-3.2
@@ -140,7 +146,7 @@ diff -urN debian/control clang-3.2/debian/control
  
 -Package: clang
 -Architecture: all
--Depends: clang-3.2, ${misc:Depends}
+-Depends: clang-3.2 (>= ${source:Version}), ${misc:Depends}
 -Description: C, C++ and Objective-C compiler (LLVM based)
 - Clang project is a C, C++, Objective C and Objective C++ front-end
 - for the LLVM compiler. Some of its goals include the following:
@@ -169,9 +175,9 @@ diff -urN debian/control clang-3.2/debian/control
  Package: clang-3.2
  Architecture: any
 -Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev, libgcc-4.7-dev,
-- libobjc-4.7-dev, libclang-common-dev (= ${binary:Version})
+- libobjc-4.7-dev, libclang-common-dev (= ${binary:Version}), compiler-rt (= ${binary:Version})
 +Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
-+ libclang-3.2-common-dev (= ${binary:Version})
++ libclang-3.2-common-dev (= ${binary:Version}), compiler-rt-3.2 (= ${binary:Version})
  Provides: c-compiler, objc-compiler, c++-compiler
  Recommends: llvm-3.2-dev, python
 -Replaces: clang (<< 3.1), clang-3.1
@@ -288,8 +294,8 @@ diff -urN debian/libclang1-3.2.install clang-3.2/debian/libclang1-3.2.install
 @@ -0,0 +1 @@
 +usr/lib/libclang.so.1	/usr/lib/llvm-3.2/lib/
 diff -urN debian/rules clang-3.2/debian/rules
---- debian/rules	2013-01-06 17:13:31.000000000 +0900
-+++ clang-3.2/debian/rules	2013-01-12 23:24:30.452109093 +0900
+--- debian/rules	2013-01-13 08:06:14.000000000 +0900
++++ clang-3.2/debian/rules	2013-01-14 14:11:24.142839300 +0900
 @@ -1,7 +1,7 @@
  #!/usr/bin/make -f
  
@@ -299,10 +305,10 @@ diff -urN debian/rules clang-3.2/debian/rules
  LLVM_VERSION	:= 3.2
  SONAME_EXT      := 1
  DEBIAN_REVISION := $(shell dpkg-parsechangelog | sed -rne 's,^Version: .*-(.*),\1,p')
-@@ -79,15 +79,14 @@
+@@ -84,15 +84,14 @@
  	$(MAKE) -C $(TARGET_BUILD)  VERBOSE=1  ONLY_TOOLS="clang" install DESTDIR=$(CURDIR)/debian/tmp/
  	cd debian/tmp/usr/lib/&& mv libclang.so libclang.so.$(SONAME_EXT) && ln -s libclang.so.$(SONAME_EXT) libclang.so
- 	cd build-clang/tools/clang/runtime/compiler-rt/ && rm -rf $$(find . -iname "SubDir.lib*" -o -iname .dir) && rm -rf $$(find -empty)
+ #	cd build-clang/tools/clang/runtime/compiler-rt/ && rm -rf $$(find . -iname "SubDir.lib*" -o -iname .dir) && rm -rf $$(find -empty)
 -	mkdir -p $(CURDIR)/debian/compiler-rt/usr/bin/
 -	cp compiler-rt/lib/asan/scripts/asan_symbolize.py $(CURDIR)/debian/compiler-rt/usr/bin/asan_symbolize
 +	mkdir -p $(CURDIR)/debian/compiler-rt-$(LLVM_VERSION)/usr/lib/clang/$(LLVM_VERSION)/bin/

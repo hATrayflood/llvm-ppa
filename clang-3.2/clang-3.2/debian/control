@@ -16,7 +16,7 @@ Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
 Package: clang-3.2
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
- libclang-3.2-common-dev (= ${binary:Version})
+ libclang-3.2-common-dev (= ${binary:Version}), compiler-rt-3.2 (= ${binary:Version})
 Provides: c-compiler, objc-compiler, c++-compiler
 Recommends: llvm-3.2-dev, python
 Description: C, C++ and Objective-C compiler (LLVM based)

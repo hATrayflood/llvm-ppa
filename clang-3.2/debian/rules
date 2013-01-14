@@ -51,7 +51,12 @@ override_dh_auto_configure:
 		rm clang; \
 	fi; \
     ln -s ../../tools/clang .; \
-	readlink clang
+	readlink clang; \
+	if test -h lldb; then \
+		rm lldb; \
+	fi; \
+    ln -s ../../tools/lldb .; \
+
 
 	cd llvm-$(LLVM_VERSION)/projects/ && \
 	if test -h compiler-rt; then \
@@ -69,16 +74,16 @@ override_dh_auto_configure:
 	CLANG_VENDOR=Debian	|| { cat config.log; exit 1; }
 
 override_dh_auto_build:
-	$(MAKE) $(NJOBS) -C $(TARGET_BUILD) VERBOSE=1 ONLY_TOOLS="clang" CLANG_VENDOR=Debian
+	$(MAKE) $(NJOBS) -C $(TARGET_BUILD) VERBOSE=1 ONLY_TOOLS="clang" CLANG_VENDOR=Debian CXXFLAGS=-std=c++0x
 # Only available in clang 3.3
 #	cd $(CURDIR)/tools/clang/docs && make -f Makefile.sphinx
 # && make -f Makefile.sphinx man
 
 override_dh_auto_install:
-	chrpath -d build-clang/Release/bin/clang
+	chrpath -d build-clang/Release/bin/clang build-clang/Release/bin/clang-check build-clang/Release/bin/clang-tblgen
 	$(MAKE) -C $(TARGET_BUILD)  VERBOSE=1  ONLY_TOOLS="clang" install DESTDIR=$(CURDIR)/debian/tmp/
 	cd debian/tmp/usr/lib/&& mv libclang.so libclang.so.$(SONAME_EXT) && ln -s libclang.so.$(SONAME_EXT) libclang.so
-	cd build-clang/tools/clang/runtime/compiler-rt/ && rm -rf $$(find . -iname "SubDir.lib*" -o -iname .dir) && rm -rf $$(find -empty)
+#	cd build-clang/tools/clang/runtime/compiler-rt/ && rm -rf $$(find . -iname "SubDir.lib*" -o -iname .dir) && rm -rf $$(find -empty)
 	mkdir -p $(CURDIR)/debian/compiler-rt/usr/bin/
 	cp compiler-rt/lib/asan/scripts/asan_symbolize.py $(CURDIR)/debian/compiler-rt/usr/bin/asan_symbolize
 # Create this fake directory to make the install libclang-common-dev happy

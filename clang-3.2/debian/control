@@ -16,7 +16,7 @@ Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/clang/trunk/
 
 Package: clang
 Architecture: all
-Depends: clang-3.2, ${misc:Depends}
+Depends: clang-3.2 (>= ${source:Version}), ${misc:Depends}
 Description: C, C++ and Objective-C compiler (LLVM based)
  Clang project is a C, C++, Objective C and Objective C++ front-end
  for the LLVM compiler. Some of its goals include the following:
@@ -45,7 +45,7 @@ Description: C, C++ and Objective-C compiler (LLVM based)
 Package: clang-3.2
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev, libgcc-4.7-dev,
- libobjc-4.7-dev, libclang-common-dev (= ${binary:Version})
+ libobjc-4.7-dev, libclang-common-dev (= ${binary:Version}), compiler-rt (= ${binary:Version})
 Provides: c-compiler, objc-compiler, c++-compiler
 Recommends: llvm-3.2-dev, python
 Replaces: clang (<< 3.1), clang-3.1

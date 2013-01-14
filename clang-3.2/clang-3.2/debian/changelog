@@ -1,8 +1,17 @@
-clang-3.2 (3.2-debian1ppa1~exp3) precise; urgency=low
+clang-3.2 (3.2-debian1ppa1~exp4) precise; urgency=low
 
   * ppa for precise
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 11 Jan 2013 17:58:33 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Mon, 14 Jan 2013 13:45:54 +0900
+
+clang (3.2-1~exp4) experimental; urgency=low
+
+  * Also install clang-check & clang-tblgen in the clang-3.2 package
+  * Real fix for C++ under i386 with libstdc++ 4.8 (Closes: #697127)
+  * Add missing (= ${binary:Version}) clang => clang-3.2
+  * Make compiler-rt a mandatory dependency of clang-3.2
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Mon, 07 Jan 2013 15:45:54 +0100
 
 clang (3.2-1~exp3) experimental; urgency=low
 
