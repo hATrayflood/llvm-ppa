@@ -61,8 +61,8 @@ else
 endif
 
 confargs := \
-	CC=$(DEB_HOST_GNU_TYPE)-gcc-$(GCC_VERSION) CXX=$(DEB_HOST_GNU_TYPE)-g++-$(GCC_VERSION) \
-	CPP=$(DEB_HOST_GNU_TYPE)-cpp-$(GCC_VERSION) \
+	CC=$(DEB_HOST_GNU_TYPE)-gcc CXX=$(DEB_HOST_GNU_TYPE)-g++ \
+	CPP=$(DEB_HOST_GNU_TYPE)-cpp \
 	--with-c-include-dirs=:/usr/include/$(DEB_HOST_MULTIARCH):/usr/include/$(DEB_HOST_GNU_TYPE):/usr/include \
     --with-cxx-include-root=/usr/include/c++/$(GCC_VERSION) \
     --with-cxx-include-arch=$(DEB_HOST_GNU_TYPE) \

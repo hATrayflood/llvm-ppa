@@ -1,8 +1,8 @@
 diff -urN debian/changelog clang-3.1/debian/changelog
 --- debian/changelog	2012-06-28 07:10:09.000000000 +0900
-+++ clang-3.1/debian/changelog	2013-01-10 22:42:28.571425923 +0900
++++ clang-3.1/debian/changelog	2013-01-16 16:42:55.086498877 +0900
 @@ -1,3 +1,9 @@
-+clang-3.1 (3.1-8ppa1) precise; urgency=low
++clang-3.1 (3.1-debian8ppa2) precise; urgency=low
 +
 +  * ppa for precise
 +
@@ -13,7 +13,7 @@ diff -urN debian/changelog clang-3.1/debian/changelog
    * Also ship clang static libraries for the plugin developments
 diff -urN debian/control clang-3.1/debian/control
 --- debian/control	2012-06-28 07:12:08.000000000 +0900
-+++ clang-3.1/debian/control	2013-01-11 00:14:45.143915808 +0900
++++ clang-3.1/debian/control	2013-01-16 16:51:21.189008995 +0900
 @@ -1,9 +1,7 @@
 -Source: clang
 +Source: clang-3.1
@@ -254,6 +254,68 @@ diff -urN debian/debhelper.in/libclang1.install clang-3.1/debian/debhelper.in/li
 @@ -1 +1 @@
 -debian/@TMP@/@PF@/lib/libclang.so.1                       @PF@/lib/
 +debian/@TMP@/@PF@/lib/libclang.so.1                       @PF@/lib/llvm-3.1/lib/
+diff -urN debian/patches/28-gcc-4.7-paths-clang-3.1.diff clang-3.1/debian/patches/28-gcc-4.7-paths-clang-3.1.diff
+--- debian/patches/28-gcc-4.7-paths-clang-3.1.diff	1970-01-01 09:00:00.000000000 +0900
++++ clang-3.1/debian/patches/28-gcc-4.7-paths-clang-3.1.diff	2013-01-16 15:09:20.650567944 +0900
+@@ -0,0 +1,50 @@
++--- clang-3.1-3.1.orig/tools/clang/lib/Driver/ToolChains.cpp
+++++ clang-3.1-3.1/tools/clang/lib/Driver/ToolChains.cpp
++@@ -34,6 +34,9 @@
++ #include <cstdlib> // ::getenv
++ 
++ #include "clang/Config/config.h" // for GCC_INSTALL_PREFIX
+++#include "clang/Debian/debian_path.h"
+++
+++#include <iostream>
++ 
++ using namespace clang::driver;
++ using namespace clang::driver::toolchains;
++@@ -2287,16 +2290,29 @@ void Linux::AddClangCXXStdlibIncludeArgs
++   StringRef LibDir = GCCInstallation.getParentLibPath();
++   StringRef InstallDir = GCCInstallation.getInstallPath();
++   StringRef Version = GCCInstallation.getVersion();
++-  if (!addLibStdCXXIncludePaths(LibDir + "/../include/c++/" + Version,
++-                                (GCCInstallation.getTriple().str() +
++-                                 GCCInstallation.getMultiarchSuffix()),
++-                                DriverArgs, CC1Args)) {
+++  StringRef TripleStr = GCCInstallation.getTriple().str();
+++
+++  const std::string IncludePathCandidates[] = {
+++    LibDir.str() + "/../include/c++/" + Version.str(),
+++    // Once more, Debian headers locations changed (since gcc version 4.7.2-5)
+++    // See Debian bug tracker #693240
+++    LibDir.str() + "/../include/"+ TripleStr.str() +"/c++/" + Version.str(),
+++    LibDir.str() + "/../include/" + DEB_HOST_MULTIARCH_TRIPLET + "/c++/" + Version.str(),
++     // Gentoo is weird and places its headers inside the GCC install, so if the
++     // first attempt to find the headers fails, try this pattern.
++-    addLibStdCXXIncludePaths(InstallDir + "/include/g++-v4",
++-                             (GCCInstallation.getTriple().str() +
++-                              GCCInstallation.getMultiarchSuffix()),
++-                             DriverArgs, CC1Args);
+++    InstallDir.str() + "/include/g++-v4",
+++    // Android standalone toolchain has C++ headers in yet another place.
+++    LibDir.str() + "/../" + TripleStr.str() + "/include/c++/" + Version.str(),
+++    // Freescale SDK C++ headers are directly in <sysroot>/usr/include/c++,
+++    // without a subdirectory corresponding to the gcc version.
+++    LibDir.str() + "/../include/c++",
+++  };
+++
+++  for (unsigned i = 0; i < llvm::array_lengthof(IncludePathCandidates); ++i) {
+++      addLibStdCXXIncludePaths(IncludePathCandidates[i], (TripleStr +
+++                GCCInstallation.getMultiarchSuffix()),
+++                               DriverArgs, CC1Args);
+++
++   }
++ }
++ 
+diff -urN debian/patches/series clang-3.1/debian/patches/series
+--- debian/patches/series	2012-06-26 06:31:47.000000000 +0900
++++ clang-3.1/debian/patches/series	2013-01-16 16:45:00.323118930 +0900
+@@ -4,3 +4,4 @@
+ 21-searchPathHeaders.diff
+ 23-strlcpy_strlcat_warning_removed.diff
+ 26-disable_SplitsOnSpaces.diff
++28-gcc-4.7-paths-clang-3.1.diff
 diff -urN debian/rules.d/build.mk clang-3.1/debian/rules.d/build.mk
 --- debian/rules.d/build.mk	2012-06-26 06:31:47.000000000 +0900
 +++ clang-3.1/debian/rules.d/build.mk	2013-01-10 23:36:20.912394102 +0900
@@ -265,3 +327,17 @@ diff -urN debian/rules.d/build.mk clang-3.1/debian/rules.d/build.mk
  	$(RM) -r $(D)/debian/tmp-*
  	$(RM) $(D)/test/Bindings/Ocaml/*.cm[io]
  	$(RM) $(D)/debian/log-check-* $(D)/debian/logwatch-*.pid
+diff -urN debian/rules.d/vars.mk clang-3.1/debian/rules.d/vars.mk
+--- debian/rules.d/vars.mk	2012-06-01 21:59:57.000000000 +0900
++++ clang-3.1/debian/rules.d/vars.mk	2013-01-16 17:00:13.167646936 +0900
+@@ -61,8 +61,8 @@
+ endif
+ 
+ confargs := \
+-	CC=$(DEB_HOST_GNU_TYPE)-gcc-$(GCC_VERSION) CXX=$(DEB_HOST_GNU_TYPE)-g++-$(GCC_VERSION) \
+-	CPP=$(DEB_HOST_GNU_TYPE)-cpp-$(GCC_VERSION) \
++	CC=$(DEB_HOST_GNU_TYPE)-gcc CXX=$(DEB_HOST_GNU_TYPE)-g++ \
++	CPP=$(DEB_HOST_GNU_TYPE)-cpp \
+ 	--with-c-include-dirs=:/usr/include/$(DEB_HOST_MULTIARCH):/usr/include/$(DEB_HOST_GNU_TYPE):/usr/include \
+     --with-cxx-include-root=/usr/include/c++/$(GCC_VERSION) \
+     --with-cxx-include-arch=$(DEB_HOST_GNU_TYPE) \

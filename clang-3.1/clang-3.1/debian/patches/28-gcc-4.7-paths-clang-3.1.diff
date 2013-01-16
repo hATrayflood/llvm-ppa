@@ -1,0 +1,50 @@
+--- clang-3.1-3.1.orig/tools/clang/lib/Driver/ToolChains.cpp
++++ clang-3.1-3.1/tools/clang/lib/Driver/ToolChains.cpp
+@@ -34,6 +34,9 @@
+ #include <cstdlib> // ::getenv
+ 
+ #include "clang/Config/config.h" // for GCC_INSTALL_PREFIX
++#include "clang/Debian/debian_path.h"
++
++#include <iostream>
+ 
+ using namespace clang::driver;
+ using namespace clang::driver::toolchains;
+@@ -2287,16 +2290,29 @@ void Linux::AddClangCXXStdlibIncludeArgs
+   StringRef LibDir = GCCInstallation.getParentLibPath();
+   StringRef InstallDir = GCCInstallation.getInstallPath();
+   StringRef Version = GCCInstallation.getVersion();
+-  if (!addLibStdCXXIncludePaths(LibDir + "/../include/c++/" + Version,
+-                                (GCCInstallation.getTriple().str() +
+-                                 GCCInstallation.getMultiarchSuffix()),
+-                                DriverArgs, CC1Args)) {
++  StringRef TripleStr = GCCInstallation.getTriple().str();
++
++  const std::string IncludePathCandidates[] = {
++    LibDir.str() + "/../include/c++/" + Version.str(),
++    // Once more, Debian headers locations changed (since gcc version 4.7.2-5)
++    // See Debian bug tracker #693240
++    LibDir.str() + "/../include/"+ TripleStr.str() +"/c++/" + Version.str(),
++    LibDir.str() + "/../include/" + DEB_HOST_MULTIARCH_TRIPLET + "/c++/" + Version.str(),
+     // Gentoo is weird and places its headers inside the GCC install, so if the
+     // first attempt to find the headers fails, try this pattern.
+-    addLibStdCXXIncludePaths(InstallDir + "/include/g++-v4",
+-                             (GCCInstallation.getTriple().str() +
+-                              GCCInstallation.getMultiarchSuffix()),
+-                             DriverArgs, CC1Args);
++    InstallDir.str() + "/include/g++-v4",
++    // Android standalone toolchain has C++ headers in yet another place.
++    LibDir.str() + "/../" + TripleStr.str() + "/include/c++/" + Version.str(),
++    // Freescale SDK C++ headers are directly in <sysroot>/usr/include/c++,
++    // without a subdirectory corresponding to the gcc version.
++    LibDir.str() + "/../include/c++",
++  };
++
++  for (unsigned i = 0; i < llvm::array_lengthof(IncludePathCandidates); ++i) {
++      addLibStdCXXIncludePaths(IncludePathCandidates[i], (TripleStr +
++                GCCInstallation.getMultiarchSuffix()),
++                               DriverArgs, CC1Args);
++
+   }
+ }
+ 
