@@ -1,3 +1,10 @@
+clang (3.2-1~exp5) experimental; urgency=low
+
+  * Replacement of @DEB_HOST_MULTIARCH@ & @DEB_HOST_GNU_TYPE@ were failing
+  (Closes: #697127)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Tue, 15 Jan 2013 15:02:20 +0100
+
 clang (3.2-1~exp4) experimental; urgency=low
 
   * Also install clang-check & clang-tblgen in the clang-3.2 package
