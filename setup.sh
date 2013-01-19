@@ -1,7 +1,28 @@
 #!/bin/sh
 
 sudo sh << EOC
+apt-get -y install patch
+apt-get -y install xz-utils
+apt-get -y install cvs
+apt-get -y install subversion
+apt-get -y install mercurial
 apt-get -y install git
+apt-get -y install yasm
+apt-get -y install autoconf2.13
+apt-get -y install flashplugin-installer
+
+apt-get -y install libgnomevfs2-dev
+apt-get -y install libnotify-dev
+apt-get -y install libiw-dev
+apt-get -y install libasound2-dev
+apt-get -y install libcurl4-gnutls-dev
+apt-get -y install mesa-common-dev
+apt-get -y install python-dev
+apt-get -y install default-jdk
+apt-get -y install libgtk2.0-dev
+apt-get -y install libdbus-glib-1-dev
+apt-get -y install libidl-dev
+
 apt-get -y install devscripts
 apt-get -y install dh-make
 apt-get -y install flex
