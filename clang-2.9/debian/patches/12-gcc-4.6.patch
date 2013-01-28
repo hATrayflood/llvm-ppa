@@ -1,0 +1,16 @@
+---
+ ToolChains.cpp |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- clang-2.9.orig/tools/clang/lib/Driver/ToolChains.cpp	2011-08-31 00:48:15.000000000 +0200
++++ clang-2.9/tools/clang/lib/Driver/ToolChains.cpp	2011-08-31 00:48:35.000000000 +0200
+@@ -1449,7 +1449,8 @@
+       GccTriple = "i586-suse-linux";
+   }
+ 
+-  const char* GccVersions[] = {"4.5.2", "4.5.1", "4.5", "4.4.5", "4.4.4",
++  const char* GccVersions[] = {"4.6.1", "4.6.0", "4.6",
++                               "4.5.3","4.5.2", "4.5.1", "4.5", "4.4.5", "4.4.4",
+                                "4.4.3", "4.4", "4.3.4", "4.3.3", "4.3.2",
+                                "4.3", "4.2.4", "4.2.3", "4.2.2", "4.2.1",
+                                "4.2"};

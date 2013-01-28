@@ -1,0 +1,3 @@
+debian/@TMP@/@PF@/include/clang				@PF@/lib/llvm-2.9/include/
+debian/@TMP@/@PF@/include/clang-c			@PF@/lib/llvm-2.9/include/
+debian/@TMP@/@PF@/lib/libclang.so			@PF@/lib/llvm-2.9/lib/

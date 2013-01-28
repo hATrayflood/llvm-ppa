@@ -1,0 +1,11 @@
+10-handleWheezySid.patch
+11-searchMultiArchLibDir.patch
+12-gcc-4.6.patch
+13-search-path-dpkg-based.patch
+14-linkerflag.patch
+15-searchPaths.patch
+16-backport-4.6-compta.patch
+17-decltype.patch
+18-soname.patch
+19-clang_debian_version.patch
+20-vendor.patch

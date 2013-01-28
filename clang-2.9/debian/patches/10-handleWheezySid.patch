@@ -1,0 +1,50 @@
+---
+ ToolChains.cpp |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+Description: Introduce wheezy/sid to clang
+ Add detection for Debian wheezy/sid in lib/Driver/ToolChains.cpp
+
+Author: Michael Wild <themiwi@users.sourceforge.net>
+Bug: http://llvm.org/bugs/show_bug.cgi?id=10064
+Forwarded: http://llvm.org/bugs/attachment.cgi?id=6678
+Last-Update: 2011-06-02
+
+--- clang-2.9.orig/tools/clang/lib/Driver/ToolChains.cpp
++++ clang-2.9/tools/clang/lib/Driver/ToolChains.cpp
+@@ -1276,6 +1276,7 @@ enum LinuxDistro {
+   ArchLinux,
+   DebianLenny,
+   DebianSqueeze,
++  DebianWheezy,
+   Exherbo,
+   Fedora13,
+   Fedora14,
+@@ -1298,7 +1299,8 @@ static bool IsOpenSuse(enum LinuxDistro
+ }
+ 
+ static bool IsDebian(enum LinuxDistro Distro) {
+-  return Distro == DebianLenny || Distro == DebianSqueeze;
++  return Distro == DebianLenny || Distro == DebianSqueeze ||
++         Distro == DebianWheezy;
+ }
+ 
+ static bool IsUbuntu(enum LinuxDistro Distro) {
+@@ -1363,6 +1365,8 @@ static LinuxDistro DetectLinuxDistro(llv
+       return DebianLenny;
+     else if (Data.startswith("squeeze/sid"))
+       return DebianSqueeze;
++    else if (Data.startswith("wheezy/sid"))
++      return DebianWheezy;
+     return UnknownDistro;
+   }
+ 
+@@ -1510,7 +1514,7 @@ Linux::Linux(const HostInfo &Host, const
+ 
+   if (Distro == DebianSqueeze || IsOpenSuse(Distro) ||
+       IsFedora(Distro) || Distro == UbuntuLucid || Distro == UbuntuMaverick ||
+-      Distro == UbuntuKarmic)
++      Distro == UbuntuKarmic || Distro == DebianWheezy)
+     ExtraOpts.push_back("--build-id");
+ 
+   if (Distro == ArchLinux)

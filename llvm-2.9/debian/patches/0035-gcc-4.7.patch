@@ -1,0 +1,26 @@
+---
+ lib/ExecutionEngine/JIT/Intercept.cpp                         |    1 +
+ utils/unittest/googletest/include/gtest/internal/gtest-port.h |    1 +
+ 2 files changed, 2 insertions(+)
+
+--- a/lib/ExecutionEngine/JIT/Intercept.cpp	2012-05-17 16:11:46.956180361 +0200
++++ b/lib/ExecutionEngine/JIT/Intercept.cpp	2012-05-17 16:14:35.256184996 +0200
+@@ -52,6 +52,7 @@
+ #include <sys/stat.h>
+ #endif
+ #include <fcntl.h>
++#include <unistd.h>
+ /* stat functions are redirecting to __xstat with a version number.  On x86-64 
+  * linking with libc_nonshared.a and -Wl,--export-dynamic doesn't make 'stat' 
+  * available as an exported symbol, so we have to add it explicitly.
+
+--- a/utils/unittest/googletest/include/gtest/internal/gtest-port.h
++++ b/utils/unittest/googletest/include/gtest/internal/gtest-port.h
+@@ -177,6 +177,7 @@
+ #ifndef _WIN32_WCE
+ #include <sys/stat.h>
+ #endif  // !_WIN32_WCE
++#include <unistd.h>
+ 
+ #include <iostream>  // NOLINT
+ #include <sstream>  // NOLINT

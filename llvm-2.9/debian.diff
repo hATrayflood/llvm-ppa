@@ -1,0 +1,74 @@
+diff -urN debian/changelog llvm-2.9/debian/changelog
+--- debian/changelog	2012-05-20 23:21:30.000000000 +0900
++++ llvm-2.9/debian/changelog	2013-01-27 18:23:38.074238405 +0900
+@@ -1,3 +1,9 @@
++llvm-2.9 (2.9+dfsg-debian7ppa1) precise; urgency=low
++
++  * ppa for precise
++
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sun, 27 Jan 2013 18:21:18 +0900
++
+ llvm-2.9 (2.9+dfsg-7) unstable; urgency=low
+ 
+   [ Vincent Legout ]
+diff -urN debian/control llvm-2.9/debian/control
+--- debian/control	2012-05-20 23:25:51.000000000 +0900
++++ llvm-2.9/debian/control	2013-01-28 21:34:22.067067117 +0900
+@@ -1,8 +1,7 @@
+ Source: llvm-2.9
+ Section: devel
+-Priority: optional
+-Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
+-Uploaders: Arthur Loiret <aloiret@debian.org>, Sylvestre Ledru <sylvestre@debian.org>
++Priority: extra
++Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
+ Build-Depends: debhelper (>= 8.1.3), flex, bison, dejagnu, tcl8.5, expect,
+     autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
+     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
+@@ -10,9 +9,8 @@
+     binutils-dev (>= 2.20.51.20100222-1~), ocaml-nox (>= 3.11.2), ocaml-best-compilers | ocaml-nox, dh-ocaml (>= 0.9.1)
+ Build-Conflicts: oprofile
+ Standards-Version: 3.9.3
+-Homepage: http://www.llvm.org/
+-Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/llvm/trunk/
+-Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/llvm/trunk/
++Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
++Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
+ 
+ 
+ Package: libllvm2.9
+diff -urN debian/control.in/source llvm-2.9/debian/control.in/source
+--- debian/control.in/source	2012-05-18 16:22:45.000000000 +0900
++++ llvm-2.9/debian/control.in/source	2013-01-27 18:26:27.191075697 +0900
+@@ -1,8 +1,7 @@
+ Source: @PKGSOURCE@
+ Section: devel
+-Priority: optional
+-Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
+-Uploaders: Arthur Loiret <aloiret@debian.org>, Sylvestre Ledru <sylvestre@debian.org>
++Priority: extra
++Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
+ Build-Depends: debhelper (>= 8.1.3), flex, bison, dejagnu, tcl8.5, expect,
+     autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
+     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
+@@ -10,8 +9,7 @@
+     binutils-dev (>= 2.20.51.20100222-1~) @BUILDDEPS@
+ Build-Conflicts: oprofile @BUILDCONFLICTS@
+ Standards-Version: 3.9.3
+-Homepage: http://www.llvm.org/
+-Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/llvm/trunk/
+-Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/llvm/trunk/
++Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
++Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
+ 
+ 
+diff -urN debian/rules llvm-2.9/debian/rules
+--- debian/rules	2012-05-18 16:22:46.000000000 +0900
++++ llvm-2.9/debian/rules	2013-01-27 18:08:00.060219872 +0900
+@@ -36,5 +36,6 @@
+ endif
+ 	$(RM) -r $(D)/debian/ccache
+ 	find utils -name '*.py[co]' | xargs rm -f
++	find test  -name '*.py[co]' | xargs rm -f
+ 
+ .PHONY: clean

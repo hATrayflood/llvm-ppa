@@ -1,0 +1,244 @@
+Only in clang-2.9: .pc
+Only in clang-2.9: patches
+diff -ur clang-2.9.orig//tools/clang/include/clang/AST/DeclCXX.h clang-2.9/tools/clang/include/clang/AST/DeclCXX.h
+--- clang-2.9.orig//tools/clang/include/clang/AST/DeclCXX.h	2011-03-06 17:09:14.000000000 +0100
++++ clang-2.9/tools/clang/include/clang/AST/DeclCXX.h	2011-10-03 23:42:30.000000000 +0200
+@@ -743,6 +743,10 @@
+   // (C++ [class.dtor]p3)
+   bool hasTrivialDestructor() const { return data().HasTrivialDestructor; }
+ 
++  // isTriviallyCopyable - Whether this class is considered trivially copyable
++  // (C++0x [class]p5).
++  bool isTriviallyCopyable() const;
++
+   /// \brief If this record is an instantiation of a member class,
+   /// retrieves the member class from which it was instantiated.
+   ///
+Only in clang-2.9/tools/clang/include/clang/AST: DeclCXX.h.orig
+diff -ur clang-2.9.orig//tools/clang/include/clang/AST/Type.h clang-2.9/tools/clang/include/clang/AST/Type.h
+--- clang-2.9.orig//tools/clang/include/clang/AST/Type.h	2011-03-14 21:16:08.000000000 +0100
++++ clang-2.9/tools/clang/include/clang/AST/Type.h	2011-10-03 23:42:30.000000000 +0200
+@@ -1163,6 +1163,10 @@
+   /// (C++0x [basic.types]p10)
+   bool isLiteralType() const;
+ 
++  /// isTrivialType - Return true if this is a literal type
++  /// (C++0x [basic.types]p9)
++  bool isTrivialType() const;
++
+   /// Helper methods to distinguish type categories. All type predicates
+   /// operate on the canonical type, ignoring typedefs and qualifiers.
+ 
+Only in clang-2.9/tools/clang/include/clang/AST: Type.h.orig
+diff -ur clang-2.9.orig//tools/clang/include/clang/Basic/TokenKinds.def clang-2.9/tools/clang/include/clang/Basic/TokenKinds.def
+--- clang-2.9.orig//tools/clang/include/clang/Basic/TokenKinds.def	2011-02-28 03:37:51.000000000 +0100
++++ clang-2.9/tools/clang/include/clang/Basic/TokenKinds.def	2011-10-03 23:42:30.000000000 +0200
+@@ -331,6 +331,7 @@
+ KEYWORD(__is_enum                   , KEYCXX)
+ KEYWORD(__is_pod                    , KEYCXX)
+ KEYWORD(__is_polymorphic            , KEYCXX)
++KEYWORD(__is_trivial                , KEYCXX)
+ KEYWORD(__is_union                  , KEYCXX)
+ // Tentative name - there's no implementation of std::is_literal_type yet.
+ KEYWORD(__is_literal                , KEYCXX)
+Only in clang-2.9/tools/clang/include/clang/Basic: TokenKinds.def.orig
+diff -ur clang-2.9.orig//tools/clang/include/clang/Basic/TypeTraits.h clang-2.9/tools/clang/include/clang/Basic/TypeTraits.h
+--- clang-2.9.orig//tools/clang/include/clang/Basic/TypeTraits.h	2011-01-27 21:28:01.000000000 +0100
++++ clang-2.9/tools/clang/include/clang/Basic/TypeTraits.h	2011-10-03 23:42:30.000000000 +0200
+@@ -32,6 +32,7 @@
+     UTT_IsEnum,
+     UTT_IsPOD,
+     UTT_IsPolymorphic,
++    UTT_IsTrivial,
+     UTT_IsUnion,
+     UTT_IsLiteral
+   };
+Only in clang-2.9/tools/clang/include/clang/Basic: TypeTraits.h.orig
+diff -ur clang-2.9.orig//tools/clang/lib/AST/DeclCXX.cpp clang-2.9/tools/clang/lib/AST/DeclCXX.cpp
+--- clang-2.9.orig//tools/clang/lib/AST/DeclCXX.cpp	2011-03-03 17:52:29.000000000 +0100
++++ clang-2.9/tools/clang/lib/AST/DeclCXX.cpp	2011-10-03 23:42:30.000000000 +0200
+@@ -218,6 +218,23 @@
+   return getCopyConstructor(Context, Qualifiers::Const) != 0;
+ }
+ 
++bool CXXRecordDecl::isTriviallyCopyable() const {
++  // C++0x [class]p5:
++  //   A trivially copyable class is a class that:
++  //   -- has no non-trivial copy constructors,
++  if (!hasTrivialCopyConstructor()) return false;
++  //   -- has no non-trivial move constructors,
++  // FIXME: C++0x: Track and check trivial move constructors.
++  //   -- has no non-trivial copy assignment operators,
++  if (!hasTrivialCopyAssignment()) return false;
++  //   -- has no non-trivial move assignment operators, and
++  // FIXME: C++0x: Track and check trivial move assignment operators.
++  //   -- has a trivial destructor.
++  if (!hasTrivialDestructor()) return false;
++
++  return true;
++}
++
+ /// \brief Perform a simplistic form of overload resolution that only considers
+ /// cv-qualifiers on a single parameter, and return the best overload candidate
+ /// (if there is one).
+Only in clang-2.9/tools/clang/lib/AST: DeclCXX.cpp.orig
+diff -ur clang-2.9.orig//tools/clang/lib/AST/StmtPrinter.cpp clang-2.9/tools/clang/lib/AST/StmtPrinter.cpp
+--- clang-2.9.orig//tools/clang/lib/AST/StmtPrinter.cpp	2011-02-18 23:29:55.000000000 +0100
++++ clang-2.9/tools/clang/lib/AST/StmtPrinter.cpp	2011-10-03 23:42:30.000000000 +0200
+@@ -1227,6 +1227,7 @@
+   case UTT_IsEnum:                return "__is_enum";
+   case UTT_IsPOD:                 return "__is_pod";
+   case UTT_IsPolymorphic:         return "__is_polymorphic";
++  case UTT_IsTrivial:             return "__is_trivial";
+   case UTT_IsUnion:               return "__is_union";
+   }
+   return "";
+Only in clang-2.9/tools/clang/lib/AST: StmtPrinter.cpp.orig
+diff -ur clang-2.9.orig//tools/clang/lib/AST/Type.cpp clang-2.9/tools/clang/lib/AST/Type.cpp
+--- clang-2.9.orig//tools/clang/lib/AST/Type.cpp	2011-03-14 21:16:08.000000000 +0100
++++ clang-2.9/tools/clang/lib/AST/Type.cpp	2011-10-03 23:42:30.000000000 +0200
+@@ -891,6 +891,33 @@
+   }
+ }
+ 
++bool Type::isTrivialType() const {
++  if (isIncompleteType())
++    return false;
++
++  // C++0x [basic.types]p9:
++  //   Scalar types, trivial class types, arrays of such types, and
++  //   cv-qualified versions of these types are collectively called trivial
++  //   types.
++  const Type *BaseTy = getBaseElementTypeUnsafe();
++  assert(BaseTy && "NULL element type");
++  if (BaseTy->isScalarType()) return true;
++  if (const RecordType *RT = BaseTy->getAs<RecordType>()) {
++    const CXXRecordDecl *ClassDecl = cast<CXXRecordDecl>(RT->getDecl());
++
++    // C++0x [class]p5:
++    //   A trivial class is a class that has a trivial default constructor
++    if (!ClassDecl->hasTrivialConstructor()) return false;
++    //   and is trivially copyable.
++    if (!ClassDecl->isTriviallyCopyable()) return false;
++
++    return true;
++  }
++
++  // No other types can match.
++  return false;
++}
++
+ bool Type::isPromotableIntegerType() const {
+   if (const BuiltinType *BT = getAs<BuiltinType>())
+     switch (BT->getKind()) {
+Only in clang-2.9/tools/clang/lib/AST: Type.cpp.orig
+Only in clang-2.9/tools/clang/lib/Driver: ToolChains.cpp.orig
+diff -ur clang-2.9.orig//tools/clang/lib/Lex/PPMacroExpansion.cpp clang-2.9/tools/clang/lib/Lex/PPMacroExpansion.cpp
+--- clang-2.9.orig//tools/clang/lib/Lex/PPMacroExpansion.cpp	2011-03-02 12:33:24.000000000 +0100
++++ clang-2.9/tools/clang/lib/Lex/PPMacroExpansion.cpp	2011-10-03 23:42:30.000000000 +0200
+@@ -584,6 +584,7 @@
+            .Case("is_enum", LangOpts.CPlusPlus)
+            .Case("is_pod", LangOpts.CPlusPlus)
+            .Case("is_polymorphic", LangOpts.CPlusPlus)
++           .Case("is_trivial", LangOpts.CPlusPlus)
+            .Case("is_union", LangOpts.CPlusPlus)
+            .Case("is_literal", LangOpts.CPlusPlus)
+            .Case("tls", PP.getTargetInfo().isTLSSupported())
+Only in clang-2.9/tools/clang/lib/Lex: PPMacroExpansion.cpp.orig
+diff -ur clang-2.9.orig//tools/clang/lib/Parse/ParseExpr.cpp clang-2.9/tools/clang/lib/Parse/ParseExpr.cpp
+--- clang-2.9.orig//tools/clang/lib/Parse/ParseExpr.cpp	2011-03-16 20:56:32.000000000 +0100
++++ clang-2.9/tools/clang/lib/Parse/ParseExpr.cpp	2011-10-03 23:42:30.000000000 +0200
+@@ -535,6 +535,7 @@
+ ///                   '__is_enum'
+ ///                   '__is_pod'
+ ///                   '__is_polymorphic'
++///                   '__is_trivial'
+ ///                   '__is_union'
+ ///
+ ///       binary-type-trait:
+@@ -984,6 +985,7 @@
+   case tok::kw___is_union:
+   case tok::kw___is_empty:
+   case tok::kw___is_polymorphic:
++  case tok::kw___is_trivial:
+   case tok::kw___is_abstract:
+   case tok::kw___is_literal:
+   case tok::kw___has_trivial_constructor:
+Only in clang-2.9/tools/clang/lib/Parse: ParseExpr.cpp.orig
+diff -ur clang-2.9.orig//tools/clang/lib/Parse/ParseExprCXX.cpp clang-2.9/tools/clang/lib/Parse/ParseExprCXX.cpp
+--- clang-2.9.orig//tools/clang/lib/Parse/ParseExprCXX.cpp	2011-03-04 22:37:14.000000000 +0100
++++ clang-2.9/tools/clang/lib/Parse/ParseExprCXX.cpp	2011-10-03 23:42:30.000000000 +0200
+@@ -1825,6 +1825,7 @@
+   case tok::kw___is_enum:                 return UTT_IsEnum;
+   case tok::kw___is_pod:                  return UTT_IsPOD;
+   case tok::kw___is_polymorphic:          return UTT_IsPolymorphic;
++  case tok::kw___is_trivial:              return UTT_IsTrivial;
+   case tok::kw___is_union:                return UTT_IsUnion;
+   case tok::kw___is_literal:              return UTT_IsLiteral;
+   }
+Only in clang-2.9/tools/clang/lib/Parse: ParseExprCXX.cpp.orig
+diff -ur clang-2.9.orig//tools/clang/lib/Parse/ParseTentative.cpp clang-2.9/tools/clang/lib/Parse/ParseTentative.cpp
+--- clang-2.9.orig//tools/clang/lib/Parse/ParseTentative.cpp	2011-03-02 01:47:37.000000000 +0100
++++ clang-2.9/tools/clang/lib/Parse/ParseTentative.cpp	2011-10-03 23:42:30.000000000 +0200
+@@ -660,6 +660,7 @@
+   case tok::kw___is_enum:
+   case tok::kw___is_pod:
+   case tok::kw___is_polymorphic:
++  case tok::kw___is_trivial:
+   case tok::kw___is_union:
+   case tok::kw___is_literal:
+   case tok::kw___uuidof:
+Only in clang-2.9/tools/clang/lib/Parse: ParseTentative.cpp.orig
+diff -ur clang-2.9.orig//tools/clang/lib/Sema/SemaExprCXX.cpp clang-2.9/tools/clang/lib/Sema/SemaExprCXX.cpp
+--- clang-2.9.orig//tools/clang/lib/Sema/SemaExprCXX.cpp	2011-03-21 22:32:22.000000000 +0100
++++ clang-2.9/tools/clang/lib/Sema/SemaExprCXX.cpp	2011-10-03 23:42:30.000000000 +0200
+@@ -2310,6 +2310,7 @@
+   default: assert(false && "Unknown type trait or not implemented");
+   case UTT_IsPOD: return T->isPODType();
+   case UTT_IsLiteral: return T->isLiteralType();
++  case UTT_IsTrivial: return T->isTrivialType();
+   case UTT_IsClass: // Fallthrough
+   case UTT_IsUnion:
+     if (const RecordType *Record = T->getAs<RecordType>()) {
+Only in clang-2.9/tools/clang/lib/Sema: SemaExprCXX.cpp.orig
+diff -ur clang-2.9.orig//tools/clang/test/SemaCXX/type-traits.cpp clang-2.9/tools/clang/test/SemaCXX/type-traits.cpp
+--- clang-2.9.orig//tools/clang/test/SemaCXX/type-traits.cpp	2011-01-28 23:02:36.000000000 +0100
++++ clang-2.9/tools/clang/test/SemaCXX/type-traits.cpp	2011-10-03 23:42:30.000000000 +0200
+@@ -548,3 +548,37 @@
+   int t22[F(__is_convertible_to(PrivateCopy, PrivateCopy))];
+   int t23[T(__is_convertible_to(X0<int>, X0<float>))];
+ }
++
++void is_trivial()
++{
++  int t01[T(__is_trivial(int))];
++  int t02[T(__is_trivial(Enum))];
++  int t03[T(__is_trivial(POD))];
++  int t04[T(__is_trivial(Int))];
++  int t05[T(__is_trivial(IntAr))];
++  int t06[T(__is_trivial(Statics))];
++  int t07[T(__is_trivial(Empty))];
++  int t08[T(__is_trivial(EmptyUnion))];
++  int t09[T(__is_trivial(Union))];
++  int t10[T(__is_trivial(HasFunc))];
++  int t11[T(__is_trivial(HasOp))];
++  int t12[T(__is_trivial(HasConv))];
++  int t13[T(__is_trivial(HasAssign))];
++  int t15[T(__is_trivial(HasAnonymousUnion))];
++  int t16[T(__is_trivial(Derives))];
++  int t17[T(__is_trivial(DerivesEmpty))];
++  int t18[T(__is_trivial(NonPODAr))];
++  int t19[T(__is_trivial(HasPriv))];
++  int t20[T(__is_trivial(HasProt))];
++
++  int f01[F(__is_trivial(IntArNB))];
++  int f02[F(__is_trivial(HasCons))];
++  int f03[F(__is_trivial(HasCopyAssign))];
++  int f04[F(__is_trivial(HasDest))];
++  int f05[F(__is_trivial(HasRef))];
++  int f06[F(__is_trivial(HasNonPOD))];
++  int f07[F(__is_trivial(HasVirt))];
++  int f08[F(__is_trivial(void))];
++  int f09[F(__is_trivial(cvoid))];
++  int f10[F(__is_trivial(NonPODArNB))];
++}

@@ -1,0 +1,13 @@
+debian/@TMP@/@PF@/bin/*			@PF@/bin/
+debian/@TMP@/@PF@/lib/*			@PF@/lib/
+debian/@TMP@/@PF@/include/*		@PF@/include/
+
+debian/@TMP@/@PF@/docs/llvm/html	usr/share/doc/llvm-snapshot/
+debian/@TMP@/@PF@/docs/llvm/ps		usr/share/doc/llvm-snapshot/
+
+@BUILD@/Makefile.common			@PF@/build/
+@BUILD@/Makefile.config			@PF@/build/
+@BUILD@/config.status			@PF@/build/
+Makefile.rules				@PF@/build/
+configure				@PF@/build/
+autoconf/				@PF@/build/

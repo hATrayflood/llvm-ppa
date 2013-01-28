@@ -1,0 +1,4 @@
+*.deb
+llvm-2.9_2.9+dfsg-*
+llvm-2.9/*
+!llvm-2.9/debian
