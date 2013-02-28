@@ -36,5 +36,6 @@ ifneq (,$(strip $(tarball)))
 endif
 	$(RM) -r $(D)/debian/ccache
 	find utils -name '*.py[co]' | xargs rm -f
+	$(RM) tools/clang/include/clang/Debian/debian_path.h
 
 .PHONY: clean

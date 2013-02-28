@@ -1,0 +1,20 @@
+Description: fix -Wuninitialized with gcc-4.7
+Author: Markus Trippelsdorf <markus@trippelsdorf.de>
+Last-Update: 2012-04-28
+Reviewed-By: Michael Stapelberg <stapelberg@debian.org>
+Forwarded: not-needed
+
+---
+
+--- clang-3.0.orig/tools/clang/lib/Analysis/UninitializedValues.cpp
++++ clang-3.0/tools/clang/lib/Analysis/UninitializedValues.cpp
+@@ -168,7 +168,8 @@ static const BinaryOperator *getLogicalOperatorInChain(const CFGBlock *block) {
+   if (block->empty())
+     return 0;
+ 
+-  const CFGStmt *cstmt = block->front().getAs<CFGStmt>();
++  CFGElement bf = block->front();
++  const CFGStmt *cstmt = bf.getAs<CFGStmt>();
+   if (!cstmt)
+     return 0;
+

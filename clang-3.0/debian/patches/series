@@ -6,3 +6,6 @@
 23-strlcpy_strlcat_warning_removed.diff
 24-path-multiarch.diff
 25-amdfam10.diff
+26-set-correct-float-abi.diff
+27-dynamic-linker.diff
+28-gcc-4.7.diff
