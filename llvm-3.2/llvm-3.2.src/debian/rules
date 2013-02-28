@@ -20,6 +20,7 @@ confargs := --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) \
 --libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH) \
 --with-binutils-include=/usr/include \
 --with-bug-report-url=http://bugs.debian.org/ \
+--enable-experimental-targets=R600 \
 --enable-shared
 
 %:
@@ -68,7 +69,9 @@ override_dh_auto_install: llvm_source_package
 	rm -f $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/share/man/man1/* $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)-runtime/share/man/man1/*
 	$(MAKE) -C $(TARGET_BUILD)  VERBOSE=1 install DESTDIR=$(CURDIR)/debian/tmp/
 	chrpath -d `find $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/bin/ -type f -executable`
-	mv $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/libLLVM-$(LLVM_VERSION)*.so $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/libLLVM-$(LLVM_VERSION).so.$(SONAME_EXT)
+
+	mkdir -p $(CURDIR)/debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)
+	mv $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/libLLVM-$(LLVM_VERSION)*.so $(CURDIR)/debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/libLLVM-$(LLVM_VERSION).so.$(SONAME_EXT)
 
 # Rename binaries
 	mkdir -p $(CURDIR)/debian/tmp/usr/bin/
@@ -109,10 +112,5 @@ override_dh_auto_clean:
 	rm -rf $(TARGET_BUILD)
 	find utils -name '*.pyc' | xargs -r rm -f
 	find test -name '*.pyc' -o -name '*.o' -o -name '*.cm[ix]' | xargs -r rm -f
+	for i in debian/*.in; do rm -f $${i%*.in}; done
 	rm -rf docs/_build
-	rm -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs
-	rm -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.install
-	rm -f $(CURDIR)/debian/libllvm$(LLVM_VERSION).install
-	rm -f $(CURDIR)/debian/llvm-$(LLVM_VERSION)-dev.links
-	rm -f $(CURDIR)/debian/llvm-$(LLVM_VERSION)-runtime.binfmt
-	rm -f $(CURDIR)/debian/llvm-$(LLVM_VERSION)-runtime.prerm

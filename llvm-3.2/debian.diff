@@ -1,18 +1,18 @@
 diff -urN debian/changelog llvm-3.2.src/debian/changelog
---- debian/changelog	2012-12-24 06:51:37.000000000 +0900
-+++ llvm-3.2.src/debian/changelog	2013-01-11 13:19:57.549488554 +0900
+--- debian/changelog	2013-02-12 22:14:18.000000000 +0900
++++ llvm-3.2.src/debian/changelog	2013-02-28 20:28:47.735521992 +0900
 @@ -1,3 +1,9 @@
-+llvm-3.2 (3.2-2ppa1) precise; urgency=low
++llvm-3.2 (3.2-debian3ppa1) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 11 Jan 2013 13:57:50 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 28 Feb 2013 21:13:25 +0900
 +
- llvm-3.2 (3.2-2) unstable; urgency=low
+ llvm-3.2 (3.2-3) unstable; urgency=low
  
-   * Bring back manpages + html documentation (now based on sphinx)
+   [ Arthur Loiret ]
 diff -urN debian/control llvm-3.2.src/debian/control
---- debian/control	2012-12-24 15:06:45.000000000 +0900
+--- debian/control	2013-02-13 01:27:37.000000000 +0900
 +++ llvm-3.2.src/debian/control	2013-01-12 18:28:22.735400434 +0900
 @@ -1,8 +1,7 @@
  Source: llvm-3.2
@@ -59,16 +59,16 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Architecture: any
  Suggests: llvm-3.2-doc
 diff -urN debian/libllvm-3.2-ocaml-dev.dirs.in llvm-3.2.src/debian/libllvm-3.2-ocaml-dev.dirs.in
---- debian/libllvm-3.2-ocaml-dev.dirs.in	2012-12-24 05:55:05.000000000 +0900
+--- debian/libllvm-3.2-ocaml-dev.dirs.in	2013-02-12 22:11:32.000000000 +0900
 +++ llvm-3.2.src/debian/libllvm-3.2-ocaml-dev.dirs.in	2013-01-12 18:17:25.128139529 +0900
 @@ -1,2 +1,2 @@
 -@OCAML_STDLIB_DIR@/META/
 +@OCAML_STDLIB_DIR@/METAS
  
 diff -urN debian/rules llvm-3.2.src/debian/rules
---- debian/rules	2012-12-24 05:55:05.000000000 +0900
-+++ llvm-3.2.src/debian/rules	2013-01-12 22:12:34.897376653 +0900
-@@ -28,7 +28,7 @@
+--- debian/rules	2013-02-12 22:11:32.000000000 +0900
++++ llvm-3.2.src/debian/rules	2013-02-28 20:31:49.760424587 +0900
+@@ -29,7 +29,7 @@
  debian/%: debian/%.in
  	sed -e 's|@DEB_HOST_MULTIARCH@|$(DEB_HOST_MULTIARCH)|g' -e "s|@OCAML_STDLIB_DIR@|$(OCAML_STDLIB_DIR)|g" -e "s|@LLVM_VERSION@|$(LLVM_VERSION)|g" $< > $@
  
@@ -77,7 +77,7 @@ diff -urN debian/rules llvm-3.2.src/debian/rules
  	mkdir -p $(TARGET_BUILD)
  	echo "#define LLVM_DEBIAN_INFO \"$(DISTRELEASE) $(LLVM_FULL_VERSION)\"" > $(TARGET_BUILD)/debian.h
  	cd $(TARGET_BUILD) && \
-@@ -84,14 +84,14 @@
+@@ -87,14 +87,14 @@
  	for f in *.1; do \
  		echo "$$f"|grep "3\.2" || mv $$f `echo $$f|sed "s|\.1|-$(LLVM_VERSION).1|"`; \
  	done
@@ -95,14 +95,8 @@ diff -urN debian/rules llvm-3.2.src/debian/rules
  override_dh_installdeb:
  	# Belong to llvm runtime
  	rm -f $(CURDIR)/debian/llvm-$(LLVM_VERSION)/usr/share/man/man1/lli*
-@@ -109,3 +109,10 @@
- 	rm -rf $(TARGET_BUILD)
+@@ -113,3 +113,4 @@
  	find utils -name '*.pyc' | xargs -r rm -f
  	find test -name '*.pyc' -o -name '*.o' -o -name '*.cm[ix]' | xargs -r rm -f
+ 	for i in debian/*.in; do rm -f $${i%*.in}; done
 +	rm -rf docs/_build
-+	rm -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs
-+	rm -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.install
-+	rm -f $(CURDIR)/debian/libllvm$(LLVM_VERSION).install
-+	rm -f $(CURDIR)/debian/llvm-$(LLVM_VERSION)-dev.links
-+	rm -f $(CURDIR)/debian/llvm-$(LLVM_VERSION)-runtime.binfmt
-+	rm -f $(CURDIR)/debian/llvm-$(LLVM_VERSION)-runtime.prerm

@@ -5,3 +5,6 @@
 0044-soname.diff
 0046-Revert-Patch-to-set-is_stmt-a-little-better-for-prol.patch
 0047-version-name.diff
+0050-powerpcspe-fp.diff
+declare_clear_cache.diff
+r600-snapshot.diff

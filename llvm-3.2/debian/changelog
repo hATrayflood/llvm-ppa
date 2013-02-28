@@ -1,3 +1,25 @@
+llvm-3.2 (3.2-3) unstable; urgency=low
+
+  [ Arthur Loiret ]
+  * debian/patches/0050-powerpcspe-fp.diff: Add, hopefully fix FTBFS on
+    powerpcspe, by disabling save / restore of floating point registers which
+    don't exist on powerpcspe. Thanks to Roland Stigge for the patch.
+    Closes: #696474.
+  * Don't ship two identical copies of libLLVM-3.2.so.1:  Closes: #696913.
+    - debian/rules: remove copy from llvm-3.2-dev.
+    - debian/llvm-3.2-dev.links.in: replace it by a symlink to copy from
+      libllvm3.2.
+  * debian/rules (override_dh_auto_clean): remove docs/_build on clean.
+
+  [ Timo Aaltonen ]
+  * rules, r600-snapshot.diff: Add R600 backend for mesa.
+
+  [ Matthias Klose ]
+  * Use __builtin___clear_cache on ARM.
+  * Clean auto-generated files in debian/.
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Tue, 12 Feb 2013 14:13:25 +0100
+
 llvm-3.2 (3.2-2) unstable; urgency=low
 
   * Bring back manpages + html documentation (now based on sphinx)

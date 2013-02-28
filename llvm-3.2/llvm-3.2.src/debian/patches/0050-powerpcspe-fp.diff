@@ -1,0 +1,99 @@
+ PPCJITInfo.cpp |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+--- a/lib/Target/PowerPC/PPCJITInfo.cpp
++++ b/lib/Target/PowerPC/PPCJITInfo.cpp
+@@ -99,6 +99,7 @@
+     "stw r8,  196(r1)\n"    "stw r7,  192(r1)\n"
+     "stw r6,  188(r1)\n"    "stw r5,  184(r1)\n"
+     "stw r4,  180(r1)\n"    "stw r3,  176(r1)\n"
++#ifndef __NO_FPRS__
+     // Save all call-clobbered FP regs.
+     "stfd f13, 168(r1)\n"   "stfd f12, 160(r1)\n"
+     "stfd f11, 152(r1)\n"   "stfd f10, 144(r1)\n"
+@@ -107,6 +108,7 @@
+     "stfd f5,  104(r1)\n"   "stfd f4,   96(r1)\n"
+     "stfd f3,   88(r1)\n"   "stfd f2,   80(r1)\n"
+     "stfd f1,   72(r1)\n"
++#endif
+     // Arguments to Compilation Callback:
+     // r3 - our lr (address of the call instruction in stub plus 4)
+     // r4 - stub's lr (address of instruction that called the stub plus 4)
+@@ -122,6 +124,7 @@
+     "lwz r8,  196(r1)\n"    "lwz r7,  192(r1)\n"
+     "lwz r6,  188(r1)\n"    "lwz r5,  184(r1)\n"
+     "lwz r4,  180(r1)\n"    "lwz r3,  176(r1)\n"
++#ifndef __NO_FPRS__
+     // Restore all FP arg registers
+     "lfd f13, 168(r1)\n"    "lfd f12, 160(r1)\n"
+     "lfd f11, 152(r1)\n"    "lfd f10, 144(r1)\n"
+@@ -130,6 +133,7 @@
+     "lfd f5,  104(r1)\n"    "lfd f4,   96(r1)\n"
+     "lfd f3,   88(r1)\n"    "lfd f2,   80(r1)\n"
+     "lfd f1,   72(r1)\n"
++#endif
+     // Pop 3 frames off the stack and branch to target
+     "lwz  r1, 208(r1)\n"
+     "lwz  r2, 8(r1)\n"
+@@ -164,12 +168,14 @@
+     "stw 8,  92(1)\n"    "stw 7,  88(1)\n"
+     "stw 6,  84(1)\n"    "stw 5,  80(1)\n"
+     "stw 4,  76(1)\n"    "stw 3,  72(1)\n"
++#ifndef __NO_FPRS__
+     // Save all call-clobbered FP regs.
+     "stfd 8,  64(1)\n"
+     "stfd 7,  56(1)\n"   "stfd 6,  48(1)\n"
+     "stfd 5,  40(1)\n"   "stfd 4,  32(1)\n"
+     "stfd 3,  24(1)\n"   "stfd 2,  16(1)\n"
+     "stfd 1,  8(1)\n"
++#endif
+     // Arguments to Compilation Callback:
+     // r3 - our lr (address of the call instruction in stub plus 4)
+     // r4 - stub's lr (address of instruction that called the stub plus 4)
+@@ -185,12 +191,14 @@
+     "lwz 8,  92(1)\n"    "lwz 7,  88(1)\n"
+     "lwz 6,  84(1)\n"    "lwz 5,  80(1)\n"
+     "lwz 4,  76(1)\n"    "lwz 3,  72(1)\n"
++#ifndef __NO_FPRS__
+     // Restore all FP arg registers
+     "lfd 8,  64(1)\n"
+     "lfd 7,  56(1)\n"    "lfd 6,  48(1)\n"
+     "lfd 5,  40(1)\n"    "lfd 4,  32(1)\n"
+     "lfd 3,  24(1)\n"    "lfd 2,  16(1)\n"
+     "lfd 1,  8(1)\n"
++#endif
+     // Pop 3 frames off the stack and branch to target
+     "lwz  1, 104(1)\n"
+     "lwz  0, 4(1)\n"
+@@ -242,6 +250,7 @@
+     "std 8,  256(1)\n"    "std 7,  248(1)\n"
+     "std 6,  240(1)\n"    "std 5,  232(1)\n"
+     "std 4,  224(1)\n"    "std 3,  216(1)\n"
++#ifndef __NO_FPRS__
+     // Save all call-clobbered FP regs.
+     "stfd 13, 208(1)\n"    "stfd 12, 200(1)\n"
+     "stfd 11, 192(1)\n"    "stfd 10, 184(1)\n"
+@@ -250,6 +259,7 @@
+     "stfd 5,  144(1)\n"    "stfd 4,  136(1)\n"
+     "stfd 3,  128(1)\n"    "stfd 2,  120(1)\n"
+     "stfd 1,  112(1)\n"
++#endif
+     // Arguments to Compilation Callback:
+     // r3 - our lr (address of the call instruction in stub plus 4)
+     // r4 - stub's lr (address of instruction that called the stub plus 4)
+@@ -270,6 +280,7 @@
+     "ld 8,  256(1)\n"    "ld 7,  248(1)\n"
+     "ld 6,  240(1)\n"    "ld 5,  232(1)\n"
+     "ld 4,  224(1)\n"    "ld 3,  216(1)\n"
++#ifndef __NO_FPRS__
+     // Restore all FP arg registers
+     "lfd 13, 208(1)\n"    "lfd 12, 200(1)\n"
+     "lfd 11, 192(1)\n"    "lfd 10, 184(1)\n"
+@@ -278,6 +289,7 @@
+     "lfd 5,  144(1)\n"    "lfd 4,  136(1)\n"
+     "lfd 3,  128(1)\n"    "lfd 2,  120(1)\n"
+     "lfd 1,  112(1)\n"
++#endif
+     // Pop 3 frames off the stack and branch to target
+     "ld  1, 280(1)\n"
+     "ld  0, 16(1)\n"
