@@ -23,6 +23,14 @@ usage
     sudo apt-get install clang-3.1
     sudo apt-get install clang-3.2
 
+upstream
+--------
+http://packages.qa.debian.org/c/clang.html
+http://packages.qa.debian.org/l/llvm-2.9.html
+http://packages.qa.debian.org/l/llvm-3.0.html
+http://packages.qa.debian.org/l/llvm-3.1.html
+http://packages.qa.debian.org/l/llvm-3.2.html
+
 launchpad
 ---------
 https://launchpad.net/~h-rayflood/+archive/llvm
