@@ -25,11 +25,11 @@ usage
 
 upstream
 --------
-http://packages.qa.debian.org/c/clang.html
-http://packages.qa.debian.org/l/llvm-2.9.html
-http://packages.qa.debian.org/l/llvm-3.0.html
-http://packages.qa.debian.org/l/llvm-3.1.html
-http://packages.qa.debian.org/l/llvm-3.2.html
+http://packages.qa.debian.org/c/clang.html  
+http://packages.qa.debian.org/l/llvm-2.9.html  
+http://packages.qa.debian.org/l/llvm-3.0.html  
+http://packages.qa.debian.org/l/llvm-3.1.html  
+http://packages.qa.debian.org/l/llvm-3.2.html  
 
 launchpad
 ---------
