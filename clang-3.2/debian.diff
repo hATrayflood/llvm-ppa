@@ -1,18 +1,18 @@
 diff -urN debian/changelog clang-3.2/debian/changelog
---- debian/changelog	2013-01-15 23:03:05.000000000 +0900
-+++ clang-3.2/debian/changelog	2013-01-16 13:50:35.374108538 +0900
+--- debian/changelog	2013-04-03 02:43:05.000000000 +0900
++++ clang-3.2/debian/changelog	2013-04-11 19:03:25.402033281 +0900
 @@ -1,3 +1,9 @@
-+clang-3.2 (3.2-debian1ppa1~exp5) precise; urgency=low
++clang-3.2 (3.2-debian1ppa1~exp9) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Tue, 16 Jan 2013 14:02:20 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 11 Apr 2013 19:02:20 +0900
 +
- clang (3.2-1~exp5) experimental; urgency=low
+ clang (1:3.2-1~exp9) experimental; urgency=low
  
-   * Replacement of @DEB_HOST_MULTIARCH@ & @DEB_HOST_GNU_TYPE@ were failing
+   [ Peter Michael Green ]
 diff -urN debian/clang-3.2.install clang-3.2/debian/clang-3.2.install
---- debian/clang-3.2.install	2013-01-13 16:27:28.000000000 +0900
+--- debian/clang-3.2.install	2013-01-15 20:03:33.000000000 +0900
 +++ clang-3.2/debian/clang-3.2.install	2013-01-14 13:54:00.581664600 +0900
 @@ -1,7 +1,6 @@
 -usr/bin/clang			/usr/bin/
@@ -29,7 +29,7 @@ diff -urN debian/clang-3.2.install clang-3.2/debian/clang-3.2.install
 +tools/clang/tools/scan-build	/usr/lib/llvm-3.2/share/
 +tools/clang/tools/scan-view	/usr/lib/llvm-3.2/share/
 diff -urN debian/clang-3.2.links clang-3.2/debian/clang-3.2.links
---- debian/clang-3.2.links	2013-01-08 00:33:16.000000000 +0900
+--- debian/clang-3.2.links	2012-12-06 22:08:52.000000000 +0900
 +++ clang-3.2/debian/clang-3.2.links	2013-01-14 13:55:11.150014597 +0900
 @@ -1,5 +1,9 @@
 -usr/share/man/man1/clang.1.gz		usr/share/man/man1/llvm-clang.1.gz
@@ -47,7 +47,7 @@ diff -urN debian/clang-3.2.links clang-3.2/debian/clang-3.2.links
 +usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/llvm-clang-3.2.1.gz
 +usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/clang++-3.2.1.gz
 diff -urN debian/clang-3.2.manpages clang-3.2/debian/clang-3.2.manpages
---- debian/clang-3.2.manpages	2013-01-13 16:26:41.000000000 +0900
+--- debian/clang-3.2.manpages	2013-01-15 20:03:33.000000000 +0900
 +++ clang-3.2/debian/clang-3.2.manpages	2013-01-12 17:27:42.152258197 +0900
 @@ -1 +1,3 @@
 -debian/man/scan*.1
@@ -55,7 +55,7 @@ diff -urN debian/clang-3.2.manpages clang-3.2/debian/clang-3.2.manpages
 +debian/tmp/usr/share/man/man1/scan-view-3.2.1
 +debian/tmp/usr/share/man/man1/clang-3.2.1
 diff -urN debian/clang-3.2.postinst clang-3.2/debian/clang-3.2.postinst
---- debian/clang-3.2.postinst	2013-01-08 00:33:16.000000000 +0900
+--- debian/clang-3.2.postinst	2012-12-06 22:08:52.000000000 +0900
 +++ clang-3.2/debian/clang-3.2.postinst	1970-01-01 09:00:00.000000000 +0900
 @@ -1,31 +0,0 @@
 -#! /bin/sh -e
@@ -90,7 +90,7 @@ diff -urN debian/clang-3.2.postinst clang-3.2/debian/clang-3.2.postinst
 -
 -exit 0
 diff -urN debian/clang-3.2.prerm clang-3.2/debian/clang-3.2.prerm
---- debian/clang-3.2.prerm	2013-01-08 00:33:16.000000000 +0900
+--- debian/clang-3.2.prerm	2012-12-10 22:37:47.000000000 +0900
 +++ clang-3.2/debian/clang-3.2.prerm	1970-01-01 09:00:00.000000000 +0900
 @@ -1,14 +0,0 @@
 -#!/bin/sh
@@ -120,8 +120,8 @@ diff -urN debian/compiler-rt-3.2.links clang-3.2/debian/compiler-rt-3.2.links
 @@ -0,0 +1 @@
 +usr/lib/clang/3.2/bin/asan_symbolize	usr/bin/asan_symbolize-3.2
 diff -urN debian/control clang-3.2/debian/control
---- debian/control	2013-01-12 23:14:13.000000000 +0900
-+++ clang-3.2/debian/control	2013-01-14 17:27:24.035948014 +0900
+--- debian/control	2013-04-03 02:43:05.000000000 +0900
++++ clang-3.2/debian/control	2013-04-11 19:12:41.380790229 +0900
 @@ -1,8 +1,7 @@
 -Source: clang
 +Source: clang-3.2
@@ -134,8 +134,8 @@ diff -urN debian/control clang-3.2/debian/control
  Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl8.5, expect,
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
-@@ -10,46 +9,16 @@
-     llvm-3.2-source (>= 3.2), chrpath, python
+@@ -11,46 +10,16 @@
+     binutils-gold [amd64 armel armhf i386 powerpc powerpcspe ppc64 sparc sparc64 x32]
  Build-Conflicts: oprofile, ocaml
  Standards-Version: 3.9.3
 -Homepage: http://clang.llvm.org/
@@ -175,17 +175,17 @@ diff -urN debian/control clang-3.2/debian/control
  Package: clang-3.2
  Architecture: any
 -Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev, libgcc-4.7-dev,
-- libobjc-4.7-dev, libclang-common-dev (= ${binary:Version}), compiler-rt (= ${binary:Version})
+- libobjc-4.7-dev, libclang-common-dev (= ${binary:Version}), compiler-rt (= ${binary:Version}) [amd64 i386]
 +Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
-+ libclang-3.2-common-dev (= ${binary:Version}), compiler-rt-3.2 (= ${binary:Version})
++ libclang-3.2-common-dev (= ${binary:Version}), compiler-rt-3.2 (= ${binary:Version}) [amd64 i386]
  Provides: c-compiler, objc-compiler, c++-compiler
  Recommends: llvm-3.2-dev, python
--Replaces: clang (<< 3.1), clang-3.1
--Breaks: clang (<< 3.1), clang-3.1
+-Replaces: clang (<< 1:3.1), clang-3.1
+-Breaks: clang (<< 1:3.1), clang-3.1
  Description: C, C++ and Objective-C compiler (LLVM based)
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -106,9 +75,9 @@
+@@ -107,9 +76,9 @@
   .
   This package contains the documentation.
  
@@ -197,7 +197,7 @@ diff -urN debian/control clang-3.2/debian/control
  Description: clang library
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -136,43 +105,11 @@
+@@ -137,43 +106,11 @@
   .
   This package contains the clang library.
  
@@ -244,7 +244,7 @@ diff -urN debian/control clang-3.2/debian/control
  Description: clang library - Development package
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -200,9 +137,9 @@
+@@ -201,9 +138,9 @@
   .
   This package contains the clang headers to develop extensions over libclang.
  
@@ -256,7 +256,7 @@ diff -urN debian/control clang-3.2/debian/control
  Section: libdevel
  Depends: ${misc:Depends}
  Description: clang library - Common development package
-@@ -233,9 +170,9 @@
+@@ -234,9 +171,9 @@
   This package contains the clang generic headers.
  
  
@@ -294,9 +294,9 @@ diff -urN debian/libclang1-3.2.install clang-3.2/debian/libclang1-3.2.install
 @@ -0,0 +1 @@
 +usr/lib/libclang.so.1	/usr/lib/llvm-3.2/lib/
 diff -urN debian/rules clang-3.2/debian/rules
---- debian/rules	2013-01-15 23:03:05.000000000 +0900
-+++ clang-3.2/debian/rules	2013-01-16 13:51:32.966392898 +0900
-@@ -1,7 +1,7 @@
+--- debian/rules	2013-03-15 22:45:44.000000000 +0900
++++ clang-3.2/debian/rules	2013-04-11 20:31:35.166819800 +0900
+@@ -1,14 +1,13 @@
  #!/usr/bin/make -f
  
  TARGET_BUILD	:= build-clang
@@ -305,7 +305,27 @@ diff -urN debian/rules clang-3.2/debian/rules
  LLVM_VERSION	:= 3.2
  SONAME_EXT      := 1
  DEBIAN_REVISION := $(shell dpkg-parsechangelog | sed -rne 's,^Version: .*-(.*),\1,p')
-@@ -84,15 +84,14 @@
+ ifneq (,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
+   NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
+ endif
+-VENDOR=$(lsb_release -is)
+ 
+ DEB_HOST_MULTIARCH  = $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+ DEB_HOST_GNU_TYPE   = $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+@@ -72,10 +71,10 @@
+ 	--prefix=/usr/ \
+ 	--disable-assertions --enable-shared --enable-optimized \
+ 	--with-optimize-option=' $(opt_flags)' --enable-pic --enable-libffi \
+-	CLANG_VENDOR=$(VENDOR)	|| { cat config.log; exit 1; }
++	CLANG_VENDOR=Debian	|| { cat config.log; exit 1; }
+ 
+ override_dh_auto_build:
+-	$(MAKE) $(NJOBS) -C $(TARGET_BUILD) VERBOSE=1 ONLY_TOOLS="clang" CLANG_VENDOR=$(VENDOR) CXXFLAGS=-std=c++0x
++	$(MAKE) $(NJOBS) -C $(TARGET_BUILD) VERBOSE=1 ONLY_TOOLS="clang" CLANG_VENDOR=Debian CXXFLAGS=-std=c++0x
+ # Only available in clang 3.3
+ #	cd $(CURDIR)/tools/clang/docs && make -f Makefile.sphinx
+ # && make -f Makefile.sphinx man
+@@ -85,15 +84,14 @@
  	$(MAKE) -C $(TARGET_BUILD)  VERBOSE=1  ONLY_TOOLS="clang" install DESTDIR=$(CURDIR)/debian/tmp/
  	cd debian/tmp/usr/lib/&& mv libclang.so libclang.so.$(SONAME_EXT) && ln -s libclang.so.$(SONAME_EXT) libclang.so
  #	cd build-clang/tools/clang/runtime/compiler-rt/ && rm -rf $$(find . -iname "SubDir.lib*" -o -iname .dir) && rm -rf $$(find -empty)

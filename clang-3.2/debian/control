@@ -7,7 +7,8 @@ Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl8.5, expect,
     autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
     lsb-release, patchutils, diffstat, xz-utils, llvm-3.2-dev (>= 3.2),
-    llvm-3.2-source (>= 3.2), chrpath, python
+    llvm-3.2-source (>= 3.2), chrpath, python, 
+    binutils-gold [amd64 armel armhf i386 powerpc powerpcspe ppc64 sparc sparc64 x32]
 Build-Conflicts: oprofile, ocaml
 Standards-Version: 3.9.3
 Homepage: http://clang.llvm.org/
@@ -45,11 +46,11 @@ Description: C, C++ and Objective-C compiler (LLVM based)
 Package: clang-3.2
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev, libgcc-4.7-dev,
- libobjc-4.7-dev, libclang-common-dev (= ${binary:Version}), compiler-rt (= ${binary:Version})
+ libobjc-4.7-dev, libclang-common-dev (= ${binary:Version}), compiler-rt (= ${binary:Version}) [amd64 i386]
 Provides: c-compiler, objc-compiler, c++-compiler
 Recommends: llvm-3.2-dev, python
-Replaces: clang (<< 3.1), clang-3.1
-Breaks: clang (<< 3.1), clang-3.1
+Replaces: clang (<< 1:3.1), clang-3.1
+Breaks: clang (<< 1:3.1), clang-3.1
 Description: C, C++ and Objective-C compiler (LLVM based)
  Clang project is a C, C++, Objective C and Objective C++ front-end
  for the LLVM compiler. Some of its goals include the following:

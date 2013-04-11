@@ -1,8 +1,46 @@
-clang-3.2 (3.2-debian1ppa1~exp5) precise; urgency=low
+clang-3.2 (3.2-debian1ppa1~exp9) precise; urgency=low
 
   * ppa for precise
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Tue, 16 Jan 2013 14:02:20 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 11 Apr 2013 19:02:20 +0900
+
+clang (1:3.2-1~exp9) experimental; urgency=low
+
+  [ Peter Michael Green ]
+  * Use binutils-gold only on architectures where it is actually available
+  * 33-armhf-defaults.diff Fix defaults to use correct CPU and FPU for
+    debian  armhf (Closes: #704111)
+  * 34-powerpc-no-altivec.diff disable altivec by default on powerpc because
+    debian powerpc does not require altivec (patch cherry picked from ubuntu)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Tue, 02 Apr 2013 19:37:22 +0200
+
+clang (1:3.2-1~exp8) experimental; urgency=low
+
+  * Limit the dependency of clang-3.2 on compiler-rt to amd64 & i386
+    (Closes: #700751)
+  * Detect the vendor (Debian or Ubuntu) and update the configuration
+  * Update of the watch file. Thanks to Bart Martens
+  * Port to powerpcspe. Thanks to Roland Stigge (Closes: #701587)
+    See: 31-powerpcspe.diff
+  * Fix the path detection of scan-build (Closes: #698352)
+    See: 32-scan-build-path.diff
+  * Use binutils-gold to link
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Mon, 04 Mar 2013 19:40:55 +0100
+
+clang (1:3.2-1~exp7) experimental; urgency=low
+
+  * Update the Replaces/Breaks which were broken due to the bloody epoch
+    (Closes: #700711)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Sun, 17 Feb 2013 12:01:47 +0100
+
+clang (1:3.2-1~exp6) experimental; urgency=low
+
+  * Introduce an epoch to match the changes in bug #699899 (Closes: #700291)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Mon, 11 Feb 2013 10:16:23 +0100
 
 clang (3.2-1~exp5) experimental; urgency=low
 

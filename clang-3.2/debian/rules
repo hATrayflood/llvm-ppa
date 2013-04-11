@@ -8,6 +8,7 @@ DEBIAN_REVISION := $(shell dpkg-parsechangelog | sed -rne 's,^Version: .*-(.*),\
 ifneq (,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
   NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
 endif
+VENDOR=$(lsb_release -is)
 
 DEB_HOST_MULTIARCH  = $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 DEB_HOST_GNU_TYPE   = $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
@@ -71,10 +72,10 @@ override_dh_auto_configure:
 	--prefix=/usr/ \
 	--disable-assertions --enable-shared --enable-optimized \
 	--with-optimize-option=' $(opt_flags)' --enable-pic --enable-libffi \
-	CLANG_VENDOR=Debian	|| { cat config.log; exit 1; }
+	CLANG_VENDOR=$(VENDOR)	|| { cat config.log; exit 1; }
 
 override_dh_auto_build:
-	$(MAKE) $(NJOBS) -C $(TARGET_BUILD) VERBOSE=1 ONLY_TOOLS="clang" CLANG_VENDOR=Debian CXXFLAGS=-std=c++0x
+	$(MAKE) $(NJOBS) -C $(TARGET_BUILD) VERBOSE=1 ONLY_TOOLS="clang" CLANG_VENDOR=$(VENDOR) CXXFLAGS=-std=c++0x
 # Only available in clang 3.3
 #	cd $(CURDIR)/tools/clang/docs && make -f Makefile.sphinx
 # && make -f Makefile.sphinx man

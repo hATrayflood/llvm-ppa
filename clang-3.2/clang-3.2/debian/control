@@ -6,7 +6,8 @@ Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl8.5, expect,
     autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
     lsb-release, patchutils, diffstat, xz-utils, llvm-3.2-dev (>= 3.2),
-    llvm-3.2-source (>= 3.2), chrpath, python
+    llvm-3.2-source (>= 3.2), chrpath, python, 
+    binutils-gold [amd64 armel armhf i386 powerpc powerpcspe ppc64 sparc sparc64 x32]
 Build-Conflicts: oprofile, ocaml
 Standards-Version: 3.9.3
 Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
@@ -16,7 +17,7 @@ Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
 Package: clang-3.2
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
- libclang-3.2-common-dev (= ${binary:Version}), compiler-rt-3.2 (= ${binary:Version})
+ libclang-3.2-common-dev (= ${binary:Version}), compiler-rt-3.2 (= ${binary:Version}) [amd64 i386]
 Provides: c-compiler, objc-compiler, c++-compiler
 Recommends: llvm-3.2-dev, python
 Description: C, C++ and Objective-C compiler (LLVM based)
