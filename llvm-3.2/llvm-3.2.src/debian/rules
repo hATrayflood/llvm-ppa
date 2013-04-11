@@ -36,7 +36,7 @@ override_dh_auto_configure: debian/libllvm$(LLVM_VERSION).install debian/llvm-$(
 	  ../configure $(confargs) || { cat config.log; exit 1; }
 
 override_dh_auto_build:
-	$(MAKE) $(NJOBS) -C $(TARGET_BUILD) VERBOSE=1
+	$(MAKE) $(NJOBS) -C $(TARGET_BUILD) VERBOSE=1 REQUIRES_RTTI=1
 	cd $(CURDIR)/docs && make -f Makefile.sphinx && make -f Makefile.sphinx man
 
 llvm_source_package:

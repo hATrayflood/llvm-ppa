@@ -41,158 +41,6 @@ index 4fa0705..02012b9 100755
  #include "confdefs.h"
  
  #if HAVE_DLFCN_H
-diff --git a/include/llvm/Intrinsics.td b/include/llvm/Intrinsics.td
-index 2e1597f..bf1c1a0 100644
---- a/include/llvm/Intrinsics.td
-+++ b/include/llvm/Intrinsics.td
-@@ -271,6 +271,10 @@ let Properties = [IntrReadMem] in {
-   def int_exp2 : Intrinsic<[llvm_anyfloat_ty], [LLVMMatchType<0>]>;
-   def int_fabs : Intrinsic<[llvm_anyfloat_ty], [LLVMMatchType<0>]>;
-   def int_floor : Intrinsic<[llvm_anyfloat_ty], [LLVMMatchType<0>]>;
-+  def int_ceil  : Intrinsic<[llvm_anyfloat_ty], [LLVMMatchType<0>]>;
-+  def int_trunc : Intrinsic<[llvm_anyfloat_ty], [LLVMMatchType<0>]>;
-+  def int_rint  : Intrinsic<[llvm_anyfloat_ty], [LLVMMatchType<0>]>;
-+  def int_nearbyint : Intrinsic<[llvm_anyfloat_ty], [LLVMMatchType<0>]>;
- }
- 
- let Properties = [IntrNoMem] in {
-@@ -469,3 +473,4 @@ include "llvm/IntrinsicsXCore.td"
- include "llvm/IntrinsicsHexagon.td"
- include "llvm/IntrinsicsNVVM.td"
- include "llvm/IntrinsicsMips.td"
-+include "llvm/IntrinsicsR600.td"
-diff --git a/include/llvm/IntrinsicsR600.td b/include/llvm/IntrinsicsR600.td
-new file mode 100644
-index 0000000..ecb5668
---- /dev/null
-+++ b/include/llvm/IntrinsicsR600.td
-@@ -0,0 +1,36 @@
-+//===- IntrinsicsR600.td - Defines R600 intrinsics ---------*- tablegen -*-===//
-+//
-+//                     The LLVM Compiler Infrastructure
-+//
-+// This file is distributed under the University of Illinois Open Source
-+// License. See LICENSE.TXT for details.
-+//
-+//===----------------------------------------------------------------------===//
-+//
-+// This file defines all of the R600-specific intrinsics.
-+//
-+//===----------------------------------------------------------------------===//
-+
-+let TargetPrefix = "r600" in {
-+
-+class R600ReadPreloadRegisterIntrinsic<string name>
-+  : Intrinsic<[llvm_i32_ty], [], [IntrNoMem]>,
-+    GCCBuiltin<name>;
-+
-+multiclass R600ReadPreloadRegisterIntrinsic_xyz<string prefix> {
-+  def _x : R600ReadPreloadRegisterIntrinsic<!strconcat(prefix, "_x")>;
-+  def _y : R600ReadPreloadRegisterIntrinsic<!strconcat(prefix, "_y")>;
-+  def _z : R600ReadPreloadRegisterIntrinsic<!strconcat(prefix, "_z")>;
-+}
-+
-+defm int_r600_read_global_size : R600ReadPreloadRegisterIntrinsic_xyz <
-+                                       "__builtin_r600_read_global_size">;
-+defm int_r600_read_local_size : R600ReadPreloadRegisterIntrinsic_xyz <
-+                                       "__builtin_r600_read_local_size">;
-+defm int_r600_read_ngroups : R600ReadPreloadRegisterIntrinsic_xyz <
-+                                       "__builtin_r600_read_ngroups">;
-+defm int_r600_read_tgid : R600ReadPreloadRegisterIntrinsic_xyz <
-+                                       "__builtin_r600_read_tgid">;
-+defm int_r600_read_tidig : R600ReadPreloadRegisterIntrinsic_xyz <
-+                                       "__builtin_r600_read_tidig">;
-+} // End TargetPrefix = "r600"
-diff --git a/lib/CodeGen/SelectionDAG/DAGCombiner.cpp b/lib/CodeGen/SelectionDAG/DAGCombiner.cpp
-index 37d7731..d0ca5c0 100644
---- a/lib/CodeGen/SelectionDAG/DAGCombiner.cpp
-+++ b/lib/CodeGen/SelectionDAG/DAGCombiner.cpp
-@@ -8514,11 +8514,8 @@ SDValue DAGCombiner::reduceBuildVecConvertToConvertBuildVec(SDNode *N) {
-     if (Opcode == ISD::DELETED_NODE &&
-         (Opc == ISD::UINT_TO_FP || Opc == ISD::SINT_TO_FP)) {
-       Opcode = Opc;
--      // If not supported by target, bail out.
--      if (TLI.getOperationAction(Opcode, VT) != TargetLowering::Legal &&
--          TLI.getOperationAction(Opcode, VT) != TargetLowering::Custom)
--        return SDValue();
-     }
-+
-     if (Opc != Opcode)
-       return SDValue();
- 
-@@ -8543,6 +8540,10 @@ SDValue DAGCombiner::reduceBuildVecConvertToConvertBuildVec(SDNode *N) {
-   assert(SrcVT != MVT::Other && "Cannot determine source type!");
- 
-   EVT NVT = EVT::getVectorVT(*DAG.getContext(), SrcVT, NumInScalars);
-+
-+  if (!TLI.isOperationLegalOrCustom(Opcode, NVT))
-+    return SDValue();
-+
-   SmallVector<SDValue, 8> Opnds;
-   for (unsigned i = 0; i != NumInScalars; ++i) {
-     SDValue In = N->getOperand(i);
-diff --git a/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp b/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp
-index abf40b7..2596f00 100644
---- a/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp
-+++ b/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp
-@@ -731,9 +731,10 @@ void SelectionDAGLegalize::LegalizeStoreOps(SDNode *Node) {
-           return;
-         }
-         case TargetLowering::Promote: {
--          assert(VT.isVector() && "Unknown legal promote case!");
--          Value = DAG.getNode(ISD::BITCAST, dl,
--                             TLI.getTypeToPromoteTo(ISD::STORE, VT), Value);
-+          EVT NVT = TLI.getTypeToPromoteTo(ISD::STORE, VT);
-+          assert(NVT.getSizeInBits() == VT.getSizeInBits() &&
-+                 "Can only promote stores to same size type");
-+          Value = DAG.getNode(ISD::BITCAST, dl, NVT, Value);
-           SDValue Result =
-             DAG.getStore(Chain, dl, Value, Ptr,
-                          ST->getPointerInfo(), isVolatile,
-@@ -889,10 +890,9 @@ void SelectionDAGLegalize::LegalizeLoadOps(SDNode *Node) {
-       break;
-     }
-     case TargetLowering::Promote: {
--      // Only promote a load of vector type to another.
--      assert(VT.isVector() && "Cannot promote this load!");
--      // Change base type to a different vector type.
-       EVT NVT = TLI.getTypeToPromoteTo(Node->getOpcode(), VT);
-+      assert(NVT.getSizeInBits() == VT.getSizeInBits() &&
-+             "Can only promote loads to same size type");
- 
-       SDValue Res = DAG.getLoad(NVT, dl, Chain, Ptr, LD->getPointerInfo(),
-                          LD->isVolatile(), LD->isNonTemporal(),
-diff --git a/lib/CodeGen/SelectionDAG/SelectionDAGBuilder.cpp b/lib/CodeGen/SelectionDAG/SelectionDAGBuilder.cpp
-index 3fbf7c2..c5e2eab 100644
---- a/lib/CodeGen/SelectionDAG/SelectionDAGBuilder.cpp
-+++ b/lib/CodeGen/SelectionDAG/SelectionDAGBuilder.cpp
-@@ -4996,6 +4996,26 @@ SelectionDAGBuilder::visitIntrinsicCall(const CallInst &I, unsigned Intrinsic) {
-                              getValue(I.getArgOperand(0)).getValueType(),
-                              getValue(I.getArgOperand(0))));
-     return 0;
-+  case Intrinsic::ceil:
-+    setValue(&I, DAG.getNode(ISD::FCEIL, dl,
-+                             getValue(I.getArgOperand(0)).getValueType(),
-+                             getValue(I.getArgOperand(0))));
-+    return 0;
-+  case Intrinsic::trunc:
-+    setValue(&I, DAG.getNode(ISD::FTRUNC, dl,
-+                             getValue(I.getArgOperand(0)).getValueType(),
-+                             getValue(I.getArgOperand(0))));
-+    return 0;
-+  case Intrinsic::rint:
-+    setValue(&I, DAG.getNode(ISD::FRINT, dl,
-+                             getValue(I.getArgOperand(0)).getValueType(),
-+                             getValue(I.getArgOperand(0))));
-+    return 0;
-+  case Intrinsic::nearbyint:
-+    setValue(&I, DAG.getNode(ISD::FNEARBYINT, dl,
-+                             getValue(I.getArgOperand(0)).getValueType(),
-+                             getValue(I.getArgOperand(0))));
-+    return 0;
-   case Intrinsic::fma:
-     setValue(&I, DAG.getNode(ISD::FMA, dl,
-                              getValue(I.getArgOperand(0)).getValueType(),
 diff --git a/lib/Target/LLVMBuild.txt b/lib/Target/LLVMBuild.txt
 index 8995080..84c4111 100644
 --- a/lib/Target/LLVMBuild.txt
@@ -208,10 +56,10 @@ index 8995080..84c4111 100644
  ; with the best execution engine (the native JIT, if available, or the
 diff --git a/lib/Target/R600/AMDGPU.h b/lib/Target/R600/AMDGPU.h
 new file mode 100644
-index 0000000..bac01a3
+index 0000000..ba87918
 --- /dev/null
 +++ b/lib/Target/R600/AMDGPU.h
-@@ -0,0 +1,52 @@
+@@ -0,0 +1,51 @@
 +//===-- AMDGPU.h - MachineFunction passes hw codegen --------------*- C++ -*-=//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -244,7 +92,6 @@ index 0000000..bac01a3
 +FunctionPass *createSIAssignInterpRegsPass(TargetMachine &tm);
 +FunctionPass *createSILowerControlFlowPass(TargetMachine &tm);
 +FunctionPass *createSICodeEmitterPass(formatted_raw_ostream &OS);
-+FunctionPass *createSILowerLiteralConstantsPass(TargetMachine &tm);
 +FunctionPass *createSIInsertWaits(TargetMachine &tm);
 +
 +// Passes common to R600 and SI
@@ -312,10 +159,10 @@ index 0000000..40f4741
 +include "AMDGPUInstructions.td"
 diff --git a/lib/Target/R600/AMDGPUAsmPrinter.cpp b/lib/Target/R600/AMDGPUAsmPrinter.cpp
 new file mode 100644
-index 0000000..0f3c4d0
+index 0000000..254e62e
 --- /dev/null
 +++ b/lib/Target/R600/AMDGPUAsmPrinter.cpp
-@@ -0,0 +1,147 @@
+@@ -0,0 +1,145 @@
 +//===-- AMDGPUAsmPrinter.cpp - AMDGPU Assebly printer  --------------------===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -409,8 +256,6 @@ index 0000000..0f3c4d0
 +        switch (reg) {
 +        default: break;
 +        case AMDGPU::EXEC:
-+        case AMDGPU::SI_LITERAL_CONSTANT:
-+        case AMDGPU::SREG_LIT_0:
 +        case AMDGPU::M0:
 +          continue;
 +        }
@@ -513,57 +358,6 @@ index 0000000..3812282
 +} // End anonymous llvm
 +
 +#endif //AMDGPU_ASMPRINTER_H
-diff --git a/lib/Target/R600/AMDGPUCodeEmitter.h b/lib/Target/R600/AMDGPUCodeEmitter.h
-new file mode 100644
-index 0000000..5d61cd0
---- /dev/null
-+++ b/lib/Target/R600/AMDGPUCodeEmitter.h
-@@ -0,0 +1,45 @@
-+//===-- AMDGPUCodeEmitter.h - AMDGPU Code Emitter interface -----------------===//
-+//
-+//                     The LLVM Compiler Infrastructure
-+//
-+// This file is distributed under the University of Illinois Open Source
-+// License. See LICENSE.TXT for details.
-+//
-+//===----------------------------------------------------------------------===//
-+//
-+/// \file
-+/// \brief CodeEmitter interface for R600 and SI codegen.
-+//
-+//===----------------------------------------------------------------------===//
-+
-+#ifndef AMDGPUCODEEMITTER_H
-+#define AMDGPUCODEEMITTER_H
-+
-+namespace llvm {
-+
-+class AMDGPUCodeEmitter {
-+public:
-+  uint64_t getBinaryCodeForInstr(const MachineInstr &MI) const;
-+  virtual uint64_t getMachineOpValue(const MachineInstr &MI,
-+                                   const MachineOperand &MO) const { return 0; }
-+  virtual unsigned GPR4AlignEncode(const MachineInstr  &MI,
-+                                     unsigned OpNo) const {
-+    return 0;
-+  }
-+  virtual unsigned GPR2AlignEncode(const MachineInstr &MI,
-+                                   unsigned OpNo) const {
-+    return 0;
-+  }
-+  virtual uint64_t VOPPostEncode(const MachineInstr &MI,
-+                                 uint64_t Value) const {
-+    return Value;
-+  }
-+  virtual uint64_t i32LiteralEncode(const MachineInstr &MI,
-+                                    unsigned OpNo) const {
-+    return 0;
-+  }
-+};
-+
-+} // End namespace llvm
-+
-+#endif // AMDGPUCODEEMITTER_H
 diff --git a/lib/Target/R600/AMDGPUConvertToISA.cpp b/lib/Target/R600/AMDGPUConvertToISA.cpp
 new file mode 100644
 index 0000000..50297d1
@@ -1236,10 +1030,10 @@ index 0000000..d0d23d6
 +}
 diff --git a/lib/Target/R600/AMDGPUISelLowering.h b/lib/Target/R600/AMDGPUISelLowering.h
 new file mode 100644
-index 0000000..4b844a3
+index 0000000..99a11ff
 --- /dev/null
 +++ b/lib/Target/R600/AMDGPUISelLowering.h
-@@ -0,0 +1,150 @@
+@@ -0,0 +1,140 @@
 +//===-- AMDGPUISelLowering.h - AMDGPU Lowering Interface --------*- C++ -*-===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -1377,25 +1171,15 @@ index 0000000..4b844a3
 +
 +} // End namespace AMDGPUISD
 +
-+namespace SIISD {
-+
-+enum {
-+  SI_FIRST = AMDGPUISD::LAST_AMDGPU_ISD_NUMBER,
-+  VCC_AND,
-+  VCC_BITCAST
-+};
-+
-+} // End namespace SIISD
-+
 +} // End namespace llvm
 +
 +#endif // AMDGPUISELLOWERING_H
 diff --git a/lib/Target/R600/AMDGPUIndirectAddressing.cpp b/lib/Target/R600/AMDGPUIndirectAddressing.cpp
 new file mode 100644
-index 0000000..56aaf23
+index 0000000..15840b3
 --- /dev/null
 +++ b/lib/Target/R600/AMDGPUIndirectAddressing.cpp
-@@ -0,0 +1,326 @@
+@@ -0,0 +1,344 @@
 +//===-- AMDGPUIndirectAddressing.cpp - Indirect Adressing Support ---------===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -1567,9 +1351,6 @@ index 0000000..56aaf23
 +        }
 +
 +        if (RegisterAddressMap[Reg] == Address) {
-+          if (!regHasExplicitDef(MRI, Reg)) {
-+            continue;
-+          }
 +          PhiRegisters.push_back(Reg);
 +        }
 +      }
@@ -1668,7 +1449,8 @@ index 0000000..56aaf23
 +          // instruction that uses indirect addressing. 
 +          BuildMI(MBB, I, MBB.findDebugLoc(I), TII->get(AMDGPU::COPY),
 +                   MI.getOperand(0).getReg())
-+                   .addReg(AddrReg);
++                   .addReg(AddrReg)
++                   .addReg(Reg, RegState::Implicit);
 +        }
 +      } else {
 +        // Indirect register access
@@ -1690,8 +1472,7 @@ index 0000000..56aaf23
 +          // We only need to use REG_SEQUENCE for explicit defs, since the
 +          // register coalescer won't do anything with the implicit defs.
 +          MachineInstr *DefInstr = MRI.getVRegDef(Reg);
-+          if (!DefInstr->getOperand(0).isReg() ||
-+              DefInstr->getOperand(0).getReg() != Reg) {
++          if (!regHasExplicitDef(MRI, Reg)) {
 +            continue;
 +          }
 +
@@ -1708,6 +1489,7 @@ index 0000000..56aaf23
 +
 +
 +        Mov.addReg(IndirectReg, RegState::Implicit | RegState::Kill);
++        Mov.addReg(LiveAddressRegisterMap[Address], RegState::Implicit);
 +
 +      }
 +      MI.eraseFromParent();
@@ -1719,7 +1501,27 @@ index 0000000..56aaf23
 +bool AMDGPUIndirectAddressingPass::regHasExplicitDef(MachineRegisterInfo &MRI,
 +                                                  unsigned Reg) const {
 +  MachineInstr *DefInstr = MRI.getVRegDef(Reg);
-+  return DefInstr && DefInstr->getOperand(0).isReg() &&
++
++  if (!DefInstr) {
++    return false;
++  }
++
++  if (DefInstr->getOpcode() == AMDGPU::PHI) {
++    bool Explicit = false;
++    for (MachineInstr::const_mop_iterator I = DefInstr->operands_begin(),
++                                          E = DefInstr->operands_end();
++                                          I != E; ++I) {
++      const MachineOperand &MO = *I;
++      if (!MO.isReg() || MO.isDef()) {
++        continue;
++      }
++
++      Explicit = Explicit || regHasExplicitDef(MRI, MO.getReg());
++    }
++    return Explicit;
++  }
++
++  return DefInstr->getOperand(0).isReg() &&
 +         DefInstr->getOperand(0).getReg() == Reg;
 +}
 diff --git a/lib/Target/R600/AMDGPUInstrInfo.cpp b/lib/Target/R600/AMDGPUInstrInfo.cpp
@@ -2950,10 +2752,10 @@ index 0000000..b5aca03
 +include "SIRegisterInfo.td"
 diff --git a/lib/Target/R600/AMDGPUStructurizeCFG.cpp b/lib/Target/R600/AMDGPUStructurizeCFG.cpp
 new file mode 100644
-index 0000000..169d954
+index 0000000..a8c9621
 --- /dev/null
 +++ b/lib/Target/R600/AMDGPUStructurizeCFG.cpp
-@@ -0,0 +1,818 @@
+@@ -0,0 +1,893 @@
 +//===-- AMDGPUStructurizeCFG.cpp -  ------------------===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -2978,8 +2780,10 @@ index 0000000..169d954
 +#include "llvm/Analysis/RegionInfo.h"
 +#include "llvm/Analysis/RegionPass.h"
 +#include "llvm/Transforms/Utils/SSAUpdater.h"
++#include "llvm/Support/PatternMatch.h"
 +
 +using namespace llvm;
++using namespace llvm::PatternMatch;
 +
 +namespace {
 +
@@ -2995,14 +2799,81 @@ index 0000000..169d954
 +typedef SmallPtrSet<BasicBlock *, 8> BBSet;
 +
 +typedef DenseMap<PHINode *, BBValueVector> PhiMap;
++typedef DenseMap<DomTreeNode *, unsigned> DTN2UnsignedMap;
 +typedef DenseMap<BasicBlock *, PhiMap> BBPhiMap;
 +typedef DenseMap<BasicBlock *, Value *> BBPredicates;
 +typedef DenseMap<BasicBlock *, BBPredicates> PredMap;
++typedef DenseMap<BasicBlock *, BasicBlock*> BB2BBMap;
 +typedef DenseMap<BasicBlock *, BBVector> BB2BBVecMap;
 +
 +// The name for newly created blocks.
 +
 +static const char *FlowBlockName = "Flow";
++
++/// @brief Find the nearest common dominator for multiple BasicBlocks
++///
++/// Helper class for AMDGPUStructurizeCFG
++/// TODO: Maybe move into common code
++class NearestCommonDominator {
++
++  DominatorTree *DT;
++
++  DTN2UnsignedMap IndexMap;
++
++  BasicBlock *Result;
++  unsigned ResultIndex;
++  bool ExplicitMentioned;
++
++public:
++  /// \brief Start a new query
++  NearestCommonDominator(DominatorTree *DomTree) {
++    DT = DomTree;
++    Result = 0;
++  }
++
++  /// \brief Add BB to the resulting dominator
++  void addBlock(BasicBlock *BB, bool Remember = true) {
++
++    DomTreeNode *Node = DT->getNode(BB);
++
++    if (Result == 0) {
++      unsigned Numbering = 0;
++      for (;Node;Node = Node->getIDom())
++        IndexMap[Node] = ++Numbering;
++      Result = BB;
++      ResultIndex = 1;
++      ExplicitMentioned = Remember;
++      return;
++    }
++
++    for (;Node;Node = Node->getIDom())
++      if (IndexMap.count(Node))
++        break;
++      else
++        IndexMap[Node] = 0;
++
++    assert(Node && "Dominator tree invalid!");
++
++    unsigned Numbering = IndexMap[Node];
++    if (Numbering > ResultIndex) {
++      Result = Node->getBlock();
++      ResultIndex = Numbering;
++      ExplicitMentioned = Remember && (Result == BB);
++    } else if (Numbering == ResultIndex) {
++      ExplicitMentioned |= Remember;
++    }
++  }
++
++  /// \brief Is "Result" one of the BBs added with "Remember" = True?
++  bool wasResultExplicitMentioned() {
++    return ExplicitMentioned;
++  }
++
++  /// \brief Get the query result
++  BasicBlock *getResult() {
++    return Result;
++  }
++};
 +
 +/// @brief Transforms the control flow graph on one single entry/exit region
 +/// at a time.
@@ -3065,29 +2936,32 @@ index 0000000..169d954
 +
 +  RNVector Order;
 +  BBSet Visited;
-+  PredMap Predicates;
++
 +  BBPhiMap DeletedPhis;
 +  BB2BBVecMap AddedPhis;
++
++  PredMap Predicates;
 +  BranchVector Conditions;
 +
-+  BasicBlock *LoopStart;
-+  BasicBlock *LoopEnd;
-+  BBSet LoopTargets;
-+  BBPredicates LoopPred;
++  BB2BBMap Loops;
++  PredMap LoopPreds;
++  BranchVector LoopConds;
++
++  RegionNode *PrevNode;
 +
 +  void orderNodes();
 +
++  void analyzeLoops(RegionNode *N);
++
++  Value *invert(Value *Condition);
++
 +  Value *buildCondition(BranchInst *Term, unsigned Idx, bool Invert);
 +
-+  bool analyzeLoopStart(BasicBlock *From, BasicBlock *To, Value *Condition);
-+
-+  void analyzeNode(RegionNode *N);
-+
-+  void analyzeLoopEnd(RegionNode *N);
++  void gatherPredicates(RegionNode *N);
 +
 +  void collectInfos();
 +
-+  void insertConditions();
++  void insertConditions(bool Loops);
 +
 +  void delPhiValues(BasicBlock *From, BasicBlock *To);
 +
@@ -3102,17 +2976,19 @@ index 0000000..169d954
 +
 +  BasicBlock *getNextFlow(BasicBlock *Dominator);
 +
-+  BasicBlock *needPrefix(RegionNode *&Prev, RegionNode *Node);
++  BasicBlock *needPrefix(bool NeedEmpty);
 +
 +  BasicBlock *needPostfix(BasicBlock *Flow, bool ExitUseAllowed);
 +
-+  RegionNode *getNextPrev(BasicBlock *Next);
++  void setPrevNode(BasicBlock *BB);
 +
 +  bool dominatesPredicates(BasicBlock *BB, RegionNode *Node);
 +
-+  bool isPredictableTrue(RegionNode *Who, RegionNode *Where);
++  bool isPredictableTrue(RegionNode *Node);
 +
-+  RegionNode *wireFlow(RegionNode *&Prev, bool ExitUseAllowed);
++  void wireFlow(bool ExitUseAllowed, BasicBlock *LoopEnd);
++
++  void handleLoops(bool ExitUseAllowed, BasicBlock *LoopEnd);
 +
 +  void createFlow();
 +
@@ -3168,6 +3044,63 @@ index 0000000..169d954
 +  }
 +}
 +
++/// \brief Determine the end of the loops
++void AMDGPUStructurizeCFG::analyzeLoops(RegionNode *N) {
++
++  if (N->isSubRegion()) {
++    // Test for exit as back edge
++    BasicBlock *Exit = N->getNodeAs<Region>()->getExit();
++    if (Visited.count(Exit))
++      Loops[Exit] = N->getEntry();
++
++  } else {
++    // Test for sucessors as back edge
++    BasicBlock *BB = N->getNodeAs<BasicBlock>();
++    BranchInst *Term = cast<BranchInst>(BB->getTerminator());
++
++    for (unsigned i = 0, e = Term->getNumSuccessors(); i != e; ++i) {
++      BasicBlock *Succ = Term->getSuccessor(i);
++
++      if (Visited.count(Succ))
++        Loops[Succ] = BB;
++    }
++  }
++}
++
++/// \brief Invert the given condition
++Value *AMDGPUStructurizeCFG::invert(Value *Condition) {
++
++  // First: Check if it's a constant
++  if (Condition == BoolTrue)
++    return BoolFalse;
++
++  if (Condition == BoolFalse)
++    return BoolTrue;
++
++  if (Condition == BoolUndef)
++    return BoolUndef;
++
++  // Second: If the condition is already inverted, return the original value
++  if (match(Condition, m_Not(m_Value(Condition))))
++    return Condition;
++
++  // Third: Check all the users for an invert
++  BasicBlock *Parent = cast<Instruction>(Condition)->getParent();
++  for (Value::use_iterator I = Condition->use_begin(),
++       E = Condition->use_end(); I != E; ++I) {
++
++    Instruction *User = dyn_cast<Instruction>(*I);
++    if (!User || User->getParent() != Parent)
++      continue;
++
++    if (match(*I, m_Not(m_Specific(Condition))))
++      return *I;
++  }
++
++  // Last option: Create a new instruction
++  return BinaryOperator::CreateNot(Condition, "", Parent->getTerminator());
++}
++
 +/// \brief Build the condition for one edge
 +Value *AMDGPUStructurizeCFG::buildCondition(BranchInst *Term, unsigned Idx,
 +                                            bool Invert) {
@@ -3176,59 +3109,25 @@ index 0000000..169d954
 +    Cond = Term->getCondition();
 +
 +    if (Idx != Invert)
-+      Cond = BinaryOperator::CreateNot(Cond, "", Term);
++      Cond = invert(Cond);
 +  }
 +  return Cond;
 +}
 +
-+/// \brief Analyze the start of a loop and insert predicates as necessary
-+bool AMDGPUStructurizeCFG::analyzeLoopStart(BasicBlock *From, BasicBlock *To,
-+                                            Value *Condition) {
-+  LoopPred[From] = Condition;
-+  LoopTargets.insert(To);
-+  if (!LoopStart) {
-+    LoopStart = To;
-+    return true;
-+
-+  } else if (LoopStart == To)
-+    return true;
-+
-+  // We need to handle the case of intersecting loops, e. g.
-+  //
-+  //    /----<-----
-+  //    |         |
-+  // -> A -> B -> C -> D
-+  //         |         |
-+  //         -----<----/
-+
-+  RNVector::reverse_iterator OI = Order.rbegin(), OE = Order.rend();
-+
-+  for (;OI != OE; ++OI)
-+    if ((*OI)->getEntry() == LoopStart)
-+      break;
-+
-+  for (;OI != OE && (*OI)->getEntry() != To; ++OI) {
-+    BBPredicates &Pred = Predicates[(*OI)->getEntry()];
-+    if (!Pred.count(From))
-+      Pred[From] = Condition;
-+  }
-+  return false;
-+}
-+
 +/// \brief Analyze the predecessors of each block and build up predicates
-+void AMDGPUStructurizeCFG::analyzeNode(RegionNode *N) {
++void AMDGPUStructurizeCFG::gatherPredicates(RegionNode *N) {
++
 +  RegionInfo *RI = ParentRegion->getRegionInfo();
 +  BasicBlock *BB = N->getEntry();
 +  BBPredicates &Pred = Predicates[BB];
++  BBPredicates &LPred = LoopPreds[BB];
 +
 +  for (pred_iterator PI = pred_begin(BB), PE = pred_end(BB);
 +       PI != PE; ++PI) {
 +
-+    if (!ParentRegion->contains(*PI)) {
-+      // It's a branch from outside into our region entry
-+      Pred[*PI] = BoolTrue;
++    // Ignore it if it's a branch from outside into our region entry
++    if (!ParentRegion->contains(*PI))
 +      continue;
-+    }
 +
 +    Region *R = RI->getRegionFor(*PI);
 +    if (R == ParentRegion) {
@@ -3245,7 +3144,7 @@ index 0000000..169d954
 +          if (Term->isConditional()) {
 +            // Try to treat it like an ELSE block
 +            BasicBlock *Other = Term->getSuccessor(!i);
-+            if (Visited.count(Other) && !LoopTargets.count(Other) &&
++            if (Visited.count(Other) && !Loops.count(Other) &&
 +                !Pred.count(Other) && !Pred.count(*PI)) {
 +                
 +              Pred[Other] = BoolFalse;
@@ -3253,13 +3152,12 @@ index 0000000..169d954
 +              continue;
 +            }
 +          }
++          Pred[*PI] = buildCondition(Term, i, false);
 + 
 +        } else {
 +          // Back edge
-+          if (analyzeLoopStart(*PI, BB, buildCondition(Term, i, true)))
-+            continue;
++          LPred[*PI] = buildCondition(Term, i, true);
 +        }
-+        Pred[*PI] = buildCondition(Term, i, false);
 +      }
 +
 +    } else {
@@ -3273,34 +3171,10 @@ index 0000000..169d954
 +        continue;
 +
 +      BasicBlock *Entry = R->getEntry();
-+      if (!Visited.count(Entry))
-+        if (analyzeLoopStart(Entry, BB, BoolFalse))
-+          continue;
-+
-+      Pred[Entry] = BoolTrue;
-+    }
-+  }
-+}
-+
-+/// \brief Determine the end of the loop
-+void AMDGPUStructurizeCFG::analyzeLoopEnd(RegionNode *N) {
-+
-+  if (N->isSubRegion()) {
-+    // Test for exit as back edge
-+    BasicBlock *Exit = N->getNodeAs<Region>()->getExit();
-+    if (Visited.count(Exit))
-+      LoopEnd = N->getEntry();
-+
-+  } else {
-+    // Test for sucessors as back edge
-+    BasicBlock *BB = N->getNodeAs<BasicBlock>();
-+    BranchInst *Term = cast<BranchInst>(BB->getTerminator());
-+
-+    for (unsigned i = 0, e = Term->getNumSuccessors(); i != e; ++i) {
-+      BasicBlock *Succ = Term->getSuccessor(i);
-+
-+      if (Visited.count(Succ))
-+        LoopEnd = BB;
++      if (Visited.count(Entry))
++        Pred[Entry] = BoolTrue;
++      else
++        LPred[Entry] = BoolFalse;
 +    }
 +  }
 +}
@@ -3312,9 +3186,8 @@ index 0000000..169d954
 +  Predicates.clear();
 +
 +  // and loop infos
-+  LoopStart = LoopEnd = 0;
-+  LoopTargets.clear();
-+  LoopPred.clear();
++  Loops.clear();
++  LoopPreds.clear();
 +
 +  // Reset the visited nodes
 +  Visited.clear();
@@ -3323,53 +3196,61 @@ index 0000000..169d954
 +       OI != OE; ++OI) {
 +
 +    // Analyze all the conditions leading to a node
-+    analyzeNode(*OI);
++    gatherPredicates(*OI);
 +
 +    // Remember that we've seen this node
 +    Visited.insert((*OI)->getEntry());
 +
-+    // Find the last back edge
-+    analyzeLoopEnd(*OI);
++    // Find the last back edges
++    analyzeLoops(*OI);
 +  }
-+
-+  // Both or neither must be set
-+  assert(!LoopStart == !LoopEnd);
 +}
 +
 +/// \brief Insert the missing branch conditions
-+void AMDGPUStructurizeCFG::insertConditions() {
++void AMDGPUStructurizeCFG::insertConditions(bool Loops) {
++  BranchVector &Conds = Loops ? LoopConds : Conditions;
++  Value *Default = Loops ? BoolTrue : BoolFalse;
 +  SSAUpdater PhiInserter;
 +
-+  for (BranchVector::iterator I = Conditions.begin(),
-+       E = Conditions.end(); I != E; ++I) {
++  for (BranchVector::iterator I = Conds.begin(),
++       E = Conds.end(); I != E; ++I) {
 +
 +    BranchInst *Term = *I;
-+    BasicBlock *Parent = Term->getParent();
-+
 +    assert(Term->isConditional());
 +
-+    PhiInserter.Initialize(Boolean, "");
-+    if (Parent == LoopEnd) {
-+      PhiInserter.AddAvailableValue(LoopStart, BoolTrue);
-+    } else {
-+      PhiInserter.AddAvailableValue(&Func->getEntryBlock(), BoolFalse);
-+      PhiInserter.AddAvailableValue(Parent, BoolFalse);
-+    }
++    BasicBlock *Parent = Term->getParent();
++    BasicBlock *SuccTrue = Term->getSuccessor(0);
++    BasicBlock *SuccFalse = Term->getSuccessor(1);
 +
-+    bool ParentHasValue = false;
-+    BasicBlock *Succ = Term->getSuccessor(0);
-+    BBPredicates &Preds = (Parent == LoopEnd) ? LoopPred : Predicates[Succ];
++    PhiInserter.Initialize(Boolean, "");
++    PhiInserter.AddAvailableValue(&Func->getEntryBlock(), Default);
++    PhiInserter.AddAvailableValue(Loops ? SuccFalse : Parent, Default);
++
++    BBPredicates &Preds = Loops ? LoopPreds[SuccFalse] : Predicates[SuccTrue];
++
++    NearestCommonDominator Dominator(DT);
++    Dominator.addBlock(Parent, false);
++
++    Value *ParentValue = 0;
 +    for (BBPredicates::iterator PI = Preds.begin(), PE = Preds.end();
 +         PI != PE; ++PI) {
 +
++      if (PI->first == Parent) {
++        ParentValue = PI->second;
++        break;
++      }
 +      PhiInserter.AddAvailableValue(PI->first, PI->second);
-+      ParentHasValue |= PI->first == Parent;
++      Dominator.addBlock(PI->first);
 +    }
 +
-+    if (ParentHasValue)
-+      Term->setCondition(PhiInserter.GetValueAtEndOfBlock(Parent));
-+    else 
++    if (ParentValue) {
++      Term->setCondition(ParentValue);
++    } else {
++      if (!Dominator.wasResultExplicitMentioned())
++        PhiInserter.AddAvailableValue(Dominator.getResult(), Default);
++
 +      Term->setCondition(PhiInserter.GetValueInMiddleOfBlock(Parent));
++    }
 +  }
 +}
 +
@@ -3423,11 +3304,17 @@ index 0000000..169d954
 +      Updater.AddAvailableValue(&Func->getEntryBlock(), Undef);
 +      Updater.AddAvailableValue(To, Undef);
 +
++      NearestCommonDominator Dominator(DT);
++      Dominator.addBlock(To, false);
 +      for (BBValueVector::iterator VI = PI->second.begin(),
 +           VE = PI->second.end(); VI != VE; ++VI) {
 +
 +        Updater.AddAvailableValue(VI->first, VI->second);
++        Dominator.addBlock(VI->first);
 +      }
++
++      if (!Dominator.wasResultExplicitMentioned())
++        Updater.AddAvailableValue(Dominator.getResult(), Undef);
 +
 +      for (BBVector::iterator FI = From.begin(), FE = From.end();
 +           FI != FE; ++FI) {
@@ -3519,54 +3406,24 @@ index 0000000..169d954
 +}
 +
 +/// \brief Create a new or reuse the previous node as flow node
-+BasicBlock *AMDGPUStructurizeCFG::needPrefix(RegionNode *&Prev,
-+                                             RegionNode *Node) {
++BasicBlock *AMDGPUStructurizeCFG::needPrefix(bool NeedEmpty) {
 +
-+  if (!Prev || Prev->isSubRegion() ||
-+      (Node && Node->getEntry() == LoopStart)) {
++  BasicBlock *Entry = PrevNode->getEntry();
 +
-+    // We need to insert a flow node, first figure out the dominator
-+    DomTreeNode *Dominator = Prev ? DT->getNode(Prev->getEntry()) : 0;
-+    if (!Dominator)
-+      Dominator = DT->getNode(Node->getEntry())->getIDom();
-+    assert(Dominator && "Illegal loop to function entry");
++  if (!PrevNode->isSubRegion()) {
++    killTerminator(Entry);
++    if (!NeedEmpty || Entry->getFirstInsertionPt() == Entry->end())
++      return Entry;
 +
-+    // then create the flow node
-+    BasicBlock *Flow = getNextFlow(Dominator->getBlock());
++  } 
 +
-+    // wire up the new flow
-+    if (Prev) {
-+      changeExit(Prev, Flow, true);
-+    } else {
-+      // Parent regions entry needs predicates, create a new region entry
-+      BasicBlock *Entry = Node->getEntry();
-+      for (pred_iterator I = pred_begin(Entry), E = pred_end(Entry);
-+           I != E;) {
++  // create a new flow node
++  BasicBlock *Flow = getNextFlow(Entry);
 +
-+        BasicBlock *BB = *(I++);
-+        if (ParentRegion->contains(BB))
-+          continue;
-+
-+        // Remove PHY values from outside to our entry node
-+        delPhiValues(BB, Entry);
-+
-+        // Update the branch instructions
-+        BB->getTerminator()->replaceUsesOfWith(Entry, Flow);
-+      }
-+
-+      // Populate the region tree with the new entry
-+      for (Region *R = ParentRegion; R && R->getEntry() == Entry;
-+           R = R->getParent()) {
-+        R->replaceEntry(Flow);
-+      }
-+    }
-+    Prev = ParentRegion->getBBNode(Flow);
-+
-+  } else {
-+    killTerminator(Prev->getEntry());
-+  }
-+
-+  return Prev->getEntry();
++  // and wire it up
++  changeExit(PrevNode, Flow, true);
++  PrevNode = ParentRegion->getBBNode(Flow);
++  return Flow;
 +}
 +
 +/// \brief Returns the region exit if possible, otherwise just a new flow node
@@ -3582,9 +3439,9 @@ index 0000000..169d954
 +  return getNextFlow(Flow);
 +}
 +
-+/// \brief Returns the region node for Netx, or null if Next is the exit
-+RegionNode *AMDGPUStructurizeCFG::getNextPrev(BasicBlock *Next) {
-+  return ParentRegion->contains(Next) ? ParentRegion->getBBNode(Next) : 0;
++/// \brief Set the previous node
++void AMDGPUStructurizeCFG::setPrevNode(BasicBlock *BB) {
++  PrevNode =  ParentRegion->contains(BB) ? ParentRegion->getBBNode(BB) : 0;
 +}
 +
 +/// \brief Does BB dominate all the predicates of Node ?
@@ -3600,11 +3457,14 @@ index 0000000..169d954
 +}
 +
 +/// \brief Can we predict that this node will always be called?
-+bool AMDGPUStructurizeCFG::isPredictableTrue(RegionNode *Who,
-+                                             RegionNode *Where) {
++bool AMDGPUStructurizeCFG::isPredictableTrue(RegionNode *Node) {
 +
-+  BBPredicates &Preds = Predicates[Who->getEntry()];
-+  bool Dominated = Where == 0;
++  BBPredicates &Preds = Predicates[Node->getEntry()];
++  bool Dominated = false;
++
++  // Regionentry is always true
++  if (PrevNode == 0)
++    return true;
 +
 +  for (BBPredicates::iterator I = Preds.begin(), E = Preds.end();
 +       I != E; ++I) {
@@ -3612,7 +3472,7 @@ index 0000000..169d954
 +    if (I->second != BoolTrue)
 +      return false;
 +
-+    if (!Dominated && DT->dominates(I->first, Where->getEntry()))
++    if (!Dominated && DT->dominates(I->first, PrevNode->getEntry()))
 +      Dominated = true;
 +  }
 +
@@ -3621,45 +3481,69 @@ index 0000000..169d954
 +}
 +
 +/// Take one node from the order vector and wire it up
-+RegionNode *AMDGPUStructurizeCFG::wireFlow(RegionNode *&Prev,
-+                                           bool ExitUseAllowed) {
++void AMDGPUStructurizeCFG::wireFlow(bool ExitUseAllowed,
++                                    BasicBlock *LoopEnd) {
 +
 +  RegionNode *Node = Order.pop_back_val();
++  Visited.insert(Node->getEntry());
 +
-+  if (isPredictableTrue(Node, Prev)) {
++  if (isPredictableTrue(Node)) {
 +    // Just a linear flow
-+    if (Prev) {
-+      changeExit(Prev, Node->getEntry(), true);
++    if (PrevNode) {
++      changeExit(PrevNode, Node->getEntry(), true);
 +    }
-+    Prev = Node;
++    PrevNode = Node;
 +
 +  } else {
 +    // Insert extra prefix node (or reuse last one)
-+    BasicBlock *Flow = needPrefix(Prev, Node);
-+    if (Node->getEntry() == LoopStart)
-+      LoopStart = Flow;
++    BasicBlock *Flow = needPrefix(false);
 +
 +    // Insert extra postfix node (or use exit instead)
 +    BasicBlock *Entry = Node->getEntry();
-+    BasicBlock *Next = needPostfix(Flow, ExitUseAllowed && Entry != LoopEnd);
++    BasicBlock *Next = needPostfix(Flow, ExitUseAllowed);
 +
 +    // let it point to entry and next block
 +    Conditions.push_back(BranchInst::Create(Entry, Next, BoolUndef, Flow));
 +    addPhiValues(Flow, Entry);
 +    DT->changeImmediateDominator(Entry, Flow);
 +
-+    Prev = Node;
-+    while (!Order.empty() && Node->getEntry() != LoopEnd &&
-+           !LoopTargets.count(Order.back()->getEntry()) &&
++    PrevNode = Node;
++    while (!Order.empty() && !Visited.count(LoopEnd) &&
 +           dominatesPredicates(Entry, Order.back())) {
-+      Node = wireFlow(Prev, false);
++      handleLoops(false, LoopEnd);
 +    }
 +
-+    changeExit(Prev, Next, false);
-+    Prev = getNextPrev(Next);
++    changeExit(PrevNode, Next, false);
++    setPrevNode(Next);
++  }
++}
++
++void AMDGPUStructurizeCFG::handleLoops(bool ExitUseAllowed,
++                                       BasicBlock *LoopEnd) {
++  RegionNode *Node = Order.back();
++  BasicBlock *LoopStart = Node->getEntry();
++
++  if (!Loops.count(LoopStart)) {
++    wireFlow(ExitUseAllowed, LoopEnd);
++    return;
 +  }
 +
-+  return Node;
++  if (!isPredictableTrue(Node))
++    LoopStart = needPrefix(true);
++
++  LoopEnd = Loops[Node->getEntry()];
++  wireFlow(false, LoopEnd);
++  while (!Visited.count(LoopEnd)) {
++    handleLoops(false, LoopEnd);
++  }
++
++  // Create an extra loop end node
++  LoopEnd = needPrefix(false);
++  BasicBlock *Next = needPostfix(LoopEnd, ExitUseAllowed);
++  LoopConds.push_back(BranchInst::Create(Next, LoopStart,
++                                         BoolUndef, LoopEnd));
++  addPhiValues(LoopEnd, LoopStart);
++  setPrevNode(Next);
 +}
 +
 +/// After this function control flow looks like it should be, but
@@ -3672,26 +3556,17 @@ index 0000000..169d954
 +  DeletedPhis.clear();
 +  AddedPhis.clear();
 +  Conditions.clear();
++  LoopConds.clear();
 +
-+  RegionNode *Prev = 0;
++  PrevNode = 0;
++  Visited.clear();
++
 +  while (!Order.empty()) {
-+
-+    RegionNode *Node = wireFlow(Prev, EntryDominatesExit);
-+
-+    // Create an extra loop end node
-+    if (Node->getEntry() == LoopEnd) {
-+      LoopEnd = needPrefix(Prev, 0);
-+      BasicBlock *Next = needPostfix(LoopEnd, EntryDominatesExit);
-+
-+      Conditions.push_back(BranchInst::Create(Next, LoopStart,
-+                                              BoolUndef, LoopEnd));
-+      addPhiValues(LoopEnd, LoopStart);
-+      Prev = getNextPrev(Next);
-+    }
++    handleLoops(EntryDominatesExit, 0);
 +  }
 +
-+  if (Prev)
-+    changeExit(Prev, Exit, EntryDominatesExit);
++  if (PrevNode)
++    changeExit(PrevNode, Exit, EntryDominatesExit);
 +  else
 +    assert(EntryDominatesExit);
 +}
@@ -3751,19 +3626,21 @@ index 0000000..169d954
 +  orderNodes();
 +  collectInfos();
 +  createFlow();
-+  insertConditions();
++  insertConditions(false);
++  insertConditions(true);
 +  setPhiValues();
 +  rebuildSSA();
 +
 +  // Cleanup
 +  Order.clear();
 +  Visited.clear();
-+  Predicates.clear();
 +  DeletedPhis.clear();
 +  AddedPhis.clear();
++  Predicates.clear();
 +  Conditions.clear();
-+  LoopTargets.clear();
-+  LoopPred.clear();
++  Loops.clear();
++  LoopPreds.clear();
++  LoopConds.clear();
 +
 +  return true;
 +}
@@ -3938,10 +3815,10 @@ index 0000000..cab7884
 +#endif // AMDGPUSUBTARGET_H
 diff --git a/lib/Target/R600/AMDGPUTargetMachine.cpp b/lib/Target/R600/AMDGPUTargetMachine.cpp
 new file mode 100644
-index 0000000..821e864
+index 0000000..e2f00be
 --- /dev/null
 +++ b/lib/Target/R600/AMDGPUTargetMachine.cpp
-@@ -0,0 +1,154 @@
+@@ -0,0 +1,153 @@
 +//===-- AMDGPUTargetMachine.cpp - TargetMachine for hw codegen targets-----===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -4089,7 +3966,6 @@ index 0000000..821e864
 +    addPass(&FinalizeMachineBundlesID);
 +    addPass(createR600LowerConstCopy(*TM));
 +  } else {
-+    addPass(createSILowerLiteralConstantsPass(*TM));
 +    addPass(createSILowerControlFlowPass(*TM));
 +  }
 +
@@ -8389,10 +8265,10 @@ index 0000000..6dc2deb
 +#endif // AMDILEVERGREENDEVICE_H
 diff --git a/lib/Target/R600/AMDILISelDAGToDAG.cpp b/lib/Target/R600/AMDILISelDAGToDAG.cpp
 new file mode 100644
-index 0000000..a88e8c7
+index 0000000..2e726e9
 --- /dev/null
 +++ b/lib/Target/R600/AMDILISelDAGToDAG.cpp
-@@ -0,0 +1,572 @@
+@@ -0,0 +1,577 @@
 +//===-- AMDILISelDAGToDAG.cpp - A dag to dag inst selector for AMDIL ------===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -8613,7 +8489,9 @@ index 0000000..a88e8c7
 +            continue;
 +          }
 +      } else {
-+        if (!TII->isALUInstr(Use->getMachineOpcode())) {
++        if (!TII->isALUInstr(Use->getMachineOpcode()) ||
++            (TII->get(Use->getMachineOpcode()).TSFlags &
++            R600_InstFlag::VECTOR)) {
 +          continue;
 +        }
 +
@@ -8656,7 +8534,8 @@ index 0000000..a88e8c7
 +  if (ST.device()->getGeneration() <= AMDGPUDeviceInfo::HD6XXX) {
 +    const R600InstrInfo *TII =
 +        static_cast<const R600InstrInfo*>(TM.getInstrInfo());
-+    if (Result && Result->isMachineOpcode()
++    if (Result && Result->isMachineOpcode() &&
++        !(TII->get(Result->getMachineOpcode()).TSFlags & R600_InstFlag::VECTOR)
 +        && TII->isALUInstr(Result->getMachineOpcode())) {
 +      // Fold FNEG/FABS/CONST_ADDRESS
 +      // TODO: Isel can generate multiple MachineInst, we need to recursively
@@ -8726,6 +8605,8 @@ index 0000000..a88e8c7
 +    SDValue Operand = Ops[OperandIdx[i] - 1];
 +    switch (Operand.getOpcode()) {
 +    case AMDGPUISD::CONST_ADDRESS: {
++      if (i == 2)
++        break;
 +      SDValue CstOffset;
 +      if (!Operand.getValueType().isVector() &&
 +          SelectGlobalValueConstantOffset(Operand.getOperand(0), CstOffset)) {
@@ -11893,10 +11774,10 @@ index 0000000..8ef9f8c
 +add_subdirectory(MCTargetDesc)
 diff --git a/lib/Target/R600/InstPrinter/AMDGPUInstPrinter.cpp b/lib/Target/R600/InstPrinter/AMDGPUInstPrinter.cpp
 new file mode 100644
-index 0000000..fb17ab7
+index 0000000..d6450a0
 --- /dev/null
 +++ b/lib/Target/R600/InstPrinter/AMDGPUInstPrinter.cpp
-@@ -0,0 +1,153 @@
+@@ -0,0 +1,168 @@
 +//===-- AMDGPUInstPrinter.cpp - AMDGPU MC Inst -> ASM ---------------------===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -11936,6 +11817,21 @@ index 0000000..fb17ab7
 +    O << Op.getFPImm();
 +  } else {
 +    assert(!"unknown operand type in printOperand");
++  }
++}
++
++void AMDGPUInstPrinter::printInterpSlot(const MCInst *MI, unsigned OpNum,
++                                        raw_ostream &O) {
++  unsigned Imm = MI->getOperand(OpNum).getImm();
++
++  if (Imm == 2) {
++    O << "P0";
++  } else if (Imm == 1) {
++    O << "P20";
++  } else if (Imm == 0) {
++    O << "P10";
++  } else {
++    assert(!"Invalid interpolation parameter slot");
 +  }
 +}
 +
@@ -12052,10 +11948,10 @@ index 0000000..fb17ab7
 +#include "AMDGPUGenAsmWriter.inc"
 diff --git a/lib/Target/R600/InstPrinter/AMDGPUInstPrinter.h b/lib/Target/R600/InstPrinter/AMDGPUInstPrinter.h
 new file mode 100644
-index 0000000..e775c4c
+index 0000000..767a708
 --- /dev/null
 +++ b/lib/Target/R600/InstPrinter/AMDGPUInstPrinter.h
-@@ -0,0 +1,53 @@
+@@ -0,0 +1,54 @@
 +//===-- AMDGPUInstPrinter.h - AMDGPU MC Inst -> ASM interface ---*- C++ -*-===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -12091,6 +11987,7 @@ index 0000000..e775c4c
 +
 +private:
 +  void printOperand(const MCInst *MI, unsigned OpNo, raw_ostream &O);
++  void printInterpSlot(const MCInst *MI, unsigned OpNum, raw_ostream &O);
 +  void printMemOperand(const MCInst *MI, unsigned OpNo, raw_ostream &O);
 +  void printIfSet(const MCInst *MI, unsigned OpNo, raw_ostream &O, StringRef Asm);
 +  void printAbs(const MCInst *MI, unsigned OpNo, raw_ostream &O);
@@ -12436,10 +12333,10 @@ index 0000000..3ad0fa6
 +#endif // AMDGPUMCASMINFO_H
 diff --git a/lib/Target/R600/MCTargetDesc/AMDGPUMCCodeEmitter.h b/lib/Target/R600/MCTargetDesc/AMDGPUMCCodeEmitter.h
 new file mode 100644
-index 0000000..3b3816a
+index 0000000..8721f80
 --- /dev/null
 +++ b/lib/Target/R600/MCTargetDesc/AMDGPUMCCodeEmitter.h
-@@ -0,0 +1,56 @@
+@@ -0,0 +1,49 @@
 +//===-- AMDGPUCodeEmitter.h - AMDGPU Code Emitter interface -----------------===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -12481,13 +12378,6 @@ index 0000000..3b3816a
 +    return 0;
 +  }
 +  virtual unsigned GPR2AlignEncode(const MCInst &MI, unsigned OpNo,
-+                                   SmallVectorImpl<MCFixup> &Fixups) const {
-+    return 0;
-+  }
-+  virtual uint64_t VOPPostEncode(const MCInst &MI, uint64_t Value) const {
-+    return Value;
-+  }
-+  virtual uint64_t i32LiteralEncode(const MCInst &MI, unsigned OpNo,
 +                                   SmallVectorImpl<MCFixup> &Fixups) const {
 +    return 0;
 +  }
@@ -12745,10 +12635,10 @@ index 0000000..8894a76
 +include $(LEVEL)/Makefile.common
 diff --git a/lib/Target/R600/MCTargetDesc/R600MCCodeEmitter.cpp b/lib/Target/R600/MCTargetDesc/R600MCCodeEmitter.cpp
 new file mode 100644
-index 0000000..e061b18
+index 0000000..115fe8d
 --- /dev/null
 +++ b/lib/Target/R600/MCTargetDesc/R600MCCodeEmitter.cpp
-@@ -0,0 +1,580 @@
+@@ -0,0 +1,582 @@
 +//===- R600MCCodeEmitter.cpp - Code Emitter for R600->Cayman GPU families -===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -12913,10 +12803,12 @@ index 0000000..e061b18
 +    case AMDGPU::VTX_READ_PARAM_8_eg:
 +    case AMDGPU::VTX_READ_PARAM_16_eg:
 +    case AMDGPU::VTX_READ_PARAM_32_eg:
++    case AMDGPU::VTX_READ_PARAM_128_eg:
 +    case AMDGPU::VTX_READ_GLOBAL_8_eg:
 +    case AMDGPU::VTX_READ_GLOBAL_32_eg:
 +    case AMDGPU::VTX_READ_GLOBAL_128_eg:
-+    case AMDGPU::TEX_VTX_CONSTBUF: {
++    case AMDGPU::TEX_VTX_CONSTBUF:
++    case AMDGPU::TEX_VTX_TEXBUF : {
 +      uint64_t InstWord01 = getBinaryCodeForInstr(MI, Fixups);
 +      uint32_t InstWord2 = MI.getOperand(2).getImm(); // Offset
 +
@@ -13331,10 +13223,10 @@ index 0000000..e061b18
 +#include "AMDGPUGenMCCodeEmitter.inc"
 diff --git a/lib/Target/R600/MCTargetDesc/SIMCCodeEmitter.cpp b/lib/Target/R600/MCTargetDesc/SIMCCodeEmitter.cpp
 new file mode 100644
-index 0000000..584d290
+index 0000000..6dfbbe8
 --- /dev/null
 +++ b/lib/Target/R600/MCTargetDesc/SIMCCodeEmitter.cpp
-@@ -0,0 +1,131 @@
+@@ -0,0 +1,235 @@
 +//===-- SIMCCodeEmitter.cpp - SI Code Emitter -------------------------------===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -13364,6 +13256,13 @@ index 0000000..584d290
 +using namespace llvm;
 +
 +namespace {
++
++/// \brief Helper type used in encoding
++typedef union {
++  int32_t I;
++  float F;
++} IntFloatUnion;
++
 +class SIMCCodeEmitter : public  AMDGPUMCCodeEmitter {
 +  SIMCCodeEmitter(const SIMCCodeEmitter &); // DO NOT IMPLEMENT
 +  void operator=(const SIMCCodeEmitter &); // DO NOT IMPLEMENT
@@ -13371,6 +13270,15 @@ index 0000000..584d290
 +  const MCRegisterInfo &MRI;
 +  const MCSubtargetInfo &STI;
 +  MCContext &Ctx;
++
++  /// \brief Encode a sequence of registers with the correct alignment.
++  unsigned GPRAlign(const MCInst &MI, unsigned OpNo, unsigned shift) const;
++
++  /// \brief Can this operand also contain immediate values?
++  bool isSrcOperand(const MCInstrDesc &Desc, unsigned OpNo) const;
++
++  /// \brief Encode an fp or int literal
++  uint32_t getLitEncoding(const MCOperand &MO) const;
 +
 +public:
 +  SIMCCodeEmitter(const MCInstrInfo &mcii, const MCRegisterInfo &mri,
@@ -13386,11 +13294,6 @@ index 0000000..584d290
 +  /// \returns the encoding for an MCOperand.
 +  virtual uint64_t getMachineOpValue(const MCInst &MI, const MCOperand &MO,
 +                                     SmallVectorImpl<MCFixup> &Fixups) const;
-+
-+public:
-+
-+  /// \brief Encode a sequence of registers with the correct alignment.
-+  unsigned GPRAlign(const MCInst &MI, unsigned OpNo, unsigned shift) const;
 +
 +  /// \brief Encoding for when 2 consecutive registers are used
 +  virtual unsigned GPR2AlignEncode(const MCInst &MI, unsigned OpNo,
@@ -13410,39 +13313,131 @@ index 0000000..584d290
 +  return new SIMCCodeEmitter(MCII, MRI, STI, Ctx);
 +}
 +
++bool SIMCCodeEmitter::isSrcOperand(const MCInstrDesc &Desc,
++                                   unsigned OpNo) const {
++
++  unsigned RegClass = Desc.OpInfo[OpNo].RegClass;
++  return (AMDGPU::SSrc_32RegClassID == RegClass) ||
++         (AMDGPU::SSrc_64RegClassID == RegClass) ||
++         (AMDGPU::VSrc_32RegClassID == RegClass) ||
++         (AMDGPU::VSrc_64RegClassID == RegClass);
++}
++
++uint32_t SIMCCodeEmitter::getLitEncoding(const MCOperand &MO) const {
++
++  IntFloatUnion Imm;
++  if (MO.isImm())
++    Imm.I = MO.getImm();
++  else if (MO.isFPImm())
++    Imm.F = MO.getFPImm();
++  else
++    return ~0;
++
++  if (Imm.I >= 0 && Imm.I <= 64)
++    return 128 + Imm.I;
++
++  if (Imm.I >= -16 && Imm.I <= -1)
++    return 192 + abs(Imm.I);
++
++  if (Imm.F == 0.5f)
++    return 240;
++
++  if (Imm.F == -0.5f)
++    return 241;
++
++  if (Imm.F == 1.0f)
++    return 242;
++
++  if (Imm.F == -1.0f)
++    return 243;
++
++  if (Imm.F == 2.0f)
++    return 244;
++
++  if (Imm.F == -2.0f)
++    return 245;
++
++  if (Imm.F == 4.0f)
++    return 246;
++
++  if (Imm.F == 4.0f)
++    return 247;
++
++  return 255;
++}
++
 +void SIMCCodeEmitter::EncodeInstruction(const MCInst &MI, raw_ostream &OS,
 +                                       SmallVectorImpl<MCFixup> &Fixups) const {
++
 +  uint64_t Encoding = getBinaryCodeForInstr(MI, Fixups);
-+  unsigned bytes = MCII.get(MI.getOpcode()).getSize();
++  const MCInstrDesc &Desc = MCII.get(MI.getOpcode());
++  unsigned bytes = Desc.getSize();
++
 +  for (unsigned i = 0; i < bytes; i++) {
 +    OS.write((uint8_t) ((Encoding >> (8 * i)) & 0xff));
++  }
++
++  if (bytes > 4)
++    return;
++
++  // Check for additional literals in SRC0/1/2 (Op 1/2/3)
++  for (unsigned i = 0, e = MI.getNumOperands(); i < e; ++i) {
++
++    // Check if this operand should be encoded as [SV]Src
++    if (!isSrcOperand(Desc, i))
++      continue;
++
++    // Is this operand a literal immediate?
++    const MCOperand &Op = MI.getOperand(i);
++    if (getLitEncoding(Op) != 255)
++      continue;
++
++    // Yes! Encode it
++    IntFloatUnion Imm;
++    if (Op.isImm())
++      Imm.I = Op.getImm();
++    else
++      Imm.F = Op.getFPImm();
++
++    for (unsigned j = 0; j < 4; j++) {
++      OS.write((uint8_t) ((Imm.I >> (8 * j)) & 0xff));
++    }
++
++    // Only one literal value allowed
++    break;
 +  }
 +}
 +
 +uint64_t SIMCCodeEmitter::getMachineOpValue(const MCInst &MI,
 +                                            const MCOperand &MO,
 +                                       SmallVectorImpl<MCFixup> &Fixups) const {
-+  if (MO.isReg()) {
++  if (MO.isReg())
 +    return MRI.getEncodingValue(MO.getReg());
-+  } else if (MO.isImm()) {
-+    return MO.getImm();
-+  } else if (MO.isFPImm()) {
-+    // XXX: Not all instructions can use inline literals
-+    // XXX: We should make sure this is a 32-bit constant
-+    union {
-+      float F;
-+      uint32_t I;
-+    } Imm;
-+    Imm.F = MO.getFPImm();
-+    return Imm.I;
-+  } else if (MO.isExpr()) {
++
++  if (MO.isExpr()) {
 +    const MCExpr *Expr = MO.getExpr();
 +    MCFixupKind Kind = MCFixupKind(FK_PCRel_4);
 +    Fixups.push_back(MCFixup::Create(0, Expr, Kind, MI.getLoc()));
 +    return 0;
-+  } else{
-+    llvm_unreachable("Encoding of this operand type is not supported yet.");
 +  }
++
++  // Figure out the operand number, needed for isSrcOperand check
++  unsigned OpNo = 0;
++  for (unsigned e = MI.getNumOperands(); OpNo < e; ++OpNo) {
++    if (&MO == &MI.getOperand(OpNo))
++      break;
++  }
++
++  const MCInstrDesc &Desc = MCII.get(MI.getOpcode());
++  if (isSrcOperand(Desc, OpNo)) {
++    uint32_t Enc = getLitEncoding(MO);
++    if (Enc != ~0U && (Enc != 255 || Desc.getSize() == 4))
++      return Enc;
++
++  } else if (MO.isImm())
++    return MO.getImm();
++
++  llvm_unreachable("Encoding of this operand type is not supported yet.");
 +  return 0;
 +}
 +
@@ -13455,6 +13450,7 @@ index 0000000..584d290
 +  unsigned regCode = MRI.getEncodingValue(MI.getOperand(OpNo).getReg());
 +  return (regCode & 0xff) >> shift;
 +}
++
 +unsigned SIMCCodeEmitter::GPR2AlignEncode(const MCInst &MI,
 +                                          unsigned OpNo ,
 +                                        SmallVectorImpl<MCFixup> &Fixup) const {
@@ -13932,7 +13928,7 @@ index 0000000..c00c349
 +}
 diff --git a/lib/Target/R600/R600ISelLowering.cpp b/lib/Target/R600/R600ISelLowering.cpp
 new file mode 100644
-index 0000000..a479cee
+index 0000000..9c38522
 --- /dev/null
 +++ b/lib/Target/R600/R600ISelLowering.cpp
 @@ -0,0 +1,1195 @@
@@ -15018,7 +15014,7 @@ index 0000000..a479cee
 +                                                    AMDGPUAS::PARAM_I_ADDRESS);
 +    SDValue Arg = DAG.getExtLoad(ISD::ZEXTLOAD, DL, VT, DAG.getRoot(),
 +                                DAG.getConstant(ParamOffsetBytes, MVT::i32),
-+                                       MachinePointerInfo(new Argument(PtrTy)),
++                                       MachinePointerInfo(UndefValue::get(PtrTy)),
 +                                       ArgVT, false, false, ArgBytes);
 +    InVals.push_back(Arg);
 +    ParamOffsetBytes += ArgBytes;
@@ -16206,10 +16202,10 @@ index 0000000..278fad1
 +#endif // R600INSTRINFO_H_
 diff --git a/lib/Target/R600/R600Instructions.td b/lib/Target/R600/R600Instructions.td
 new file mode 100644
-index 0000000..d307ed2
+index 0000000..409da07
 --- /dev/null
 +++ b/lib/Target/R600/R600Instructions.td
-@@ -0,0 +1,1917 @@
+@@ -0,0 +1,1976 @@
 +//===-- R600Instructions.td - R600 Instruction defs  -------*- tablegen -*-===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -16611,7 +16607,7 @@ index 0000000..d307ed2
 +def TEX_SHADOW : PatLeaf<
 +  (imm),
 +  [{uint32_t TType = (uint32_t)N->getZExtValue();
-+    return (TType >= 6 && TType <= 8) || TType == 13;
++    return (TType >= 6 && TType <= 8) || (TType >= 11 && TType <= 13);
 +  }]
 +>;
 +
@@ -17703,6 +17699,10 @@ index 0000000..d307ed2
 +  [(set (i32 R600_TReg32_X:$dst), (load_param ADDRVTX_READ:$ptr))]
 +>;
 +
++def VTX_READ_PARAM_128_eg : VTX_READ_128_eg <0,
++  [(set (v4i32 R600_Reg128:$dst), (load_param ADDRVTX_READ:$ptr))]
++>;
++
 +//===----------------------------------------------------------------------===//
 +// VTX Read from global memory space
 +//===----------------------------------------------------------------------===//
@@ -17798,6 +17798,7 @@ index 0000000..d307ed2
 +  (ins R600_Reg32:$src0, i32imm:$src1, i32imm:$flags),
 +  "", [], NullALU> {
 +  let FlagOperandIdx = 3;
++  let isTerminator = 1;
 +}
 +
 +let isTerminator = 1, isBranch = 1, isBarrier = 1 in {
@@ -17924,6 +17925,60 @@ index 0000000..d307ed2
 +//
 +// Inst{127-96} = 0;
 +}
++
++def TEX_VTX_TEXBUF:
++  InstR600ISA <(outs R600_Reg128:$dst), (ins MEMxi:$ptr, i32imm:$BUFFER_ID), "TEX_VTX_EXPLICIT_READ $dst, $ptr",
++      [(set R600_Reg128:$dst, (int_R600_load_texbuf ADDRGA_VAR_OFFSET:$ptr, imm:$BUFFER_ID))]>,
++VTX_WORD1_GPR, VTX_WORD0 {
++
++let VC_INST = 0;
++let FETCH_TYPE = 2;
++let FETCH_WHOLE_QUAD = 0;
++let SRC_REL = 0;
++let SRC_SEL_X = 0;
++let DST_REL = 0;
++let USE_CONST_FIELDS = 1;
++let NUM_FORMAT_ALL = 0;
++let FORMAT_COMP_ALL = 0;
++let SRF_MODE_ALL = 1;
++let MEGA_FETCH_COUNT = 16;
++let DST_SEL_X        = 0;
++let DST_SEL_Y        = 1;
++let DST_SEL_Z        = 2;
++let DST_SEL_W        = 3;
++let DATA_FORMAT      = 0;
++
++let Inst{31-0} = Word0;
++let Inst{63-32} = Word1;
++
++// LLVM can only encode 64-bit instructions, so these fields are manually
++// encoded in R600CodeEmitter
++//
++// bits<16> OFFSET;
++// bits<2>  ENDIAN_SWAP = 0;
++// bits<1>  CONST_BUF_NO_STRIDE = 0;
++// bits<1>  MEGA_FETCH = 0;
++// bits<1>  ALT_CONST = 0;
++// bits<2>  BUFFER_INDEX_MODE = 0;
++
++
++
++// VTX_WORD2 (LLVM can only encode 64-bit instructions, so WORD2 encoding
++// is done in R600CodeEmitter
++//
++// Inst{79-64} = OFFSET;
++// Inst{81-80} = ENDIAN_SWAP;
++// Inst{82}    = CONST_BUF_NO_STRIDE;
++// Inst{83}    = MEGA_FETCH;
++// Inst{84}    = ALT_CONST;
++// Inst{86-85} = BUFFER_INDEX_MODE;
++// Inst{95-86} = 0; Reserved
++
++// VTX_WORD3 (Padding)
++//
++// Inst{127-96} = 0;
++}
++
 +
 +
 +//===--------------------------------------------------------------------===//
@@ -18129,10 +18184,10 @@ index 0000000..d307ed2
 +} // End isR600toCayman Predicate
 diff --git a/lib/Target/R600/R600Intrinsics.td b/lib/Target/R600/R600Intrinsics.td
 new file mode 100644
-index 0000000..284d4d8
+index 0000000..6046f0d
 --- /dev/null
 +++ b/lib/Target/R600/R600Intrinsics.td
-@@ -0,0 +1,32 @@
+@@ -0,0 +1,57 @@
 +//===-- R600Intrinsics.td - R600 Instrinsic defs -------*- tablegen -*-----===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -18151,6 +18206,8 @@ index 0000000..284d4d8
 +    Intrinsic<[llvm_float_ty], [llvm_i32_ty], [IntrNoMem]>;
 +  def int_R600_interp_input :
 +    Intrinsic<[llvm_float_ty], [llvm_i32_ty, llvm_i32_ty], [IntrNoMem]>;
++  def int_R600_load_texbuf :
++    Intrinsic<[llvm_v4f32_ty], [llvm_i32_ty, llvm_i32_ty], [IntrNoMem]>;
 +  def int_R600_store_swizzle :
 +    Intrinsic<[], [llvm_v4f32_ty, llvm_i32_ty, llvm_i32_ty], []>;
 +
@@ -18165,9 +18222,32 @@ index 0000000..284d4d8
 +  def int_R600_store_dummy :
 +      Intrinsic<[], [llvm_i32_ty], []>;
 +}
++let TargetPrefix = "r600", isTarget = 1 in {
++
++class R600ReadPreloadRegisterIntrinsic<string name>
++  : Intrinsic<[llvm_i32_ty], [], [IntrNoMem]>,
++    GCCBuiltin<name>;
++
++multiclass R600ReadPreloadRegisterIntrinsic_xyz<string prefix> {
++  def _x : R600ReadPreloadRegisterIntrinsic<!strconcat(prefix, "_x")>;
++  def _y : R600ReadPreloadRegisterIntrinsic<!strconcat(prefix, "_y")>;
++  def _z : R600ReadPreloadRegisterIntrinsic<!strconcat(prefix, "_z")>;
++}
++
++defm int_r600_read_global_size : R600ReadPreloadRegisterIntrinsic_xyz <
++                                       "__builtin_r600_read_global_size">;
++defm int_r600_read_local_size : R600ReadPreloadRegisterIntrinsic_xyz <
++                                       "__builtin_r600_read_local_size">;
++defm int_r600_read_ngroups : R600ReadPreloadRegisterIntrinsic_xyz <
++                                       "__builtin_r600_read_ngroups">;
++defm int_r600_read_tgid : R600ReadPreloadRegisterIntrinsic_xyz <
++                                       "__builtin_r600_read_tgid">;
++defm int_r600_read_tidig : R600ReadPreloadRegisterIntrinsic_xyz <
++                                       "__builtin_r600_read_tidig">;
++}
 diff --git a/lib/Target/R600/R600LowerConstCopy.cpp b/lib/Target/R600/R600LowerConstCopy.cpp
 new file mode 100644
-index 0000000..2557e8f
+index 0000000..c8c27a8
 --- /dev/null
 +++ b/lib/Target/R600/R600LowerConstCopy.cpp
 @@ -0,0 +1,222 @@
@@ -18353,7 +18433,7 @@ index 0000000..2557e8f
 +            int ConstMovSel =
 +                TII->getOperandIdx(CstMov->getOpcode(), R600Operands::SRC0_SEL);
 +            unsigned ConstIndex = CstMov->getOperand(ConstMovSel).getImm();
-+            if (canFoldInBundle(CP, ConstIndex)) {
++            if (MI->isInsideBundle() && canFoldInBundle(CP, ConstIndex)) {
 +              TII->setImmOperand(MI, OpTable[SrcOp][1], ConstIndex);
 +              MI->getOperand(SrcIdx).setReg(AMDGPU::ALU_CONST);
 +            } else {
@@ -18458,10 +18538,10 @@ index 0000000..41e4894
 +#endif //R600MACHINEFUNCTIONINFO_H
 diff --git a/lib/Target/R600/R600RegisterInfo.cpp b/lib/Target/R600/R600RegisterInfo.cpp
 new file mode 100644
-index 0000000..33e858d
+index 0000000..bbd7995
 --- /dev/null
 +++ b/lib/Target/R600/R600RegisterInfo.cpp
-@@ -0,0 +1,93 @@
+@@ -0,0 +1,99 @@
 +//===-- R600RegisterInfo.cpp - R600 Register Information ------------------===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -18510,6 +18590,12 @@ index 0000000..33e858d
 +
 +  for (TargetRegisterClass::iterator I = AMDGPU::R600_AddrRegClass.begin(),
 +                        E = AMDGPU::R600_AddrRegClass.end(); I != E; ++I) {
++    Reserved.set(*I);
++  }
++
++  for (TargetRegisterClass::iterator I = AMDGPU::TRegMemRegClass.begin(),
++                                     E = AMDGPU::TRegMemRegClass.end();
++                                     I !=  E; ++I) {
 +    Reserved.set(*I);
 +  }
 +
@@ -18618,7 +18704,7 @@ index 0000000..c170ccb
 +#endif // AMDIDSAREGISTERINFO_H_
 diff --git a/lib/Target/R600/R600RegisterInfo.td b/lib/Target/R600/R600RegisterInfo.td
 new file mode 100644
-index 0000000..3812eb7
+index 0000000..a7d847a
 --- /dev/null
 +++ b/lib/Target/R600/R600RegisterInfo.td
 @@ -0,0 +1,146 @@
@@ -18705,7 +18791,7 @@ index 0000000..3812eb7
 +} // End isAllocatable = 0
 +
 +def R600_TReg32_X : RegisterClass <"AMDGPU", [f32, i32], 32,
-+                                   (add (sequence "T%u_X", 0, 127))>;
++                                   (add (sequence "T%u_X", 0, 127), AR_X)>;
 +
 +def R600_TReg32_Y : RegisterClass <"AMDGPU", [f32, i32], 32,
 +                                   (add (sequence "T%u_Y", 0, 127))>;
@@ -19306,10 +19392,10 @@ index 0000000..832e44d
 +}
 diff --git a/lib/Target/R600/SIISelLowering.cpp b/lib/Target/R600/SIISelLowering.cpp
 new file mode 100644
-index 0000000..202584b
+index 0000000..694c045
 --- /dev/null
 +++ b/lib/Target/R600/SIISelLowering.cpp
-@@ -0,0 +1,489 @@
+@@ -0,0 +1,399 @@
 +//===-- SIISelLowering.cpp - SI DAG Lowering Implementation ---------------===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -19343,8 +19429,7 @@ index 0000000..202584b
 +  addRegisterClass(MVT::f32, &AMDGPU::VReg_32RegClass);
 +  addRegisterClass(MVT::i32, &AMDGPU::VReg_32RegClass);
 +  addRegisterClass(MVT::i64, &AMDGPU::SReg_64RegClass);
-+  addRegisterClass(MVT::i1, &AMDGPU::SCCRegRegClass);
-+  addRegisterClass(MVT::i1, &AMDGPU::VCCRegRegClass);
++  addRegisterClass(MVT::i1, &AMDGPU::SReg_64RegClass);
 +
 +  addRegisterClass(MVT::v1i32, &AMDGPU::VReg_32RegClass);
 +  addRegisterClass(MVT::v2i32, &AMDGPU::VReg_64RegClass);
@@ -19353,8 +19438,6 @@ index 0000000..202584b
 +  addRegisterClass(MVT::v16i32, &AMDGPU::VReg_512RegClass);
 +
 +  computeRegisterProperties();
-+
-+  setOperationAction(ISD::AND, MVT::i1, Custom);
 +
 +  setOperationAction(ISD::ADD, MVT::i64, Legal);
 +  setOperationAction(ISD::ADD, MVT::i32, Legal);
@@ -19386,13 +19469,11 @@ index 0000000..202584b
 +    return AMDGPUTargetLowering::EmitInstrWithCustomInserter(MI, BB);
 +  case AMDGPU::BRANCH: return BB;
 +  case AMDGPU::CLAMP_SI:
-+    BuildMI(*BB, I, BB->findDebugLoc(I), TII->get(AMDGPU::V_MOV_B32_e64))
++    BuildMI(*BB, I, BB->findDebugLoc(I), TII->get(AMDGPU::V_ADD_F32_e64))
 +           .addOperand(MI->getOperand(0))
 +           .addOperand(MI->getOperand(1))
-+           // VSRC1-2 are unused, but we still need to fill all the
-+           // operand slots, so we just reuse the VSRC0 operand
-+           .addOperand(MI->getOperand(1))
-+           .addOperand(MI->getOperand(1))
++           .addImm(0x80) // SRC1
++           .addImm(0x80) // SRC2
 +           .addImm(0) // ABS
 +           .addImm(1) // CLAMP
 +           .addImm(0) // OMOD
@@ -19401,13 +19482,11 @@ index 0000000..202584b
 +    break;
 +
 +  case AMDGPU::FABS_SI:
-+    BuildMI(*BB, I, BB->findDebugLoc(I), TII->get(AMDGPU::V_MOV_B32_e64))
++    BuildMI(*BB, I, BB->findDebugLoc(I), TII->get(AMDGPU::V_ADD_F32_e64))
 +                 .addOperand(MI->getOperand(0))
 +                 .addOperand(MI->getOperand(1))
-+                 // VSRC1-2 are unused, but we still need to fill all the
-+                 // operand slots, so we just reuse the VSRC0 operand
-+                 .addOperand(MI->getOperand(1))
-+                 .addOperand(MI->getOperand(1))
++                 .addImm(0x80) // SRC1
++                 .addImm(0x80) // SRC2
 +                 .addImm(1) // ABS
 +                 .addImm(0) // CLAMP
 +                 .addImm(0) // OMOD
@@ -19416,13 +19495,11 @@ index 0000000..202584b
 +    break;
 +
 +  case AMDGPU::FNEG_SI:
-+    BuildMI(*BB, I, BB->findDebugLoc(I), TII->get(AMDGPU::V_MOV_B32_e64))
++    BuildMI(*BB, I, BB->findDebugLoc(I), TII->get(AMDGPU::V_ADD_F32_e64))
 +                 .addOperand(MI->getOperand(0))
 +                 .addOperand(MI->getOperand(1))
-+                 // VSRC1-2 are unused, but we still need to fill all the
-+                 // operand slots, so we just reuse the VSRC0 operand
-+                 .addOperand(MI->getOperand(1))
-+                 .addOperand(MI->getOperand(1))
++                 .addImm(0x80) // SRC1
++                 .addImm(0x80) // SRC2
 +                 .addImm(0) // ABS
 +                 .addImm(0) // CLAMP
 +                 .addImm(0) // OMOD
@@ -19438,14 +19515,8 @@ index 0000000..202584b
 +  case AMDGPU::SI_INTERP:
 +    LowerSI_INTERP(MI, *BB, I, MRI);
 +    break;
-+  case AMDGPU::SI_INTERP_CONST:
-+    LowerSI_INTERP_CONST(MI, *BB, I, MRI);
-+    break;
 +  case AMDGPU::SI_WQM:
 +    LowerSI_WQM(MI, *BB, I, MRI);
-+    break;
-+  case AMDGPU::SI_V_CNDLT:
-+    LowerSI_V_CNDLT(MI, *BB, I, MRI);
 +    break;
 +  }
 +  return BB;
@@ -19490,46 +19561,6 @@ index 0000000..202584b
 +  MI->eraseFromParent();
 +}
 +
-+void SITargetLowering::LowerSI_INTERP_CONST(MachineInstr *MI,
-+    MachineBasicBlock &BB, MachineBasicBlock::iterator I,
-+    MachineRegisterInfo &MRI) const {
-+  MachineOperand dst = MI->getOperand(0);
-+  MachineOperand attr_chan = MI->getOperand(1);
-+  MachineOperand attr = MI->getOperand(2);
-+  MachineOperand params = MI->getOperand(3);
-+  unsigned M0 = MRI.createVirtualRegister(&AMDGPU::M0RegRegClass);
-+
-+  BuildMI(BB, I, BB.findDebugLoc(I), TII->get(AMDGPU::S_MOV_B32), M0)
-+          .addOperand(params);
-+
-+  BuildMI(BB, I, BB.findDebugLoc(I), TII->get(AMDGPU::V_INTERP_MOV_F32))
-+          .addOperand(dst)
-+          .addOperand(attr_chan)
-+          .addOperand(attr)
-+          .addReg(M0);
-+
-+  MI->eraseFromParent();
-+}
-+
-+void SITargetLowering::LowerSI_V_CNDLT(MachineInstr *MI, MachineBasicBlock &BB,
-+    MachineBasicBlock::iterator I, MachineRegisterInfo & MRI) const {
-+  unsigned VCC = MRI.createVirtualRegister(&AMDGPU::SReg_64RegClass);
-+
-+  BuildMI(BB, I, BB.findDebugLoc(I),
-+          TII->get(AMDGPU::V_CMP_GT_F32_e32),
-+          VCC)
-+          .addReg(AMDGPU::SREG_LIT_0)
-+          .addOperand(MI->getOperand(1));
-+
-+  BuildMI(BB, I, BB.findDebugLoc(I), TII->get(AMDGPU::V_CNDMASK_B32_e32))
-+          .addOperand(MI->getOperand(0))
-+          .addOperand(MI->getOperand(3))
-+          .addOperand(MI->getOperand(2))
-+          .addReg(VCC);
-+
-+  MI->eraseFromParent();
-+}
-+
 +EVT SITargetLowering::getSetCCResultType(EVT VT) const {
 +  return MVT::i1;
 +}
@@ -19544,7 +19575,6 @@ index 0000000..202584b
 +  case ISD::BRCOND: return LowerBRCOND(Op, DAG);
 +  case ISD::LOAD: return LowerLOAD(Op, DAG);
 +  case ISD::SELECT_CC: return LowerSELECT_CC(Op, DAG);
-+  case ISD::AND: return Loweri1ContextSwitch(Op, DAG, ISD::AND);
 +  case ISD::INTRINSIC_WO_CHAIN: {
 +    unsigned IntrinsicID =
 +                         cast<ConstantSDNode>(Op.getOperand(0))->getZExtValue();
@@ -19559,30 +19589,6 @@ index 0000000..202584b
 +  }
 +  }
 +  return SDValue();
-+}
-+
-+/// \brief The function is for lowering i1 operations on the
-+/// VCC register.
-+///
-+/// In the VALU context, VCC is a one bit register, but in the
-+/// SALU context the VCC is a 64-bit register (1-bit per thread).  Since only
-+/// the SALU can perform operations on the VCC register, we need to promote
-+/// the operand types from i1 to i64 in order for tablegen to be able to match
-+/// this operation to the correct SALU instruction.  We do this promotion by
-+/// wrapping the operands in a CopyToReg node.
-+///
-+SDValue SITargetLowering::Loweri1ContextSwitch(SDValue Op,
-+                                               SelectionDAG &DAG,
-+                                               unsigned VCCNode) const {
-+  DebugLoc DL = Op.getDebugLoc();
-+
-+  SDValue OpNode = DAG.getNode(VCCNode, DL, MVT::i64,
-+                               DAG.getNode(SIISD::VCC_BITCAST, DL, MVT::i64,
-+                                           Op.getOperand(0)),
-+                               DAG.getNode(SIISD::VCC_BITCAST, DL, MVT::i64,
-+                                           Op.getOperand(1)));
-+
-+  return DAG.getNode(SIISD::VCC_BITCAST, DL, MVT::i1, OpNode);
 +}
 +
 +/// \brief Helper function for LowerBRCOND
@@ -19789,22 +19795,12 @@ index 0000000..202584b
 +  }
 +  return SDValue();
 +}
-+
-+#define NODE_NAME_CASE(node) case SIISD::node: return #node;
-+
-+const char* SITargetLowering::getTargetNodeName(unsigned Opcode) const {
-+  switch (Opcode) {
-+  default: return AMDGPUTargetLowering::getTargetNodeName(Opcode);
-+  NODE_NAME_CASE(VCC_AND)
-+  NODE_NAME_CASE(VCC_BITCAST)
-+  }
-+}
 diff --git a/lib/Target/R600/SIISelLowering.h b/lib/Target/R600/SIISelLowering.h
 new file mode 100644
-index 0000000..8528c24
+index 0000000..5d048f8
 --- /dev/null
 +++ b/lib/Target/R600/SIISelLowering.h
-@@ -0,0 +1,55 @@
+@@ -0,0 +1,48 @@
 +//===-- SIISelLowering.h - SI DAG Lowering Interface ------------*- C++ -*-===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -19834,15 +19830,9 @@ index 0000000..8528c24
 +              MachineBasicBlock::iterator I, unsigned Opocde) const;
 +  void LowerSI_INTERP(MachineInstr *MI, MachineBasicBlock &BB,
 +              MachineBasicBlock::iterator I, MachineRegisterInfo & MRI) const;
-+  void LowerSI_INTERP_CONST(MachineInstr *MI, MachineBasicBlock &BB,
-+              MachineBasicBlock::iterator I, MachineRegisterInfo &MRI) const;
 +  void LowerSI_WQM(MachineInstr *MI, MachineBasicBlock &BB,
 +              MachineBasicBlock::iterator I, MachineRegisterInfo & MRI) const;
-+  void LowerSI_V_CNDLT(MachineInstr *MI, MachineBasicBlock &BB,
-+              MachineBasicBlock::iterator I, MachineRegisterInfo & MRI) const;
 +
-+  SDValue Loweri1ContextSwitch(SDValue Op, SelectionDAG &DAG,
-+                                           unsigned VCCNode) const;
 +  SDValue LowerLOAD(SDValue Op, SelectionDAG &DAG) const;
 +  SDValue LowerSELECT_CC(SDValue Op, SelectionDAG &DAG) const;
 +  SDValue LowerBRCOND(SDValue Op, SelectionDAG &DAG) const;
@@ -19854,7 +19844,6 @@ index 0000000..8528c24
 +  virtual EVT getSetCCResultType(EVT VT) const;
 +  virtual SDValue LowerOperation(SDValue Op, SelectionDAG &DAG) const;
 +  virtual SDValue PerformDAGCombine(SDNode *N, DAGCombinerInfo &DCI) const;
-+  virtual const char* getTargetNodeName(unsigned Opcode) const;
 +};
 +
 +} // End namespace llvm
@@ -20221,10 +20210,10 @@ index 0000000..24fc929
 +}
 diff --git a/lib/Target/R600/SIInstrFormats.td b/lib/Target/R600/SIInstrFormats.td
 new file mode 100644
-index 0000000..aea3b5a
+index 0000000..40e37aa
 --- /dev/null
 +++ b/lib/Target/R600/SIInstrFormats.td
-@@ -0,0 +1,146 @@
+@@ -0,0 +1,188 @@
 +//===-- SIInstrFormats.td - SI Instruction Formats ------------------------===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -20248,40 +20237,23 @@ index 0000000..aea3b5a
 +//
 +//===----------------------------------------------------------------------===//
 +
-+class VOP3b_2IN <bits<9> op, string opName, RegisterClass dstClass,
-+                 RegisterClass src0Class, RegisterClass src1Class,
-+                 list<dag> pattern>
-+  : VOP3b <op, (outs dstClass:$vdst),
-+               (ins src0Class:$src0, src1Class:$src1, InstFlag:$src2, InstFlag:$sdst,
-+                    InstFlag:$omod, InstFlag:$neg),
-+           opName, pattern
-+>;
-+
-+
-+class VOP3_1_32 <bits<9> op, string opName, list<dag> pattern>
-+  : VOP3b_2IN <op, opName, SReg_1, AllReg_32, VReg_32, pattern>;
-+
 +class VOP3_32 <bits<9> op, string opName, list<dag> pattern>
-+  : VOP3 <op, (outs VReg_32:$dst), (ins AllReg_32:$src0, VReg_32:$src1, VReg_32:$src2, i32imm:$src3, i32imm:$src4, i32imm:$src5, i32imm:$src6), opName, pattern>;
++  : VOP3 <op, (outs VReg_32:$dst), (ins VSrc_32:$src0, VReg_32:$src1, VReg_32:$src2, i32imm:$src3, i32imm:$src4, i32imm:$src5, i32imm:$src6), opName, pattern>;
 +
 +class VOP3_64 <bits<9> op, string opName, list<dag> pattern>
-+  : VOP3 <op, (outs VReg_64:$dst), (ins AllReg_64:$src0, VReg_64:$src1, VReg_64:$src2, i32imm:$src3, i32imm:$src4, i32imm:$src5, i32imm:$src6), opName, pattern>;
-+
++  : VOP3 <op, (outs VReg_64:$dst), (ins VSrc_64:$src0, VReg_64:$src1, VReg_64:$src2, i32imm:$src3, i32imm:$src4, i32imm:$src5, i32imm:$src6), opName, pattern>;
 +
 +class SOP1_32 <bits<8> op, string opName, list<dag> pattern>
-+  : SOP1 <op, (outs SReg_32:$dst), (ins SReg_32:$src0), opName, pattern>;
++  : SOP1 <op, (outs SReg_32:$dst), (ins SSrc_32:$src0), opName, pattern>;
 +
 +class SOP1_64 <bits<8> op, string opName, list<dag> pattern>
-+  : SOP1 <op, (outs SReg_64:$dst), (ins SReg_64:$src0), opName, pattern>;
++  : SOP1 <op, (outs SReg_64:$dst), (ins SSrc_64:$src0), opName, pattern>;
 +
 +class SOP2_32 <bits<7> op, string opName, list<dag> pattern>
-+  : SOP2 <op, (outs SReg_32:$dst), (ins SReg_32:$src0, SReg_32:$src1), opName, pattern>;
++  : SOP2 <op, (outs SReg_32:$dst), (ins SSrc_32:$src0, SSrc_32:$src1), opName, pattern>;
 +
 +class SOP2_64 <bits<7> op, string opName, list<dag> pattern>
-+  : SOP2 <op, (outs SReg_64:$dst), (ins SReg_64:$src0, SReg_64:$src1), opName, pattern>;
-+
-+class SOP2_VCC <bits<7> op, string opName, list<dag> pattern>
-+  : SOP2 <op, (outs SReg_1:$vcc), (ins SReg_64:$src0, SReg_64:$src1), opName, pattern>;
++  : SOP2 <op, (outs SReg_64:$dst), (ins SSrc_64:$src0, SSrc_64:$src1), opName, pattern>;
 +
 +class VOP1_Helper <bits<8> op, RegisterClass vrc, RegisterClass arc,
 +                   string opName, list<dag> pattern> : 
@@ -20290,7 +20262,7 @@ index 0000000..aea3b5a
 +  >;
 +
 +multiclass VOP1_32 <bits<8> op, string opName, list<dag> pattern> {
-+  def _e32: VOP1_Helper <op, VReg_32, AllReg_32, opName, pattern>;
++  def _e32: VOP1_Helper <op, VReg_32, VSrc_32, opName, pattern>;
 +  def _e64 : VOP3_32 <{1, 1, op{6}, op{5}, op{4}, op{3}, op{2}, op{1}, op{0}},
 +                      opName, []
 +  >;
@@ -20298,7 +20270,7 @@ index 0000000..aea3b5a
 +
 +multiclass VOP1_64 <bits<8> op, string opName, list<dag> pattern> {
 +
-+  def _e32 : VOP1_Helper <op, VReg_64, AllReg_64, opName, pattern>;
++  def _e32 : VOP1_Helper <op, VReg_64, VSrc_64, opName, pattern>;
 +
 +  def _e64 : VOP3_64 <
 +    {1, 1, op{6}, op{5}, op{4}, op{3}, op{2}, op{1}, op{0}},
@@ -20314,7 +20286,7 @@ index 0000000..aea3b5a
 +
 +multiclass VOP2_32 <bits<6> op, string opName, list<dag> pattern> {
 +
-+  def _e32 : VOP2_Helper <op, VReg_32, AllReg_32, opName, pattern>;
++  def _e32 : VOP2_Helper <op, VReg_32, VSrc_32, opName, pattern>;
 +
 +  def _e64 : VOP3_32 <{1, 0, 0, op{5}, op{4}, op{3}, op{2}, op{1}, op{0}},
 +                      opName, []
@@ -20322,7 +20294,7 @@ index 0000000..aea3b5a
 +}
 +
 +multiclass VOP2_64 <bits<6> op, string opName, list<dag> pattern> {
-+  def _e32: VOP2_Helper <op, VReg_64, AllReg_64, opName, pattern>;
++  def _e32: VOP2_Helper <op, VReg_64, VSrc_64, opName, pattern>;
 +
 +  def _e64 : VOP3_64 <
 +    {1, 0, 0, op{5}, op{4}, op{3}, op{2}, op{1}, op{0}},
@@ -20336,47 +20308,106 @@ index 0000000..aea3b5a
 +class SOPK_64 <bits<5> op, string opName, list<dag> pattern>
 +  : SOPK <op, (outs SReg_64:$dst), (ins i16imm:$src0), opName, pattern>;
 +
-+class VOPC_Helper <bits<8> op, RegisterClass vrc, RegisterClass arc,
-+                 string opName, list<dag> pattern> :
-+  VOPC <
-+    op, (ins arc:$src0, vrc:$src1), opName, pattern
-+  >;
++multiclass VOPC_Helper <bits<8> op, RegisterClass vrc, RegisterClass arc,
++                        string opName, list<dag> pattern> {
 +
-+multiclass VOPC_32 <bits<9> op, string opName, list<dag> pattern> {
-+
-+  def _e32 : VOPC_Helper <
-+    {op{7}, op{6}, op{5}, op{4}, op{3}, op{2}, op{1}, op{0}},
-+    VReg_32, AllReg_32, opName, pattern
-+  >;
-+
-+  def _e64 : VOP3_1_32 <
-+    op,
-+    opName, pattern
-+  >;
-+}
-+
-+multiclass VOPC_64 <bits<8> op, string opName, list<dag> pattern> {
-+
-+  def _e32 : VOPC_Helper <op, VReg_64, AllReg_64, opName, pattern>;
-+
-+  def _e64 : VOP3_64 <
++  def _e32 : VOPC <op, (ins arc:$src0, vrc:$src1), opName, pattern>;
++  def _e64 : VOP3 <
 +    {0, op{7}, op{6}, op{5}, op{4}, op{3}, op{2}, op{1}, op{0}},
-+    opName, []
-+  >;
++    (outs SReg_64:$dst),
++    (ins arc:$src0, vrc:$src1,
++         InstFlag:$abs, InstFlag:$clamp,
++         InstFlag:$omod, InstFlag:$neg),
++    opName, pattern
++  > {
++    let SRC2 = 0x80;
++  }
 +}
++
++multiclass VOPC_32 <bits<8> op, string opName, list<dag> pattern>
++  : VOPC_Helper <op, VReg_32, VSrc_32, opName, pattern>;
++
++multiclass VOPC_64 <bits<8> op, string opName, list<dag> pattern>
++  : VOPC_Helper <op, VReg_64, VSrc_64, opName, pattern>;
 +
 +class SOPC_32 <bits<7> op, string opName, list<dag> pattern>
-+  : SOPC <op, (outs SCCReg:$dst), (ins SReg_32:$src0, SReg_32:$src1), opName, pattern>;
++  : SOPC <op, (outs SCCReg:$dst), (ins SSrc_32:$src0, SSrc_32:$src1), opName, pattern>;
 +
 +class SOPC_64 <bits<7> op, string opName, list<dag> pattern>
-+  : SOPC <op, (outs SCCReg:$dst), (ins SReg_64:$src0, SReg_64:$src1), opName, pattern>;
++  : SOPC <op, (outs SCCReg:$dst), (ins SSrc_64:$src0, SSrc_64:$src1), opName, pattern>;
++
++class MIMG_Load_Helper <bits<7> op, string asm> : MIMG <
++  op,
++  (outs VReg_128:$vdata),
++  (ins i32imm:$dmask, i1imm:$unorm, i1imm:$glc, i1imm:$da, i1imm:$r128,
++       i1imm:$tfe, i1imm:$lwe, i1imm:$slc, VReg_32:$vaddr,
++       GPR4Align<SReg_256>:$srsrc, GPR4Align<SReg_128>:$ssamp),
++  asm,
++  []> {
++  let mayLoad = 1;
++  let mayStore = 0;
++}
++
++class MTBUF_Store_Helper <bits<3> op, string asm, RegisterClass regClass> : MTBUF <
++  op,
++  (outs),
++  (ins regClass:$vdata, i16imm:$offset, i1imm:$offen, i1imm:$idxen, i1imm:$glc,
++   i1imm:$addr64, i8imm:$dfmt, i8imm:$nfmt, VReg_32:$vaddr,
++   GPR4Align<SReg_128>:$srsrc, i1imm:$slc, i1imm:$tfe, SSrc_32:$soffset),
++  asm,
++  []> {
++  let mayStore = 1;
++  let mayLoad = 0;
++}
++
++class MUBUF_Load_Helper <bits<7> op, string asm, RegisterClass regClass> : MUBUF <
++  op,
++  (outs regClass:$dst),
++  (ins i16imm:$offset, i1imm:$offen, i1imm:$idxen, i1imm:$glc, i1imm:$addr64,
++       i1imm:$lds, VReg_32:$vaddr, GPR4Align<SReg_128>:$srsrc, i1imm:$slc,
++       i1imm:$tfe, SSrc_32:$soffset),
++  asm,
++  []> {
++  let mayLoad = 1;
++  let mayStore = 0;
++}
++
++class MTBUF_Load_Helper <bits<3> op, string asm, RegisterClass regClass> : MTBUF <
++  op,
++  (outs regClass:$dst),
++  (ins i16imm:$offset, i1imm:$offen, i1imm:$idxen, i1imm:$glc, i1imm:$addr64,
++       i8imm:$dfmt, i8imm:$nfmt, VReg_32:$vaddr, GPR4Align<SReg_128>:$srsrc,
++       i1imm:$slc, i1imm:$tfe, SSrc_32:$soffset),
++  asm,
++  []> {
++  let mayLoad = 1;
++  let mayStore = 0;
++}
++
++multiclass SMRD_Helper <bits<5> op, string asm, RegisterClass dstClass> {
++  def _IMM : SMRD <
++             op, 1,
++             (outs dstClass:$dst),
++             (ins GPR2Align<SReg_64>:$sbase, i32imm:$offset),
++             asm,
++             []
++  >;
++
++  def _SGPR : SMRD <
++              op, 0,
++              (outs dstClass:$dst),
++              (ins GPR2Align<SReg_64>:$sbase, SReg_32:$soff),
++              asm,
++              []
++  >;
++}
 +
 diff --git a/lib/Target/R600/SIInstrInfo.cpp b/lib/Target/R600/SIInstrInfo.cpp
 new file mode 100644
-index 0000000..2a6271c
+index 0000000..1c4b3cf
 --- /dev/null
 +++ b/lib/Target/R600/SIInstrInfo.cpp
-@@ -0,0 +1,145 @@
+@@ -0,0 +1,143 @@
 +//===-- SIInstrInfo.cpp - SI Instruction Information  ---------------------===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -20448,9 +20479,10 @@ index 0000000..2a6271c
 +
 +MachineInstr * SIInstrInfo::getMovImmInstr(MachineFunction *MF, unsigned DstReg,
 +                                           int64_t Imm) const {
-+  MachineInstr * MI = MF->CreateMachineInstr(get(AMDGPU::V_MOV_IMM_I32), DebugLoc());
-+  MachineInstrBuilder(MI).addReg(DstReg, RegState::Define);
-+  MachineInstrBuilder(MI).addImm(Imm);
++  MachineInstr * MI = MF->CreateMachineInstr(get(AMDGPU::V_MOV_B32_e32), DebugLoc());
++  MachineInstrBuilder MIB(MI);
++  MIB.addReg(DstReg, RegState::Define);
++  MIB.addImm(Imm);
 +
 +  return MI;
 +
@@ -20463,9 +20495,6 @@ index 0000000..2a6271c
 +  case AMDGPU::S_MOV_B64:
 +  case AMDGPU::V_MOV_B32_e32:
 +  case AMDGPU::V_MOV_B32_e64:
-+  case AMDGPU::V_MOV_IMM_F32:
-+  case AMDGPU::V_MOV_IMM_I32:
-+  case AMDGPU::S_MOV_IMM_I32:
 +    return true;
 +  }
 +}
@@ -20614,10 +20643,10 @@ index 0000000..a65f7b6
 +#endif //SIINSTRINFO_H
 diff --git a/lib/Target/R600/SIInstrInfo.td b/lib/Target/R600/SIInstrInfo.td
 new file mode 100644
-index 0000000..b983e8a
+index 0000000..8c4e5af
 --- /dev/null
 +++ b/lib/Target/R600/SIInstrInfo.td
-@@ -0,0 +1,554 @@
+@@ -0,0 +1,465 @@
 +//===-- SIInstrInfo.td - SI Instruction Encodings ---------*- tablegen -*--===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -20628,35 +20657,8 @@ index 0000000..b983e8a
 +//===----------------------------------------------------------------------===//
 +
 +//===----------------------------------------------------------------------===//
-+// SI DAG Profiles
-+//===----------------------------------------------------------------------===//
-+def SDTVCCBinaryOp : SDTypeProfile<1, 2, [
-+  SDTCisInt<0>, SDTCisInt<1>, SDTCisSameAs<1, 2>
-+]>;
-+
-+//===----------------------------------------------------------------------===//
 +// SI DAG Nodes
 +//===----------------------------------------------------------------------===//
-+
-+// and operation on 64-bit wide vcc
-+def SIsreg1_and : SDNode<"SIISD::VCC_AND", SDTVCCBinaryOp,
-+  [SDNPCommutative, SDNPAssociative]
-+>;
-+
-+// Special bitcast node for sharing VCC register between VALU and SALU
-+def SIsreg1_bitcast : SDNode<"SIISD::VCC_BITCAST",
-+  SDTypeProfile<1, 1, [SDTCisInt<0>, SDTCisInt<1>]>
-+>;
-+
-+// and operation on 64-bit wide vcc
-+def SIvcc_and : SDNode<"SIISD::VCC_AND", SDTVCCBinaryOp,
-+  [SDNPCommutative, SDNPAssociative]
-+>;
-+
-+// Special bitcast node for sharing VCC register between VALU and SALU
-+def SIvcc_bitcast : SDNode<"SIISD::VCC_BITCAST",
-+  SDTypeProfile<1, 1, [SDTCisInt<0>, SDTCisInt<1>]>
-+>;
 +
 +// SMRD takes a 64bit memory address and can only add an 32bit offset
 +def SIadd64bit32bit : SDNode<"ISD::ADD",
@@ -20686,6 +20688,10 @@ index 0000000..b983e8a
 +  i16,
 +  [{return isUInt<12>(Imm);}]
 +>;
++
++class InlineImm <ValueType vt> : ImmLeaf <vt, [{
++  return -16 <= Imm && Imm <= 64;
++}]>;
 +
 +class InstSI <dag outs, dag ins, string asm, list<dag> pattern> :
 +    AMDGPUInst<outs, ins, asm, pattern> {
@@ -21104,80 +21110,14 @@ index 0000000..b983e8a
 +
 +} // End Uses = [EXEC]
 +
-+class MIMG_Load_Helper <bits<7> op, string asm> : MIMG <
-+  op,
-+  (outs VReg_128:$vdata),
-+  (ins i32imm:$dmask, i1imm:$unorm, i1imm:$glc, i1imm:$da, i1imm:$r128,
-+       i1imm:$tfe, i1imm:$lwe, i1imm:$slc, VReg_32:$vaddr,
-+       GPR4Align<SReg_256>:$srsrc, GPR4Align<SReg_128>:$ssamp),
-+  asm,
-+  []> {
-+  let mayLoad = 1;
-+  let mayStore = 0;
-+}
-+
-+class MUBUF_Load_Helper <bits<7> op, string asm, RegisterClass regClass> : MUBUF <
-+  op,
-+  (outs regClass:$dst),
-+  (ins i16imm:$offset, i1imm:$offen, i1imm:$idxen, i1imm:$glc, i1imm:$addr64,
-+       i1imm:$lds, VReg_32:$vaddr, GPR4Align<SReg_128>:$srsrc, i1imm:$slc,
-+       i1imm:$tfe, SReg_32:$soffset),
-+  asm,
-+  []> {
-+  let mayLoad = 1;
-+  let mayStore = 0;
-+}
-+
-+class MTBUF_Load_Helper <bits<3> op, string asm, RegisterClass regClass> : MTBUF <
-+  op,
-+  (outs regClass:$dst),
-+  (ins i16imm:$offset, i1imm:$offen, i1imm:$idxen, i1imm:$glc, i1imm:$addr64,
-+       i8imm:$dfmt, i8imm:$nfmt, VReg_32:$vaddr, GPR4Align<SReg_128>:$srsrc,
-+       i1imm:$slc, i1imm:$tfe, SReg_32:$soffset),
-+  asm,
-+  []> {
-+  let mayLoad = 1;
-+  let mayStore = 0;
-+}
-+
-+class MTBUF_Store_Helper <bits<3> op, string asm, RegisterClass regClass> : MTBUF <
-+  op,
-+  (outs),
-+  (ins regClass:$vdata, i16imm:$offset, i1imm:$offen, i1imm:$idxen, i1imm:$glc,
-+   i1imm:$addr64, i8imm:$dfmt, i8imm:$nfmt, VReg_32:$vaddr,
-+   GPR4Align<SReg_128>:$srsrc, i1imm:$slc, i1imm:$tfe, SReg_32:$soffset),
-+  asm,
-+  []> {
-+  let mayStore = 1;
-+  let mayLoad = 0;
-+}
-+
-+multiclass SMRD_Helper <bits<5> op, string asm, RegisterClass dstClass> {
-+  def _IMM : SMRD <
-+             op, 1,
-+             (outs dstClass:$dst),
-+             (ins GPR2Align<SReg_64>:$sbase, i32imm:$offset),
-+             asm,
-+             []
-+  >;
-+
-+  def _SGPR : SMRD <
-+              op, 0,
-+              (outs dstClass:$dst),
-+              (ins GPR2Align<SReg_64>:$sbase, SReg_32:$soff),
-+              asm,
-+              []
-+  >;
-+}
-+
 +include "SIInstrFormats.td"
 +include "SIInstructions.td"
 diff --git a/lib/Target/R600/SIInstructions.td b/lib/Target/R600/SIInstructions.td
 new file mode 100644
-index 0000000..a09f243
+index 0000000..3a9822a
 --- /dev/null
 +++ b/lib/Target/R600/SIInstructions.td
-@@ -0,0 +1,1459 @@
+@@ -0,0 +1,1462 @@
 +//===-- SIInstructions.td - SI Instruction Defintions ---------------------===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -21190,6 +21130,17 @@ index 0000000..a09f243
 +// all the instruction definitions were originally commented out.  Instructions
 +// that are not yet supported remain commented out.
 +//===----------------------------------------------------------------------===//
++
++class InterpSlots {
++int P0 = 2;
++int P10 = 0;
++int P20 = 1;
++}
++def INTERP : InterpSlots;
++
++def InterpSlot : Operand<i32> {
++  let PrintMethod = "printInterpSlot";
++}
 +
 +def isSI : Predicate<"Subtarget.device()"
 +                            "->getGeneration() == AMDGPUDeviceInfo::HD7XXX">;
@@ -21299,33 +21250,33 @@ index 0000000..a09f243
 +defm V_CMP_F_F32 : VOPC_32 <0x00000000, "V_CMP_F_F32", []>;
 +defm V_CMP_LT_F32 : VOPC_32 <0x00000001, "V_CMP_LT_F32", []>;
 +def : Pat <
-+  (i1 (setcc (f32 AllReg_32:$src0), VReg_32:$src1, COND_LT)),
-+  (V_CMP_LT_F32_e64 AllReg_32:$src0, VReg_32:$src1)
++  (i1 (setcc (f32 VSrc_32:$src0), VReg_32:$src1, COND_LT)),
++  (V_CMP_LT_F32_e64 VSrc_32:$src0, VReg_32:$src1)
 +>;
 +defm V_CMP_EQ_F32 : VOPC_32 <0x00000002, "V_CMP_EQ_F32", []>;
 +def : Pat <
-+  (i1 (setcc (f32 AllReg_32:$src0), VReg_32:$src1, COND_EQ)),
-+  (V_CMP_EQ_F32_e64 AllReg_32:$src0, VReg_32:$src1)
++  (i1 (setcc (f32 VSrc_32:$src0), VReg_32:$src1, COND_EQ)),
++  (V_CMP_EQ_F32_e64 VSrc_32:$src0, VReg_32:$src1)
 +>;
 +defm V_CMP_LE_F32 : VOPC_32 <0x00000003, "V_CMP_LE_F32", []>;
 +def : Pat <
-+  (i1 (setcc (f32 AllReg_32:$src0), VReg_32:$src1, COND_LE)),
-+  (V_CMP_LE_F32_e64 AllReg_32:$src0, VReg_32:$src1)
++  (i1 (setcc (f32 VSrc_32:$src0), VReg_32:$src1, COND_LE)),
++  (V_CMP_LE_F32_e64 VSrc_32:$src0, VReg_32:$src1)
 +>;
 +defm V_CMP_GT_F32 : VOPC_32 <0x00000004, "V_CMP_GT_F32", []>;
 +def : Pat <
-+  (i1 (setcc (f32 AllReg_32:$src0), VReg_32:$src1, COND_GT)),
-+  (V_CMP_GT_F32_e64 AllReg_32:$src0, VReg_32:$src1)
++  (i1 (setcc (f32 VSrc_32:$src0), VReg_32:$src1, COND_GT)),
++  (V_CMP_GT_F32_e64 VSrc_32:$src0, VReg_32:$src1)
 +>;
 +defm V_CMP_LG_F32 : VOPC_32 <0x00000005, "V_CMP_LG_F32", []>;
 +def : Pat <
-+  (i1 (setcc (f32 AllReg_32:$src0), VReg_32:$src1, COND_NE)),
-+  (V_CMP_LG_F32_e64 AllReg_32:$src0, VReg_32:$src1)
++  (i1 (setcc (f32 VSrc_32:$src0), VReg_32:$src1, COND_NE)),
++  (V_CMP_LG_F32_e64 VSrc_32:$src0, VReg_32:$src1)
 +>;
 +defm V_CMP_GE_F32 : VOPC_32 <0x00000006, "V_CMP_GE_F32", []>;
 +def : Pat <
-+  (i1 (setcc (f32 AllReg_32:$src0), VReg_32:$src1, COND_GE)),
-+  (V_CMP_GE_F32_e64 AllReg_32:$src0, VReg_32:$src1)
++  (i1 (setcc (f32 VSrc_32:$src0), VReg_32:$src1, COND_GE)),
++  (V_CMP_GE_F32_e64 VSrc_32:$src0, VReg_32:$src1)
 +>;
 +defm V_CMP_O_F32 : VOPC_32 <0x00000007, "V_CMP_O_F32", []>;
 +defm V_CMP_U_F32 : VOPC_32 <0x00000008, "V_CMP_U_F32", []>;
@@ -21335,8 +21286,8 @@ index 0000000..a09f243
 +defm V_CMP_NLE_F32 : VOPC_32 <0x0000000c, "V_CMP_NLE_F32", []>;
 +defm V_CMP_NEQ_F32 : VOPC_32 <0x0000000d, "V_CMP_NEQ_F32", []>;
 +def : Pat <
-+  (i1 (setcc (f32 AllReg_32:$src0), VReg_32:$src1, COND_NE)),
-+  (V_CMP_NEQ_F32_e64 AllReg_32:$src0, VReg_32:$src1)
++  (i1 (setcc (f32 VSrc_32:$src0), VReg_32:$src1, COND_NE)),
++  (V_CMP_NEQ_F32_e64 VSrc_32:$src0, VReg_32:$src1)
 +>;
 +defm V_CMP_NLT_F32 : VOPC_32 <0x0000000e, "V_CMP_NLT_F32", []>;
 +defm V_CMP_TRU_F32 : VOPC_32 <0x0000000f, "V_CMP_TRU_F32", []>;
@@ -21469,33 +21420,33 @@ index 0000000..a09f243
 +defm V_CMP_F_I32 : VOPC_32 <0x00000080, "V_CMP_F_I32", []>;
 +defm V_CMP_LT_I32 : VOPC_32 <0x00000081, "V_CMP_LT_I32", []>;
 +def : Pat <
-+  (i1 (setcc (i32 AllReg_32:$src0), VReg_32:$src1, COND_LT)),
-+  (V_CMP_LT_I32_e64 AllReg_32:$src0, VReg_32:$src1)
++  (i1 (setcc (i32 VSrc_32:$src0), VReg_32:$src1, COND_LT)),
++  (V_CMP_LT_I32_e64 VSrc_32:$src0, VReg_32:$src1)
 +>;
 +defm V_CMP_EQ_I32 : VOPC_32 <0x00000082, "V_CMP_EQ_I32", []>;
 +def : Pat <
-+  (i1 (setcc (i32 AllReg_32:$src0), VReg_32:$src1, COND_EQ)),
-+  (V_CMP_EQ_I32_e64 AllReg_32:$src0, VReg_32:$src1)
++  (i1 (setcc (i32 VSrc_32:$src0), VReg_32:$src1, COND_EQ)),
++  (V_CMP_EQ_I32_e64 VSrc_32:$src0, VReg_32:$src1)
 +>;
 +defm V_CMP_LE_I32 : VOPC_32 <0x00000083, "V_CMP_LE_I32", []>;
 +def : Pat <
-+  (i1 (setcc (i32 AllReg_32:$src0), VReg_32:$src1, COND_LE)),
-+  (V_CMP_LE_I32_e64 AllReg_32:$src0, VReg_32:$src1)
++  (i1 (setcc (i32 VSrc_32:$src0), VReg_32:$src1, COND_LE)),
++  (V_CMP_LE_I32_e64 VSrc_32:$src0, VReg_32:$src1)
 +>;
 +defm V_CMP_GT_I32 : VOPC_32 <0x00000084, "V_CMP_GT_I32", []>;
 +def : Pat <
-+  (i1 (setcc (i32 AllReg_32:$src0), VReg_32:$src1, COND_GT)),
-+  (V_CMP_GT_I32_e64 AllReg_32:$src0, VReg_32:$src1)
++  (i1 (setcc (i32 VSrc_32:$src0), VReg_32:$src1, COND_GT)),
++  (V_CMP_GT_I32_e64 VSrc_32:$src0, VReg_32:$src1)
 +>;
 +defm V_CMP_NE_I32 : VOPC_32 <0x00000085, "V_CMP_NE_I32", []>;
 +def : Pat <
-+  (i1 (setcc (i32 AllReg_32:$src0), VReg_32:$src1, COND_NE)),
-+  (V_CMP_NE_I32_e64 AllReg_32:$src0, VReg_32:$src1)
++  (i1 (setcc (i32 VSrc_32:$src0), VReg_32:$src1, COND_NE)),
++  (V_CMP_NE_I32_e64 VSrc_32:$src0, VReg_32:$src1)
 +>;
 +defm V_CMP_GE_I32 : VOPC_32 <0x00000086, "V_CMP_GE_I32", []>;
 +def : Pat <
-+  (i1 (setcc (i32 AllReg_32:$src0), VReg_32:$src1, COND_GE)),
-+  (V_CMP_GE_I32_e64 AllReg_32:$src0, VReg_32:$src1)
++  (i1 (setcc (i32 VSrc_32:$src0), VReg_32:$src1, COND_GE)),
++  (V_CMP_GE_I32_e64 VSrc_32:$src0, VReg_32:$src1)
 +>;
 +defm V_CMP_T_I32 : VOPC_32 <0x00000087, "V_CMP_T_I32", []>;
 +
@@ -21763,12 +21714,12 @@ index 0000000..a09f243
 +//defm V_CVT_I32_F64 : VOP1_32 <0x00000003, "V_CVT_I32_F64", []>;
 +//defm V_CVT_F64_I32 : VOP1_64 <0x00000004, "V_CVT_F64_I32", []>;
 +defm V_CVT_F32_I32 : VOP1_32 <0x00000005, "V_CVT_F32_I32",
-+  [(set VReg_32:$dst, (sint_to_fp AllReg_32:$src0))]
++  [(set VReg_32:$dst, (sint_to_fp VSrc_32:$src0))]
 +>;
 +//defm V_CVT_F32_U32 : VOP1_32 <0x00000006, "V_CVT_F32_U32", []>;
 +//defm V_CVT_U32_F32 : VOP1_32 <0x00000007, "V_CVT_U32_F32", []>;
 +defm V_CVT_I32_F32 : VOP1_32 <0x00000008, "V_CVT_I32_F32",
-+  [(set (i32 VReg_32:$dst), (fp_to_sint AllReg_32:$src0))]
++  [(set (i32 VReg_32:$dst), (fp_to_sint VSrc_32:$src0))]
 +>;
 +defm V_MOV_FED_B32 : VOP1_32 <0x00000009, "V_MOV_FED_B32", []>;
 +////def V_CVT_F16_F32 : VOP1_F16 <0x0000000a, "V_CVT_F16_F32", []>;
@@ -21785,33 +21736,35 @@ index 0000000..a09f243
 +//defm V_CVT_U32_F64 : VOP1_32 <0x00000015, "V_CVT_U32_F64", []>;
 +//defm V_CVT_F64_U32 : VOP1_64 <0x00000016, "V_CVT_F64_U32", []>;
 +defm V_FRACT_F32 : VOP1_32 <0x00000020, "V_FRACT_F32",
-+  [(set VReg_32:$dst, (AMDGPUfract AllReg_32:$src0))]
++  [(set VReg_32:$dst, (AMDGPUfract VSrc_32:$src0))]
 +>;
 +defm V_TRUNC_F32 : VOP1_32 <0x00000021, "V_TRUNC_F32", []>;
-+defm V_CEIL_F32 : VOP1_32 <0x00000022, "V_CEIL_F32", []>;
++defm V_CEIL_F32 : VOP1_32 <0x00000022, "V_CEIL_F32",
++  [(set VReg_32:$dst, (fceil VSrc_32:$src0))]
++>;
 +defm V_RNDNE_F32 : VOP1_32 <0x00000023, "V_RNDNE_F32",
-+  [(set VReg_32:$dst, (frint AllReg_32:$src0))]
++  [(set VReg_32:$dst, (frint VSrc_32:$src0))]
 +>;
 +defm V_FLOOR_F32 : VOP1_32 <0x00000024, "V_FLOOR_F32",
-+  [(set VReg_32:$dst, (ffloor AllReg_32:$src0))]
++  [(set VReg_32:$dst, (ffloor VSrc_32:$src0))]
 +>;
 +defm V_EXP_F32 : VOP1_32 <0x00000025, "V_EXP_F32",
-+  [(set VReg_32:$dst, (fexp2 AllReg_32:$src0))]
++  [(set VReg_32:$dst, (fexp2 VSrc_32:$src0))]
 +>;
 +defm V_LOG_CLAMP_F32 : VOP1_32 <0x00000026, "V_LOG_CLAMP_F32", []>;
 +defm V_LOG_F32 : VOP1_32 <0x00000027, "V_LOG_F32",
-+  [(set VReg_32:$dst, (flog2 AllReg_32:$src0))]
++  [(set VReg_32:$dst, (flog2 VSrc_32:$src0))]
 +>;
 +defm V_RCP_CLAMP_F32 : VOP1_32 <0x00000028, "V_RCP_CLAMP_F32", []>;
 +defm V_RCP_LEGACY_F32 : VOP1_32 <0x00000029, "V_RCP_LEGACY_F32", []>;
 +defm V_RCP_F32 : VOP1_32 <0x0000002a, "V_RCP_F32",
-+  [(set VReg_32:$dst, (fdiv FP_ONE, AllReg_32:$src0))]
++  [(set VReg_32:$dst, (fdiv FP_ONE, VSrc_32:$src0))]
 +>;
 +defm V_RCP_IFLAG_F32 : VOP1_32 <0x0000002b, "V_RCP_IFLAG_F32", []>;
 +defm V_RSQ_CLAMP_F32 : VOP1_32 <0x0000002c, "V_RSQ_CLAMP_F32", []>;
 +defm V_RSQ_LEGACY_F32 : VOP1_32 <
 +  0x0000002d, "V_RSQ_LEGACY_F32",
-+  [(set VReg_32:$dst, (int_AMDGPU_rsq AllReg_32:$src0))]
++  [(set VReg_32:$dst, (int_AMDGPU_rsq VSrc_32:$src0))]
 +>;
 +defm V_RSQ_F32 : VOP1_32 <0x0000002e, "V_RSQ_F32", []>;
 +defm V_RCP_F64 : VOP1_64 <0x0000002f, "V_RCP_F64", []>;
@@ -21861,10 +21814,9 @@ index 0000000..a09f243
 +def V_INTERP_MOV_F32 : VINTRP <
 +  0x00000002,
 +  (outs VReg_32:$dst),
-+  (ins i32imm:$attr_chan, i32imm:$attr, M0Reg:$m0),
-+  "V_INTERP_MOV_F32",
++  (ins InterpSlot:$src0, i32imm:$attr_chan, i32imm:$attr, M0Reg:$m0),
++  "V_INTERP_MOV_F32 $dst, $src0, $attr_chan, $attr",
 +  []> {
-+  let VSRC = 0;
 +  let DisableEncoding = "$m0";
 +}
 +
@@ -21944,22 +21896,22 @@ index 0000000..a09f243
 +//def S_TTRACEDATA : SOPP_ <0x00000016, "S_TTRACEDATA", []>;
 +
 +def V_CNDMASK_B32_e32 : VOP2 <0x00000000, (outs VReg_32:$dst),
-+  (ins AllReg_32:$src0, VReg_32:$src1, VCCReg:$vcc), "V_CNDMASK_B32_e32",
++  (ins VSrc_32:$src0, VReg_32:$src1, VCCReg:$vcc), "V_CNDMASK_B32_e32",
 +  []
 +>{
 +  let DisableEncoding = "$vcc";
 +}
 +
 +def V_CNDMASK_B32_e64 : VOP3 <0x00000100, (outs VReg_32:$dst),
-+  (ins VReg_32:$src0, VReg_32:$src1, SReg_1:$src2, InstFlag:$abs, InstFlag:$clamp, InstFlag:$omod, InstFlag:$neg),
++  (ins VReg_32:$src0, VReg_32:$src1, SReg_64:$src2, InstFlag:$abs, InstFlag:$clamp, InstFlag:$omod, InstFlag:$neg),
 +  "V_CNDMASK_B32_e64",
-+  [(set (i32 VReg_32:$dst), (select SReg_1:$src2, VReg_32:$src1, VReg_32:$src0))]
++  [(set (i32 VReg_32:$dst), (select (i1 SReg_64:$src2), VReg_32:$src1, VReg_32:$src0))]
 +>;
 +
 +//f32 pattern for V_CNDMASK_B32_e64
 +def : Pat <
-+  (f32 (select SReg_1:$src2, VReg_32:$src1, VReg_32:$src0)),
-+  (V_CNDMASK_B32_e64 VReg_32:$src0, VReg_32:$src1, SReg_1:$src2)
++  (f32 (select (i1 SReg_64:$src2), VReg_32:$src1, VReg_32:$src0)),
++  (V_CNDMASK_B32_e64 VReg_32:$src0, VReg_32:$src1, SReg_64:$src2)
 +>;
 +
 +defm V_READLANE_B32 : VOP2_32 <0x00000001, "V_READLANE_B32", []>;
@@ -21967,35 +21919,35 @@ index 0000000..a09f243
 +
 +defm V_ADD_F32 : VOP2_32 <0x00000003, "V_ADD_F32", []>;
 +def : Pat <
-+  (f32 (fadd AllReg_32:$src0, VReg_32:$src1)),
-+  (V_ADD_F32_e32  AllReg_32:$src0, VReg_32:$src1)
++  (f32 (fadd VSrc_32:$src0, VReg_32:$src1)),
++  (V_ADD_F32_e32  VSrc_32:$src0, VReg_32:$src1)
 +>;
 +
 +defm V_SUB_F32 : VOP2_32 <0x00000004, "V_SUB_F32", []>;
 +def : Pat <
-+  (f32 (fsub AllReg_32:$src0, VReg_32:$src1)),
-+  (V_SUB_F32_e32  AllReg_32:$src0, VReg_32:$src1)
++  (f32 (fsub VSrc_32:$src0, VReg_32:$src1)),
++  (V_SUB_F32_e32  VSrc_32:$src0, VReg_32:$src1)
 +>;
 +defm V_SUBREV_F32 : VOP2_32 <0x00000005, "V_SUBREV_F32", []>;
 +defm V_MAC_LEGACY_F32 : VOP2_32 <0x00000006, "V_MAC_LEGACY_F32", []>;
 +defm V_MUL_LEGACY_F32 : VOP2_32 <
 +  0x00000007, "V_MUL_LEGACY_F32",
-+  [(set VReg_32:$dst, (int_AMDGPU_mul AllReg_32:$src0, VReg_32:$src1))]
++  [(set VReg_32:$dst, (int_AMDGPU_mul VSrc_32:$src0, VReg_32:$src1))]
 +>;
 +
 +defm V_MUL_F32 : VOP2_32 <0x00000008, "V_MUL_F32",
-+  [(set VReg_32:$dst, (fmul AllReg_32:$src0, VReg_32:$src1))]
++  [(set VReg_32:$dst, (fmul VSrc_32:$src0, VReg_32:$src1))]
 +>;
 +//defm V_MUL_I32_I24 : VOP2_32 <0x00000009, "V_MUL_I32_I24", []>;
 +//defm V_MUL_HI_I32_I24 : VOP2_32 <0x0000000a, "V_MUL_HI_I32_I24", []>;
 +//defm V_MUL_U32_U24 : VOP2_32 <0x0000000b, "V_MUL_U32_U24", []>;
 +//defm V_MUL_HI_U32_U24 : VOP2_32 <0x0000000c, "V_MUL_HI_U32_U24", []>;
 +defm V_MIN_LEGACY_F32 : VOP2_32 <0x0000000d, "V_MIN_LEGACY_F32",
-+  [(set VReg_32:$dst, (AMDGPUfmin AllReg_32:$src0, VReg_32:$src1))]
++  [(set VReg_32:$dst, (AMDGPUfmin VSrc_32:$src0, VReg_32:$src1))]
 +>;
 +
 +defm V_MAX_LEGACY_F32 : VOP2_32 <0x0000000e, "V_MAX_LEGACY_F32",
-+  [(set VReg_32:$dst, (AMDGPUfmax AllReg_32:$src0, VReg_32:$src1))]
++  [(set VReg_32:$dst, (AMDGPUfmax VSrc_32:$src0, VReg_32:$src1))]
 +>;
 +defm V_MIN_F32 : VOP2_32 <0x0000000f, "V_MIN_F32", []>;
 +defm V_MAX_F32 : VOP2_32 <0x00000010, "V_MAX_F32", []>;
@@ -22010,13 +21962,13 @@ index 0000000..a09f243
 +defm V_LSHL_B32 : VOP2_32 <0x00000019, "V_LSHL_B32", []>;
 +defm V_LSHLREV_B32 : VOP2_32 <0x0000001a, "V_LSHLREV_B32", []>;
 +defm V_AND_B32 : VOP2_32 <0x0000001b, "V_AND_B32",
-+  [(set VReg_32:$dst, (and AllReg_32:$src0, VReg_32:$src1))]
++  [(set VReg_32:$dst, (and VSrc_32:$src0, VReg_32:$src1))]
 +>;
 +defm V_OR_B32 : VOP2_32 <0x0000001c, "V_OR_B32",
-+  [(set VReg_32:$dst, (or AllReg_32:$src0, VReg_32:$src1))]
++  [(set VReg_32:$dst, (or VSrc_32:$src0, VReg_32:$src1))]
 +>;
 +defm V_XOR_B32 : VOP2_32 <0x0000001d, "V_XOR_B32",
-+  [(set VReg_32:$dst, (xor AllReg_32:$src0, VReg_32:$src1))]
++  [(set VReg_32:$dst, (xor VSrc_32:$src0, VReg_32:$src1))]
 +>;
 +defm V_BFM_B32 : VOP2_32 <0x0000001e, "V_BFM_B32", []>;
 +defm V_MAC_F32 : VOP2_32 <0x0000001f, "V_MAC_F32", []>;
@@ -22027,10 +21979,10 @@ index 0000000..a09f243
 +//defm V_MBCNT_HI_U32_B32 : VOP2_32 <0x00000024, "V_MBCNT_HI_U32_B32", []>;
 +let Defs = [VCC] in { // Carry-out goes to VCC
 +defm V_ADD_I32 : VOP2_32 <0x00000025, "V_ADD_I32",
-+  [(set VReg_32:$dst, (add (i32 AllReg_32:$src0), (i32 VReg_32:$src1)))]
++  [(set VReg_32:$dst, (add (i32 VSrc_32:$src0), (i32 VReg_32:$src1)))]
 +>;
 +defm V_SUB_I32 : VOP2_32 <0x00000026, "V_SUB_I32",
-+  [(set VReg_32:$dst, (sub (i32 AllReg_32:$src0), (i32 VReg_32:$src1)))]
++  [(set VReg_32:$dst, (sub (i32 VSrc_32:$src0), (i32 VReg_32:$src1)))]
 +>;
 +} // End Defs = [VCC]
 +defm V_SUBREV_I32 : VOP2_32 <0x00000027, "V_SUBREV_I32", []>;
@@ -22042,7 +21994,7 @@ index 0000000..a09f243
 +////def V_CVT_PKNORM_I16_F32 : VOP2_I16 <0x0000002d, "V_CVT_PKNORM_I16_F32", []>;
 +////def V_CVT_PKNORM_U16_F32 : VOP2_U16 <0x0000002e, "V_CVT_PKNORM_U16_F32", []>;
 +defm V_CVT_PKRTZ_F16_F32 : VOP2_32 <0x0000002f, "V_CVT_PKRTZ_F16_F32",
-+ [(set VReg_32:$dst, (int_SI_packf16 AllReg_32:$src0, VReg_32:$src1))]
++ [(set VReg_32:$dst, (int_SI_packf16 VSrc_32:$src0, VReg_32:$src1))]
 +>;
 +////def V_CVT_PK_U16_U32 : VOP2_U16 <0x00000030, "V_CVT_PK_U16_U32", []>;
 +////def V_CVT_PK_I16_I32 : VOP2_I16 <0x00000031, "V_CVT_PK_I16_I32", []>;
@@ -22113,8 +22065,8 @@ index 0000000..a09f243
 +def V_MUL_HI_U32 : VOP3_32 <0x0000016a, "V_MUL_HI_U32", []>;
 +def V_MUL_LO_I32 : VOP3_32 <0x0000016b, "V_MUL_LO_I32", []>;
 +def : Pat <
-+  (mul AllReg_32:$src0, VReg_32:$src1),
-+  (V_MUL_LO_I32 AllReg_32:$src0, VReg_32:$src1, (IMPLICIT_DEF), 0, 0, 0, 0)
++  (mul VSrc_32:$src0, VReg_32:$src1),
++  (V_MUL_LO_I32 VSrc_32:$src0, VReg_32:$src1, (IMPLICIT_DEF), 0, 0, 0, 0)
 +>;
 +def V_MUL_HI_I32 : VOP3_32 <0x0000016c, "V_MUL_HI_I32", []>;
 +def V_DIV_SCALE_F32 : VOP3_32 <0x0000016d, "V_DIV_SCALE_F32", []>;
@@ -22153,13 +22105,20 @@ index 0000000..a09f243
 +def S_AND_B32 : SOP2_32 <0x0000000e, "S_AND_B32", []>;
 +
 +def S_AND_B64 : SOP2_64 <0x0000000f, "S_AND_B64",
-+  [(set SReg_64:$dst, (and SReg_64:$src0, SReg_64:$src1))]
++  [(set SReg_64:$dst, (i64 (and SSrc_64:$src0, SSrc_64:$src1)))]
 +>;
-+def S_AND_VCC : SOP2_VCC <0x0000000f, "S_AND_B64",
-+  [(set SReg_1:$vcc, (SIvcc_and SReg_64:$src0, SReg_64:$src1))]
++
++def : Pat <
++  (i1 (and SSrc_64:$src0, SSrc_64:$src1)),
++  (S_AND_B64 SSrc_64:$src0, SSrc_64:$src1)
 +>;
++
 +def S_OR_B32 : SOP2_32 <0x00000010, "S_OR_B32", []>;
 +def S_OR_B64 : SOP2_64 <0x00000011, "S_OR_B64", []>;
++def : Pat <
++  (i1 (or SSrc_64:$src0, SSrc_64:$src1)),
++  (S_OR_B64 SSrc_64:$src0, SSrc_64:$src1)
++>;
 +def S_XOR_B32 : SOP2_32 <0x00000012, "S_XOR_B32", []>;
 +def S_XOR_B64 : SOP2_64 <0x00000013, "S_XOR_B64", []>;
 +def S_ANDN2_B32 : SOP2_32 <0x00000014, "S_ANDN2_B32", []>;
@@ -22188,45 +22147,6 @@ index 0000000..a09f243
 +//def S_CBRANCH_G_FORK : SOP2_ <0x0000002b, "S_CBRANCH_G_FORK", []>;
 +def S_ABSDIFF_I32 : SOP2_32 <0x0000002c, "S_ABSDIFF_I32", []>;
 +
-+class V_MOV_IMM <ValueType type, Operand immType, SDNode immNode> : InstSI <
-+  (outs VReg_32:$dst),
-+  (ins immType:$src0),
-+  "V_MOV_IMM",
-+   [(set VReg_32:$dst, (type immNode:$src0))]
-+>;
-+
-+let isCodeGenOnly = 1, isPseudo = 1 in {
-+
-+def V_MOV_IMM_I32 : V_MOV_IMM<i32, i32imm, imm>;
-+def V_MOV_IMM_F32 : V_MOV_IMM<f32, f32imm, fpimm>;
-+
-+def S_MOV_IMM_I32 : InstSI <
-+  (outs SReg_32:$dst),
-+  (ins i32imm:$src0),
-+  "S_MOV_IMM_I32",
-+  [(set SReg_32:$dst, (imm:$src0))]
-+>;
-+
-+} // End isCodeGenOnly, isPseudo = 1
-+
-+// i64 immediates aren't supported in hardware, split it into two 32bit values
-+def : Pat <
-+  (i64 imm:$imm),
-+  (INSERT_SUBREG (INSERT_SUBREG (i64 (IMPLICIT_DEF)),
-+    (S_MOV_IMM_I32 (LO32 imm:$imm)), sub0),
-+    (S_MOV_IMM_I32 (HI32 imm:$imm)), sub1)
-+>;
-+
-+class SI_LOAD_LITERAL<Operand ImmType> :
-+    Enc32 <(outs), (ins ImmType:$imm), "LOAD_LITERAL $imm", []> {
-+
-+  bits<32> imm;
-+  let Inst{31-0} = imm;
-+}
-+
-+def SI_LOAD_LITERAL_I32 : SI_LOAD_LITERAL<i32imm>;
-+def SI_LOAD_LITERAL_F32 : SI_LOAD_LITERAL<f32imm>;
-+
 +let isCodeGenOnly = 1, isPseudo = 1 in {
 +
 +def SET_M0 : InstSI <
@@ -22245,26 +22165,11 @@ index 0000000..a09f243
 +
 +let usesCustomInserter = 1 in {
 +
-+def SI_V_CNDLT : InstSI <
-+  (outs VReg_32:$dst),
-+  (ins VReg_32:$src0, VReg_32:$src1, VReg_32:$src2),
-+  "SI_V_CNDLT $dst, $src0, $src1, $src2",
-+  [(set VReg_32:$dst, (int_AMDGPU_cndlt VReg_32:$src0, VReg_32:$src1, VReg_32:$src2))]
-+>;
-+
 +def SI_INTERP : InstSI <
 +  (outs VReg_32:$dst),
 +  (ins VReg_32:$i, VReg_32:$j, i32imm:$attr_chan, i32imm:$attr, SReg_32:$params),
 +  "SI_INTERP $dst, $i, $j, $attr_chan, $attr, $params",
 +  []
-+>;
-+
-+def SI_INTERP_CONST : InstSI <
-+  (outs VReg_32:$dst),
-+  (ins i32imm:$attr_chan, i32imm:$attr, SReg_32:$params),
-+  "SI_INTERP_CONST $dst, $attr_chan, $attr, $params",
-+  [(set VReg_32:$dst, (int_SI_fs_interp_constant imm:$attr_chan,
-+                                                 imm:$attr, SReg_32:$params))]
 +>;
 +
 +def SI_WQM : InstSI <
@@ -22286,9 +22191,9 @@ index 0000000..a09f243
 +
 +def SI_IF : InstSI <
 +  (outs SReg_64:$dst),
-+  (ins SReg_1:$vcc, brtarget:$target),
++  (ins SReg_64:$vcc, brtarget:$target),
 +  "SI_IF",
-+  [(set SReg_64:$dst, (int_SI_if SReg_1:$vcc, bb:$target))]
++  [(set SReg_64:$dst, (int_SI_if SReg_64:$vcc, bb:$target))]
 +>;
 +
 +def SI_ELSE : InstSI <
@@ -22318,9 +22223,9 @@ index 0000000..a09f243
 +
 +def SI_IF_BREAK : InstSI <
 +  (outs SReg_64:$dst),
-+  (ins SReg_1:$vcc, SReg_64:$src),
++  (ins SReg_64:$vcc, SReg_64:$src),
 +  "SI_IF_BREAK",
-+  [(set SReg_64:$dst, (int_SI_if_break SReg_1:$vcc, SReg_64:$src))]
++  [(set SReg_64:$dst, (int_SI_if_break SReg_64:$vcc, SReg_64:$src))]
 +>;
 +
 +def SI_ELSE_BREAK : InstSI <
@@ -22349,9 +22254,14 @@ index 0000000..a09f243
 +
 +} // end IsCodeGenOnly, isPseudo
 +
++def : Pat<
++  (int_AMDGPU_cndlt VReg_32:$src0, VReg_32:$src1, VReg_32:$src2),
++  (V_CNDMASK_B32_e64 VReg_32:$src2, VReg_32:$src1, (V_CMP_GT_F32_e64 0, VReg_32:$src0))
++>;
++
 +def : Pat <
 +  (int_AMDGPU_kilp),
-+  (SI_KILL (V_MOV_IMM_I32 0xbf800000))
++  (SI_KILL (V_MOV_B32_e32 0xbf800000))
 +>;
 +
 +/* int_SI_vs_load_input */
@@ -22360,7 +22270,7 @@ index 0000000..a09f243
 +                        VReg_32:$buf_idx_vgpr),
 +  (BUFFER_LOAD_FORMAT_XYZW imm:$attr_offset, 0, 1, 0, 0, 0,
 +                           VReg_32:$buf_idx_vgpr, SReg_128:$tlst,
-+                           0, 0, (i32 SREG_LIT_0))
++                           0, 0, 0)
 +>;
 +
 +/* int_SI_export */
@@ -22477,29 +22387,57 @@ index 0000000..a09f243
 +def : BitConvert <f32, i32, SReg_32>;
 +def : BitConvert <f32, i32, VReg_32>;
 +
++/********** ================== **********/
++/********** Immediate Patterns **********/
++/********** ================== **********/
++
 +def : Pat <
-+  (i64 (SIsreg1_bitcast SReg_1:$vcc)),
-+  (S_MOV_B64 (COPY_TO_REGCLASS SReg_1:$vcc, SReg_64))
++  (i1 imm:$imm),
++  (S_MOV_B64 imm:$imm)
 +>;
 +
 +def : Pat <
-+  (i1 (SIsreg1_bitcast SReg_64:$vcc)),
-+  (COPY_TO_REGCLASS SReg_64:$vcc, SReg_1)
++  (i32 imm:$imm),
++  (V_MOV_B32_e32 imm:$imm)
 +>;
 +
 +def : Pat <
-+  (i64 (SIvcc_bitcast VCCReg:$vcc)),
-+  (S_MOV_B64 (COPY_TO_REGCLASS VCCReg:$vcc, SReg_64))
++  (f32 fpimm:$imm),
++  (V_MOV_B32_e32 fpimm:$imm)
 +>;
 +
 +def : Pat <
-+  (i1 (SIvcc_bitcast SReg_64:$vcc)),
-+  (COPY_TO_REGCLASS SReg_64:$vcc, VCCReg)
++  (i32 imm:$imm),
++  (S_MOV_B32 imm:$imm)
++>;
++
++def : Pat <
++  (f32 fpimm:$imm),
++  (S_MOV_B32 fpimm:$imm)
++>;
++
++def : Pat <
++  (i64 InlineImm<i64>:$imm),
++  (S_MOV_B64 InlineImm<i64>:$imm)
++>;
++
++// i64 immediates aren't supported in hardware, split it into two 32bit values
++def : Pat <
++  (i64 imm:$imm),
++  (INSERT_SUBREG (INSERT_SUBREG (i64 (IMPLICIT_DEF)),
++    (S_MOV_B32 (i32 (LO32 imm:$imm))), sub0),
++    (S_MOV_B32 (i32 (HI32 imm:$imm))), sub1)
 +>;
 +
 +/********** ===================== **********/
 +/********** Interpolation Paterns **********/
 +/********** ===================== **********/
++
++def : Pat <
++  (int_SI_fs_interp_constant imm:$attr_chan, imm:$attr, SReg_32:$params),
++  (V_INTERP_MOV_F32 INTERP.P0, imm:$attr_chan, imm:$attr,
++                    (S_MOV_B32 SReg_32:$params))
++>;
 +
 +def : Pat <
 +  (int_SI_fs_interp_linear_center imm:$attr_chan, imm:$attr, SReg_32:$params),
@@ -22559,23 +22497,23 @@ index 0000000..a09f243
 +def : POW_Common <V_LOG_F32_e32, V_EXP_F32_e32, V_MUL_F32_e32, VReg_32>;
 +
 +def : Pat <
-+  (int_AMDGPU_div AllReg_32:$src0, AllReg_32:$src1),
-+  (V_MUL_LEGACY_F32_e32 AllReg_32:$src0, (V_RCP_LEGACY_F32_e32 AllReg_32:$src1))
++  (int_AMDGPU_div VSrc_32:$src0, VSrc_32:$src1),
++  (V_MUL_LEGACY_F32_e32 VSrc_32:$src0, (V_RCP_LEGACY_F32_e32 VSrc_32:$src1))
 +>;
 +
 +def : Pat<
-+  (fdiv AllReg_32:$src0, AllReg_32:$src1),
-+  (V_MUL_F32_e32 AllReg_32:$src0, (V_RCP_F32_e32 AllReg_32:$src1))
++  (fdiv VSrc_32:$src0, VSrc_32:$src1),
++  (V_MUL_F32_e32 VSrc_32:$src0, (V_RCP_F32_e32 VSrc_32:$src1))
 +>;
 +
 +def : Pat <
-+  (fcos AllReg_32:$src0),
-+  (V_COS_F32_e32 (V_MUL_F32_e32 AllReg_32:$src0, (V_MOV_IMM_I32 CONST.TWO_PI_INV)))
++  (fcos VSrc_32:$src0),
++  (V_COS_F32_e32 (V_MUL_F32_e32 VSrc_32:$src0, (V_MOV_B32_e32 CONST.TWO_PI_INV)))
 +>;
 +
 +def : Pat <
-+  (fsin AllReg_32:$src0),
-+  (V_SIN_F32_e32 (V_MUL_F32_e32 AllReg_32:$src0, (V_MOV_IMM_I32 CONST.TWO_PI_INV)))
++  (fsin VSrc_32:$src0),
++  (V_SIN_F32_e32 (V_MUL_F32_e32 VSrc_32:$src0, (V_MOV_B32_e32 CONST.TWO_PI_INV)))
 +>;
 +
 +def : Pat <
@@ -22599,12 +22537,17 @@ index 0000000..a09f243
 +                  0, 0, 0, 0), sub3)
 +>;
 +
++def : Pat <
++  (i32 (sext (i1 SReg_64:$src0))),
++  (V_CNDMASK_B32_e64 (i32 0), (i32 -1), SReg_64:$src0)
++>;
++
 +/********** ================== **********/
 +/**********   VOP3 Patterns    **********/
 +/********** ================== **********/
 +
-+def : Pat <(f32 (IL_mad AllReg_32:$src0, VReg_32:$src1, VReg_32:$src2)),
-+           (V_MAD_LEGACY_F32 AllReg_32:$src0, VReg_32:$src1, VReg_32:$src2,
++def : Pat <(f32 (IL_mad VSrc_32:$src0, VReg_32:$src1, VReg_32:$src2)),
++           (V_MAD_LEGACY_F32 VSrc_32:$src0, VReg_32:$src1, VReg_32:$src2,
 +            0, 0, 0, 0)>;
 +
 +/********** ================== **********/
@@ -22621,7 +22564,7 @@ index 0000000..a09f243
 +  // 2. Offset loaded in an 32bit SGPR
 +  def : Pat <
 +    (constant_load (SIadd64bit32bit SReg_64:$sbase, imm:$offset)),
-+    (vt (Instr_SGPR SReg_64:$sbase, (S_MOV_IMM_I32 imm:$offset)))
++    (vt (Instr_SGPR SReg_64:$sbase, (S_MOV_B32 imm:$offset)))
 +  >;
 +
 +  // 3. No offset at all
@@ -22699,7 +22642,7 @@ index 0000000..611b9c4
 +}
 diff --git a/lib/Target/R600/SILowerControlFlow.cpp b/lib/Target/R600/SILowerControlFlow.cpp
 new file mode 100644
-index 0000000..3780e40
+index 0000000..2007d30
 --- /dev/null
 +++ b/lib/Target/R600/SILowerControlFlow.cpp
 @@ -0,0 +1,372 @@
@@ -22863,10 +22806,10 @@ index 0000000..3780e40
 +          .addImm(0)
 +          .addImm(1)
 +          .addImm(1)
-+          .addReg(AMDGPU::SREG_LIT_0)
-+          .addReg(AMDGPU::SREG_LIT_0)
-+          .addReg(AMDGPU::SREG_LIT_0)
-+          .addReg(AMDGPU::SREG_LIT_0);
++          .addReg(AMDGPU::VGPR0)
++          .addReg(AMDGPU::VGPR0)
++          .addReg(AMDGPU::VGPR0)
++          .addReg(AMDGPU::VGPR0);
 +
 +  // ... and terminate wavefront
 +  BuildMI(MBB, Insert, DL, TII->get(AMDGPU::S_ENDPGM));
@@ -23002,7 +22945,7 @@ index 0000000..3780e40
 +
 +  // Clear this pixel from the exec mask if the operand is negative
 +  BuildMI(MBB, &MI, DL, TII->get(AMDGPU::V_CMPX_LE_F32_e32), AMDGPU::VCC)
-+          .addReg(AMDGPU::SREG_LIT_0)
++          .addImm(0)
 +          .addOperand(MI.getOperand(0));
 +
 +  MI.eraseFromParent();
@@ -23074,119 +23017,6 @@ index 0000000..3780e40
 +  }
 +
 +  return true;
-+}
-diff --git a/lib/Target/R600/SILowerLiteralConstants.cpp b/lib/Target/R600/SILowerLiteralConstants.cpp
-new file mode 100644
-index 0000000..e6cce91
---- /dev/null
-+++ b/lib/Target/R600/SILowerLiteralConstants.cpp
-@@ -0,0 +1,107 @@
-+//===-- SILowerLiteralConstants.cpp - Lower intrs using literal constants--===//
-+//
-+//                     The LLVM Compiler Infrastructure
-+//
-+// This file is distributed under the University of Illinois Open Source
-+// License. See LICENSE.TXT for details.
-+//
-+//===----------------------------------------------------------------------===//
-+//
-+/// \file
-+/// \brief This pass performs the following transformation on instructions with
-+/// literal constants:
-+///
-+/// %VGPR0 = V_MOV_IMM_I32 1
-+///
-+/// becomes:
-+///
-+/// BUNDLE
-+///   * %VGPR = V_MOV_B32_32 SI_LITERAL_CONSTANT
-+///   * SI_LOAD_LITERAL 1
-+///
-+/// The resulting sequence matches exactly how the hardware handles immediate
-+/// operands, so this transformation greatly simplifies the code generator.
-+///
-+/// Only the *_MOV_IMM_* support immediate operands at the moment, but when
-+/// support for immediate operands is added to other instructions, they
-+/// will be lowered here as well.
-+//===----------------------------------------------------------------------===//
-+
-+#include "AMDGPU.h"
-+#include "llvm/CodeGen/MachineFunction.h"
-+#include "llvm/CodeGen/MachineFunctionPass.h"
-+#include "llvm/CodeGen/MachineInstrBuilder.h"
-+#include "llvm/CodeGen/MachineInstrBundle.h"
-+
-+using namespace llvm;
-+
-+namespace {
-+
-+class SILowerLiteralConstantsPass : public MachineFunctionPass {
-+
-+private:
-+  static char ID;
-+  const TargetInstrInfo *TII;
-+
-+public:
-+  SILowerLiteralConstantsPass(TargetMachine &tm) :
-+    MachineFunctionPass(ID), TII(tm.getInstrInfo()) { }
-+
-+  virtual bool runOnMachineFunction(MachineFunction &MF);
-+
-+  const char *getPassName() const {
-+    return "SI Lower literal constants pass";
-+  }
-+};
-+
-+} // End anonymous namespace
-+
-+char SILowerLiteralConstantsPass::ID = 0;
-+
-+FunctionPass *llvm::createSILowerLiteralConstantsPass(TargetMachine &tm) {
-+  return new SILowerLiteralConstantsPass(tm);
-+}
-+
-+bool SILowerLiteralConstantsPass::runOnMachineFunction(MachineFunction &MF) {
-+  for (MachineFunction::iterator BB = MF.begin(), BB_E = MF.end();
-+                                                  BB != BB_E; ++BB) {
-+    MachineBasicBlock &MBB = *BB;
-+    for (MachineBasicBlock::iterator I = MBB.begin(), Next = llvm::next(I);
-+                               I != MBB.end(); I = Next) {
-+      Next = llvm::next(I);
-+      MachineInstr &MI = *I;
-+      switch (MI.getOpcode()) {
-+      default: break;
-+      case AMDGPU::S_MOV_IMM_I32:
-+      case AMDGPU::V_MOV_IMM_F32:
-+      case AMDGPU::V_MOV_IMM_I32: {
-+          unsigned MovOpcode;
-+          unsigned LoadLiteralOpcode;
-+          MachineOperand LiteralOp = MI.getOperand(1);
-+          if (AMDGPU::VReg_32RegClass.contains(MI.getOperand(0).getReg())) {
-+            MovOpcode = AMDGPU::V_MOV_B32_e32;
-+          } else {
-+            MovOpcode = AMDGPU::S_MOV_B32;
-+          }
-+          if (LiteralOp.isImm()) {
-+            LoadLiteralOpcode = AMDGPU::SI_LOAD_LITERAL_I32;
-+          } else {
-+            LoadLiteralOpcode = AMDGPU::SI_LOAD_LITERAL_F32;
-+          }
-+          MachineInstr *First =
-+            BuildMI(MBB, I, MBB.findDebugLoc(I), TII->get(MovOpcode),
-+                    MI.getOperand(0).getReg())
-+                    .addReg(AMDGPU::SI_LITERAL_CONSTANT);
-+          MachineInstr *Last =
-+            BuildMI(MBB, I, MBB.findDebugLoc(I), TII->get(LoadLiteralOpcode))
-+                    .addOperand(MI.getOperand(1));
-+          Last->setIsInsideBundle();
-+          llvm::finalizeBundle(MBB, First, Last);
-+          MI.eraseFromParent();
-+          break;
-+        }
-+      }
-+    }
-+  }
-+  return false;
 +}
 diff --git a/lib/Target/R600/SIMachineFunctionInfo.cpp b/lib/Target/R600/SIMachineFunctionInfo.cpp
 new file mode 100644
@@ -23363,7 +23193,7 @@ index 0000000..40171e4
 +#endif // SIREGISTERINFO_H_
 diff --git a/lib/Target/R600/SIRegisterInfo.td b/lib/Target/R600/SIRegisterInfo.td
 new file mode 100644
-index 0000000..809d503
+index 0000000..ab36b87
 --- /dev/null
 +++ b/lib/Target/R600/SIRegisterInfo.td
 @@ -0,0 +1,190 @@
@@ -23391,8 +23221,6 @@ index 0000000..809d503
 +def EXEC_HI : SIReg <"EXEC HI", 127>;
 +def EXEC : SI_64<"EXEC", [EXEC_LO, EXEC_HI], 126>;
 +def SCC : SIReg<"SCC", 253>;
-+def SREG_LIT_0 : SIReg <"S LIT 0", 128>;
-+def SI_LITERAL_CONSTANT : SIReg<"LITERAL CONSTANT", 255>;
 +def M0 : SIReg <"M0", 124>;
 +
 +//Interpolation registers
@@ -23505,12 +23333,10 @@ index 0000000..809d503
 +
 +// Register class for all scalar registers (SGPRs + Special Registers)
 +def SReg_32 : RegisterClass<"AMDGPU", [f32, i32], 32,
-+    (add SGPR_32,  SREG_LIT_0, M0, EXEC_LO, EXEC_HI)
++    (add SGPR_32, M0, EXEC_LO, EXEC_HI)
 +>;
 +
-+def SReg_64 : RegisterClass<"AMDGPU", [i64], 64, (add SGPR_64, VCC, EXEC)>;
-+
-+def SReg_1 : RegisterClass<"AMDGPU", [i1], 1, (add VCC, SGPR_64, EXEC)>;
++def SReg_64 : RegisterClass<"AMDGPU", [i1, i64], 64, (add SGPR_64, VCC, EXEC)>;
 +
 +def SReg_128 : RegisterClass<"AMDGPU", [v4f32, v4i32], 128, (add SGPR_128)>;
 +
@@ -23546,10 +23372,14 @@ index 0000000..809d503
 +
 +def VReg_512 : RegisterClass<"AMDGPU", [v16i32], 512, (add VGPR_512)>;
 +
-+// AllReg_* - A set of all scalar and vector registers of a given width.
-+def AllReg_32 : RegisterClass<"AMDGPU", [f32, i32], 32, (add VReg_32, SReg_32)>;
++// [SV]Src_* operands can have either an immediate or an register
++def SSrc_32 : RegisterClass<"AMDGPU", [i32, f32], 32, (add SReg_32)>;
 +
-+def AllReg_64 : RegisterClass<"AMDGPU", [f64, i64], 64, (add SReg_64, VReg_64)>;
++def SSrc_64 : RegisterClass<"AMDGPU", [i1, i64], 64, (add SReg_64)>;
++
++def VSrc_32 : RegisterClass<"AMDGPU", [i32, f32], 32, (add VReg_32, SReg_32)>;
++
++def VSrc_64 : RegisterClass<"AMDGPU", [i64], 64, (add SReg_64, VReg_64)>;
 +
 +// Special register classes for predicates and the M0 register
 +def SCCReg : RegisterClass<"AMDGPU", [i1], 1, (add SCC)>;
@@ -23673,6 +23503,30 @@ index 0000000..b8ac4e7
 +CPPFLAGS = -I$(PROJ_OBJ_DIR)/.. -I$(PROJ_SRC_DIR)/..
 +
 +include $(LEVEL)/Makefile.common
+diff --git a/test/CodeGen/R600/128bit-kernel-args.ll b/test/CodeGen/R600/128bit-kernel-args.ll
+new file mode 100644
+index 0000000..114f9e7
+--- /dev/null
++++ b/test/CodeGen/R600/128bit-kernel-args.ll
+@@ -0,0 +1,18 @@
++;RUN: llc < %s -march=r600 -mcpu=redwood | FileCheck %s
++
++; CHECK: @v4i32_kernel_arg
++; CHECK: VTX_READ_128 T{{[0-9]+}}.XYZW, T{{[0-9]+}}.X, 40
++
++define void @v4i32_kernel_arg(<4 x i32> addrspace(1)* %out, <4 x i32>  %in) {
++entry:
++  store <4 x i32> %in, <4 x i32> addrspace(1)* %out
++  ret void
++}
++
++; CHECK: @v4f32_kernel_arg
++; CHECK: VTX_READ_128 T{{[0-9]+}}.XYZW, T{{[0-9]+}}.X, 40
++define void @v4f32_kernel_args(<4 x float> addrspace(1)* %out, <4 x float>  %in) {
++entry:
++  store <4 x float> %in, <4 x float> addrspace(1)* %out
++  ret void
++}
 diff --git a/test/CodeGen/R600/add.v4i32.ll b/test/CodeGen/R600/add.v4i32.ll
 new file mode 100644
 index 0000000..ac4a874
@@ -23755,6 +23609,40 @@ index 0000000..fd958b3
 +  %0 = insertelement <4 x float> undef, float %conv, i32 0
 +  %splat = shufflevector <4 x float> %0, <4 x float> undef, <4 x i32> zeroinitializer
 +  store <4 x float> %splat, <4 x float> addrspace(1)* %out
++  ret void
++}
+diff --git a/test/CodeGen/R600/disconnected-predset-break-bug.ll b/test/CodeGen/R600/disconnected-predset-break-bug.ll
+new file mode 100644
+index 0000000..a586742
+--- /dev/null
++++ b/test/CodeGen/R600/disconnected-predset-break-bug.ll
+@@ -0,0 +1,28 @@
++; RUN: llc < %s -march=r600 -mcpu=redwood | FileCheck %s
++
++; PRED_SET* instructions must be tied to any instruction that uses their
++; result.  This tests that there are no instructions between the PRED_SET*
++; and the PREDICATE_BREAK in this loop.
++
++; CHECK: @loop_ge
++; CHECK: WHILE
++; CHECK: PRED_SET
++; CHECK-NEXT: PREDICATED_BREAK
++define void @loop_ge(i32 addrspace(1)* nocapture %out, i32 %iterations) nounwind {
++entry:
++  %cmp5 = icmp sgt i32 %iterations, 0
++  br i1 %cmp5, label %for.body, label %for.end
++
++for.body:                                         ; preds = %for.body, %entry
++  %i.07.in = phi i32 [ %i.07, %for.body ], [ %iterations, %entry ]
++  %ai.06 = phi i32 [ %add, %for.body ], [ 0, %entry ]
++  %i.07 = add nsw i32 %i.07.in, -1
++  %arrayidx = getelementptr inbounds i32 addrspace(1)* %out, i32 %ai.06
++  store i32 %i.07, i32 addrspace(1)* %arrayidx, align 4
++  %add = add nsw i32 %ai.06, 1
++  %exitcond = icmp eq i32 %add, %iterations
++  br i1 %exitcond, label %for.end, label %for.body
++
++for.end:                                          ; preds = %for.body, %entry
 +  ret void
 +}
 diff --git a/test/CodeGen/R600/fabs.ll b/test/CodeGen/R600/fabs.ll
@@ -24102,6 +23990,64 @@ index 0000000..aad44d9
 +  store i32 %value, i32 addrspace(1)* %out
 +  ret void
 +}
+diff --git a/test/CodeGen/R600/kcache-fold.ll b/test/CodeGen/R600/kcache-fold.ll
+new file mode 100644
+index 0000000..382f78c
+--- /dev/null
++++ b/test/CodeGen/R600/kcache-fold.ll
+@@ -0,0 +1,52 @@
++;RUN: llc < %s -march=r600 -mcpu=redwood | FileCheck %s
++
++; CHECK: MOV T{{[0-9]+\.[XYZW], CBuf0\[[0-9]+\]\.[XYZW]}}
++
++define void @main() {
++main_body:
++  %0 = load <4 x float> addrspace(9)* null
++  %1 = extractelement <4 x float> %0, i32 0
++  %2 = load <4 x float> addrspace(9)* getelementptr ([1024 x <4 x float>] addrspace(9)* null, i64 0, i32 1)
++  %3 = extractelement <4 x float> %2, i32 0
++  %4 = load <4 x float> addrspace(9)* getelementptr ([1024 x <4 x float>] addrspace(9)* null, i64 0, i32 2)
++  %5 = extractelement <4 x float> %4, i32 0
++  %6 = fcmp ult float %1, 0.000000e+00
++  %7 = select i1 %6, float %3, float %5
++  %8 = load <4 x float> addrspace(9)* null
++  %9 = extractelement <4 x float> %8, i32 1
++  %10 = load <4 x float> addrspace(9)* getelementptr ([1024 x <4 x float>] addrspace(9)* null, i64 0, i32 1)
++  %11 = extractelement <4 x float> %10, i32 1
++  %12 = load <4 x float> addrspace(9)* getelementptr ([1024 x <4 x float>] addrspace(9)* null, i64 0, i32 2)
++  %13 = extractelement <4 x float> %12, i32 1
++  %14 = fcmp ult float %9, 0.000000e+00
++  %15 = select i1 %14, float %11, float %13
++  %16 = load <4 x float> addrspace(9)* null
++  %17 = extractelement <4 x float> %16, i32 2
++  %18 = load <4 x float> addrspace(9)* getelementptr ([1024 x <4 x float>] addrspace(9)* null, i64 0, i32 1)
++  %19 = extractelement <4 x float> %18, i32 2
++  %20 = load <4 x float> addrspace(9)* getelementptr ([1024 x <4 x float>] addrspace(9)* null, i64 0, i32 2)
++  %21 = extractelement <4 x float> %20, i32 2
++  %22 = fcmp ult float %17, 0.000000e+00
++  %23 = select i1 %22, float %19, float %21
++  %24 = load <4 x float> addrspace(9)* null
++  %25 = extractelement <4 x float> %24, i32 3
++  %26 = load <4 x float> addrspace(9)* getelementptr ([1024 x <4 x float>] addrspace(9)* null, i64 0, i32 1)
++  %27 = extractelement <4 x float> %26, i32 3
++  %28 = load <4 x float> addrspace(9)* getelementptr ([1024 x <4 x float>] addrspace(9)* null, i64 0, i32 2)
++  %29 = extractelement <4 x float> %28, i32 3
++  %30 = fcmp ult float %25, 0.000000e+00
++  %31 = select i1 %30, float %27, float %29
++  %32 = call float @llvm.AMDIL.clamp.(float %7, float 0.000000e+00, float 1.000000e+00)
++  %33 = call float @llvm.AMDIL.clamp.(float %15, float 0.000000e+00, float 1.000000e+00)
++  %34 = call float @llvm.AMDIL.clamp.(float %23, float 0.000000e+00, float 1.000000e+00)
++  %35 = call float @llvm.AMDIL.clamp.(float %31, float 0.000000e+00, float 1.000000e+00)
++  %36 = insertelement <4 x float> undef, float %32, i32 0
++  %37 = insertelement <4 x float> %36, float %33, i32 1
++  %38 = insertelement <4 x float> %37, float %34, i32 2
++  %39 = insertelement <4 x float> %38, float %35, i32 3
++  call void @llvm.R600.store.swizzle(<4 x float> %39, i32 0, i32 0)
++  ret void
++}
++
++declare float @llvm.AMDIL.clamp.(float, float, float) readnone
++declare void @llvm.R600.store.swizzle(<4 x float>, i32, i32)
 diff --git a/test/CodeGen/R600/lit.local.cfg b/test/CodeGen/R600/lit.local.cfg
 new file mode 100644
 index 0000000..36ee493
@@ -24204,6 +24150,35 @@ index 0000000..fac957f
 +declare void @llvm.AMDGPU.store.output(float, i32)
 +
 +declare float @llvm.AMDGPU.trunc(float ) readnone
+diff --git a/test/CodeGen/R600/llvm.SI.fs.interp.constant.ll b/test/CodeGen/R600/llvm.SI.fs.interp.constant.ll
+new file mode 100644
+index 0000000..0c19f14
+--- /dev/null
++++ b/test/CodeGen/R600/llvm.SI.fs.interp.constant.ll
+@@ -0,0 +1,23 @@
++;RUN: llc < %s -march=r600 -mcpu=SI | FileCheck %s
++
++;CHECK: S_MOV_B32
++;CHECK-NEXT: V_INTERP_MOV_F32
++
++define void @main() {
++main_body:
++  call void @llvm.AMDGPU.shader.type(i32 0)
++  %0 = load i32 addrspace(8)* inttoptr (i32 6 to i32 addrspace(8)*)
++  %1 = call float @llvm.SI.fs.interp.constant(i32 0, i32 0, i32 %0)
++  %2 = call i32 @llvm.SI.packf16(float %1, float %1)
++  %3 = bitcast i32 %2 to float
++  call void @llvm.SI.export(i32 15, i32 1, i32 1, i32 0, i32 1, float %3, float %3, float %3, float %3)
++  ret void
++}
++
++declare void @llvm.AMDGPU.shader.type(i32)
++
++declare float @llvm.SI.fs.interp.constant(i32, i32, i32) readonly
++
++declare i32 @llvm.SI.packf16(float, float) readnone
++
++declare void @llvm.SI.export(i32, i32, i32, i32, i32, float, float, float, float)
 diff --git a/test/CodeGen/R600/llvm.cos.ll b/test/CodeGen/R600/llvm.cos.ll
 new file mode 100644
 index 0000000..dc120bf
@@ -24985,15 +24960,3 @@ index 0000000..62cdcf5
 +declare <4 x float> @llvm.SI.vs.load.input(<4 x i32>, i32, i32)
 +
 +declare void @llvm.SI.export(i32, i32, i32, i32, i32, float, float, float, float)
-diff --git a/test/CodeGen/X86/cvtv2f32.ll b/test/CodeGen/X86/cvtv2f32.ll
-index 466b096..d11bb9e 100644
---- a/test/CodeGen/X86/cvtv2f32.ll
-+++ b/test/CodeGen/X86/cvtv2f32.ll
-@@ -1,3 +1,7 @@
-+; A bug fix in the DAGCombiner made this test fail, so marking as xfail
-+; until this can be investigated further.
-+; XFAIL: *
-+
- ; RUN: llc < %s -mtriple=i686-linux-pc -mcpu=corei7 | FileCheck %s
- 
- define <2 x float> @foo(i32 %x, i32 %y, <2 x float> %v) {

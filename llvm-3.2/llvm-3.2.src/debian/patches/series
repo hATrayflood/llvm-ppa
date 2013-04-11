@@ -7,4 +7,8 @@
 0047-version-name.diff
 0050-powerpcspe-fp.diff
 declare_clear_cache.diff
+0101-LegalizeDAG-Allow-type-promotion-for-scalar-stores.patch
+0102-LegalizeDAG-Allow-type-promotion-of-scalar-loads.patch
+0103-DAGCombiner-Avoid-generating-illegal-vector-INT_TO_F.patch
 r600-snapshot.diff
+JITEmitter.patch

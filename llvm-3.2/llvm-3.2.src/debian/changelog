@@ -1,8 +1,27 @@
-llvm-3.2 (3.2-debian3ppa1) precise; urgency=low
+llvm-3.2 (3.2-debian5ppa1) precise; urgency=low
 
   * ppa for precise
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 28 Feb 2013 21:13:25 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 11 Apr 2013 16:13:25 +0900
+
+llvm-3.2 (3.2-5) unstable; urgency=low
+
+  * Fixes a segfault in the exception table of the JIT code emitter.
+    Thanks to Conrad Steenberg for digging
+    (LP: #1160587)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Sat, 06 Apr 2013 14:05:49 +0200
+
+llvm-3.2 (3.2-4) unstable; urgency=low
+
+  * Enable RTTI (REQUIRES_RTTI=1) (Closes: #697754)
+
+  [ Jon Severinsson ]
+  * debian/patches/r600-snapshot.diff: Move backports into individual patches.
+  * debian/patches/r600-snapshot.diff: Update to mesa-9.1 git tag.
+    (Closes: #703671, #697356)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Fri, 22 Mar 2013 09:05:35 +0100
 
 llvm-3.2 (3.2-3) unstable; urgency=low
 
