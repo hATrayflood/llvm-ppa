@@ -1,11 +1,13 @@
 #!/usr/bin/make -f
 
 TARGET_BUILD	:= $(CURDIR)/build-llvm
+GCC_VERSION     := 4.6
 SONAME_EXT      := 1
 LLVM_FULL_VERSION :=$(shell dpkg-parsechangelog | sed -rne 's,^Version: (.*),\1,p')
 LLVM_VERSION	:= $(shell dpkg-parsechangelog | sed -rne 's,^Version: ([^-+~]+).*,\1,p')
 LLVM_VERSION_WITH_MINOR	:= $(shell dpkg-parsechangelog | sed -rne 's,^Version: ([^-]+).*,\1,p')
 DEB_HOST_MULTIARCH	?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+DEB_HOST_GNU_TYPE	?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 OCAML_STDLIB_DIR    ?= $(shell ocamlc -where)
 DISTRELEASE := $(shell lsb_release -is)
 COMMA = ,
@@ -13,7 +15,10 @@ ifneq (,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
   NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
 endif
 
-confargs := --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) \
+confargs := \
+	CC=$(DEB_HOST_GNU_TYPE)-gcc-$(GCC_VERSION) CXX=$(DEB_HOST_GNU_TYPE)-g++-$(GCC_VERSION) \
+	CPP=$(DEB_HOST_GNU_TYPE)-cpp-$(GCC_VERSION) \
+	--host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) \
 --disable-assertions --prefix=/usr/lib/llvm-$(LLVM_VERSION) \
 --enable-optimized --with-optimize-option=' -g -O2' --enable-pic \
 --enable-libffi --with-ocaml-libdir=/usr/lib/ocaml/llvm-$(LLVM_VERSION) \

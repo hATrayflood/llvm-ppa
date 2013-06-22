@@ -1,19 +1,19 @@
 diff -urN debian/changelog clang-2.9/debian/changelog
 --- debian/changelog	2011-10-12 18:08:38.709403000 +0900
-+++ clang-2.9/debian/changelog	2013-01-27 18:59:47.168993623 +0900
++++ clang-2.9/debian/changelog	2013-06-22 03:47:13.927456156 +0900
 @@ -1,3 +1,9 @@
-+clang-2.9 (2.9-debian15ppa1) precise; urgency=low
++clang-2.9 (2.9-debian15ppa2) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sun, 27 Jan 2013 19:32:19 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sat, 22 Jun 2013 03:45:00 +0900
 +
  clang (2.9-15) unstable; urgency=low
  
    * Refactoring of some patches
 diff -urN debian/control clang-2.9/debian/control
 --- debian/control	2011-10-08 03:30:51.504842000 +0900
-+++ clang-2.9/debian/control	2013-01-28 21:28:39.369367760 +0900
++++ clang-2.9/debian/control	2013-06-22 00:45:04.890714000 +0900
 @@ -1,22 +1,20 @@
 -Source: clang
 +Source: clang-2.9
@@ -399,6 +399,18 @@ diff -urN debian/patches/15-searchPaths.patch clang-2.9/debian/patches/15-search
  +  
  +// For objc
  +  AddPath("/usr/lib/gcc/" + std::string(DEB_HOST_GNU_TYPE_TRIPLET) + "/4.6/include/", System, true, false, false);
+diff -urN debian/rules clang-2.9/debian/rules
+--- debian/rules	2011-10-04 07:45:19.111635000 +0900
++++ clang-2.9/debian/rules	2013-06-21 23:26:16.694069640 +0900
+@@ -17,7 +17,7 @@
+ 
+ define pkgname
+   $(shell cat $(D)/debian/control.in/$1 | awk '/^Package: / {print $$2}' | \
+-  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(gcc_version)/;s/@PKG_VERSION@/$(pkg_version)/')
++  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(GCC_VERSION)/;s/@PKG_VERSION@/$(pkg_version)/')
+ endef
+ 
+ define buildof
 diff -urN debian/rules.d/build.mk clang-2.9/debian/rules.d/build.mk
 --- debian/rules.d/build.mk	2011-10-08 03:30:51.504842000 +0900
 +++ clang-2.9/debian/rules.d/build.mk	2013-01-27 18:57:37.032348182 +0900
@@ -412,7 +424,7 @@ diff -urN debian/rules.d/build.mk clang-2.9/debian/rules.d/build.mk
  	$(RM) $(D)/debian/log-check-* $(D)/debian/logwatch-*.pid
 diff -urN debian/rules.d/control.mk clang-2.9/debian/rules.d/control.mk
 --- debian/rules.d/control.mk	2011-10-08 03:30:51.504842000 +0900
-+++ clang-2.9/debian/rules.d/control.mk	2013-01-28 13:37:42.581753124 +0900
++++ clang-2.9/debian/rules.d/control.mk	2013-06-21 23:27:34.922457551 +0900
 @@ -1,7 +1,7 @@
  $(foreach var,BUILDDEPS BUILDCONFLICTS,$(eval \
    $(if $(strip $($(var))),$(eval $(var) :=, $($(var))),$(eval $(var) :=))))
@@ -421,4 +433,38 @@ diff -urN debian/rules.d/control.mk clang-2.9/debian/rules.d/control.mk
 +extra_packages:=libclang1 libclang-dev libclang-common-dev
  packages := $(foreach build,$(builds),$($(build)_packages))
  packages += $(extra_packages) 
+ 
+@@ -11,7 +11,7 @@
+ 	    -e "s/ *@BUILDDEPS@/$(BUILDDEPS)/g"			\
+ 	    -e "s/ *@BUILDCONFLICTS@/$(BUILDCONFLICTS)/g"	\
+ 	    -e "s/@UVERSION@/$(UVERSION)/g"			\
+-	    -e "s/@GCC_VERSION@/$(gcc_version)/g"		\
++	    -e "s/@GCC_VERSION@/$(GCC_VERSION)/g"		\
+ 	    -e "s/@PKG_VERSION@/$(pkg_version)/g"		\
+ 	    -e "s/ , /, /g"					\
+ 	    $@.in/source $(addprefix $@.in/,$(packages)) > $@
+diff -urN debian/rules.d/vars.mk clang-2.9/debian/rules.d/vars.mk
+--- debian/rules.d/vars.mk	2011-10-12 18:08:38.709403000 +0900
++++ clang-2.9/debian/rules.d/vars.mk	2013-06-21 23:28:41.090785664 +0900
+@@ -5,6 +5,7 @@
+ PATCHSETVERSION	:= $(shell echo $(VERSION) | cut -d'-' -f2)
+ UVERSION	:= 2.9
+ SONAME_EXT      := 1
++GCC_VERSION	:= 4.6
+ OS		:= $(shell lsb_release -is)
+ PF		:= /usr/lib/llvm-$(UVERSION)
+ D		:= $(CURDIR)
+@@ -58,10 +59,10 @@
+ endif
+ 
+ confargs := \
+-	CC=$(DEB_HOST_GNU_TYPE)-gcc CXX=$(DEB_HOST_GNU_TYPE)-g++ \
+-	CPP=$(DEB_HOST_GNU_TYPE)-cpp \
++	CC=$(DEB_HOST_GNU_TYPE)-gcc-$(GCC_VERSION) CXX=$(DEB_HOST_GNU_TYPE)-g++-$(GCC_VERSION) \
++	CPP=$(DEB_HOST_GNU_TYPE)-cpp-$(GCC_VERSION) \
+ 	--with-c-include-dirs=/usr/include/$(DEB_HOST_GNU_TYPE):/usr/include \
+-    --with-cxx-include-root=/usr/include/c++/4.6 \
++    --with-cxx-include-root=/usr/include/c++/$(GCC_VERSION) \
+     --with-cxx-include-arch=$(DEB_HOST_GNU_TYPE) \
+     --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE)
  

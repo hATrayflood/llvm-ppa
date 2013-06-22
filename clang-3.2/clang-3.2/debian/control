@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl8.5, expect,
     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
     lsb-release, patchutils, diffstat, xz-utils, llvm-3.2-dev (>= 3.2),
     llvm-3.2-source (>= 3.2), chrpath, python, 
-    binutils-gold [amd64 armel armhf i386 powerpc powerpcspe ppc64 sparc sparc64 x32]
+    binutils-gold [amd64 armel armhf i386 powerpc powerpcspe ppc64 sparc sparc64]
 Build-Conflicts: oprofile, ocaml
 Standards-Version: 3.9.3
 Homepage: https://launchpad.net/~h-rayflood/+archive/llvm

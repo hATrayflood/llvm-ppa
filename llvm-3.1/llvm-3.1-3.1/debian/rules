@@ -16,7 +16,7 @@ endif
 
 define pkgname
   $(shell cat $(D)/debian/control.in/$1 | awk '/^Package: / {print $$2}' | \
-  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(gcc_version)/;s/@PKG_VERSION@/$(pkg_version)/')
+  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(GCC_VERSION)/;s/@PKG_VERSION@/$(pkg_version)/')
 endef
 
 define buildof

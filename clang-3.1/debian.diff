@@ -1,19 +1,19 @@
 diff -urN debian/changelog clang-3.1/debian/changelog
 --- debian/changelog	2012-06-28 07:10:09.000000000 +0900
-+++ clang-3.1/debian/changelog	2013-01-16 16:42:55.086498877 +0900
++++ clang-3.1/debian/changelog	2013-06-22 03:51:47.124834472 +0900
 @@ -1,3 +1,9 @@
-+clang-3.1 (3.1-debian8ppa2) precise; urgency=low
++clang-3.1 (3.1-debian8ppa3) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 10 Jan 2013 23:03:55 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sat, 22 Jun 2013 03:45:00 +0900
 +
  clang (3.1-8) unstable; urgency=low
  
    * Also ship clang static libraries for the plugin developments
 diff -urN debian/control clang-3.1/debian/control
 --- debian/control	2012-06-28 07:12:08.000000000 +0900
-+++ clang-3.1/debian/control	2013-01-16 16:51:21.189008995 +0900
++++ clang-3.1/debian/control	2013-06-21 23:58:39.047701247 +0900
 @@ -1,9 +1,7 @@
 -Source: clang
 +Source: clang-3.1
@@ -316,6 +316,18 @@ diff -urN debian/patches/series clang-3.1/debian/patches/series
  23-strlcpy_strlcat_warning_removed.diff
  26-disable_SplitsOnSpaces.diff
 +28-gcc-4.7-paths-clang-3.1.diff
+diff -urN debian/rules clang-3.1/debian/rules
+--- debian/rules	2012-06-01 21:50:18.000000000 +0900
++++ clang-3.1/debian/rules	2013-06-21 23:02:32.197853431 +0900
+@@ -17,7 +17,7 @@
+ 
+ define pkgname
+   $(shell cat $(D)/debian/control.in/$1 | awk '/^Package: / {print $$2}' | \
+-  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(gcc_version)/;s/@PKG_VERSION@/$(pkg_version)/')
++  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(GCC_VERSION)/;s/@PKG_VERSION@/$(pkg_version)/')
+ endef
+ 
+ define buildof
 diff -urN debian/rules.d/build.mk clang-3.1/debian/rules.d/build.mk
 --- debian/rules.d/build.mk	2012-06-26 06:31:47.000000000 +0900
 +++ clang-3.1/debian/rules.d/build.mk	2013-01-10 23:36:20.912394102 +0900
@@ -327,17 +339,15 @@ diff -urN debian/rules.d/build.mk clang-3.1/debian/rules.d/build.mk
  	$(RM) -r $(D)/debian/tmp-*
  	$(RM) $(D)/test/Bindings/Ocaml/*.cm[io]
  	$(RM) $(D)/debian/log-check-* $(D)/debian/logwatch-*.pid
-diff -urN debian/rules.d/vars.mk clang-3.1/debian/rules.d/vars.mk
---- debian/rules.d/vars.mk	2012-06-01 21:59:57.000000000 +0900
-+++ clang-3.1/debian/rules.d/vars.mk	2013-01-16 17:00:13.167646936 +0900
-@@ -61,8 +61,8 @@
- endif
- 
- confargs := \
--	CC=$(DEB_HOST_GNU_TYPE)-gcc-$(GCC_VERSION) CXX=$(DEB_HOST_GNU_TYPE)-g++-$(GCC_VERSION) \
--	CPP=$(DEB_HOST_GNU_TYPE)-cpp-$(GCC_VERSION) \
-+	CC=$(DEB_HOST_GNU_TYPE)-gcc CXX=$(DEB_HOST_GNU_TYPE)-g++ \
-+	CPP=$(DEB_HOST_GNU_TYPE)-cpp \
- 	--with-c-include-dirs=:/usr/include/$(DEB_HOST_MULTIARCH):/usr/include/$(DEB_HOST_GNU_TYPE):/usr/include \
-     --with-cxx-include-root=/usr/include/c++/$(GCC_VERSION) \
-     --with-cxx-include-arch=$(DEB_HOST_GNU_TYPE) \
+diff -urN debian/rules.d/control.mk clang-3.1/debian/rules.d/control.mk
+--- debian/rules.d/control.mk	2012-06-01 21:50:18.000000000 +0900
++++ clang-3.1/debian/rules.d/control.mk	2013-06-21 23:02:46.821925962 +0900
+@@ -11,7 +11,7 @@
+ 	    -e "s/ *@BUILDDEPS@/$(BUILDDEPS)/g"			\
+ 	    -e "s/ *@BUILDCONFLICTS@/$(BUILDCONFLICTS)/g"	\
+ 	    -e "s/@UVERSION@/$(UVERSION)/g"			\
+-	    -e "s/@GCC_VERSION@/$(gcc_version)/g"		\
++	    -e "s/@GCC_VERSION@/$(GCC_VERSION)/g"		\
+ 	    -e "s/@PKG_VERSION@/$(pkg_version)/g"		\
+ 	    -e "s/ , /, /g"					\
+ 	    $@.in/source $(addprefix $@.in/,$(packages)) > $@

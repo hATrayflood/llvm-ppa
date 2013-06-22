@@ -1,19 +1,19 @@
 diff -urN debian/changelog llvm-3.1-3.1/debian/changelog
 --- debian/changelog	2012-07-02 02:29:07.000000000 +0900
-+++ llvm-3.1-3.1/debian/changelog	2013-01-10 21:07:13.608916967 +0900
++++ llvm-3.1-3.1/debian/changelog	2013-06-22 03:50:44.477215967 +0900
 @@ -1,3 +1,9 @@
-+llvm-3.1 (3.1-2ppa1) precise; urgency=low
++llvm-3.1 (3.1-debian2ppa2) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 10 Jan 2013 21:10:44 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sat, 22 Jun 2013 03:45:00 +0900
 +
  llvm-3.1 (3.1-2) unstable; urgency=low
  
    * llvm-3.1 did not include line number information recognizable by gdb
 diff -urN debian/control llvm-3.1-3.1/debian/control
 --- debian/control	2012-07-02 02:30:30.000000000 +0900
-+++ llvm-3.1-3.1/debian/control	2013-01-10 21:54:52.308239990 +0900
++++ llvm-3.1-3.1/debian/control	2013-06-21 23:25:12.321750441 +0900
 @@ -1,8 +1,7 @@
  Source: llvm-3.1
  Section: devel
@@ -64,7 +64,16 @@ diff -urN debian/control.in/source llvm-3.1-3.1/debian/control.in/source
  
 diff -urN debian/rules llvm-3.1-3.1/debian/rules
 --- debian/rules	2012-04-20 03:45:00.000000000 +0900
-+++ llvm-3.1-3.1/debian/rules	2013-01-10 21:56:48.308815204 +0900
++++ llvm-3.1-3.1/debian/rules	2013-06-21 22:49:13.309891974 +0900
+@@ -16,7 +16,7 @@
+ 
+ define pkgname
+   $(shell cat $(D)/debian/control.in/$1 | awk '/^Package: / {print $$2}' | \
+-  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(gcc_version)/;s/@PKG_VERSION@/$(pkg_version)/')
++  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(GCC_VERSION)/;s/@PKG_VERSION@/$(pkg_version)/')
+ endef
+ 
+ define buildof
 @@ -35,5 +35,6 @@
  endif
  	$(RM) -r $(D)/debian/ccache
@@ -72,3 +81,37 @@ diff -urN debian/rules llvm-3.1-3.1/debian/rules
 +	find test  -name '*.py[co]' | xargs rm -f
  
  .PHONY: clean
+diff -urN debian/rules.d/control.mk llvm-3.1-3.1/debian/rules.d/control.mk
+--- debian/rules.d/control.mk	2012-04-20 03:45:00.000000000 +0900
++++ llvm-3.1-3.1/debian/rules.d/control.mk	2013-06-21 22:49:30.149975481 +0900
+@@ -10,7 +10,7 @@
+ 	    -e "s/ *@BUILDDEPS@/$(BUILDDEPS)/g"			\
+ 	    -e "s/ *@BUILDCONFLICTS@/$(BUILDCONFLICTS)/g"	\
+ 	    -e "s/@UVERSION@/$(UVERSION)/g"			\
+-	    -e "s/@GCC_VERSION@/$(gcc_version)/g"		\
++	    -e "s/@GCC_VERSION@/$(GCC_VERSION)/g"		\
+ 	    -e "s/@PKG_VERSION@/$(pkg_version)/g"		\
+ 	    -e "s/ , /, /g"					\
+ 	    $@.in/source $(addprefix $@.in/,$(packages)) > $@
+diff -urN debian/rules.d/vars.mk llvm-3.1-3.1/debian/rules.d/vars.mk
+--- debian/rules.d/vars.mk	2012-04-20 03:45:00.000000000 +0900
++++ llvm-3.1-3.1/debian/rules.d/vars.mk	2013-06-21 22:00:57.915534492 +0900
+@@ -7,6 +7,7 @@
+ MINOR_VERSION := 1
+ UVERSION	:= $(MAJOR_VERSION).$(MINOR_VERSION)
+ EXTVERSION  := 
++GCC_VERSION	:= 4.6
+ OS		:= $(shell lsb_release -is)
+ PF		:= /usr/lib/llvm-$(UVERSION)
+ D		:= $(CURDIR)
+@@ -66,8 +67,8 @@
+ endif
+ 
+ confargs := \
+-	CC=$(DEB_HOST_GNU_TYPE)-gcc CXX=$(DEB_HOST_GNU_TYPE)-g++ \
+-	CPP=$(DEB_HOST_GNU_TYPE)-cpp \
++	CC=$(DEB_HOST_GNU_TYPE)-gcc-$(GCC_VERSION) CXX=$(DEB_HOST_GNU_TYPE)-g++-$(GCC_VERSION) \
++	CPP=$(DEB_HOST_GNU_TYPE)-cpp-$(GCC_VERSION) \
+ 	--host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE)
+ 
+ # build not yet prepared to take variables from the environment

@@ -1,19 +1,19 @@
 diff -urN debian/changelog clang-3.0/debian/changelog
 --- debian/changelog	2013-03-29 03:03:16.000000000 +0900
-+++ clang-3.0/debian/changelog	2013-04-11 18:29:10.691844508 +0900
++++ clang-3.0/debian/changelog	2013-06-22 03:49:28.650946180 +0900
 @@ -1,3 +1,9 @@
-+clang-3.0 (3.0-debian6.2ppa1) precise; urgency=low
++clang-3.0 (3.0-debian6.2ppa2) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 11 Apr 2013 18:46:46 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sat, 22 Jun 2013 03:45:00 +0900
 +
  clang (1:3.0-6.2) unstable; urgency=low
  
    * Non-maintainer upload with maintainer's approval.
 diff -urN debian/control clang-3.0/debian/control
 --- debian/control	2013-03-31 10:15:22.000000000 +0900
-+++ clang-3.0/debian/control	2013-02-28 21:52:52.273647985 +0900
++++ clang-3.0/debian/control	2013-06-22 01:38:42.536046928 +0900
 @@ -1,24 +1,21 @@
 -Source: clang
 +Source: clang-3.0
@@ -262,4 +262,53 @@ diff -urN debian/packages.d/tools.mk clang-3.0/debian/packages.d/tools.mk
 +BUILDCONFLICTS	:= ocaml
  
  PF		:= /usr
+ 
+diff -urN debian/rules clang-3.0/debian/rules
+--- debian/rules	2013-02-06 19:13:50.000000000 +0900
++++ clang-3.0/debian/rules	2013-06-21 23:14:55.250690541 +0900
+@@ -17,7 +17,7 @@
+ 
+ define pkgname
+   $(shell cat $(D)/debian/control.in/$1 | awk '/^Package: / {print $$2}' | \
+-  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(gcc_version)/;s/@PKG_VERSION@/$(pkg_version)/')
++  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(GCC_VERSION)/;s/@PKG_VERSION@/$(pkg_version)/')
+ endef
+ 
+ define buildof
+diff -urN debian/rules.d/control.mk clang-3.0/debian/rules.d/control.mk
+--- debian/rules.d/control.mk	2011-12-20 22:40:50.000000000 +0900
++++ clang-3.0/debian/rules.d/control.mk	2013-06-21 23:15:09.346760448 +0900
+@@ -11,7 +11,7 @@
+ 	    -e "s/ *@BUILDDEPS@/$(BUILDDEPS)/g"			\
+ 	    -e "s/ *@BUILDCONFLICTS@/$(BUILDCONFLICTS)/g"	\
+ 	    -e "s/@UVERSION@/$(UVERSION)/g"			\
+-	    -e "s/@GCC_VERSION@/$(gcc_version)/g"		\
++	    -e "s/@GCC_VERSION@/$(GCC_VERSION)/g"		\
+ 	    -e "s/@PKG_VERSION@/$(pkg_version)/g"		\
+ 	    -e "s/ , /, /g"					\
+ 	    $@.in/source $(addprefix $@.in/,$(packages)) > $@
+diff -urN debian/rules.d/vars.mk clang-3.0/debian/rules.d/vars.mk
+--- debian/rules.d/vars.mk	2011-12-08 02:05:16.000000000 +0900
++++ clang-3.0/debian/rules.d/vars.mk	2013-06-21 23:17:05.243335137 +0900
+@@ -5,6 +5,7 @@
+ PATCHSETVERSION	:= $(shell echo $(VERSION) | cut -d'-' -f2)
+ UVERSION	:= 3.0
+ SONAME_EXT      := 1
++GCC_VERSION	:= 4.6
+ OS		:= $(shell lsb_release -is)
+ PF		:= /usr/lib/llvm-$(UVERSION)
+ D		:= $(CURDIR)
+@@ -59,10 +60,10 @@
+ endif
+ 
+ confargs := \
+-	CC=$(DEB_HOST_GNU_TYPE)-gcc CXX=$(DEB_HOST_GNU_TYPE)-g++ \
+-	CPP=$(DEB_HOST_GNU_TYPE)-cpp \
++	CC=$(DEB_HOST_GNU_TYPE)-gcc-$(GCC_VERSION) CXX=$(DEB_HOST_GNU_TYPE)-g++-$(GCC_VERSION) \
++	CPP=$(DEB_HOST_GNU_TYPE)-cpp-$(GCC_VERSION) \
+ 	--with-c-include-dirs=/usr/include/$(DEB_HOST_GNU_TYPE):/usr/include \
+-    --with-cxx-include-root=/usr/include/c++/4.6 \
++    --with-cxx-include-root=/usr/include/c++/$(GCC_VERSION) \
+     --with-cxx-include-arch=$(DEB_HOST_GNU_TYPE) \
+     --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE)
  

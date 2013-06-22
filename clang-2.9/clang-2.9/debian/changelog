@@ -1,8 +1,8 @@
-clang-2.9 (2.9-debian15ppa1) precise; urgency=low
+clang-2.9 (2.9-debian15ppa2) precise; urgency=low
 
   * ppa for precise
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sun, 27 Jan 2013 19:32:19 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sat, 22 Jun 2013 03:45:00 +0900
 
 clang (2.9-15) unstable; urgency=low
 

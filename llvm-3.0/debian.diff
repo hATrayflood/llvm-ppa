@@ -1,19 +1,19 @@
 diff -urN debian/changelog llvm-3.0.src/debian/changelog
 --- debian/changelog	2012-07-13 20:35:29.000000000 +0900
-+++ llvm-3.0.src/debian/changelog	2013-01-09 19:42:45.155272034 +0900
++++ llvm-3.0.src/debian/changelog	2013-06-22 03:48:22.223794827 +0900
 @@ -1,3 +1,9 @@
-+llvm-3.0 (3.0-10ppa1) precise; urgency=low
++llvm-3.0 (3.0-debian10ppa2) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Wed, 9 Jan 2013 19:34:45 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sat, 22 Jun 2013 03:45:00 +0900
 +
  llvm-3.0 (3.0-10) unstable; urgency=low
  
    * Rebuild package to fix symbol issues (Closes: #680326, #681109)
 diff -urN debian/control llvm-3.0.src/debian/control
 --- debian/control	2012-07-13 20:36:21.000000000 +0900
-+++ llvm-3.0.src/debian/control	2013-01-10 16:27:53.338044774 +0900
++++ llvm-3.0.src/debian/control	2013-06-22 01:10:57.170411344 +0900
 @@ -1,8 +1,7 @@
  Source: llvm-3.0
  Section: devel
@@ -62,3 +62,49 @@ diff -urN debian/control.in/source llvm-3.0.src/debian/control.in/source
 +Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
  
  
+diff -urN debian/rules llvm-3.0.src/debian/rules
+--- debian/rules	2012-04-06 19:54:36.000000000 +0900
++++ llvm-3.0.src/debian/rules	2013-06-21 23:07:41.734222041 +0900
+@@ -16,7 +16,7 @@
+ 
+ define pkgname
+   $(shell cat $(D)/debian/control.in/$1 | awk '/^Package: / {print $$2}' | \
+-  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(gcc_version)/;s/@PKG_VERSION@/$(pkg_version)/')
++  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(GCC_VERSION)/;s/@PKG_VERSION@/$(pkg_version)/')
+ endef
+ 
+ define buildof
+diff -urN debian/rules.d/control.mk llvm-3.0.src/debian/rules.d/control.mk
+--- debian/rules.d/control.mk	2012-04-06 19:54:36.000000000 +0900
++++ llvm-3.0.src/debian/rules.d/control.mk	2013-06-21 23:08:16.567802685 +0900
+@@ -10,7 +10,7 @@
+ 	    -e "s/ *@BUILDDEPS@/$(BUILDDEPS)/g"			\
+ 	    -e "s/ *@BUILDCONFLICTS@/$(BUILDCONFLICTS)/g"	\
+ 	    -e "s/@UVERSION@/$(UVERSION)/g"			\
+-	    -e "s/@GCC_VERSION@/$(gcc_version)/g"		\
++	    -e "s/@GCC_VERSION@/$(GCC_VERSION)/g"		\
+ 	    -e "s/@PKG_VERSION@/$(pkg_version)/g"		\
+ 	    -e "s/ , /, /g"					\
+ 	    $@.in/source $(addprefix $@.in/,$(packages)) > $@
+diff -urN debian/rules.d/vars.mk llvm-3.0.src/debian/rules.d/vars.mk
+--- debian/rules.d/vars.mk	2012-04-06 19:54:36.000000000 +0900
++++ llvm-3.0.src/debian/rules.d/vars.mk	2013-06-21 23:09:40.561130095 +0900
+@@ -7,6 +7,7 @@
+ MINOR_VERSION := 0
+ UVERSION	:= $(MAJOR_VERSION).$(MINOR_VERSION)
+ EXTVERSION  := .src
++GCC_VERSION	:= 4.6
+ OS		:= $(shell lsb_release -is)
+ PF		:= /usr/lib/llvm-$(UVERSION)
+ D		:= $(CURDIR)
+@@ -66,8 +67,8 @@
+ endif
+ 
+ confargs := \
+-	CC=$(DEB_HOST_GNU_TYPE)-gcc CXX=$(DEB_HOST_GNU_TYPE)-g++ \
+-	CPP=$(DEB_HOST_GNU_TYPE)-cpp \
++	CC=$(DEB_HOST_GNU_TYPE)-gcc-$(GCC_VERSION) CXX=$(DEB_HOST_GNU_TYPE)-g++-$(GCC_VERSION) \
++	CPP=$(DEB_HOST_GNU_TYPE)-cpp-$(GCC_VERSION) \
+ 	--host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE)
+ 
+ # build not yet prepared to take variables from the environment

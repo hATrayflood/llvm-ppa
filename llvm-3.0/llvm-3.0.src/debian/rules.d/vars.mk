@@ -7,6 +7,7 @@ MAJOR_VERSION := 3
 MINOR_VERSION := 0
 UVERSION	:= $(MAJOR_VERSION).$(MINOR_VERSION)
 EXTVERSION  := .src
+GCC_VERSION	:= 4.6
 OS		:= $(shell lsb_release -is)
 PF		:= /usr/lib/llvm-$(UVERSION)
 D		:= $(CURDIR)
@@ -66,8 +67,8 @@ else
 endif
 
 confargs := \
-	CC=$(DEB_HOST_GNU_TYPE)-gcc CXX=$(DEB_HOST_GNU_TYPE)-g++ \
-	CPP=$(DEB_HOST_GNU_TYPE)-cpp \
+	CC=$(DEB_HOST_GNU_TYPE)-gcc-$(GCC_VERSION) CXX=$(DEB_HOST_GNU_TYPE)-g++-$(GCC_VERSION) \
+	CPP=$(DEB_HOST_GNU_TYPE)-cpp-$(GCC_VERSION) \
 	--host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE)
 
 # build not yet prepared to take variables from the environment

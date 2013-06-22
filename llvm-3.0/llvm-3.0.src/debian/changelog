@@ -1,8 +1,8 @@
-llvm-3.0 (3.0-debian10ppa1) precise; urgency=low
+llvm-3.0 (3.0-debian10ppa2) precise; urgency=low
 
   * ppa for precise
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Wed, 9 Jan 2013 19:34:45 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sat, 22 Jun 2013 03:45:00 +0900
 
 llvm-3.0 (3.0-10) unstable; urgency=low
 
