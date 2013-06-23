@@ -1,7 +1,7 @@
 $(foreach var,BUILDDEPS BUILDCONFLICTS,$(eval \
   $(if $(strip $($(var))),$(eval $(var) :=, $($(var))),$(eval $(var) :=))))
 
-extra_packages:=libclang1 libclang-dev libclang-common-dev
+extra_packages:=libclang1 libclang-dev libclang-common-dev python-clang
 packages := $(foreach build,$(builds),$($(build)_packages))
 packages += $(extra_packages) 
 

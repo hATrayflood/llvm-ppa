@@ -13,7 +13,7 @@ diff -urN debian/changelog clang-2.9/debian/changelog
    * Refactoring of some patches
 diff -urN debian/control clang-2.9/debian/control
 --- debian/control	2011-10-08 03:30:51.504842000 +0900
-+++ clang-2.9/debian/control	2013-06-22 00:45:04.890714000 +0900
++++ clang-2.9/debian/control	2013-06-24 01:25:05.113780590 +0900
 @@ -1,22 +1,20 @@
 -Source: clang
 +Source: clang-2.9
@@ -71,7 +71,7 @@ diff -urN debian/control clang-2.9/debian/control
  Description: clang library - Development package
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
-@@ -137,3 +135,45 @@
+@@ -137,3 +135,88 @@
      * Conformance with C/C++/ObjC and their variants
   .
   This package contains the clang headers.
@@ -117,6 +117,49 @@ diff -urN debian/control clang-2.9/debian/control
 +    * Conformance with C/C++/ObjC and their variants
 + .
 + This package contains the clang generic headers.
++
++Package: python-clang-2.9
++Architecture: any
++Section: python
++Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
++ libclang1-2.9 (= ${binary:Version}), python2.7
++Description: clang python bindings
++ The Low-Level Virtual Machine (LLVM) is a collection of libraries and
++ tools that make it easy to build compilers, optimizers, Just-In-Time
++ code generators, and many other compiler-related programs. LLVM
++ uses a single, language-independent virtual instruction set both
++ as an offline code representation (to communicate code between
++ compiler phases and to run-time systems) and as the compiler internal
++ representation (to analyze and transform programs). This persistent
++ code representation allows a common set of sophisticated compiler
++ techniques to be applied at compile-time, link-time, install-time,
++ run-time, or "idle-time" (between program runs).
++ .
++ Clang project is a C, C++, Objective C and Objective C++ front-end
++ for the LLVM compiler. Some of its goals include the following:
++ .
++ End-User Features:
++ .
++    * Fast compiles and low memory use
++    * Expressive diagnostics (examples)
++    * GCC compatibility
++ .
++ Utility and Applications:
++ .
++    * Modular library based architecture
++    * Support diverse clients (refactoring, static analysis, code
++      generation, etc)
++    * Allow tight integration with IDEs
++    * Use the LLVM 'BSD' License
++ .
++ Internal Design and Implementation:
++ .
++    * A real-world, production quality compiler
++    * A simple and hackable code base
++    * A single unified parser for C, Objective C, C++, and Objective C++
++    * Conformance with C/C++/ObjC and their variants
++ .
++ This package contains the clang python bindings.
 diff -urN debian/control.in/clang clang-2.9/debian/control.in/clang
 --- debian/control.in/clang	2011-10-07 00:42:40.559912000 +0900
 +++ clang-2.9/debian/control.in/clang	2013-01-28 13:39:31.492533112 +0900
@@ -200,6 +243,53 @@ diff -urN debian/control.in/libclang1 clang-2.9/debian/control.in/libclang1
  Architecture: any
  Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev
  Description: clang library
+diff -urN debian/control.in/python-clang clang-2.9/debian/control.in/python-clang
+--- debian/control.in/python-clang	1970-01-01 09:00:00.000000000 +0900
++++ clang-2.9/debian/control.in/python-clang	2013-06-23 11:15:28.922534427 +0900
+@@ -0,0 +1,43 @@
++
++Package: python-clang-2.9
++Architecture: any
++Section: python
++Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
++ libclang1-2.9 (= ${binary:Version}), python2.7
++Description: clang python bindings
++ The Low-Level Virtual Machine (LLVM) is a collection of libraries and
++ tools that make it easy to build compilers, optimizers, Just-In-Time
++ code generators, and many other compiler-related programs. LLVM
++ uses a single, language-independent virtual instruction set both
++ as an offline code representation (to communicate code between
++ compiler phases and to run-time systems) and as the compiler internal
++ representation (to analyze and transform programs). This persistent
++ code representation allows a common set of sophisticated compiler
++ techniques to be applied at compile-time, link-time, install-time,
++ run-time, or "idle-time" (between program runs).
++ .
++ Clang project is a C, C++, Objective C and Objective C++ front-end
++ for the LLVM compiler. Some of its goals include the following:
++ .
++ End-User Features:
++ .
++    * Fast compiles and low memory use
++    * Expressive diagnostics (examples)
++    * GCC compatibility
++ .
++ Utility and Applications:
++ .
++    * Modular library based architecture
++    * Support diverse clients (refactoring, static analysis, code
++      generation, etc)
++    * Allow tight integration with IDEs
++    * Use the LLVM 'BSD' License
++ .
++ Internal Design and Implementation:
++ .
++    * A real-world, production quality compiler
++    * A simple and hackable code base
++    * A single unified parser for C, Objective C, C++, and Objective C++
++    * Conformance with C/C++/ObjC and their variants
++ .
++ This package contains the clang python bindings.
 diff -urN debian/control.in/source clang-2.9/debian/control.in/source
 --- debian/control.in/source	2011-06-13 18:00:08.858118000 +0900
 +++ clang-2.9/debian/control.in/source	2013-01-27 19:03:18.546041743 +0900
@@ -323,6 +413,14 @@ diff -urN debian/debhelper.in/libclang1.install clang-2.9/debian/debhelper.in/li
 @@ -1 +1 @@
 -debian/@TMP@/@PF@/lib/libclang.so.1                       @PF@/lib/
 +debian/@TMP@/@PF@/lib/libclang.so.1                       @PF@/lib/llvm-2.9/lib/
+diff -urN debian/debhelper.in/python-clang.install clang-2.9/debian/debhelper.in/python-clang.install
+--- debian/debhelper.in/python-clang.install	1970-01-01 09:00:00.000000000 +0900
++++ clang-2.9/debian/debhelper.in/python-clang.install	2013-06-24 00:59:59.874316517 +0900
+@@ -0,0 +1,4 @@
++tools/clang/bindings/python/clang/*	@PF@/lib/python2.7/dist-packages/clang29/
++tools/clang/bindings/python/README.txt	@PF@/share/doc/python-clang-2.9/
++tools/clang/bindings/python/examples	@PF@/share/doc/python-clang-2.9/
++tools/clang/bindings/python/tests	@PF@/share/doc/python-clang-2.9/
 diff -urN debian/packages.d/tools.mk clang-2.9/debian/packages.d/tools.mk
 --- debian/packages.d/tools.mk	2011-05-27 08:20:52.024161000 +0900
 +++ clang-2.9/debian/packages.d/tools.mk	2013-01-27 18:41:30.991558044 +0900
@@ -399,6 +497,117 @@ diff -urN debian/patches/15-searchPaths.patch clang-2.9/debian/patches/15-search
  +  
  +// For objc
  +  AddPath("/usr/lib/gcc/" + std::string(DEB_HOST_GNU_TYPE_TRIPLET) + "/4.6/include/", System, true, false, false);
+diff -urN debian/patches/99-python-bindings.patch clang-2.9/debian/patches/99-python-bindings.patch
+--- debian/patches/99-python-bindings.patch	1970-01-01 09:00:00.000000000 +0900
++++ clang-2.9/debian/patches/99-python-bindings.patch	2013-06-23 03:03:10.028074973 +0900
+@@ -0,0 +1,99 @@
++diff -urN clang-2.9.orig/tools/clang/bindings/python/README.txt clang-2.9/tools/clang/bindings/python/README.txt
++--- clang-2.9.orig/tools/clang/bindings/python/README.txt	2010-05-01 06:51:10.000000000 +0900
+++++ clang-2.9/tools/clang/bindings/python/README.txt	2013-06-23 03:01:45.287654760 +0900
++@@ -4,12 +4,9 @@
++ 
++ This directory implements Python bindings for Clang.
++ 
++-You may need to alter LD_LIBRARY_PATH so that the Clang library can be
++-found. The unit tests are designed to be run with 'nosetests'. For example:
+++The unit tests are designed to be run with 'nosetests'. For example:
++ --
++-$ env PYTHONPATH=$(echo ~/llvm/tools/clang/bindings/python/) \
++-      LD_LIBRARY_PATH=$(llvm-config --libdir) \
++-  nosetests -v
+++$ nosetests -v
++ tests.cindex.test_index.test_create ... ok
++ ...
++ 
++diff -urN clang-2.9.orig/tools/clang/bindings/python/clang/cindex.py clang-2.9/tools/clang/bindings/python/clang/cindex.py
++--- clang-2.9.orig/tools/clang/bindings/python/clang/cindex.py	2011-02-06 02:54:10.000000000 +0900
+++++ clang-2.9/tools/clang/bindings/python/clang/cindex.py	2013-06-23 02:19:21.757988613 +0900
++@@ -75,7 +75,7 @@
++     elif name == 'Windows':
++         return cdll.LoadLibrary('libclang.dll')
++     else:
++-        return cdll.LoadLibrary('libclang.so')
+++        return cdll.LoadLibrary('/usr/lib/llvm-2.9/lib/libclang.so.1')
++ 
++ # ctypes doesn't implicitly convert c_void_p to the appropriate wrapper
++ # object. This is a problem, because it means that from_parameter will see an
++diff -urN clang-2.9.orig/tools/clang/bindings/python/examples/cindex/cindex-dump.py clang-2.9/tools/clang/bindings/python/examples/cindex/cindex-dump.py
++--- clang-2.9.orig/tools/clang/bindings/python/examples/cindex/cindex-dump.py	2010-02-14 03:33:28.000000000 +0900
+++++ clang-2.9/tools/clang/bindings/python/examples/cindex/cindex-dump.py	2013-06-23 02:11:19.975599560 +0900
++@@ -54,7 +54,7 @@
++              'children' : children }
++ 
++ def main():
++-    from clang.cindex import Index
+++    from clang29.cindex import Index
++     from pprint import pprint
++ 
++     from optparse import OptionParser, OptionGroup
++diff -urN clang-2.9.orig/tools/clang/bindings/python/examples/cindex/cindex-includes.py clang-2.9/tools/clang/bindings/python/examples/cindex/cindex-includes.py
++--- clang-2.9.orig/tools/clang/bindings/python/examples/cindex/cindex-includes.py	2010-02-14 03:33:28.000000000 +0900
+++++ clang-2.9/tools/clang/bindings/python/examples/cindex/cindex-includes.py	2013-06-23 02:11:33.111664694 +0900
++@@ -16,7 +16,7 @@
++ 
++ def main():
++     import sys
++-    from clang.cindex import Index
+++    from clang29.cindex import Index
++ 
++     from optparse import OptionParser, OptionGroup
++ 
++diff -urN clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_cursor.py clang-2.9/tools/clang/bindings/python/tests/cindex/test_cursor.py
++--- clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_cursor.py	2010-01-31 08:58:39.000000000 +0900
+++++ clang-2.9/tools/clang/bindings/python/tests/cindex/test_cursor.py	2013-06-23 02:13:45.028318843 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import Index, CursorKind
+++from clang29.cindex import Index, CursorKind
++ 
++ kInput = """\
++ // FIXME: Find nicer way to drop builtins and other cruft.
++diff -urN clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py clang-2.9/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py
++--- clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py	2010-01-25 06:20:39.000000000 +0900
+++++ clang-2.9/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py	2013-06-23 02:13:19.692193191 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import CursorKind
+++from clang29.cindex import CursorKind
++ 
++ def test_name():
++     assert CursorKind.UNEXPOSED_DECL.name is 'UNEXPOSED_DECL'
++diff -urN clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_diagnostics.py clang-2.9/tools/clang/bindings/python/tests/cindex/test_diagnostics.py
++--- clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_diagnostics.py	2011-02-06 02:53:53.000000000 +0900
+++++ clang-2.9/tools/clang/bindings/python/tests/cindex/test_diagnostics.py	2013-06-23 02:13:36.044274289 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import *
+++from clang29.cindex import *
++ 
++ def tu_from_source(source):
++     index = Index.create()
++diff -urN clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_index.py clang-2.9/tools/clang/bindings/python/tests/cindex/test_index.py
++--- clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_index.py	2010-01-24 11:02:07.000000000 +0900
+++++ clang-2.9/tools/clang/bindings/python/tests/cindex/test_index.py	2013-06-23 02:13:28.396236334 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import *
+++from clang29.cindex import *
++ import os
++ 
++ kInputsDir = os.path.join(os.path.dirname(__file__), 'INPUTS')
++diff -urN clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_translation_unit.py clang-2.9/tools/clang/bindings/python/tests/cindex/test_translation_unit.py
++--- clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_translation_unit.py	2011-02-06 02:54:00.000000000 +0900
+++++ clang-2.9/tools/clang/bindings/python/tests/cindex/test_translation_unit.py	2013-06-23 02:13:52.964358189 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import *
+++from clang29.cindex import *
++ import os
++ 
++ kInputsDir = os.path.join(os.path.dirname(__file__), 'INPUTS')
+diff -urN debian/patches/series clang-2.9/debian/patches/series
+--- debian/patches/series	2011-10-12 18:08:38.709403000 +0900
++++ clang-2.9/debian/patches/series	2013-06-23 02:21:26.006604711 +0900
+@@ -9,3 +9,4 @@
+ 18-soname.patch
+ 19-clang_debian_version.patch
+ 20-vendor.patch
++99-python-bindings.patch
 diff -urN debian/rules clang-2.9/debian/rules
 --- debian/rules	2011-10-04 07:45:19.111635000 +0900
 +++ clang-2.9/debian/rules	2013-06-21 23:26:16.694069640 +0900
@@ -411,6 +620,20 @@ diff -urN debian/rules clang-2.9/debian/rules
  endef
  
  define buildof
+diff -urN debian/rules.d/binary.mk clang-2.9/debian/rules.d/binary.mk
+--- debian/rules.d/binary.mk	2011-10-04 07:45:19.111635000 +0900
++++ clang-2.9/debian/rules.d/binary.mk	2013-06-23 23:52:33.349130388 +0900
+@@ -73,6 +73,10 @@
+ 	dh_fixperms -p$(call pkgname,$*)
+ 	DH_VERBOSE=1 dh_makeshlibs -p$(call pkgname,$*)
+ 	DH_VERBOSE=1 dh_shlibdeps -p$(call pkgname,$*)
++	if test $(call pkgname,$*) = python-clang-$(UVERSION) ; then \
++		find $(D)/debian/python-clang-$(UVERSION)/usr/share/doc/python-clang-$(UVERSION)/examples -name "*.gz" -exec gzip -d {} \; ; \
++		find $(D)/debian/python-clang-$(UVERSION)/usr/share/doc/python-clang-$(UVERSION)/tests    -name "*.gz" -exec gzip -d {} \; ; \
++	fi
+ 	dh_installdeb -p$(call pkgname,$*)
+ 	dh_gencontrol -p$(call pkgname,$*)
+ 	dh_md5sums -p$(call pkgname,$*)
 diff -urN debian/rules.d/build.mk clang-2.9/debian/rules.d/build.mk
 --- debian/rules.d/build.mk	2011-10-08 03:30:51.504842000 +0900
 +++ clang-2.9/debian/rules.d/build.mk	2013-01-27 18:57:37.032348182 +0900
@@ -424,13 +647,13 @@ diff -urN debian/rules.d/build.mk clang-2.9/debian/rules.d/build.mk
  	$(RM) $(D)/debian/log-check-* $(D)/debian/logwatch-*.pid
 diff -urN debian/rules.d/control.mk clang-2.9/debian/rules.d/control.mk
 --- debian/rules.d/control.mk	2011-10-08 03:30:51.504842000 +0900
-+++ clang-2.9/debian/rules.d/control.mk	2013-06-21 23:27:34.922457551 +0900
++++ clang-2.9/debian/rules.d/control.mk	2013-06-23 01:36:32.087897375 +0900
 @@ -1,7 +1,7 @@
  $(foreach var,BUILDDEPS BUILDCONFLICTS,$(eval \
    $(if $(strip $($(var))),$(eval $(var) :=, $($(var))),$(eval $(var) :=))))
  
 -extra_packages:=libclang1 libclang-dev
-+extra_packages:=libclang1 libclang-dev libclang-common-dev
++extra_packages:=libclang1 libclang-dev libclang-common-dev python-clang
  packages := $(foreach build,$(builds),$($(build)_packages))
  packages += $(extra_packages) 
  

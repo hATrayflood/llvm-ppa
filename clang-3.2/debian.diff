@@ -11,6 +11,11 @@ diff -urN debian/changelog clang-3.2/debian/changelog
  clang (1:3.2-1~exp9) experimental; urgency=low
  
    [ Peter Michael Green ]
+diff -urN debian/clang-3.2-relaxng.install clang-3.2/debian/clang-3.2-relaxng.install
+--- debian/clang-3.2-relaxng.install	1970-01-01 09:00:00.000000000 +0900
++++ clang-3.2/debian/clang-3.2-relaxng.install	2013-06-23 15:45:49.235796569 +0900
+@@ -0,0 +1 @@
++tools/clang/bindings/xml/comment-xml-schema.rng	/usr/share/xml/clang-3.2-relaxng/
 diff -urN debian/clang-3.2.install clang-3.2/debian/clang-3.2.install
 --- debian/clang-3.2.install	2013-01-15 20:03:33.000000000 +0900
 +++ clang-3.2/debian/clang-3.2.install	2013-01-14 13:54:00.581664600 +0900
@@ -121,8 +126,8 @@ diff -urN debian/compiler-rt-3.2.links clang-3.2/debian/compiler-rt-3.2.links
 +usr/lib/clang/3.2/bin/asan_symbolize	usr/bin/asan_symbolize-3.2
 diff -urN debian/control clang-3.2/debian/control
 --- debian/control	2013-04-03 02:43:05.000000000 +0900
-+++ clang-3.2/debian/control	2013-06-22 03:42:03.029914492 +0900
-@@ -1,56 +1,25 @@
++++ clang-3.2/debian/control	2013-06-23 14:34:21.473456212 +0900
+@@ -1,23 +1,25 @@
 -Source: clang
 +Source: clang-3.2
  Section: devel
@@ -149,127 +154,211 @@ diff -urN debian/control clang-3.2/debian/control
 -Package: clang
 -Architecture: all
 -Depends: clang-3.2 (>= ${source:Version}), ${misc:Depends}
--Description: C, C++ and Objective-C compiler (LLVM based)
-- Clang project is a C, C++, Objective C and Objective C++ front-end
-- for the LLVM compiler. Some of its goals include the following:
-- .
-- End-User Features:
-- .
--    * Fast compiles and low memory use
--    * Expressive diagnostics (examples)
--    * GCC compatibility
-- .
-- Utility and Applications:
-- .
--    * Modular library based architecture
--    * Support diverse clients (refactoring, static analysis, code
--      generation, etc)
--    * Allow tight integration with IDEs
--    * Use the LLVM 'BSD' License
-- .
-- Internal Design and Implementation:
-- .
--    * A real-world, production quality compiler
--    * A simple and hackable code base
--    * A single unified parser for C, Objective C, C++, and Objective C++
--    * Conformance with C/C++/ObjC and their variants
- 
- Package: clang-3.2
- Architecture: any
--Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev, libgcc-4.7-dev,
-- libobjc-4.7-dev, libclang-common-dev (= ${binary:Version}), compiler-rt (= ${binary:Version}) [amd64 i386]
++
++Package: clang-3.2
++Architecture: any
 +Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
 + libclang-3.2-common-dev (= ${binary:Version}), compiler-rt-3.2 (= ${binary:Version}) [amd64 i386]
- Provides: c-compiler, objc-compiler, c++-compiler
- Recommends: llvm-3.2-dev, python
--Replaces: clang (<< 1:3.1), clang-3.1
--Breaks: clang (<< 1:3.1), clang-3.1
++Provides: c-compiler, objc-compiler, c++-compiler
++Recommends: llvm-3.2-dev, python
  Description: C, C++ and Objective-C compiler (LLVM based)
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -107,9 +76,9 @@
-  .
-  This package contains the documentation.
+@@ -43,15 +45,11 @@
+     * A single unified parser for C, Objective C, C++, and Objective C++
+     * Conformance with C/C++/ObjC and their variants
  
--Package: libclang1
-+Package: libclang1-3.2
- Architecture: any
--Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev
-+Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev
- Description: clang library
+-Package: clang-3.2
+-Architecture: any
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev, libgcc-4.7-dev,
+- libobjc-4.7-dev, libclang-common-dev (= ${binary:Version}), compiler-rt (= ${binary:Version}) [amd64 i386]
+-Provides: c-compiler, objc-compiler, c++-compiler
+-Recommends: llvm-3.2-dev, python
+-Replaces: clang (<< 1:3.1), clang-3.1
+-Breaks: clang (<< 1:3.1), clang-3.1
+-Description: C, C++ and Objective-C compiler (LLVM based)
++Package: clang-3.2-doc
++Architecture: all
++Section: doc
++Depends: ${shlibs:Depends}, ${misc:Depends}
++Description: C, C++ and Objective-C compiler (LLVM based) - Documentation
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -137,43 +106,11 @@
   .
-  This package contains the clang library.
+@@ -75,12 +73,13 @@
+     * A simple and hackable code base
+     * A single unified parser for C, Objective C, C++, and Objective C++
+     * Conformance with C/C++/ObjC and their variants
++ .
++ This package contains the documentation.
+ 
+-Package: clang-3.2-doc
+-Architecture: all
+-Section: doc
+-Depends: ${shlibs:Depends}, ${misc:Depends}
+-Description: C, C++ and Objective-C compiler (LLVM based) - Documentation
++Package: libclang1-3.2
++Architecture: any
++Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev
++Description: clang library
+  Clang project is a C, C++, Objective C and Objective C++ front-end
+  for the LLVM compiler. Some of its goals include the following:
+  .
+@@ -105,12 +104,14 @@
+     * A single unified parser for C, Objective C, C++, and Objective C++
+     * Conformance with C/C++/ObjC and their variants
+  .
+- This package contains the documentation.
++ This package contains the clang library.
+ 
+-Package: libclang1
++Package: libclang-3.2-dev
+ Architecture: any
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev
+-Description: clang library
++Section: libdevel
++Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
++ libclang1-3.2 (= ${binary:Version}), libclang-3.2-common-dev
++Description: clang library - Development package
+  Clang project is a C, C++, Objective C and Objective C++ front-end
+  for the LLVM compiler. Some of its goals include the following:
+  .
+@@ -135,14 +136,14 @@
+     * A single unified parser for C, Objective C, C++, and Objective C++
+     * Conformance with C/C++/ObjC and their variants
+  .
+- This package contains the clang library.
++ This package contains the clang headers to develop extensions over libclang.
  
 -Package: libclang1-dbg
--Architecture: any
++Package: libclang-3.2-common-dev
+ Architecture: any
 -Section: debug
 -Priority: extra
 -Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev, libclang1
 -Description: clang library
-- Clang project is a C, C++, Objective C and Objective C++ front-end
-- for the LLVM compiler. Some of its goals include the following:
-- .
-- End-User Features:
-- .
--    * Fast compiles and low memory use
--    * Expressive diagnostics (examples)
--    * GCC compatibility
-- .
-- Utility and Applications:
-- .
--    * Modular library based architecture
--    * Support diverse clients (refactoring, static analysis, code
--      generation, etc)
--    * Allow tight integration with IDEs
--    * Use the LLVM 'BSD' License
-- .
-- Internal Design and Implementation:
-- .
--    * A real-world, production quality compiler
--    * A simple and hackable code base
--    * A single unified parser for C, Objective C, C++, and Objective C++
--    * Conformance with C/C++/ObjC and their variants
-- .
++Replaces: libclang-3.2-dev
++Section: libdevel
++Depends: ${misc:Depends}
++Description: clang library - Common development package
+  Clang project is a C, C++, Objective C and Objective C++ front-end
+  for the LLVM compiler. Some of its goals include the following:
+  .
+@@ -167,14 +168,48 @@
+     * A single unified parser for C, Objective C, C++, and Objective C++
+     * Conformance with C/C++/ObjC and their variants
+  .
 - This package contains the debugging symbols.
--
++ This package contains the clang generic headers.
+ 
 -Package: libclang-dev
-+Package: libclang-3.2-dev
- Architecture: any
+-Architecture: any
++
++Package: compiler-rt-3.2
++Architecture: amd64 i386
++Replaces: libclang-3.2-dev
  Section: libdevel
 -Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev,
 - libclang1 (= ${binary:Version}), libclang-common-dev
+-Description: clang library - Development package
++Depends: ${misc:Depends}, python
++Description: Runtime C library - LLVM based
++ The compiler-rt project is a simple library that provides an implementation of
++ the low-level target-specific hooks required by code generation and other
++ runtime components. For example, when compiling for a 32-bit target,
++ converting a double to a 64-bit unsigned integer is compiling into a runtime
++ call to the "__fixunsdfdi" function. The compiler-rt library provides
++ optimized implementations of this and other low-level routines.
++ .
++ The current feature set of compiler-rt is:
++ .
++    * Full support for the libgcc interfaces on supported targets.
++    * High performance hand tuned implementations of commonly used functions
++      like __floatundidf in assembly that are dramatically faster than the
++      libgcc implementations.
++ .
++
++
++Package: python-clang-3.2
++Architecture: any
++Section: python
 +Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
-+ libclang1-3.2 (= ${binary:Version}), libclang-3.2-common-dev
- Description: clang library - Development package
++ libclang1-3.2 (= ${binary:Version}), python2.7
++Description: clang python bindings
++ The Low-Level Virtual Machine (LLVM) is a collection of libraries and
++ tools that make it easy to build compilers, optimizers, Just-In-Time
++ code generators, and many other compiler-related programs. LLVM
++ uses a single, language-independent virtual instruction set both
++ as an offline code representation (to communicate code between
++ compiler phases and to run-time systems) and as the compiler internal
++ representation (to analyze and transform programs). This persistent
++ code representation allows a common set of sophisticated compiler
++ techniques to be applied at compile-time, link-time, install-time,
++ run-time, or "idle-time" (between program runs).
++ .
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -201,9 +138,9 @@
   .
-  This package contains the clang headers to develop extensions over libclang.
+@@ -199,14 +234,24 @@
+     * A single unified parser for C, Objective C, C++, and Objective C++
+     * Conformance with C/C++/ObjC and their variants
+  .
+- This package contains the clang headers to develop extensions over libclang.
++ This package contains the clang python bindings.
  
 -Package: libclang-common-dev
-+Package: libclang-3.2-common-dev
- Architecture: any
+-Architecture: any
 -Replaces: libclang-dev
-+Replaces: libclang-3.2-dev
- Section: libdevel
- Depends: ${misc:Depends}
- Description: clang library - Common development package
-@@ -234,9 +171,9 @@
-  This package contains the clang generic headers.
- 
- 
+-Section: libdevel
+-Depends: ${misc:Depends}
+-Description: clang library - Common development package
++
++Package: clang-3.2-relaxng
++Architecture: all
++Section: misc
++Description: clang Relax NG schema for the XML
++ The Low-Level Virtual Machine (LLVM) is a collection of libraries and
++ tools that make it easy to build compilers, optimizers, Just-In-Time
++ code generators, and many other compiler-related programs. LLVM
++ uses a single, language-independent virtual instruction set both
++ as an offline code representation (to communicate code between
++ compiler phases and to run-time systems) and as the compiler internal
++ representation (to analyze and transform programs). This persistent
++ code representation allows a common set of sophisticated compiler
++ techniques to be applied at compile-time, link-time, install-time,
++ run-time, or "idle-time" (between program runs).
++ .
+  Clang project is a C, C++, Objective C and Objective C++ front-end
+  for the LLVM compiler. Some of its goals include the following:
+  .
+@@ -231,26 +276,4 @@
+     * A single unified parser for C, Objective C, C++, and Objective C++
+     * Conformance with C/C++/ObjC and their variants
+  .
+- This package contains the clang generic headers.
+-
+-
 -Package: compiler-rt
-+Package: compiler-rt-3.2
- Architecture: amd64 i386
+-Architecture: amd64 i386
 -Replaces: libclang-dev
-+Replaces: libclang-3.2-dev
- Section: libdevel
- Depends: ${misc:Depends}, python
- Description: Runtime C library - LLVM based
+-Section: libdevel
+-Depends: ${misc:Depends}, python
+-Description: Runtime C library - LLVM based
+- The compiler-rt project is a simple library that provides an implementation of
+- the low-level target-specific hooks required by code generation and other
+- runtime components. For example, when compiling for a 32-bit target,
+- converting a double to a 64-bit unsigned integer is compiling into a runtime
+- call to the "__fixunsdfdi" function. The compiler-rt library provides
+- optimized implementations of this and other low-level routines.
+- .
+- The current feature set of compiler-rt is:
+- .
+-    * Full support for the libgcc interfaces on supported targets.
+-    * High performance hand tuned implementations of commonly used functions
+-      like __floatundidf in assembly that are dramatically faster than the
+-      libgcc implementations.
+- .
++ This package contains the clang Relax NG schema for the XML.
 diff -urN debian/libclang-3.2-common-dev.install clang-3.2/debian/libclang-3.2-common-dev.install
 --- debian/libclang-3.2-common-dev.install	1970-01-01 09:00:00.000000000 +0900
 +++ clang-3.2/debian/libclang-3.2-common-dev.install	2012-11-29 00:58:14.000000000 +0900
@@ -295,9 +384,271 @@ diff -urN debian/libclang1-3.2.install clang-3.2/debian/libclang1-3.2.install
 +++ clang-3.2/debian/libclang1-3.2.install	2013-01-12 17:57:10.737029201 +0900
 @@ -0,0 +1 @@
 +usr/lib/libclang.so.1	/usr/lib/llvm-3.2/lib/
+diff -urN debian/patches/99-python-bindings.patch clang-3.2/debian/patches/99-python-bindings.patch
+--- debian/patches/99-python-bindings.patch	1970-01-01 09:00:00.000000000 +0900
++++ clang-3.2/debian/patches/99-python-bindings.patch	2013-06-23 23:27:31.564685939 +0900
+@@ -0,0 +1,242 @@
++diff -urN clang-3.2.orig/tools/clang/bindings/python/README.txt clang-3.2/tools/clang/bindings/python/README.txt
++--- clang-3.2.orig/tools/clang/bindings/python/README.txt	2010-05-01 06:51:10.000000000 +0900
+++++ clang-3.2/tools/clang/bindings/python/README.txt	2013-06-23 14:12:28.586945941 +0900
++@@ -4,12 +4,9 @@
++ 
++ This directory implements Python bindings for Clang.
++ 
++-You may need to alter LD_LIBRARY_PATH so that the Clang library can be
++-found. The unit tests are designed to be run with 'nosetests'. For example:
+++The unit tests are designed to be run with 'nosetests'. For example:
++ --
++-$ env PYTHONPATH=$(echo ~/llvm/tools/clang/bindings/python/) \
++-      LD_LIBRARY_PATH=$(llvm-config --libdir) \
++-  nosetests -v
+++$ nosetests -v
++ tests.cindex.test_index.test_create ... ok
++ ...
++ 
++diff -urN clang-3.2.orig/tools/clang/bindings/python/clang/cindex.py clang-3.2/tools/clang/bindings/python/clang/cindex.py
++--- clang-3.2.orig/tools/clang/bindings/python/clang/cindex.py	2012-11-01 14:46:30.000000000 +0900
+++++ clang-3.2/tools/clang/bindings/python/clang/cindex.py	2013-06-23 16:59:14.542956811 +0900
++@@ -65,7 +65,7 @@
++ from ctypes import *
++ import collections
++ 
++-import clang.enumerations
+++import clang32.enumerations
++ 
++ # ctypes doesn't implicitly convert c_void_p to the appropriate wrapper
++ # object. This is a problem, because it means that from_parameter will see an
++@@ -3097,7 +3097,7 @@
++         elif name == 'Windows':
++             file = 'libclang.dll'
++         else:
++-            file = 'libclang.so'
+++            file = '/usr/lib/llvm-3.2/lib/libclang.so.1'
++ 
++         if Config.library_path:
++             file = Config.library_path + '/' + file
++@@ -3124,7 +3124,7 @@
++         return True
++ 
++ def register_enumerations():
++-    for name, value in clang.enumerations.TokenKinds:
+++    for name, value in clang32.enumerations.TokenKinds:
++         TokenKind.register(value, name)
++ 
++ conf = Config()
++diff -urN clang-3.2.orig/tools/clang/bindings/python/examples/cindex/cindex-dump.py clang-3.2/tools/clang/bindings/python/examples/cindex/cindex-dump.py
++--- clang-3.2.orig/tools/clang/bindings/python/examples/cindex/cindex-dump.py	2010-02-14 03:33:28.000000000 +0900
+++++ clang-3.2/tools/clang/bindings/python/examples/cindex/cindex-dump.py	2013-06-23 14:14:34.451570085 +0900
++@@ -54,7 +54,7 @@
++              'children' : children }
++ 
++ def main():
++-    from clang.cindex import Index
+++    from clang32.cindex import Index
++     from pprint import pprint
++ 
++     from optparse import OptionParser, OptionGroup
++diff -urN clang-3.2.orig/tools/clang/bindings/python/examples/cindex/cindex-includes.py clang-3.2/tools/clang/bindings/python/examples/cindex/cindex-includes.py
++--- clang-3.2.orig/tools/clang/bindings/python/examples/cindex/cindex-includes.py	2010-02-14 03:33:28.000000000 +0900
+++++ clang-3.2/tools/clang/bindings/python/examples/cindex/cindex-includes.py	2013-06-23 14:14:43.811616500 +0900
++@@ -16,7 +16,7 @@
++ 
++ def main():
++     import sys
++-    from clang.cindex import Index
+++    from clang32.cindex import Index
++ 
++     from optparse import OptionParser, OptionGroup
++ 
++diff -urN clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_cdb.py clang-3.2/tools/clang/bindings/python/tests/cindex/test_cdb.py
++--- clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_cdb.py	2012-07-10 09:00:05.000000000 +0900
+++++ clang-3.2/tools/clang/bindings/python/tests/cindex/test_cdb.py	2013-06-23 14:16:12.864058080 +0900
++@@ -1,7 +1,7 @@
++-from clang.cindex import CompilationDatabase
++-from clang.cindex import CompilationDatabaseError
++-from clang.cindex import CompileCommands
++-from clang.cindex import CompileCommand
+++from clang32.cindex import CompilationDatabase
+++from clang32.cindex import CompilationDatabaseError
+++from clang32.cindex import CompileCommands
+++from clang32.cindex import CompileCommand
++ import os
++ import gc
++ 
++diff -urN clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_code_completion.py clang-3.2/tools/clang/bindings/python/tests/cindex/test_code_completion.py
++--- clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_code_completion.py	2012-10-07 20:46:37.000000000 +0900
+++++ clang-3.2/tools/clang/bindings/python/tests/cindex/test_code_completion.py	2013-06-23 14:15:49.847943964 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import TranslationUnit
+++from clang32.cindex import TranslationUnit
++ 
++ def check_completion_results(cr, expected):
++     assert cr is not None
++diff -urN clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_cursor.py clang-3.2/tools/clang/bindings/python/tests/cindex/test_cursor.py
++--- clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_cursor.py	2012-11-01 14:46:30.000000000 +0900
+++++ clang-3.2/tools/clang/bindings/python/tests/cindex/test_cursor.py	2013-06-23 14:16:39.608190703 +0900
++@@ -1,8 +1,8 @@
++ import gc
++ 
++-from clang.cindex import CursorKind
++-from clang.cindex import TranslationUnit
++-from clang.cindex import TypeKind
+++from clang32.cindex import CursorKind
+++from clang32.cindex import TranslationUnit
+++from clang32.cindex import TypeKind
++ from .util import get_cursor
++ from .util import get_cursors
++ from .util import get_tu
++diff -urN clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py clang-3.2/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py
++--- clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py	2012-02-05 20:42:09.000000000 +0900
+++++ clang-3.2/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py	2013-06-23 14:15:09.055741672 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import CursorKind
+++from clang32.cindex import CursorKind
++ 
++ def test_name():
++     assert CursorKind.UNEXPOSED_DECL.name is 'UNEXPOSED_DECL'
++diff -urN clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_diagnostics.py clang-3.2/tools/clang/bindings/python/tests/cindex/test_diagnostics.py
++--- clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_diagnostics.py	2012-03-11 07:19:05.000000000 +0900
+++++ clang-3.2/tools/clang/bindings/python/tests/cindex/test_diagnostics.py	2013-06-23 14:16:23.520110926 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import *
+++from clang32.cindex import *
++ from .util import get_tu
++ 
++ # FIXME: We need support for invalid translation units to test better.
++diff -urN clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_file.py clang-3.2/tools/clang/bindings/python/tests/cindex/test_file.py
++--- clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_file.py	2011-10-31 09:07:19.000000000 +0900
+++++ clang-3.2/tools/clang/bindings/python/tests/cindex/test_file.py	2013-06-23 14:16:47.912231867 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import Index, File
+++from clang32.cindex import Index, File
++ 
++ def test_file():
++   index = Index.create()
++diff -urN clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_index.py clang-3.2/tools/clang/bindings/python/tests/cindex/test_index.py
++--- clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_index.py	2010-01-24 11:02:07.000000000 +0900
+++++ clang-3.2/tools/clang/bindings/python/tests/cindex/test_index.py	2013-06-23 14:15:59.903993813 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import *
+++from clang32.cindex import *
++ import os
++ 
++ kInputsDir = os.path.join(os.path.dirname(__file__), 'INPUTS')
++diff -urN clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_location.py clang-3.2/tools/clang/bindings/python/tests/cindex/test_location.py
++--- clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_location.py	2012-06-11 20:11:48.000000000 +0900
+++++ clang-3.2/tools/clang/bindings/python/tests/cindex/test_location.py	2013-06-23 14:15:22.287807285 +0900
++@@ -1,7 +1,7 @@
++-from clang.cindex import Cursor
++-from clang.cindex import File
++-from clang.cindex import SourceLocation
++-from clang.cindex import SourceRange
+++from clang32.cindex import Cursor
+++from clang32.cindex import File
+++from clang32.cindex import SourceLocation
+++from clang32.cindex import SourceRange
++ from .util import get_cursor
++ from .util import get_tu
++ 
++diff -urN clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_token_kind.py clang-3.2/tools/clang/bindings/python/tests/cindex/test_token_kind.py
++--- clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_token_kind.py	2012-07-12 16:21:12.000000000 +0900
+++++ clang-3.2/tools/clang/bindings/python/tests/cindex/test_token_kind.py	2013-06-23 14:17:43.352506786 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import TokenKind
+++from clang32.cindex import TokenKind
++ from nose.tools import eq_
++ from nose.tools import ok_
++ from nose.tools import raises
++diff -urN clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_tokens.py clang-3.2/tools/clang/bindings/python/tests/cindex/test_tokens.py
++--- clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_tokens.py	2012-07-12 16:21:12.000000000 +0900
+++++ clang-3.2/tools/clang/bindings/python/tests/cindex/test_tokens.py	2013-06-23 14:17:06.592324507 +0900
++@@ -1,8 +1,8 @@
++-from clang.cindex import CursorKind
++-from clang.cindex import Index
++-from clang.cindex import SourceLocation
++-from clang.cindex import SourceRange
++-from clang.cindex import TokenKind
+++from clang32.cindex import CursorKind
+++from clang32.cindex import Index
+++from clang32.cindex import SourceLocation
+++from clang32.cindex import SourceRange
+++from clang32.cindex import TokenKind
++ from nose.tools import eq_
++ from nose.tools import ok_
++ 
++diff -urN clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_translation_unit.py clang-3.2/tools/clang/bindings/python/tests/cindex/test_translation_unit.py
++--- clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_translation_unit.py	2012-07-12 16:21:12.000000000 +0900
+++++ clang-3.2/tools/clang/bindings/python/tests/cindex/test_translation_unit.py	2013-06-23 14:17:32.368452334 +0900
++@@ -1,14 +1,14 @@
++ import gc
++ import os
++ 
++-from clang.cindex import CursorKind
++-from clang.cindex import Cursor
++-from clang.cindex import File
++-from clang.cindex import Index
++-from clang.cindex import SourceLocation
++-from clang.cindex import SourceRange
++-from clang.cindex import TranslationUnitSaveError
++-from clang.cindex import TranslationUnit
+++from clang32.cindex import CursorKind
+++from clang32.cindex import Cursor
+++from clang32.cindex import File
+++from clang32.cindex import Index
+++from clang32.cindex import SourceLocation
+++from clang32.cindex import SourceRange
+++from clang32.cindex import TranslationUnitSaveError
+++from clang32.cindex import TranslationUnit
++ from .util import get_cursor
++ from .util import get_tu
++ 
++diff -urN clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_type.py clang-3.2/tools/clang/bindings/python/tests/cindex/test_type.py
++--- clang-3.2.orig/tools/clang/bindings/python/tests/cindex/test_type.py	2012-05-16 04:51:02.000000000 +0900
+++++ clang-3.2/tools/clang/bindings/python/tests/cindex/test_type.py	2013-06-23 14:17:17.920380685 +0900
++@@ -1,8 +1,8 @@
++ import gc
++ 
++-from clang.cindex import CursorKind
++-from clang.cindex import TranslationUnit
++-from clang.cindex import TypeKind
+++from clang32.cindex import CursorKind
+++from clang32.cindex import TranslationUnit
+++from clang32.cindex import TypeKind
++ from nose.tools import raises
++ from .util import get_cursor
++ from .util import get_tu
++diff -urN clang-3.2.orig/tools/clang/bindings/python/tests/cindex/util.py clang-3.2/tools/clang/bindings/python/tests/cindex/util.py
++--- clang-3.2.orig/tools/clang/bindings/python/tests/cindex/util.py	2012-05-08 14:56:38.000000000 +0900
+++++ clang-3.2/tools/clang/bindings/python/tests/cindex/util.py	2013-06-23 14:15:32.999860425 +0900
++@@ -1,7 +1,7 @@
++ # This file provides common utility functions for the test suite.
++ 
++-from clang.cindex import Cursor
++-from clang.cindex import TranslationUnit
+++from clang32.cindex import Cursor
+++from clang32.cindex import TranslationUnit
++ 
++ def get_tu(source, lang='c', all_warnings=False):
++     """Obtain a translation unit from source and language.
+diff -urN debian/patches/series clang-3.2/debian/patches/series
+--- debian/patches/series	2013-04-03 02:43:05.000000000 +0900
++++ clang-3.2/debian/patches/series	2013-06-23 14:20:19.873282945 +0900
+@@ -14,3 +14,4 @@
+ 32-scan-build-path.diff
+ 33-armhf-defaults.diff
+ 34-powerpc-no-altivec.diff
++99-python-bindings.patch
+diff -urN debian/python-clang-3.2.install clang-3.2/debian/python-clang-3.2.install
+--- debian/python-clang-3.2.install	1970-01-01 09:00:00.000000000 +0900
++++ clang-3.2/debian/python-clang-3.2.install	2013-06-24 02:39:07.121167180 +0900
+@@ -0,0 +1,4 @@
++tools/clang/bindings/python/clang/*	/usr/lib/python2.7/dist-packages/clang32/
++tools/clang/bindings/python/README.txt	/usr/share/doc/python-clang-3.2/
++tools/clang/bindings/python/examples	/usr/share/doc/python-clang-3.2/
++tools/clang/bindings/python/tests	/usr/share/doc/python-clang-3.2/
 diff -urN debian/rules clang-3.2/debian/rules
 --- debian/rules	2013-03-15 22:45:44.000000000 +0900
-+++ clang-3.2/debian/rules	2013-06-21 23:49:58.041117718 +0900
++++ clang-3.2/debian/rules	2013-06-23 23:47:15.623554866 +0900
 @@ -1,14 +1,13 @@
  #!/usr/bin/make -f
  
@@ -336,7 +687,7 @@ diff -urN debian/rules clang-3.2/debian/rules
  # Only available in clang 3.3
  #	cd $(CURDIR)/tools/clang/docs && make -f Makefile.sphinx
  # && make -f Makefile.sphinx man
-@@ -85,15 +86,14 @@
+@@ -85,15 +86,19 @@
  	$(MAKE) -C $(TARGET_BUILD)  VERBOSE=1  ONLY_TOOLS="clang" install DESTDIR=$(CURDIR)/debian/tmp/
  	cd debian/tmp/usr/lib/&& mv libclang.so libclang.so.$(SONAME_EXT) && ln -s libclang.so.$(SONAME_EXT) libclang.so
  #	cd build-clang/tools/clang/runtime/compiler-rt/ && rm -rf $$(find . -iname "SubDir.lib*" -o -iname .dir) && rm -rf $$(find -empty)
@@ -354,6 +705,11 @@ diff -urN debian/rules clang-3.2/debian/rules
 +	mv $(CURDIR)/debian/tmp/usr/share/man/man1/clang.1 $(CURDIR)/debian/tmp/usr/share/man/man1/clang-$(LLVM_VERSION).1
 +	cp -p $(CURDIR)/debian/man/scan-build.1 $(CURDIR)/debian/tmp/usr/share/man/man1/scan-build-$(LLVM_VERSION).1
 +	cp -p $(CURDIR)/debian/man/scan-view.1  $(CURDIR)/debian/tmp/usr/share/man/man1/scan-view-$(LLVM_VERSION).1
++
++override_dh_installdeb:
++	find $(CURDIR)/debian/python-clang-$(LLVM_VERSION)/usr/share/doc/python-clang-$(LLVM_VERSION)/examples -name "*.gz" -exec gzip -d {} \;
++	find $(CURDIR)/debian/python-clang-$(LLVM_VERSION)/usr/share/doc/python-clang-$(LLVM_VERSION)/tests    -name "*.gz" -exec gzip -d {} \;
++	find $(CURDIR)/debian/clang-$(LLVM_VERSION)-relaxng/usr/share/xml/clang-$(LLVM_VERSION)-relaxng -name "*.gz" -exec gzip -d {} \;
  
  override_dh_auto_test:
  	$(MAKE) -C $(TARGET_BUILD)  check || true

@@ -73,6 +73,10 @@ $(binary-stamp)-%: dependency-% debhelper-%
 	dh_fixperms -p$(call pkgname,$*)
 	DH_VERBOSE=1 dh_makeshlibs -p$(call pkgname,$*)
 	DH_VERBOSE=1 dh_shlibdeps -p$(call pkgname,$*)
+	if test $(call pkgname,$*) = python-clang-$(UVERSION) ; then \
+		find $(D)/debian/python-clang-$(UVERSION)/usr/share/doc/python-clang-$(UVERSION)/examples -name "*.gz" -exec gzip -d {} \; ; \
+		find $(D)/debian/python-clang-$(UVERSION)/usr/share/doc/python-clang-$(UVERSION)/tests    -name "*.gz" -exec gzip -d {} \; ; \
+	fi
 	dh_installdeb -p$(call pkgname,$*)
 	dh_gencontrol -p$(call pkgname,$*)
 	dh_md5sums -p$(call pkgname,$*)

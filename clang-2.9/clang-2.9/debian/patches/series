@@ -9,3 +9,4 @@
 18-soname.patch
 19-clang_debian_version.patch
 20-vendor.patch
+99-python-bindings.patch

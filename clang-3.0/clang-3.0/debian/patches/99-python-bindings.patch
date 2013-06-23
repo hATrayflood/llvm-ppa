@@ -1,0 +1,117 @@
+diff -urN clang-3.0.orig/tools/clang/bindings/python/README.txt clang-3.0/tools/clang/bindings/python/README.txt
+--- clang-3.0.orig/tools/clang/bindings/python/README.txt	2010-05-01 06:51:10.000000000 +0900
++++ clang-3.0/tools/clang/bindings/python/README.txt	2013-06-23 11:47:10.781294252 +0900
+@@ -4,12 +4,9 @@
+ 
+ This directory implements Python bindings for Clang.
+ 
+-You may need to alter LD_LIBRARY_PATH so that the Clang library can be
+-found. The unit tests are designed to be run with 'nosetests'. For example:
++The unit tests are designed to be run with 'nosetests'. For example:
+ --
+-$ env PYTHONPATH=$(echo ~/llvm/tools/clang/bindings/python/) \
+-      LD_LIBRARY_PATH=$(llvm-config --libdir) \
+-  nosetests -v
++$ nosetests -v
+ tests.cindex.test_index.test_create ... ok
+ ...
+ 
+diff -urN clang-3.0.orig/tools/clang/bindings/python/clang/cindex.py clang-3.0/tools/clang/bindings/python/clang/cindex.py
+--- clang-3.0.orig/tools/clang/bindings/python/clang/cindex.py	2011-10-22 20:36:45.000000000 +0900
++++ clang-3.0/tools/clang/bindings/python/clang/cindex.py	2013-06-23 11:48:10.085588327 +0900
+@@ -75,7 +75,7 @@
+     elif name == 'Windows':
+         return cdll.LoadLibrary('libclang.dll')
+     else:
+-        return cdll.LoadLibrary('libclang.so')
++        return cdll.LoadLibrary('/usr/lib/llvm-3.0/lib/libclang.so.1')
+ 
+ # ctypes doesn't implicitly convert c_void_p to the appropriate wrapper
+ # object. This is a problem, because it means that from_parameter will see an
+diff -urN clang-3.0.orig/tools/clang/bindings/python/examples/cindex/cindex-dump.py clang-3.0/tools/clang/bindings/python/examples/cindex/cindex-dump.py
+--- clang-3.0.orig/tools/clang/bindings/python/examples/cindex/cindex-dump.py	2010-02-14 03:33:28.000000000 +0900
++++ clang-3.0/tools/clang/bindings/python/examples/cindex/cindex-dump.py	2013-06-23 11:48:34.597709874 +0900
+@@ -54,7 +54,7 @@
+              'children' : children }
+ 
+ def main():
+-    from clang.cindex import Index
++    from clang30.cindex import Index
+     from pprint import pprint
+ 
+     from optparse import OptionParser, OptionGroup
+diff -urN clang-3.0.orig/tools/clang/bindings/python/examples/cindex/cindex-includes.py clang-3.0/tools/clang/bindings/python/examples/cindex/cindex-includes.py
+--- clang-3.0.orig/tools/clang/bindings/python/examples/cindex/cindex-includes.py	2010-02-14 03:33:28.000000000 +0900
++++ clang-3.0/tools/clang/bindings/python/examples/cindex/cindex-includes.py	2013-06-23 11:48:47.417773464 +0900
+@@ -16,7 +16,7 @@
+ 
+ def main():
+     import sys
+-    from clang.cindex import Index
++    from clang30.cindex import Index
+ 
+     from optparse import OptionParser, OptionGroup
+ 
+diff -urN clang-3.0.orig/tools/clang/bindings/python/tests/cindex/test_cursor.py clang-3.0/tools/clang/bindings/python/tests/cindex/test_cursor.py
+--- clang-3.0.orig/tools/clang/bindings/python/tests/cindex/test_cursor.py	2011-08-30 09:15:34.000000000 +0900
++++ clang-3.0/tools/clang/bindings/python/tests/cindex/test_cursor.py	2013-06-23 11:49:44.790057960 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import Index, CursorKind, TypeKind
++from clang30.cindex import Index, CursorKind, TypeKind
+ 
+ kInput = """\
+ // FIXME: Find nicer way to drop builtins and other cruft.
+diff -urN clang-3.0.orig/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py clang-3.0/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py
+--- clang-3.0.orig/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py	2011-07-06 12:00:34.000000000 +0900
++++ clang-3.0/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py	2013-06-23 11:49:05.649863858 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import CursorKind
++from clang30.cindex import CursorKind
+ 
+ def test_name():
+     assert CursorKind.UNEXPOSED_DECL.name is 'UNEXPOSED_DECL'
+diff -urN clang-3.0.orig/tools/clang/bindings/python/tests/cindex/test_diagnostics.py clang-3.0/tools/clang/bindings/python/tests/cindex/test_diagnostics.py
+--- clang-3.0.orig/tools/clang/bindings/python/tests/cindex/test_diagnostics.py	2011-08-30 09:16:30.000000000 +0900
++++ clang-3.0/tools/clang/bindings/python/tests/cindex/test_diagnostics.py	2013-06-23 11:49:35.806013398 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import *
++from clang30.cindex import *
+ 
+ def tu_from_source(source):
+     index = Index.create()
+diff -urN clang-3.0.orig/tools/clang/bindings/python/tests/cindex/test_index.py clang-3.0/tools/clang/bindings/python/tests/cindex/test_index.py
+--- clang-3.0.orig/tools/clang/bindings/python/tests/cindex/test_index.py	2010-01-24 11:02:07.000000000 +0900
++++ clang-3.0/tools/clang/bindings/python/tests/cindex/test_index.py	2013-06-23 11:49:25.717963371 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import *
++from clang30.cindex import *
+ import os
+ 
+ kInputsDir = os.path.join(os.path.dirname(__file__), 'INPUTS')
+diff -urN clang-3.0.orig/tools/clang/bindings/python/tests/cindex/test_location.py clang-3.0/tools/clang/bindings/python/tests/cindex/test_location.py
+--- clang-3.0.orig/tools/clang/bindings/python/tests/cindex/test_location.py	2011-08-18 02:20:24.000000000 +0900
++++ clang-3.0/tools/clang/bindings/python/tests/cindex/test_location.py	2013-06-23 11:49:17.037920328 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import Index
++from clang30.cindex import Index
+ 
+ baseInput="int one;\nint two;\n"
+ 
+diff -urN clang-3.0.orig/tools/clang/bindings/python/tests/cindex/test_translation_unit.py clang-3.0/tools/clang/bindings/python/tests/cindex/test_translation_unit.py
+--- clang-3.0.orig/tools/clang/bindings/python/tests/cindex/test_translation_unit.py	2011-07-06 12:00:34.000000000 +0900
++++ clang-3.0/tools/clang/bindings/python/tests/cindex/test_translation_unit.py	2013-06-23 11:50:00.462135667 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import *
++from clang30.cindex import *
+ import os
+ 
+ kInputsDir = os.path.join(os.path.dirname(__file__), 'INPUTS')
+diff -urN clang-3.0.orig/tools/clang/bindings/python/tests/cindex/test_type.py clang-3.0/tools/clang/bindings/python/tests/cindex/test_type.py
+--- clang-3.0.orig/tools/clang/bindings/python/tests/cindex/test_type.py	2011-10-22 20:36:45.000000000 +0900
++++ clang-3.0/tools/clang/bindings/python/tests/cindex/test_type.py	2013-06-23 11:49:53.510101187 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import Index, CursorKind, TypeKind
++from clang30.cindex import Index, CursorKind, TypeKind
+ 
+ kInput = """\
+ 
