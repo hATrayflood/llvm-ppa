@@ -10,9 +10,9 @@ Index: clang-2.9/tools/clang/lib/Frontend/InitHeaderSearch.cpp
 +  AddPath("/usr/include/clang/2.9/include/", System, true, false, false);
 +  
 +// For objc
-+  AddPath("/usr/lib/gcc/" + std::string(DEB_HOST_GNU_TYPE_TRIPLET) + "/4.6/include/", System, true, false, false);
++  AddPath("/usr/lib/gcc/" + std::string(DEB_HOST_GNU_TYPE_TRIPLET) + "/"GCC_VERSION"/include/", System, true, false, false);
 +  
-+  AddPath("/usr/lib/gcc/" + std::string(DEB_HOST_GNU_TYPE_TRIPLET) + "/4.6/include-fixed/", System, true, false, false);
++  AddPath("/usr/lib/gcc/" + std::string(DEB_HOST_GNU_TYPE_TRIPLET) + "/"GCC_VERSION"/include-fixed/", System, true, false, false);
  
    // Builtin includes use #include_next directives and should be positioned
    // just prior C include dirs.
@@ -20,8 +20,8 @@ Index: clang-2.9/tools/clang/lib/Frontend/InitHeaderSearch.cpp
  AddDefaultCPlusPlusIncludePaths(const llvm::Triple &triple) {
    llvm::Triple::OSType os = triple.getOS();
    llvm::StringRef CxxIncludeRoot(CXX_INCLUDE_ROOT);
-+  AddGnuCPlusPlusIncludePaths("/usr/include/c++/4.6/", DEB_HOST_GNU_TYPE_TRIPLET, "", "64", triple);
-+  AddGnuCPlusPlusIncludePaths("/usr/include/c++/4.6/", DEB_HOST_GNU_TYPE_TRIPLET, "32", "", triple);
++  AddGnuCPlusPlusIncludePaths("/usr/include/c++/"GCC_VERSION"/", DEB_HOST_GNU_TYPE_TRIPLET, "", "64", triple);
++  AddGnuCPlusPlusIncludePaths("/usr/include/c++/"GCC_VERSION"/", DEB_HOST_GNU_TYPE_TRIPLET, "32", "", triple);
 +
    if (CxxIncludeRoot != "") {
      llvm::StringRef CxxIncludeArch(CXX_INCLUDE_ARCH);
@@ -30,8 +30,8 @@ Index: clang-2.9/tools/clang/lib/Frontend/InitHeaderSearch.cpp
      AddPath("/usr/include/c++/4.1", CXXSystem, true, false, false);
      break;
    case llvm::Triple::Linux:
-+      AddGnuCPlusPlusIncludePaths("/usr/include/c++/4.6/", DEB_HOST_GNU_TYPE_TRIPLET, "", "64", triple);
-+      AddGnuCPlusPlusIncludePaths("/usr/include/c++/4.6/", DEB_HOST_GNU_TYPE_TRIPLET, "32", "", triple);
++      AddGnuCPlusPlusIncludePaths("/usr/include/c++/"GCC_VERSION"/", DEB_HOST_GNU_TYPE_TRIPLET, "", "64", triple);
++      AddGnuCPlusPlusIncludePaths("/usr/include/c++/"GCC_VERSION"/", DEB_HOST_GNU_TYPE_TRIPLET, "32", "", triple);
 +
      //===------------------------------------------------------------------===//
      // Debian based distros.

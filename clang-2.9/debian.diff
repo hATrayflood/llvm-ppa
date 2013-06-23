@@ -13,7 +13,7 @@ diff -urN debian/changelog clang-2.9/debian/changelog
    * Refactoring of some patches
 diff -urN debian/control clang-2.9/debian/control
 --- debian/control	2011-10-08 03:30:51.504842000 +0900
-+++ clang-2.9/debian/control	2013-06-24 01:25:05.113780590 +0900
++++ clang-2.9/debian/control	2013-06-24 05:57:01.743591738 +0900
 @@ -1,22 +1,20 @@
 -Source: clang
 +Source: clang-2.9
@@ -421,6 +421,17 @@ diff -urN debian/debhelper.in/python-clang.install clang-2.9/debian/debhelper.in
 +tools/clang/bindings/python/README.txt	@PF@/share/doc/python-clang-2.9/
 +tools/clang/bindings/python/examples	@PF@/share/doc/python-clang-2.9/
 +tools/clang/bindings/python/tests	@PF@/share/doc/python-clang-2.9/
+diff -urN debian/debian_path.h clang-2.9/debian/debian_path.h
+--- debian/debian_path.h	2011-09-29 23:55:13.940417000 +0900
++++ clang-2.9/debian/debian_path.h	2013-06-24 05:31:15.391923800 +0900
+@@ -15,6 +15,7 @@
+ 
+ #define DEB_HOST_MULTIARCH_TRIPLET "@DEB_HOST_MULTIARCH@"
+ #define DEB_HOST_GNU_TYPE_TRIPLET "@DEB_HOST_GNU_TYPE@"
++#define GCC_VERSION "@GCC_VERSION@"
+ 
+ // Provides the debian revision
+ #define DEB_PATCHSETVERSION  "@DEB_PATCHSETVERSION@"
 diff -urN debian/packages.d/tools.mk clang-2.9/debian/packages.d/tools.mk
 --- debian/packages.d/tools.mk	2011-05-27 08:20:52.024161000 +0900
 +++ clang-2.9/debian/packages.d/tools.mk	2013-01-27 18:41:30.991558044 +0900
@@ -476,8 +487,8 @@ diff -urN debian/patches/13-search-path-dpkg-based.patch clang-2.9/debian/patche
  +
 diff -urN debian/patches/15-searchPaths.patch clang-2.9/debian/patches/15-searchPaths.patch
 --- debian/patches/15-searchPaths.patch	2011-10-12 18:08:38.709403000 +0900
-+++ clang-2.9/debian/patches/15-searchPaths.patch	2013-01-28 14:05:55.575271024 +0900
-@@ -2,14 +2,12 @@
++++ clang-2.9/debian/patches/15-searchPaths.patch	2013-06-24 05:31:57.216131175 +0900
+@@ -2,19 +2,17 @@
  ===================================================================
  --- clang-2.9.orig/tools/clang/lib/Frontend/InitHeaderSearch.cpp	2011-10-12 00:25:25.000000000 +0200
  +++ clang-2.9/tools/clang/lib/Frontend/InitHeaderSearch.cpp	2011-10-12 00:28:53.000000000 +0200
@@ -496,7 +507,36 @@ diff -urN debian/patches/15-searchPaths.patch clang-2.9/debian/patches/15-search
 ++  AddPath("/usr/include/clang/2.9/include/", System, true, false, false);
  +  
  +// For objc
- +  AddPath("/usr/lib/gcc/" + std::string(DEB_HOST_GNU_TYPE_TRIPLET) + "/4.6/include/", System, true, false, false);
+-+  AddPath("/usr/lib/gcc/" + std::string(DEB_HOST_GNU_TYPE_TRIPLET) + "/4.6/include/", System, true, false, false);
+++  AddPath("/usr/lib/gcc/" + std::string(DEB_HOST_GNU_TYPE_TRIPLET) + "/"GCC_VERSION"/include/", System, true, false, false);
+ +  
+-+  AddPath("/usr/lib/gcc/" + std::string(DEB_HOST_GNU_TYPE_TRIPLET) + "/4.6/include-fixed/", System, true, false, false);
+++  AddPath("/usr/lib/gcc/" + std::string(DEB_HOST_GNU_TYPE_TRIPLET) + "/"GCC_VERSION"/include-fixed/", System, true, false, false);
+  
+    // Builtin includes use #include_next directives and should be positioned
+    // just prior C include dirs.
+@@ -22,8 +20,8 @@
+  AddDefaultCPlusPlusIncludePaths(const llvm::Triple &triple) {
+    llvm::Triple::OSType os = triple.getOS();
+    llvm::StringRef CxxIncludeRoot(CXX_INCLUDE_ROOT);
+-+  AddGnuCPlusPlusIncludePaths("/usr/include/c++/4.6/", DEB_HOST_GNU_TYPE_TRIPLET, "", "64", triple);
+-+  AddGnuCPlusPlusIncludePaths("/usr/include/c++/4.6/", DEB_HOST_GNU_TYPE_TRIPLET, "32", "", triple);
+++  AddGnuCPlusPlusIncludePaths("/usr/include/c++/"GCC_VERSION"/", DEB_HOST_GNU_TYPE_TRIPLET, "", "64", triple);
+++  AddGnuCPlusPlusIncludePaths("/usr/include/c++/"GCC_VERSION"/", DEB_HOST_GNU_TYPE_TRIPLET, "32", "", triple);
+ +
+    if (CxxIncludeRoot != "") {
+      llvm::StringRef CxxIncludeArch(CXX_INCLUDE_ARCH);
+@@ -32,8 +30,8 @@
+      AddPath("/usr/include/c++/4.1", CXXSystem, true, false, false);
+      break;
+    case llvm::Triple::Linux:
+-+      AddGnuCPlusPlusIncludePaths("/usr/include/c++/4.6/", DEB_HOST_GNU_TYPE_TRIPLET, "", "64", triple);
+-+      AddGnuCPlusPlusIncludePaths("/usr/include/c++/4.6/", DEB_HOST_GNU_TYPE_TRIPLET, "32", "", triple);
+++      AddGnuCPlusPlusIncludePaths("/usr/include/c++/"GCC_VERSION"/", DEB_HOST_GNU_TYPE_TRIPLET, "", "64", triple);
+++      AddGnuCPlusPlusIncludePaths("/usr/include/c++/"GCC_VERSION"/", DEB_HOST_GNU_TYPE_TRIPLET, "32", "", triple);
+ +
+      //===------------------------------------------------------------------===//
+      // Debian based distros.
 diff -urN debian/patches/99-python-bindings.patch clang-2.9/debian/patches/99-python-bindings.patch
 --- debian/patches/99-python-bindings.patch	1970-01-01 09:00:00.000000000 +0900
 +++ clang-2.9/debian/patches/99-python-bindings.patch	2013-06-23 03:03:10.028074973 +0900
@@ -636,7 +676,7 @@ diff -urN debian/rules.d/binary.mk clang-2.9/debian/rules.d/binary.mk
  	dh_md5sums -p$(call pkgname,$*)
 diff -urN debian/rules.d/build.mk clang-2.9/debian/rules.d/build.mk
 --- debian/rules.d/build.mk	2011-10-08 03:30:51.504842000 +0900
-+++ clang-2.9/debian/rules.d/build.mk	2013-01-27 18:57:37.032348182 +0900
++++ clang-2.9/debian/rules.d/build.mk	2013-06-24 04:28:02.600016831 +0900
 @@ -21,6 +21,7 @@
  	dh_clean
  	find $(srcdir)/test/Bindings/Ocaml -type f \
@@ -645,6 +685,14 @@ diff -urN debian/rules.d/build.mk clang-2.9/debian/rules.d/build.mk
  	$(RM) -r $(D)/debian/tmp-*
  	$(RM) $(D)/test/Bindings/Ocaml/*.cm[io]
  	$(RM) $(D)/debian/log-check-* $(D)/debian/logwatch-*.pid
+@@ -34,6 +35,7 @@
+ 	sed -e "s|@DEB_HOST_MULTIARCH@|$$(dpkg-architecture -qDEB_HOST_MULTIARCH)|" \
+ 		-e "s|@DEB_HOST_GNU_TYPE@|$$(dpkg-architecture -qDEB_HOST_GNU_TYPE)|" \
+ 		-e "s|@DEB_PATCHSETVERSION@|$(PATCHSETVERSION)|" \
++		-e "s|@GCC_VERSION@|$(GCC_VERSION)|" \
+ 		debian/debian_path.h > tools/clang/include/clang/Debian/debian_path.h
+ 	# Make sure that the built libs have the extension into the name
+ 	sed -i -e "s|^LLVMLibsPaths +=\(.*SHLIBEXT)$$\)|LLVMLibsPaths +=\1.$(SONAME_EXT)|g" \
 diff -urN debian/rules.d/control.mk clang-2.9/debian/rules.d/control.mk
 --- debian/rules.d/control.mk	2011-10-08 03:30:51.504842000 +0900
 +++ clang-2.9/debian/rules.d/control.mk	2013-06-23 01:36:32.087897375 +0900

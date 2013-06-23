@@ -35,6 +35,7 @@ $(configure-stamp)-%: $(unpack-stamp)
 	sed -e "s|@DEB_HOST_MULTIARCH@|$$(dpkg-architecture -qDEB_HOST_MULTIARCH)|" \
 		-e "s|@DEB_HOST_GNU_TYPE@|$$(dpkg-architecture -qDEB_HOST_GNU_TYPE)|" \
 		-e "s|@DEB_PATCHSETVERSION@|$(PATCHSETVERSION)|" \
+		-e "s|@GCC_VERSION@|$(GCC_VERSION)|" \
 		debian/debian_path.h > tools/clang/include/clang/Debian/debian_path.h
 	# Make sure that the built libs have the extension into the name
 	sed -i -e "s|^LLVMLibsPaths +=\(.*SHLIBEXT)$$\)|LLVMLibsPaths +=\1.$(SONAME_EXT)|g" \
