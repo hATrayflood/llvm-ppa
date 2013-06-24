@@ -47,6 +47,13 @@ apt-get -y install dh-autoreconf
 apt-get -y install libpipeline-dev
 apt-get -y install binfmt-support
 apt-get -y install binutils-gold
+apt-get -y install swig
+apt-get -y install libedit-dev
+apt-get -y install libcloog-isl-dev
 EOC
 (cd dh-exec && ./build.sh)
 sudo dpkg -i dh-exec/*.deb
+
+make -C isl extract
+make -C isl
+sudo make -C isl install

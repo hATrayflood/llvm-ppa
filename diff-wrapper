@@ -1,0 +1,7 @@
+#!/bin/bash
+
+diff $*
+E=$?
+if [ $E != 0 -a $E != 1 ] ; then
+exit $E
+fi
