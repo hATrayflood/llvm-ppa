@@ -3,7 +3,9 @@ all:
 
 dput:
 	cd $(DIR) && debuild -S  -sa
-	../diff-wrapper -urN debian $(DIR)/debian > debian.diff
+	if test -d debian ; then \
+		../diff-wrapper -urN debian $(DIR)/debian > debian.diff ; \
+	fi
 	echo dput ppa:h-rayflood/llvm *_source.changes
 
 install:
