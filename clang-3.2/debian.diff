@@ -1,8 +1,8 @@
 diff -urN debian/changelog clang-3.2/debian/changelog
 --- debian/changelog	2013-04-03 02:43:05.000000000 +0900
-+++ clang-3.2/debian/changelog	2013-06-22 03:54:23.487095972 +0900
++++ clang-3.2/debian/changelog	2013-06-24 19:56:36.876507009 +0900
 @@ -1,3 +1,9 @@
-+clang-3.2 (3.2-debian1ppa2~exp9) precise; urgency=low
++clang-3.2 (3.2-debian1ppa3~exp9) precise; urgency=low
 +
 +  * ppa for precise
 +
@@ -648,7 +648,7 @@ diff -urN debian/python-clang-3.2.install clang-3.2/debian/python-clang-3.2.inst
 +tools/clang/bindings/python/tests	/usr/share/doc/python-clang-3.2/
 diff -urN debian/rules clang-3.2/debian/rules
 --- debian/rules	2013-03-15 22:45:44.000000000 +0900
-+++ clang-3.2/debian/rules	2013-06-23 23:47:15.623554866 +0900
++++ clang-3.2/debian/rules	2013-06-24 19:56:23.580441090 +0900
 @@ -1,14 +1,13 @@
  #!/usr/bin/make -f
  
@@ -687,7 +687,7 @@ diff -urN debian/rules clang-3.2/debian/rules
  # Only available in clang 3.3
  #	cd $(CURDIR)/tools/clang/docs && make -f Makefile.sphinx
  # && make -f Makefile.sphinx man
-@@ -85,15 +86,19 @@
+@@ -85,15 +86,21 @@
  	$(MAKE) -C $(TARGET_BUILD)  VERBOSE=1  ONLY_TOOLS="clang" install DESTDIR=$(CURDIR)/debian/tmp/
  	cd debian/tmp/usr/lib/&& mv libclang.so libclang.so.$(SONAME_EXT) && ln -s libclang.so.$(SONAME_EXT) libclang.so
  #	cd build-clang/tools/clang/runtime/compiler-rt/ && rm -rf $$(find . -iname "SubDir.lib*" -o -iname .dir) && rm -rf $$(find -empty)
@@ -709,7 +709,9 @@ diff -urN debian/rules clang-3.2/debian/rules
 +override_dh_installdeb:
 +	find $(CURDIR)/debian/python-clang-$(LLVM_VERSION)/usr/share/doc/python-clang-$(LLVM_VERSION)/examples -name "*.gz" -exec gzip -d {} \;
 +	find $(CURDIR)/debian/python-clang-$(LLVM_VERSION)/usr/share/doc/python-clang-$(LLVM_VERSION)/tests    -name "*.gz" -exec gzip -d {} \;
-+	find $(CURDIR)/debian/clang-$(LLVM_VERSION)-relaxng/usr/share/xml/clang-$(LLVM_VERSION)-relaxng -name "*.gz" -exec gzip -d {} \;
++	if test -d $(CURDIR)/debian/clang-$(LLVM_VERSION)-relaxng/usr/share/xml/clang-$(LLVM_VERSION)-relaxng ; then \
++		find $(CURDIR)/debian/clang-$(LLVM_VERSION)-relaxng/usr/share/xml/clang-$(LLVM_VERSION)-relaxng -name "*.gz" -exec gzip -d {} \; ; \
++	fi
  
  override_dh_auto_test:
  	$(MAKE) -C $(TARGET_BUILD)  check || true
