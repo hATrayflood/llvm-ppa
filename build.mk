@@ -7,7 +7,7 @@ dput:
 	echo dput ppa:h-rayflood/llvm *_source.changes
 
 install:
-	dpkg -i *_all.deb *_`dpkg --print-architecture`.deb
+	dpkg -i $$(ls *_all.deb *_`dpkg --print-architecture`.deb 2>/dev/null)
 
 clean:
 	cd $(DIR) && debuild clean
