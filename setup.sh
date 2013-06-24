@@ -51,9 +51,10 @@ apt-get -y install swig
 apt-get -y install libedit-dev
 apt-get -y install libcloog-isl-dev
 EOC
-(cd dh-exec && ./build.sh)
-sudo dpkg -i dh-exec/*.deb
 
+make -C dh-exec extract
+make -C dh-exec
+sudo make -C dh-exec install
 make -C isl extract
 make -C isl
 sudo make -C isl install
