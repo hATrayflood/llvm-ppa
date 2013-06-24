@@ -6,7 +6,7 @@ dput:
 	if test -d debian ; then \
 		../diff-wrapper -urN debian $(DIR)/debian > debian.diff ; \
 	fi
-	echo dput ppa:h-rayflood/llvm *_source.changes
+	@echo dput ppa:h-rayflood/llvm *_source.changes
 
 install:
 	dpkg -i $$(ls *_all.deb *_`dpkg --print-architecture`.deb 2>/dev/null)
@@ -21,6 +21,7 @@ distclean: clean
 		fi ; \
 	done
 	rm -fr $(DIR)/.pc
+	rm -f  $(DIR)/.gitignore
 	rm -f  *.deb
 	rm -f  $(DEL)
 
