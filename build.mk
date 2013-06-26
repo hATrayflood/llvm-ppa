@@ -3,10 +3,12 @@ all:
 
 dput:
 	cd $(DIR) && debuild -S  -sa
+	@echo dput ppa:h-rayflood/llvm *_source.changes
+
+diff:
 	if test -d debian ; then \
 		echo $$(diff -urN debian $(DIR)/debian > debian.diff) ; \
 	fi
-	@echo dput ppa:h-rayflood/llvm *_source.changes
 
 install:
 	dpkg -i $$(ls *_all.deb *_`dpkg --print-architecture`.deb 2>/dev/null)
