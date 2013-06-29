@@ -1,0 +1,13 @@
+usr/lib/llvm-3.2/bin/llvm-*
+usr/lib/llvm-3.2/bin/opt*
+usr/lib/llvm-3.2/bin/macho-dump*
+usr/lib/llvm-3.2/bin/bugpoint*
+usr/lib/llvm-3.2/bin/llc*
+usr/lib/llvm-3.2/bin/c-index-test*
+usr/bin/llvm-*
+usr/bin/opt*
+usr/bin/macho-dump*
+usr/bin/bugpoint*
+usr/bin/llc*
+usr/bin/c-index-test*
+

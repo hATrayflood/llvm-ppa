@@ -1,0 +1,55 @@
+Index: llvm-3.2.src/lldb/source/Utility/Makefile
+===================================================================
+--- llvm-3.2.src.orig/lldb/source/Utility/Makefile	2013-01-12 15:48:58.415044072 +0100
++++ llvm-3.2.src/lldb/source/Utility/Makefile	2013-01-12 15:49:05.815043907 +0100
+@@ -11,4 +11,11 @@
+ LIBRARYNAME := lldbUtility
+ BUILD_ARCHIVE = 1
+ 
++# Enable RTTI on GCC builds because liblldbCore.a requires RTTI.
++# See source/Core/Makefile for details.
++ifeq (g++,$(shell basename $(CXX)))
++  REQUIRES_RTTI = 1
++endif
++
++
+ include $(LLDB_LEVEL)/Makefile
+Index: llvm-3.2.src/lldb/source/Core/Makefile
+===================================================================
+--- llvm-3.2.src.orig/lldb/source/Core/Makefile	2013-01-12 15:48:58.415044072 +0100
++++ llvm-3.2.src/lldb/source/Core/Makefile	2013-01-12 15:49:05.815043907 +0100
+@@ -11,4 +11,15 @@
+ LIBRARYNAME := lldbCore
+ BUILD_ARCHIVE = 1
+ 
++# Enable RTTI on GCC builds because one source file in this directory
++# (cxa_demangle.cpp) uses dynamic_cast<> and GCC (at least 4.6 and 4.7)
++# complain if we try to compile it with -fno-rtti. This is somewhat of a
++# kludge because it forces us to enable RTTI in liblldbUtility.a and also
++# link in additional clang static libraries to resolve vtable references,
++# but actually has negligible impact on (shard object) file size.
++$(info shell basename CXX is $(shell basename $(CXX)))
++ifeq (g++,$(shell basename $(CXX)))
++  REQUIRES_RTTI = 1
++endif
++
+ include $(LLDB_LEVEL)/Makefile
+Index: llvm-3.2.src/lldb/lib/Makefile
+===================================================================
+--- llvm-3.2.src.orig/lldb/lib/Makefile	2013-01-12 15:48:58.415044072 +0100
++++ llvm-3.2.src/lldb/lib/Makefile	2013-01-12 15:49:05.815043907 +0100
+@@ -67,6 +67,14 @@
+ 	lldbPluginPlatformLinux.a \
+ 	lldbPluginPlatformFreeBSD.a
+ 
++# Because GCC requires RTTI enabled for lldbCore (see source/Core/Makefile) it is
++# necessary to also link the clang rewriter libraries so vtable references can
++# be resolved correctly, if we are building with GCC.
++ifeq (g++,$(shell basename $(CXX)))
++  USEDLIBS += clangRewriteCore.a \
++              clangRewriteFrontend.a
++endif
++
+ include $(LLDB_LEVEL)/../../Makefile.config
+ 
+ LINK_COMPONENTS := $(TARGETS_TO_BUILD) asmparser bitreader bitwriter codegen \

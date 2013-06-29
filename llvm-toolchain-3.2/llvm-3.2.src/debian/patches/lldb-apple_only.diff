@@ -1,0 +1,13 @@
+Index: llvm-toolchain-3.2-3.2repack/lldb/source/Core/Error.cpp
+===================================================================
+--- llvm-toolchain-3.2-3.2repack.orig/lldb/source/Core/Error.cpp	2013-05-15 11:18:38.417063768 +0200
++++ llvm-toolchain-3.2-3.2repack/lldb/source/Core/Error.cpp	2013-05-15 11:19:53.785063696 +0200
+@@ -20,7 +20,7 @@
+ #include <cstdlib>
+ #include <cstring>
+ 
+-#if defined (__arm__)
++#if defined (__arm__) && defined (__APPLE__)
+ #include <SpringBoardServices/SpringBoardServer.h>
+ #endif
+ 

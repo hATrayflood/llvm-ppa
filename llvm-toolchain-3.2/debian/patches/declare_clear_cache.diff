@@ -1,0 +1,13 @@
+Index: b/lib/Support/Unix/Memory.inc
+===================================================================
+--- a/lib/Support/Unix/Memory.inc
++++ b/lib/Support/Unix/Memory.inc
+@@ -318,7 +318,7 @@
+   // FIXME: Can we safely always call this for __GNUC__ everywhere?
+   const char *Start = static_cast<const char *>(Addr);
+   const char *End = Start + Len;
+-  __clear_cache(const_cast<char *>(Start), const_cast<char *>(End));
++  __builtin___clear_cache(const_cast<char *>(Start), const_cast<char *>(End));
+ #  elif defined(__mips__)
+   const char *Start = static_cast<const char *>(Addr);
+   cacheflush(const_cast<char *>(Start), Len, BCACHE);

@@ -1,0 +1,67 @@
+From cf11c33f85767880e368f22d2c4fa3ae76d29b3a Mon Sep 17 00:00:00 2001
+From: Jon Severinsson <jon@severinsson.net>
+Date: Sun, 12 May 2013 22:00:00 +0200
+Subject: [PATCH] Fix a build issue with c++0x and the r600 backend
+
+---
+ lib/Target/R600/AMDGPUStructurizeCFG.cpp   |    2 +-
+ lib/Target/R600/AMDILPeepholeOptimizer.cpp |    2 +-
+ lib/Target/R600/SIAnnotateControlFlow.cpp  |    2 +-
+ lib/Target/R600/SIInsertWaits.cpp          |    2 +-
+ 4 filer ändrade, 4 tillägg(+), 4 borttagningar(-)
+
+diff --git a/lib/Target/R600/AMDGPUStructurizeCFG.cpp b/lib/Target/R600/AMDGPUStructurizeCFG.cpp
+index a8c9621..e827b66 100644
+--- a/lib/Target/R600/AMDGPUStructurizeCFG.cpp
++++ b/lib/Target/R600/AMDGPUStructurizeCFG.cpp
+@@ -506,7 +506,7 @@ void AMDGPUStructurizeCFG::delPhiValues(BasicBlock *From, BasicBlock *To) {
+     PHINode &Phi = cast<PHINode>(*I++);
+     while (Phi.getBasicBlockIndex(From) != -1) {
+       Value *Deleted = Phi.removeIncomingValue(From, false);
+-      Map[&Phi].push_back(std::make_pair(From, Deleted));
++      Map[&Phi].push_back(BBValuePair(From, Deleted));
+     }
+   }
+ }
+diff --git a/lib/Target/R600/AMDILPeepholeOptimizer.cpp b/lib/Target/R600/AMDILPeepholeOptimizer.cpp
+index 57317ac..2338aee 100644
+--- a/lib/Target/R600/AMDILPeepholeOptimizer.cpp
++++ b/lib/Target/R600/AMDILPeepholeOptimizer.cpp
+@@ -366,7 +366,7 @@ AMDGPUPeepholeOpt::optimizeCallInst(BasicBlock::iterator *bbb)  {
+     std::string buffer(F->getName().str() + "_noret");
+     F = dyn_cast<Function>(
+           F->getParent()->getOrInsertFunction(buffer, F->getFunctionType()));
+-    atomicFuncs.push_back(std::make_pair <CallInst*, Function*>(CI, F));
++    atomicFuncs.push_back(std::pair <CallInst*, Function*>(CI, F));
+   }
+   
+   if (!mSTM->device()->isSupported(AMDGPUDeviceInfo::ArenaSegment)
+diff --git a/lib/Target/R600/SIAnnotateControlFlow.cpp b/lib/Target/R600/SIAnnotateControlFlow.cpp
+index 92385b6..4783a81 100644
+--- a/lib/Target/R600/SIAnnotateControlFlow.cpp
++++ b/lib/Target/R600/SIAnnotateControlFlow.cpp
+@@ -158,7 +158,7 @@ Value *SIAnnotateControlFlow::popSaved() {
+ 
+ /// \brief Push a BB and saved value to the control flow stack
+ void SIAnnotateControlFlow::push(BasicBlock *BB, Value *Saved) {
+-  Stack.push_back(std::make_pair(BB, Saved));
++  Stack.push_back(StackEntry(BB, Saved));
+ }
+ 
+ /// \brief Can the condition represented by this PHI node treated like
+diff --git a/lib/Target/R600/SIInsertWaits.cpp b/lib/Target/R600/SIInsertWaits.cpp
+index 24fc929..53b72b5 100644
+--- a/lib/Target/R600/SIInsertWaits.cpp
++++ b/lib/Target/R600/SIInsertWaits.cpp
+@@ -176,7 +176,7 @@ bool SIInsertWaits::isOpRelevant(MachineOperand &Op) {
+ RegInterval SIInsertWaits::getRegInterval(MachineOperand &Op) {
+ 
+   if (!Op.isReg())
+-    return std::make_pair(0, 0);
++    return RegInterval(0, 0);
+ 
+   unsigned Reg = Op.getReg();
+   unsigned Size = TRI.getMinimalPhysRegClass(Reg)->getSize();
+-- 
+1.7.10.4
+

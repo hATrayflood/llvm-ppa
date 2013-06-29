@@ -1,0 +1,13 @@
+Index: llvm-3.2.src/lldb/include/lldb/Target/StopInfo.h
+===================================================================
+--- llvm-3.2.src.orig/lldb/include/lldb/Target/StopInfo.h	2013-01-10 17:49:46.000000000 +0100
++++ llvm-3.2.src/lldb/include/lldb/Target/StopInfo.h	2013-01-12 15:38:44.691057765 +0100
+@@ -23,7 +23,7 @@
+ 
+ class StopInfo
+ {
+-    friend Process::ProcessEventData;
++    friend class Process::ProcessEventData;
+     friend class ThreadPlanBase;
+     
+ public:

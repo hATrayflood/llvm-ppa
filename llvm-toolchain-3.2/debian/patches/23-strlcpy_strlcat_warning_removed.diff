@@ -1,0 +1,80 @@
+Index: llvm-3.2.src/clang/include/clang/Basic/Builtins.def
+===================================================================
+--- llvm-3.2.src.orig/clang/include/clang/Basic/Builtins.def	2012-11-28 23:01:30.000000000 +0100
++++ llvm-3.2.src/clang/include/clang/Basic/Builtins.def	2013-01-12 15:33:43.299064490 +0100
+@@ -462,8 +462,8 @@
+ BUILTIN(__builtin___stpcpy_chk, "c*c*cC*z", "nF")
+ BUILTIN(__builtin___strcat_chk, "c*c*cC*z", "nF")
+ BUILTIN(__builtin___strcpy_chk, "c*c*cC*z", "nF")
+-BUILTIN(__builtin___strlcat_chk, "c*c*cC*zz", "nF")
+-BUILTIN(__builtin___strlcpy_chk, "c*c*cC*zz", "nF")
++//BUILTIN(__builtin___strlcat_chk, "c*c*cC*zz", "nF")
++//BUILTIN(__builtin___strlcpy_chk, "c*c*cC*zz", "nF")
+ BUILTIN(__builtin___strncat_chk, "c*c*cC*zz", "nF")
+ BUILTIN(__builtin___strncpy_chk, "c*c*cC*zz", "nF")
+ BUILTIN(__builtin___stpncpy_chk, "c*c*cC*zz", "nF")
+@@ -756,8 +756,8 @@
+ LIBBUILTIN(_longjmp, "vJi",       "fr",    "setjmp.h", ALL_LANGUAGES)
+ LIBBUILTIN(siglongjmp, "vSJi",    "fr",    "setjmp.h", ALL_LANGUAGES)
+ // non-standard but very common
+-LIBBUILTIN(strlcpy, "zc*cC*z",    "f",     "string.h", ALL_LANGUAGES)
+-LIBBUILTIN(strlcat, "zc*cC*z",    "f",     "string.h", ALL_LANGUAGES)
++//LIBBUILTIN(strlcpy, "zc*cC*z",    "f",     "string.h", ALL_LANGUAGES)
++//LIBBUILTIN(strlcat, "zc*cC*z",    "f",     "string.h", ALL_LANGUAGES)
+ //   id objc_msgSend(id, SEL, ...)
+ LIBBUILTIN(objc_msgSend, "GGH.",   "f",     "objc/message.h", OBJC_LANG)
+ 
+Index: llvm-3.2.src/clang/lib/Sema/SemaChecking.cpp
+===================================================================
+--- llvm-3.2.src.orig/clang/lib/Sema/SemaChecking.cpp	2012-11-08 01:41:20.000000000 +0100
++++ llvm-3.2.src/clang/lib/Sema/SemaChecking.cpp	2013-01-12 15:33:43.303064490 +0100
+@@ -576,9 +576,10 @@
+     return false;
+ 
+   // Handle memory setting and copying functions.
+-  if (CMId == Builtin::BIstrlcpy || CMId == Builtin::BIstrlcat)
+-    CheckStrlcpycatArguments(TheCall, FnInfo);
+-  else if (CMId == Builtin::BIstrncat)
++//  if (CMId == Builtin::BIstrlcpy || CMId == Builtin::BIstrlcat)
++//    CheckStrlcpycatArguments(TheCall, FnInfo);
++//  else
++  if (CMId == Builtin::BIstrncat)
+     CheckStrncatArguments(TheCall, FnInfo);
+   else
+     CheckMemaccessArguments(TheCall, CMId, FnInfo);
+Index: llvm-3.2.src/clang/lib/AST/Decl.cpp
+===================================================================
+--- llvm-3.2.src.orig/clang/lib/AST/Decl.cpp	2012-11-12 05:10:23.000000000 +0100
++++ llvm-3.2.src/clang/lib/AST/Decl.cpp	2013-01-12 15:33:43.303064490 +0100
+@@ -2394,10 +2394,10 @@
+   case Builtin::BImemmove:
+     return Builtin::BImemmove;
+ 
+-  case Builtin::BIstrlcpy:
+-    return Builtin::BIstrlcpy;
+-  case Builtin::BIstrlcat:
+-    return Builtin::BIstrlcat;
++//  case Builtin::BIstrlcpy:
++//    return Builtin::BIstrlcpy;
++//  case Builtin::BIstrlcat:
++//    return Builtin::BIstrlcat;
+ 
+   case Builtin::BI__builtin_memcmp:
+   case Builtin::BImemcmp:
+Index: llvm-3.2.src/clang/lib/StaticAnalyzer/Checkers/GenericTaintChecker.cpp
+===================================================================
+--- llvm-3.2.src.orig/clang/lib/StaticAnalyzer/Checkers/GenericTaintChecker.cpp	2012-11-02 02:54:06.000000000 +0100
++++ llvm-3.2.src/clang/lib/StaticAnalyzer/Checkers/GenericTaintChecker.cpp	2013-01-12 15:33:43.303064490 +0100
+@@ -237,9 +237,9 @@
+     case Builtin::BIstrncpy:
+     case Builtin::BIstrncat:
+       return TaintPropagationRule(1, 2, 0, true);
+-    case Builtin::BIstrlcpy:
+-    case Builtin::BIstrlcat:
+-      return TaintPropagationRule(1, 2, 0, false);
++//    case Builtin::BIstrlcpy:
++//    case Builtin::BIstrlcat:
++//      return TaintPropagationRule(1, 2, 0, false);
+     case Builtin::BIstrndup:
+       return TaintPropagationRule(0, 1, ReturnValueIndex);
+ 

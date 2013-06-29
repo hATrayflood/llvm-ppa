@@ -1,0 +1,242 @@
+diff -urN llvm-3.2.src.orig/clang/bindings/python/README.txt llvm-3.2.src/clang/bindings/python/README.txt
+--- llvm-3.2.src.orig/clang/bindings/python/README.txt	2010-05-01 06:51:10.000000000 +0900
++++ llvm-3.2.src/clang/bindings/python/README.txt	2013-06-26 22:59:24.690204577 +0900
+@@ -4,12 +4,9 @@
+ 
+ This directory implements Python bindings for Clang.
+ 
+-You may need to alter LD_LIBRARY_PATH so that the Clang library can be
+-found. The unit tests are designed to be run with 'nosetests'. For example:
++The unit tests are designed to be run with 'nosetests'. For example:
+ --
+-$ env PYTHONPATH=$(echo ~/llvm/tools/clang/bindings/python/) \
+-      LD_LIBRARY_PATH=$(llvm-config --libdir) \
+-  nosetests -v
++$ nosetests -v
+ tests.cindex.test_index.test_create ... ok
+ ...
+ 
+diff -urN llvm-3.2.src.orig/clang/bindings/python/clang/cindex.py llvm-3.2.src/clang/bindings/python/clang/cindex.py
+--- llvm-3.2.src.orig/clang/bindings/python/clang/cindex.py	2012-11-01 14:46:30.000000000 +0900
++++ llvm-3.2.src/clang/bindings/python/clang/cindex.py	2013-06-26 23:07:13.592529725 +0900
+@@ -65,7 +65,7 @@
+ from ctypes import *
+ import collections
+ 
+-import clang.enumerations
++import clang32.enumerations
+ 
+ # ctypes doesn't implicitly convert c_void_p to the appropriate wrapper
+ # object. This is a problem, because it means that from_parameter will see an
+@@ -3097,7 +3097,7 @@
+         elif name == 'Windows':
+             file = 'libclang.dll'
+         else:
+-            file = 'libclang.so'
++            file = '/usr/lib/llvm-3.2/lib/libclang.so.1'
+ 
+         if Config.library_path:
+             file = Config.library_path + '/' + file
+@@ -3124,7 +3124,7 @@
+         return True
+ 
+ def register_enumerations():
+-    for name, value in clang.enumerations.TokenKinds:
++    for name, value in clang32.enumerations.TokenKinds:
+         TokenKind.register(value, name)
+ 
+ conf = Config()
+diff -urN llvm-3.2.src.orig/clang/bindings/python/examples/cindex/cindex-dump.py llvm-3.2.src/clang/bindings/python/examples/cindex/cindex-dump.py
+--- llvm-3.2.src.orig/clang/bindings/python/examples/cindex/cindex-dump.py	2010-02-14 03:33:28.000000000 +0900
++++ llvm-3.2.src/clang/bindings/python/examples/cindex/cindex-dump.py	2013-06-26 23:03:02.995287095 +0900
+@@ -54,7 +54,7 @@
+              'children' : children }
+ 
+ def main():
+-    from clang.cindex import Index
++    from clang32.cindex import Index
+     from pprint import pprint
+ 
+     from optparse import OptionParser, OptionGroup
+diff -urN llvm-3.2.src.orig/clang/bindings/python/examples/cindex/cindex-includes.py llvm-3.2.src/clang/bindings/python/examples/cindex/cindex-includes.py
+--- llvm-3.2.src.orig/clang/bindings/python/examples/cindex/cindex-includes.py	2010-02-14 03:33:28.000000000 +0900
++++ llvm-3.2.src/clang/bindings/python/examples/cindex/cindex-includes.py	2013-06-26 23:03:15.743350310 +0900
+@@ -16,7 +16,7 @@
+ 
+ def main():
+     import sys
+-    from clang.cindex import Index
++    from clang32.cindex import Index
+ 
+     from optparse import OptionParser, OptionGroup
+ 
+diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_cdb.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_cdb.py
+--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_cdb.py	2012-07-10 09:00:05.000000000 +0900
++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_cdb.py	2013-06-26 23:04:06.271600860 +0900
+@@ -1,7 +1,7 @@
+-from clang.cindex import CompilationDatabase
+-from clang.cindex import CompilationDatabaseError
+-from clang.cindex import CompileCommands
+-from clang.cindex import CompileCommand
++from clang32.cindex import CompilationDatabase
++from clang32.cindex import CompilationDatabaseError
++from clang32.cindex import CompileCommands
++from clang32.cindex import CompileCommand
+ import os
+ import gc
+ 
+diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_code_completion.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_code_completion.py
+--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_code_completion.py	2012-10-07 20:46:37.000000000 +0900
++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_code_completion.py	2013-06-26 23:04:15.943648827 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import TranslationUnit
++from clang32.cindex import TranslationUnit
+ 
+ def check_completion_results(cr, expected):
+     assert cr is not None
+diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_cursor.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_cursor.py
+--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_cursor.py	2012-11-01 14:46:30.000000000 +0900
++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_cursor.py	2013-06-26 23:03:53.247536273 +0900
+@@ -1,8 +1,8 @@
+ import gc
+ 
+-from clang.cindex import CursorKind
+-from clang.cindex import TranslationUnit
+-from clang.cindex import TypeKind
++from clang32.cindex import CursorKind
++from clang32.cindex import TranslationUnit
++from clang32.cindex import TypeKind
+ from .util import get_cursor
+ from .util import get_cursors
+ from .util import get_tu
+diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_cursor_kind.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_cursor_kind.py
+--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_cursor_kind.py	2012-02-05 20:42:09.000000000 +0900
++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_cursor_kind.py	2013-06-26 23:05:16.583949519 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import CursorKind
++from clang32.cindex import CursorKind
+ 
+ def test_name():
+     assert CursorKind.UNEXPOSED_DECL.name is 'UNEXPOSED_DECL'
+diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_diagnostics.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_diagnostics.py
+--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_diagnostics.py	2012-03-11 07:19:05.000000000 +0900
++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_diagnostics.py	2013-06-26 23:05:06.775900866 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import *
++from clang32.cindex import *
+ from .util import get_tu
+ 
+ # FIXME: We need support for invalid translation units to test better.
+diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_file.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_file.py
+--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_file.py	2011-10-31 09:07:19.000000000 +0900
++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_file.py	2013-06-26 23:05:55.624143111 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import Index, File
++from clang32.cindex import Index, File
+ 
+ def test_file():
+   index = Index.create()
+diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_index.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_index.py
+--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_index.py	2010-01-24 11:02:07.000000000 +0900
++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_index.py	2013-06-26 23:04:56.383849345 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import *
++from clang32.cindex import *
+ import os
+ 
+ kInputsDir = os.path.join(os.path.dirname(__file__), 'INPUTS')
+diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_location.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_location.py
+--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_location.py	2012-06-11 20:11:48.000000000 +0900
++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_location.py	2013-06-26 23:05:27.000001209 +0900
+@@ -1,7 +1,7 @@
+-from clang.cindex import Cursor
+-from clang.cindex import File
+-from clang.cindex import SourceLocation
+-from clang.cindex import SourceRange
++from clang32.cindex import Cursor
++from clang32.cindex import File
++from clang32.cindex import SourceLocation
++from clang32.cindex import SourceRange
+ from .util import get_cursor
+ from .util import get_tu
+ 
+diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_token_kind.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_token_kind.py
+--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_token_kind.py	2012-07-12 16:21:12.000000000 +0900
++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_token_kind.py	2013-06-26 23:03:38.159461449 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import TokenKind
++from clang32.cindex import TokenKind
+ from nose.tools import eq_
+ from nose.tools import ok_
+ from nose.tools import raises
+diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_tokens.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_tokens.py
+--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_tokens.py	2012-07-12 16:21:12.000000000 +0900
++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_tokens.py	2013-06-26 23:07:42.440672813 +0900
+@@ -1,8 +1,8 @@
+-from clang.cindex import CursorKind
+-from clang.cindex import Index
+-from clang.cindex import SourceLocation
+-from clang.cindex import SourceRange
+-from clang.cindex import TokenKind
++from clang32.cindex import CursorKind
++from clang32.cindex import Index
++from clang32.cindex import SourceLocation
++from clang32.cindex import SourceRange
++from clang32.cindex import TokenKind
+ from nose.tools import eq_
+ from nose.tools import ok_
+ 
+diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_translation_unit.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_translation_unit.py
+--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_translation_unit.py	2012-07-12 16:21:12.000000000 +0900
++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_translation_unit.py	2013-06-26 23:04:47.375804676 +0900
+@@ -1,14 +1,14 @@
+ import gc
+ import os
+ 
+-from clang.cindex import CursorKind
+-from clang.cindex import Cursor
+-from clang.cindex import File
+-from clang.cindex import Index
+-from clang.cindex import SourceLocation
+-from clang.cindex import SourceRange
+-from clang.cindex import TranslationUnitSaveError
+-from clang.cindex import TranslationUnit
++from clang32.cindex import CursorKind
++from clang32.cindex import Cursor
++from clang32.cindex import File
++from clang32.cindex import Index
++from clang32.cindex import SourceLocation
++from clang32.cindex import SourceRange
++from clang32.cindex import TranslationUnitSaveError
++from clang32.cindex import TranslationUnit
+ from .util import get_cursor
+ from .util import get_tu
+ 
+diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_type.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_type.py
+--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_type.py	2012-05-16 04:51:02.000000000 +0900
++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_type.py	2013-06-26 23:04:33.023733499 +0900
+@@ -1,8 +1,8 @@
+ import gc
+ 
+-from clang.cindex import CursorKind
+-from clang.cindex import TranslationUnit
+-from clang.cindex import TypeKind
++from clang32.cindex import CursorKind
++from clang32.cindex import TranslationUnit
++from clang32.cindex import TypeKind
+ from nose.tools import raises
+ from .util import get_cursor
+ from .util import get_tu
+diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/util.py llvm-3.2.src/clang/bindings/python/tests/cindex/util.py
+--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/util.py	2012-05-08 14:56:38.000000000 +0900
++++ llvm-3.2.src/clang/bindings/python/tests/cindex/util.py	2013-06-26 23:05:44.728089110 +0900
+@@ -1,7 +1,7 @@
+ # This file provides common utility functions for the test suite.
+ 
+-from clang.cindex import Cursor
+-from clang.cindex import TranslationUnit
++from clang32.cindex import Cursor
++from clang32.cindex import TranslationUnit
+ 
+ def get_tu(source, lang='c', all_warnings=False):
+     """Obtain a translation unit from source and language.

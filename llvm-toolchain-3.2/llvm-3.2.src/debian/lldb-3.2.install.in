@@ -1,0 +1,5 @@
+usr/bin/lldb-3.2
+usr/lib/llvm-3.2/bin/lldb
+usr/lib/llvm-3.2/bin/lldb-platform
+usr/lib/llvm-3.2/lib/liblldb.so.1 /usr/lib/@DEB_HOST_MULTIARCH@/
+build-llvm/Release/lib/python2.7/site-packages/lldb/ /usr/lib/python2.7/dist-packages/

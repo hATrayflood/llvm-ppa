@@ -1,0 +1,55 @@
+Description: Fix defaults to use correct CPU and FPU on armhf
+  Clang was defaulting to a rediculously low CPU on armhf, furthermore when
+  The correct CPU is selected it defaults to incorrect FPU options for 
+  debian. This patch sets the defaults to appropriate values.
+Author: Peter Michael Green <plugwash@raspbian.org>
+Bug-Debian: http://bugs.debian.org/704111
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: http://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+
+Index: llvm-toolchain_3.3~svn178632/clang/lib/Driver/Tools.cpp
+===================================================================
+--- llvm-toolchain_3.3~svn178632.orig/clang/lib/Driver/Tools.cpp	2013-04-03 13:09:56.000000000 +0200
++++ llvm-toolchain_3.3~svn178632/clang/lib/Driver/Tools.cpp	2013-04-03 13:11:39.000000000 +0200
+@@ -489,6 +489,9 @@
+   if (Arg *A = Args.getLastArg(options::OPT_march_EQ)) {
+     // Otherwise, if we have -march= choose the base CPU for that arch.
+     MArch = A->getValue();
++  } else if (Triple.getEnvironment() == llvm::Triple::GNUEABIHF) {
++    // Use armv6 for armhf (raspbian version of patch)
++    MArch = "armv7-a";
+   } else {
+     // Otherwise, use the Arch from the triple.
+     MArch = Triple.getArchName();
+@@ -779,8 +782,19 @@
+   }
+ 
+   // Honor -mfpu=.
+-  if (const Arg *A = Args.getLastArg(options::OPT_mfpu_EQ))
++  if (const Arg *A = Args.getLastArg(options::OPT_mfpu_EQ)) {
+     addFPUArgs(D, A, Args, CmdArgs);
++  } else {
++    if (StringRef(CPUName).startswith("cortex-a")) {
++      //Debian armhf uses vfpv3-d16 
++      CmdArgs.push_back("-target-feature");
++      CmdArgs.push_back("+vfp3");
++      CmdArgs.push_back("-target-feature");
++      CmdArgs.push_back("+d16");
++      CmdArgs.push_back("-target-feature");
++      CmdArgs.push_back("-neon");
++    }
++  }
+ 
+   // Honor -mfpmath=.
+   if (const Arg *A = Args.getLastArg(options::OPT_mfpmath_EQ))

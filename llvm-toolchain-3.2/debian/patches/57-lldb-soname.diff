@@ -1,0 +1,21 @@
+Index: llvm-toolchain-3.2-3.2/lldb/lib/Makefile
+===================================================================
+--- llvm-toolchain-3.2-3.2.orig/lldb/lib/Makefile	2013-01-13 09:30:41.000000000 +0100
++++ llvm-toolchain-3.2-3.2/lldb/lib/Makefile	2013-01-17 18:01:01.000000000 +0100
+@@ -135,7 +135,7 @@
+     endif
+ endif
+ 
+-ifeq ($(HOST_OS),Linux)
++ifeq ($(HOST_OS), $(filter $(HOST_OS), Linux GNU))
+     # Include everything from the .a's into the shared library.
+     ProjLibsOptions := -Wl,--whole-archive $(ProjLibsOptions) \
+                        -Wl,--no-whole-archive
+@@ -143,6 +143,7 @@
+     LLVMLibsOptions += -Wl,--no-undefined
+     # Link in python
+     LLVMLibsOptions += $(PYTHON_BUILD_FLAGS) -lrt
++    LLVMLibsOptions += -Wl,--soname,lib$(LIBRARYNAME)$(SHLIBEXT).1
+ endif
+ 
+ ifeq ($(HOST_OS),FreeBSD)

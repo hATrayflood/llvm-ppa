@@ -1,0 +1,2 @@
+usr/lib/@DEB_HOST_MULTIARCH@/liblldb.so.1		usr/lib/@DEB_HOST_MULTIARCH@/liblldb.so
+usr/lib/@DEB_HOST_MULTIARCH@/liblldb.so         usr/lib/python2.7/dist-packages/lldb/_lldb.so

@@ -1,0 +1,13 @@
+Index: llvm-toolchain-3.2-3.2/polly/lib/CodeGen/LoopGenerators.cpp
+===================================================================
+--- llvm-toolchain-3.2-3.2.orig/polly/lib/CodeGen/LoopGenerators.cpp	2013-01-24 12:31:02.000000000 +0100
++++ llvm-toolchain-3.2-3.2/polly/lib/CodeGen/LoopGenerators.cpp	2013-01-24 12:35:56.000000000 +0100
+@@ -226,7 +226,7 @@
+   for (unsigned i = 0; i < OldValues.size(); i++) {
+     Value *Address = Builder.CreateStructGEP(Struct, i);
+     Value *NewValue = Builder.CreateLoad(Address);
+-    Map.insert(std::make_pair<Value*, Value*>(OldValues[i], NewValue));
++    Map.insert(std::pair<Value*, Value*>(OldValues[i], NewValue));
+   }
+ }
+ 

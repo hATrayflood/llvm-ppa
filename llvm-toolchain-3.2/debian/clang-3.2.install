@@ -1,0 +1,9 @@
+usr/lib/llvm-3.2/bin/clang			/usr/bin/
+usr/lib/llvm-3.2/bin/clang++			/usr/bin/
+usr/lib/llvm-3.2/bin/clang-check			/usr/bin/
+usr/lib/llvm-3.2/bin/clang-tblgen			/usr/bin/
+tools/clang/tools/scan-build			/usr/share/clang/
+tools/clang/tools/scan-view			/usr/share/clang/
+#usr/share/man/man1/clang.1	usr/share/man/man1/
+debian/pollycc		/usr/bin/
+

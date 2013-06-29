@@ -1,0 +1,24 @@
+Index: llvm-3.2.src/clang/unittests/Tooling/CompilationDatabaseTest.cpp
+===================================================================
+--- llvm-3.2.src.orig/clang/unittests/Tooling/CompilationDatabaseTest.cpp	2012-10-08 22:32:51.000000000 +0200
++++ llvm-3.2.src/clang/unittests/Tooling/CompilationDatabaseTest.cpp	2013-01-12 15:33:49.771064346 +0100
+@@ -262,19 +262,6 @@
+   return FoundCommand.CommandLine;
+ }
+ 
+-TEST(unescapeJsonCommandLine, ReturnsEmptyArrayOnEmptyString) {
+-  std::vector<std::string> Result = unescapeJsonCommandLine("");
+-  EXPECT_TRUE(Result.empty());
+-}
+-
+-TEST(unescapeJsonCommandLine, SplitsOnSpaces) {
+-  std::vector<std::string> Result = unescapeJsonCommandLine("a b c");
+-  ASSERT_EQ(3ul, Result.size());
+-  EXPECT_EQ("a", Result[0]);
+-  EXPECT_EQ("b", Result[1]);
+-  EXPECT_EQ("c", Result[2]);
+-}
+-
+ TEST(unescapeJsonCommandLine, MungesMultipleSpaces) {
+   std::vector<std::string> Result = unescapeJsonCommandLine("   a   b   ");
+   ASSERT_EQ(2ul, Result.size());

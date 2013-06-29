@@ -1,0 +1,31 @@
+From 0530926051350bd36e1ea974066c5a14ae0fe202 Mon Sep 17 00:00:00 2001
+From: Tom Stellard <thomas.stellard@amd.com>
+Date: Mon, 10 Dec 2012 21:41:58 +0000
+Subject: [PATCH 2/4] LegalizeDAG: Allow type promotion of scalar loads
+
+git-svn-id: https://llvm.org/svn/llvm-project/llvm/trunk@169773 91177308-0d34-0410-b5e6-96231b3b80d8
+(cherry picked from commit f45d11b56bffeaec94291f330dc9f7f7aae5a741)
+---
+ lib/CodeGen/SelectionDAG/LegalizeDAG.cpp |    5 ++---
+ 1 fil ändrad, 2 tillägg(+), 3 borttagningar(-)
+
+diff --git a/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp b/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp
+index 9946694..2596f00 100644
+--- a/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp
++++ b/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp
+@@ -890,10 +890,9 @@ void SelectionDAGLegalize::LegalizeLoadOps(SDNode *Node) {
+       break;
+     }
+     case TargetLowering::Promote: {
+-      // Only promote a load of vector type to another.
+-      assert(VT.isVector() && "Cannot promote this load!");
+-      // Change base type to a different vector type.
+       EVT NVT = TLI.getTypeToPromoteTo(Node->getOpcode(), VT);
++      assert(NVT.getSizeInBits() == VT.getSizeInBits() &&
++             "Can only promote loads to same size type");
+ 
+       SDValue Res = DAG.getLoad(NVT, dl, Chain, Ptr, LD->getPointerInfo(),
+                          LD->isVolatile(), LD->isNonTemporal(),
+-- 
+1.7.10.4
+

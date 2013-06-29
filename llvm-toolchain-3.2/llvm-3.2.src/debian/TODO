@@ -1,0 +1,14 @@
+* regarder pour les alternatives
+
+* remove of clang & llvm 3.2
+
+* look at the bugs of llvm 3.2
+
+* move the header at the right place in libclang-dev
+
+* bootstrap of clang with itself
+
+* in the control, use variable instead of hardcoded 3.2
+
+* update of the soname
+
