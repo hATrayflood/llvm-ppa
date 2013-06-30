@@ -1,3 +1,9 @@
+llvm-toolchain-3.2 (1:3.2repack-10) unstable; urgency=low
+
+  * Fix the wrong package declaration on libstdc++-4.8-dev (Closes: #713944)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Mon, 24 Jun 2013 23:00:47 +0200
+
 llvm-toolchain-3.2 (1:3.2repack-9) unstable; urgency=low
 
   * Switch to libstdc++ 4.8 instead of 4.7 for the headers (Closes: #712520)
