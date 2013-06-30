@@ -1,8 +1,7 @@
 Source: llvm-toolchain-3.2
 Section: devel
 Priority: extra
-Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
-Uploaders: Sylvestre Ledru <sylvestre@debian.org>
+Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
 Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl8.5, expect,
     autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),

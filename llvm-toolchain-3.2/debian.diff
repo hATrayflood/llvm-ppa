@@ -1,8 +1,8 @@
 diff -urN debian/changelog llvm-3.2.src/debian/changelog
 --- debian/changelog	2013-06-25 06:03:04.000000000 +0900
-+++ llvm-3.2.src/debian/changelog	2013-06-30 16:35:20.626502023 +0900
++++ llvm-3.2.src/debian/changelog	2013-06-30 21:54:25.443311550 +0900
 @@ -1,3 +1,9 @@
-+llvm-toolchain-3.2 (3.2repack-debian10ppa1) precise; urgency=low
++llvm-toolchain-3.2 (3.2repack-debian10ppa2) precise; urgency=low
 +
 +  * ppa for precise
 +
@@ -129,16 +129,17 @@ diff -urN debian/compiler-rt-3.2.links llvm-3.2.src/debian/compiler-rt-3.2.links
 +usr/lib/clang/3.2/bin/asan_symbolize	usr/bin/asan_symbolize-3.2
 diff -urN debian/control llvm-3.2.src/debian/control
 --- debian/control	2013-06-25 06:03:04.000000000 +0900
-+++ llvm-3.2.src/debian/control	2013-06-30 11:47:53.608246674 +0900
-@@ -1,6 +1,6 @@
++++ llvm-3.2.src/debian/control	2013-06-30 21:53:22.911001453 +0900
+@@ -1,30 +1,25 @@
  Source: llvm-toolchain-3.2
  Section: devel
 -Priority: optional
+-Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
+-Uploaders: Sylvestre Ledru <sylvestre@debian.org>
 +Priority: extra
- Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
- Uploaders: Sylvestre Ledru <sylvestre@debian.org>
++Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
  Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl8.5, expect,
-@@ -8,23 +8,19 @@
+     autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
      lsb-release, patchutils, diffstat, xz-utils, chrpath, python-dev,
      libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev,
@@ -168,7 +169,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Description: C, C++ and Objective-C compiler (LLVM based)
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -81,9 +77,9 @@
+@@ -81,9 +76,9 @@
   .
   This package contains the documentation.
  
@@ -180,7 +181,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Description: clang library
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -111,12 +107,12 @@
+@@ -111,12 +106,12 @@
   .
   This package contains the clang library.
  
@@ -198,7 +199,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
   .
-@@ -141,14 +137,14 @@
+@@ -141,14 +136,14 @@
      * A single unified parser for C, Objective C, C++, and Objective C++
      * Conformance with C/C++/ObjC and their variants
   .
@@ -218,7 +219,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
   .
-@@ -173,15 +169,37 @@
+@@ -173,15 +168,37 @@
      * A single unified parser for C, Objective C, C++, and Objective C++
      * Conformance with C/C++/ObjC and their variants
   .
@@ -263,7 +264,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
   .
-@@ -206,30 +224,37 @@
+@@ -206,30 +223,37 @@
      * A single unified parser for C, Objective C, C++, and Objective C++
      * Conformance with C/C++/ObjC and their variants
   .
@@ -324,7 +325,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
  
  Package: libllvm3.2
  Architecture: any
-@@ -244,27 +269,11 @@
+@@ -244,27 +268,11 @@
   .
   This package contains the LLVM runtime library.
  
@@ -352,7 +353,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Description: Low-Level Virtual Machine (LLVM)
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
-@@ -293,8 +302,6 @@
+@@ -293,8 +301,6 @@
  Package: llvm-3.2-runtime
  Architecture: any
  Depends: binfmt-support, ${shlibs:Depends}, ${misc:Depends}
@@ -361,7 +362,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Description: Low-Level Virtual Machine (LLVM), bytecode interpreter
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
-@@ -313,7 +320,6 @@
+@@ -313,7 +319,6 @@
  Package: llvm-3.2-dev
  Architecture: any
  Depends: ${shlibs:Depends}, libffi-dev (>= 3.0.9), ${misc:Depends}, llvm-3.2 (= ${binary:Version})
@@ -369,7 +370,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Description: Low-Level Virtual Machine (LLVM), libraries and headers
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
-@@ -334,8 +340,6 @@
+@@ -334,8 +339,6 @@
  Architecture: any
  Suggests: llvm-3.2-doc
  Depends: ${shlibs:Depends}, ${misc:Depends}, ${ocaml:Depends}, llvm-3.2-dev (= ${binary:Version})
