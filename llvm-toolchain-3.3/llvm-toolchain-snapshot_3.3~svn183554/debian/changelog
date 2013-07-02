@@ -1,8 +1,18 @@
-llvm-toolchain-3.3 (3.3-debian2ppa1) precise; urgency=low
+llvm-toolchain-3.3 (3.3-debian3ppa1) precise; urgency=low
 
   * ppa for precise
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sun, 30 Jun 2013 16:35:00 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Tue, 02 Jul 2013 21:50:00 +0900
+
+llvm-toolchain-3.3 (1:3.3-3) unstable; urgency=low
+
+  [ Luca Falavigna ]
+  * Integrate patch to fix FTBFS under IA64.
+
+  [ Luca Falavigna & Robert Millan ]
+  * Integrate patch to fix FTBFS under kFreeBSD (Closes: #714098)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Mon, 01 Jul 2013 09:29:02 +0200
 
 llvm-toolchain-3.3 (1:3.3-2) unstable; urgency=low
 

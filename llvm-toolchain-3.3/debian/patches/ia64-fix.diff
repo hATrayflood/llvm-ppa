@@ -1,7 +1,7 @@
-Index: llvm-toolchain-3.3-3.3~+rc3/lib/ExecutionEngine/JIT/JIT.cpp
+Index: llvm-toolchain-3.3-3.3/lib/ExecutionEngine/JIT/JIT.cpp
 ===================================================================
---- llvm-toolchain-3.3-3.3~+rc3.orig/lib/ExecutionEngine/JIT/JIT.cpp	2013-01-22 09:46:31.000000000 +0000
-+++ llvm-toolchain-3.3-3.3~+rc3/lib/ExecutionEngine/JIT/JIT.cpp	2013-06-06 08:25:45.000000000 +0000
+--- llvm-toolchain-3.3-3.3.orig/lib/ExecutionEngine/JIT/JIT.cpp	2013-01-22 09:46:31.000000000 +0000
++++ llvm-toolchain-3.3-3.3/lib/ExecutionEngine/JIT/JIT.cpp	2013-06-23 16:40:57.000000000 +0000
 @@ -68,7 +68,7 @@
  }
  
@@ -11,10 +11,10 @@ Index: llvm-toolchain-3.3-3.3~+rc3/lib/ExecutionEngine/JIT/JIT.cpp
       !defined(__USING_SJLJ_EXCEPTIONS__))
  #define HAVE_EHTABLE_SUPPORT 1
  #else
-Index: llvm-toolchain-3.3-3.3~+rc3/lib/ExecutionEngine/MCJIT/SectionMemoryManager.cpp
+Index: llvm-toolchain-3.3-3.3/lib/ExecutionEngine/MCJIT/SectionMemoryManager.cpp
 ===================================================================
---- llvm-toolchain-3.3-3.3~+rc3.orig/lib/ExecutionEngine/MCJIT/SectionMemoryManager.cpp	2013-05-05 20:43:10.000000000 +0000
-+++ llvm-toolchain-3.3-3.3~+rc3/lib/ExecutionEngine/MCJIT/SectionMemoryManager.cpp	2013-06-06 08:29:46.000000000 +0000
+--- llvm-toolchain-3.3-3.3.orig/lib/ExecutionEngine/MCJIT/SectionMemoryManager.cpp	2013-05-05 20:43:10.000000000 +0000
++++ llvm-toolchain-3.3-3.3/lib/ExecutionEngine/MCJIT/SectionMemoryManager.cpp	2013-06-23 16:40:57.000000000 +0000
 @@ -147,7 +147,7 @@
  }
  
@@ -24,3 +24,46 @@ Index: llvm-toolchain-3.3-3.3~+rc3/lib/ExecutionEngine/MCJIT/SectionMemoryManage
       !defined(__USING_SJLJ_EXCEPTIONS__))
  #define HAVE_EHTABLE_SUPPORT 1
  #else
+Index: llvm-toolchain-3.3-3.3/lldb/source/Plugins/Process/Linux/ProcessMonitor.cpp
+===================================================================
+--- llvm-toolchain-3.3-3.3.orig/lldb/source/Plugins/Process/Linux/ProcessMonitor.cpp	2013-06-23 18:20:48.000000000 +0000
++++ llvm-toolchain-3.3-3.3/lldb/source/Plugins/Process/Linux/ProcessMonitor.cpp	2013-06-23 18:22:52.000000000 +0000
+@@ -110,12 +110,14 @@
+                 verbose_log->Printf("PTRACE_SETREGS %s", buf.GetData());
+                 break;
+             }
++#ifdef PTRACE_SETFPREGS
+         case PTRACE_SETFPREGS:
+             {
+                 DisplayBytes(buf, data, data_size);
+                 verbose_log->Printf("PTRACE_SETFPREGS %s", buf.GetData());
+                 break;
+             }
++#endif
+         case PTRACE_SETSIGINFO:
+             {
+                 DisplayBytes(buf, data, sizeof(siginfo_t));
+@@ -578,9 +580,11 @@
+ void
+ ReadFPROperation::Execute(ProcessMonitor *monitor)
+ {
++#ifdef PTRACE_GETFPREGS
+     if (PTRACE(PTRACE_GETFPREGS, m_tid, NULL, m_buf, m_buf_size) < 0)
+         m_result = false;
+     else
++#endif
+         m_result = true;
+ }
+ 
+@@ -663,9 +667,11 @@
+ void
+ WriteFPROperation::Execute(ProcessMonitor *monitor)
+ {
++#ifdef PTRACE_SETFPREGS
+     if (PTRACE(PTRACE_SETFPREGS, m_tid, NULL, m_buf, m_buf_size) < 0)
+         m_result = false;
+     else
++#endif
+         m_result = true;
+ }
+ 
