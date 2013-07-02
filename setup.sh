@@ -50,6 +50,8 @@ apt-get -y install binutils-gold
 apt-get -y install swig
 apt-get -y install libedit-dev
 apt-get -y install libcloog-isl-dev
+apt-get -y install lcov
+apt-get -y install help2man
 EOC
 
 make -C dh-exec extract

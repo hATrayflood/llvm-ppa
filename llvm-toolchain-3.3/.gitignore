@@ -1,0 +1,4 @@
+*.deb
+llvm-toolchain-3.3_3.3-*
+llvm-toolchain-snapshot_3.3~svn183554/*
+!llvm-toolchain-snapshot_3.3~svn183554/debian

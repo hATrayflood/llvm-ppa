@@ -1,0 +1,39 @@
+Index: llvm-toolchain-3.3-3.3~+rc3/clang/tools/clang-format/clang-format.py
+===================================================================
+--- llvm-toolchain-3.3-3.3~+rc3.orig/clang/tools/clang-format/clang-format.py	2013-04-09 17:23:04.000000000 +0200
++++ llvm-toolchain-3.3-3.3~+rc3/clang/tools/clang-format/clang-format.py	2013-06-06 15:39:16.284119121 +0200
+@@ -21,7 +21,7 @@
+ import subprocess
+ 
+ # Change this to the full path if clang-format is not on the path.
+-binary = 'clang-format'
++binary = 'clang-format-3.3'
+ 
+ # Change this to format according to other formatting styles (see 
+ # clang-format -help)
+Index: llvm-toolchain-3.3-3.3~+rc3/clang/tools/clang-format/clang-format-diff.py
+===================================================================
+--- llvm-toolchain-3.3-3.3~+rc3.orig/clang/tools/clang-format/clang-format-diff.py	2013-04-17 09:55:02.000000000 +0200
++++ llvm-toolchain-3.3-3.3~+rc3/clang/tools/clang-format/clang-format-diff.py	2013-06-06 15:39:50.820117303 +0200
+@@ -28,7 +28,7 @@
+ 
+ 
+ # Change this to the full path if clang-format is not on the path.
+-binary = 'clang-format'
++binary = 'clang-format-3.3'
+ 
+ 
+ def getOffsetLength(filename, line_number, line_count):
+Index: llvm-toolchain-3.3-3.3~+rc3/clang/tools/clang-format/clang-format.el
+===================================================================
+--- llvm-toolchain-3.3-3.3~+rc3.orig/clang/tools/clang-format/clang-format.el	2013-05-08 02:29:53.000000000 +0200
++++ llvm-toolchain-3.3-3.3~+rc3/clang/tools/clang-format/clang-format.el	2013-06-06 15:39:02.512116254 +0200
+@@ -14,7 +14,7 @@
+   (let* ((orig-windows (get-buffer-window-list (current-buffer)))
+          (orig-window-starts (mapcar #'window-start orig-windows))
+          (orig-point (point))
+-         (binary "clang-format")
++         (binary "clang-format-3.3")
+          (style "LLVM"))
+     (if mark-active
+         (setq beg (region-beginning)

@@ -1,0 +1,11 @@
+/usr/lib/llvm-3.3/bin/clang			/usr/bin/llvm-clang-3.3
+/usr/lib/llvm-3.3/bin/clang			/usr/bin/clang-3.3
+/usr/lib/llvm-3.3/bin/clang++			/usr/bin/clang++-3.3
+/usr/lib/llvm-3.3/bin/clang-check		/usr/bin/clang-check-3.3
+/usr/lib/llvm-3.3/bin/clang-tblgen		/usr/bin/clang-tblgen-3.3
+/usr/lib/llvm-3.3/share/scan-build/scan-build	/usr/bin/scan-build-3.3
+/usr/lib/llvm-3.3/share/scan-view/scan-view	/usr/bin/scan-view-3.3
+/usr/lib/llvm-3.3/bin/pollycc			/usr/bin/pollycc-3.3
+/usr/lib/llvm-3.3/bin/asan_symbolize		/usr/bin/asan_symbolize-3.3
+usr/share/man/man1/clang-3.3.1.gz		usr/share/man/man1/llvm-clang-3.3.1.gz
+usr/share/man/man1/clang-3.3.1.gz		usr/share/man/man1/clang++-3.3.1.gz

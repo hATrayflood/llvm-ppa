@@ -1,0 +1,26 @@
+Index: llvm-toolchain-3.3-3.3~+rc3/lib/ExecutionEngine/JIT/JIT.cpp
+===================================================================
+--- llvm-toolchain-3.3-3.3~+rc3.orig/lib/ExecutionEngine/JIT/JIT.cpp	2013-01-22 09:46:31.000000000 +0000
++++ llvm-toolchain-3.3-3.3~+rc3/lib/ExecutionEngine/JIT/JIT.cpp	2013-06-06 08:25:45.000000000 +0000
+@@ -68,7 +68,7 @@
+ }
+ 
+ // Determine whether we can register EH tables.
+-#if (defined(__GNUC__) && !defined(__ARM_EABI__) && \
++#if (defined(__GNUC__) && !defined(__ARM_EABI__) && !defined(__ia64__) && \
+      !defined(__USING_SJLJ_EXCEPTIONS__))
+ #define HAVE_EHTABLE_SUPPORT 1
+ #else
+Index: llvm-toolchain-3.3-3.3~+rc3/lib/ExecutionEngine/MCJIT/SectionMemoryManager.cpp
+===================================================================
+--- llvm-toolchain-3.3-3.3~+rc3.orig/lib/ExecutionEngine/MCJIT/SectionMemoryManager.cpp	2013-05-05 20:43:10.000000000 +0000
++++ llvm-toolchain-3.3-3.3~+rc3/lib/ExecutionEngine/MCJIT/SectionMemoryManager.cpp	2013-06-06 08:29:46.000000000 +0000
+@@ -147,7 +147,7 @@
+ }
+ 
+ // Determine whether we can register EH tables.
+-#if (defined(__GNUC__) && !defined(__ARM_EABI__) && \
++#if (defined(__GNUC__) && !defined(__ARM_EABI__) && !defined(__ia64__) && \
+      !defined(__USING_SJLJ_EXCEPTIONS__))
+ #define HAVE_EHTABLE_SUPPORT 1
+ #else

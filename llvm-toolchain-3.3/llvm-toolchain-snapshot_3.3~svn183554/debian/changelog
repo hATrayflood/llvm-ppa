@@ -1,0 +1,120 @@
+llvm-toolchain-3.3 (3.3-debian2ppa1) precise; urgency=low
+
+  * ppa for precise
+
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sun, 30 Jun 2013 16:35:00 +0900
+
+llvm-toolchain-3.3 (1:3.3-2) unstable; urgency=low
+
+  * Fix warning python-script-but-no-python-dep on clang-format-X.Y
+  * manpages are generated during build time (simplifies maintenance)
+  * Fix duplicate underscore.js and jquery.js
+  * Move libjs-jquery & libjs-underscore dependencies to llvm-X.Y-doc
+  * Add lldb-X.Y manpage
+  * Hopefully fix the ftbfs under mipsel (mipsel-ftbfs.diff)
+  * Disable the usage of binutils-gold under armel. It currently fails with:
+    "attempt to map 2752512 bytes at offset 2066666 exceeds size of file;
+    the file may be corrupt"
+
+  [ Léo Cavaillé ]
+  * Add patch to find correctly LLVMGold.so with -O4 (Closes: #712437)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Fri, 14 Jun 2013 11:45:26 +0200
+
+llvm-toolchain-3.3 (1:3.3-1) unstable; urgency=low
+
+  * Upload to unstable
+  * Add some last minute changes to lldb (lldb33-to-r183444.patch)
+  * Add the patch for the Ubuntu Saucy detection
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Thu, 13 Jun 2013 14:58:20 +0200
+
+llvm-toolchain-3.3 (1:3.3-1~exp1) experimental; urgency=low
+
+  * New upstream release
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Tue, 11 Jun 2013 15:06:36 +0200
+
+llvm-toolchain-3.3 (1:3.3~+rc3-1~exp2) experimental; urgency=low
+
+  * Force the version in experimental of binutils-gold to fix powerpc
+  * Print the lldb test failures
+  * Create the compiler-rt directory for unsupported platforms
+  * Fix the FTBFS under HURD (hurd-endian.diff)
+  * Introduce the clang-format-X.Y package
+  * Introduce the cpp11-migrate-X.Y package (Closes: #705626)
+  * Install the vim llvm script at the right place
+  * make clang-3.3 also conflict against the 3.4 version
+  * Fix the FTBFS under kfreebsd and ia64. Many thanks to Luca Falavigna
+    for the patches (kfreebsd.diff and ia64-fix.diff)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Thu, 06 Jun 2013 14:28:41 +0200
+
+llvm-toolchain-3.3 (1:3.3~+rc3-1~exp1) experimental; urgency=low
+
+  * Package of the testing release (3.3 rc3)
+  * Provide a better lldb package (Closes: #707191)
+  * Improve the dependencies:
+    * clang-3.3 depends on the exact same libllvm3.3 release
+    * idem for lldb-3.3
+  * Various packages rename to allow co installations:
+    * libclang1 => libclang1-3.3
+    * libclang1-dbg => libclang1-3.3-dbg
+    * libclang-dev => libclang-3.3-dev
+    * libclang-common-dev => libclang-common-3.3-dev
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Fri, 19 Apr 2013 09:31:38 +0200
+
+llvm-toolchain-3.2 (1:3.2repack-1~exp3) experimental; urgency=low
+
+  * Build using binutls-gold to improve the quality of the binaries.
+    See: http://allievi.sssup.it/techblog/?p=791
+  * Detect the vendor (Debian or Ubuntu) and update the configuration
+  * Port to powerpcspe. Thanks to Roland Stigge (Closes: #701587)
+    See: 31-powerpcspe.diff
+  * Fix the path detection of scan-build (Closes: #698352)
+    See: 32-scan-build-path.diff
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Thu, 14 Mar 2013 17:47:12 +0100
+
+llvm-toolchain-3.2 (1:3.2repack-1~exp3) experimental; urgency=low
+
+  * Remove package "clang". It is now provided by llvm-defaults.
+  * Fix some issues relative to the epoch change
+  * Fix a wrong path in the _lldb.so Python symlink
+  * Install cmake files to build LLVM extensions (Closes: #701153)
+  * Remove the embedded copy of libjs-jquery (Closes: #701087)
+  * Fix the install of lli manpage (Closes: #697117)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Sun, 17 Feb 2013 12:05:15 +0100
+
+llvm-toolchain-3.2 (1:3.2repack-1~exp2) experimental; urgency=low
+
+  * Install the python files for lldb. Thanks to Daniel Malea for spotting this.
+  * Update of the clean target
+  * Introduce an epoch to match the changes in bug #699899
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Wed, 13 Feb 2013 12:22:30 +0100
+
+llvm-toolchain-3.2 (3.2repack-1~exp1) experimental; urgency=low
+
+  * Build the whole LLVM toolchain at once. This includes:
+    - LLVM
+    - Clang
+    - compiler-rt
+    - lldb
+    - polly
+  * Also install clang-check & clang-tblgen in the clang-3.2 package
+  * Fix the patch detection of clang from scan-build (Closes: #698352)
+  * debian/patches/0050-powerpcspe-fp.diff: Add, hopefully fix FTBFS on
+    powerpcspe, by disabling save / restore of floating point registers which
+    don't exist on powerpcspe. Thanks to Roland Stigge for the patch.
+    (Closes: #696474)
+  * libLLVM-3.2.so.1 is now shipped only once (Closes: #696913)
+  * Enable RTTI (Closes: #697754)
+  * Introduce lldb as a new package (Closes: #698601)
+  * Add a script pollycc which will call clang with the right arguments.
+  * Use __builtin___clear_cache on ARM to fix a clang bug.
+    Thanks to Matthias Klose.
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Sat, 09 Feb 2013 12:14:10 +0100

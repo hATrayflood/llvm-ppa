@@ -1,0 +1,13 @@
+* regarder pour les alternatives
+
+* remove of clang & llvm 3.2
+
+* look at the bugs of llvm 3.2
+
+* move the header at the right place in libclang-dev
+
+* bootstrap of clang with itself
+
+* update of the soname
+
+* man page for clang-format

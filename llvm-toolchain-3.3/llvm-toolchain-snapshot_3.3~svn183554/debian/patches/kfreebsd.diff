@@ -1,0 +1,55 @@
+--- test/llvm-toolchain-3.3-3.3~+rc3/lldb/include/lldb/Host/Config.h	2011-04-01 18:18:34.000000000 +0000
++++ llvm-toolchain-3.3-3.3~+rc3/lldb/include/lldb/Host/Config.h	2013-06-06 07:59:19.000000000 +0000
+@@ -18,7 +18,7 @@
+ 
+ #include "lldb/Host/linux/Config.h"
+ 
+-#elif defined(__FreeBSD__) || defined(__OpenBSD__)
++#elif defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__OpenBSD__)
+ 
+ #include "lldb/Host/freebsd/Config.h"
+ 
+--- test/llvm-toolchain-3.3-3.3~+rc3/lldb/source/Core/Mangled.cpp	2012-09-11 18:11:12.000000000 +0000
++++ llvm-toolchain-3.3-3.3~+rc3/lldb/source/Core/Mangled.cpp	2013-06-06 07:58:59.000000000 +0000
+@@ -30,6 +30,7 @@
+ #include "lldb/Core/Timer.h"
+ #include <ctype.h>
+ #include <string.h>
++#include <cstdlib>
+ 
+ using namespace lldb_private;
+ 
+--- test/llvm-toolchain-3.3-3.3~+rc3/lldb/source/Host/common/Host.cpp	2013-05-15 18:27:08.000000000 +0000
++++ llvm-toolchain-3.3-3.3~+rc3/lldb/source/Host/common/Host.cpp	2013-06-06 07:59:01.000000000 +0000
+@@ -151,7 +151,7 @@
+     delete info;
+ 
+     int status = -1;
+-#if defined (__FreeBSD__)
++#if defined (__FreeBSD__) || defined (__FreeBSD_kernel__)
+     #define __WALL 0
+ #endif
+     const int options = __WALL;
+@@ -1441,7 +1441,11 @@
+         g_num_cores = 0;
+         int num_cores = 0;
+         size_t num_cores_len = sizeof(num_cores);
++#ifdef HW_AVAILCPU
+         int mib[] = { CTL_HW, HW_AVAILCPU };
++#else
++        int mib[] = { CTL_HW, HW_NCPU };
++#endif
+         
+         /* get the number of CPUs from the system */
+         if (sysctl(mib, sizeof(mib)/sizeof(int), &num_cores, &num_cores_len, NULL, 0) == 0 && (num_cores > 0))
+--- test/llvm-toolchain-3.3-3.3~+rc3/lldb/source/Plugins/Process/FreeBSD/CMakeLists.txt	2013-02-21 20:58:22.000000000 +0000
++++ llvm-toolchain-3.3-3.3~+rc3/lldb/source/Plugins/Process/FreeBSD/CMakeLists.txt	2013-06-06 07:59:04.000000000 +0000
+@@ -1,5 +1,8 @@
+ set(LLVM_NO_RTTI 1)
+ 
++include_directories(.)
++include_directories(../POSIX)
++
+ add_lldb_library(lldbPluginProcessFreeBSD
+   ProcessFreeBSD.cpp
+   ProcessMonitor.cpp
