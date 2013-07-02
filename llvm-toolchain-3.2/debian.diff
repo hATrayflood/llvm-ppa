@@ -1,12 +1,12 @@
 diff -urN debian/changelog llvm-3.2.src/debian/changelog
 --- debian/changelog	2013-06-25 06:03:04.000000000 +0900
-+++ llvm-3.2.src/debian/changelog	2013-06-30 21:54:25.443311550 +0900
++++ llvm-3.2.src/debian/changelog	2013-07-02 12:54:11.229317794 +0900
 @@ -1,3 +1,9 @@
-+llvm-toolchain-3.2 (3.2repack-debian10ppa2) precise; urgency=low
++llvm-toolchain-3.2 (3.2repack-debian10ppa3) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sun, 30 Jun 2013 16:35:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Tue, 02 Jul 2013 12:55:00 +0900
 +
  llvm-toolchain-3.2 (1:3.2repack-10) unstable; urgency=low
  
@@ -956,7 +956,7 @@ diff -urN debian/python-clang-3.2.install llvm-3.2.src/debian/python-clang-3.2.i
 +clang/bindings/python/tests		/usr/share/doc/python-clang-3.2/
 diff -urN debian/rules llvm-3.2.src/debian/rules
 --- debian/rules	2013-06-23 14:58:22.000000000 +0900
-+++ llvm-3.2.src/debian/rules	2013-06-27 00:37:58.662085653 +0900
++++ llvm-3.2.src/debian/rules	2013-07-02 12:30:29.440813009 +0900
 @@ -1,7 +1,7 @@
  #!/usr/bin/make -f
  
@@ -1010,7 +1010,7 @@ diff -urN debian/rules llvm-3.2.src/debian/rules
  
  # Remove some license files
  	rm $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/include/llvm/Support/LICENSE.TXT
-@@ -163,17 +162,24 @@
+@@ -163,6 +162,9 @@
  # Remove the copy of jquery. See bug #701087
  	cd $(CURDIR)/docs/_build/html/_static/ && rm -f jquery.js && ln -s /usr/share/javascript/jquery/jquery.js
  
@@ -1020,15 +1020,7 @@ diff -urN debian/rules llvm-3.2.src/debian/rules
  
  override_dh_installman:
  	dh_installman
- # Make sure that lli manpage is only in llvm-3.2-runtime (See #697117)
- 	rm -f $(CURDIR)/debian/llvm-$(LLVM_VERSION)/usr/share/man/man1/lli*
- 
-+	find $(CURDIR)/debian/python-clang-$(LLVM_VERSION)/usr/share/doc/python-clang-$(LLVM_VERSION)/examples -name "*.gz" -exec gzip -d {} \;
-+	find $(CURDIR)/debian/python-clang-$(LLVM_VERSION)/usr/share/doc/python-clang-$(LLVM_VERSION)/tests    -name "*.gz" -exec gzip -d {} \;
-+	if test -d $(CURDIR)/debian/clang-$(LLVM_VERSION)-relaxng/usr/share/xml/clang-$(LLVM_VERSION)-relaxng ; then \
-+		find $(CURDIR)/debian/clang-$(LLVM_VERSION)-relaxng/usr/share/xml/clang-$(LLVM_VERSION)-relaxng -name "*.gz" -exec gzip -d {} \; ; \
-+	fi
-+
+@@ -172,13 +174,18 @@
  
  .PHONY: override_dh_strip
  override_dh_strip:
@@ -1037,3 +1029,15 @@ diff -urN debian/rules llvm-3.2.src/debian/rules
  	dh_strip -a
  
  override_dh_shlibdeps:
+ 	LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/ dh_shlibdeps
+ 
++override_dh_installdeb:
++	find $(CURDIR)/debian/python-clang-$(LLVM_VERSION)/usr/share/doc/python-clang-$(LLVM_VERSION)/examples -name "*.gz" -exec gzip -d {} \;
++	find $(CURDIR)/debian/python-clang-$(LLVM_VERSION)/usr/share/doc/python-clang-$(LLVM_VERSION)/tests    -name "*.gz" -exec gzip -d {} \;
++	if test -d $(CURDIR)/debian/clang-$(LLVM_VERSION)-relaxng/usr/share/xml/clang-$(LLVM_VERSION)-relaxng ; then \
++		find $(CURDIR)/debian/clang-$(LLVM_VERSION)-relaxng/usr/share/xml/clang-$(LLVM_VERSION)-relaxng -name "*.gz" -exec gzip -d {} \; ; \
++	fi
++
+ override_dh_auto_test:
+ 	$(MAKE) -C $(TARGET_BUILD) check || true
+ 
