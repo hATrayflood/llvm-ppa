@@ -20,6 +20,7 @@ usage
 -----
     sudo add-apt-repository ppa:h-rayflood/llvm
     sudo apt-get update
+    sudo apt-get dist-upgrade
     sudo apt-get install clang-2.9
     sudo apt-get install clang-3.0
     sudo apt-get install clang-3.1
