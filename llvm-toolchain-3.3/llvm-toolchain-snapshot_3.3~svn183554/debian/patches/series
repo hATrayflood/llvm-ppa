@@ -6,6 +6,7 @@
 27-fix_clang_stdint.diff
 26-set-correct-float-abi.diff
 profile_rt.diff
+28-gcc-4.7-paths.diff
 30-kfreebsd.diff
 0003-Debian-version-info-and-bugreport.patch
 0010-shared-lib-paths.patch
