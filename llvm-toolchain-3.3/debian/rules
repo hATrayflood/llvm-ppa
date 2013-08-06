@@ -24,6 +24,9 @@ ifeq ($(distrel),n/a)
   distrel := sid
 endif
 
+LDFLAGS_EXTRA=
+CXXFLAGS_EXTRA=
+
 confargs := \
         --with-c-include-dirs=/usr/include/$(DEB_HOST_MULTIARCH):/usr/include/$(DEB_HOST_GNU_TYPE):/usr/include \
 	--with-cxx-include-root=/usr/include/c++/$(GCC_VERSION) \
@@ -61,12 +64,17 @@ else
 	endif
 endif
 
+BINUTILS_GOLD_ARCHS := amd64 armhf i386 powerpc powerpcspe ppc64 sparc sparc64 x32
+ifneq (,$(findstring $(DEB_HOST_ARCH),$(BINUTILS_GOLD_ARCHS)))
+	LDFLAGS_EXTRA += -fuse-ld=gold
+endif
+
 
 ifneq (,$(filter codecoverage,$(DEB_BUILD_OPTIONS)))
 # enable the code coverage
 	CODECOVERAGE=yes
-	CXXFLAGS_EXTRA=-fprofile-arcs -ftest-coverage
-	LDFLAGS_EXTRA=-coverage -lgcov
+	CXXFLAGS_EXTRA += -fprofile-arcs -ftest-coverage
+	LDFLAGS_EXTRA += -coverage -lgcov
 endif
 
 ifneq (,$(filter scan-build,$(DEB_BUILD_OPTIONS)))

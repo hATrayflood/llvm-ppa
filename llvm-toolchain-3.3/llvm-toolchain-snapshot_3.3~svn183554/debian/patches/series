@@ -9,7 +9,6 @@ profile_rt.diff
 28-gcc-4.7-paths.diff
 30-kfreebsd.diff
 0003-Debian-version-info-and-bugreport.patch
-0010-shared-lib-paths.patch
 0021-shared-lib-debian.patch
 0023-link-libopagent.patch
 0044-soname.diff
@@ -26,9 +25,6 @@ clang-format-version.diff
 kfreebsd.diff
 add-ubuntu-saucy.patch
 lldb33-to-r183444.patch
-disabletestlldb.diff
-mipsel-ftbfs.diff
-kfreebsd_ptrace_kludge.diff
-kfreebsd_v2.diff
+use-deb-json.diff
 98-unwind.h.patch
 99-python-bindings.patch

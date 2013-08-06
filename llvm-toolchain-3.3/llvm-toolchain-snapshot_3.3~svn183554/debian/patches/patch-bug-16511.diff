@@ -1,0 +1,20 @@
+Index: llvm-toolchain-3.3-3.3/lldb/source/Plugins/Process/FreeBSD/ProcessMonitor.cpp
+===================================================================
+--- llvm-toolchain-3.3-3.3.orig/lldb/source/Plugins/Process/FreeBSD/ProcessMonitor.cpp	(révision 186870)
++++ llvm-toolchain-3.3-3.3/lldb/source/Plugins/Process/FreeBSD/ProcessMonitor.cpp	(révision 186871)
+@@ -101,6 +101,7 @@
+         log->Printf("ptrace() failed; errno=%d (%s)", errno, str);
+     }
+ 
++#ifdef __amd64__
+     if (log) {
+         if (req == PT_GETREGS) {
+             struct reg *r = (struct reg *) addr;
+@@ -111,6 +112,7 @@
+             log->Printf("PT_GETREGS: ax=0x%lx", r->r_rax);
+         }
+     }
++#endif
+      
+     return result;
+ }

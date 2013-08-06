@@ -8,9 +8,8 @@ Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl8.5, expect,
     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
     lsb-release, patchutils, diffstat, xz-utils, chrpath, python-dev,
     libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev,
-    libisl-dev (>= 0.11.1), binutils-gold (>= 2.23.52.20130522)
-    [amd64 armhf i386 powerpc powerpcspe ppc64 sparc sparc64 x32],
-    lcov, procps, help2man
+    libisl-dev (>= 0.11.1), binutils (>= 2.23.52.20130522),
+    lcov, procps, help2man, libjsoncpp-dev
 Build-Conflicts: oprofile, ocaml
 Standards-Version: 3.9.4
 Homepage: http://www.llvm.org/
