@@ -17,13 +17,11 @@ clean:
 	cd $(DIR) && debuild clean
 
 distclean: clean
-	for F in `ls $(DIR)` ; do \
-		if [ "$$F" != "debian" ] ; then \
+	for F in `ls -a $(DIR)` ; do \
+		if [ "$$F" != "debian" ] && [ "$$F" != "." ] && [ "$$F" != ".." ] ; then \
 			rm -fr $(DIR)/$$F ; \
 		fi ; \
 	done
-	rm -fr $(DIR)/.pc
-	rm -f  $(DIR)/.gitignore
 	rm -f  *.deb
 	rm -f  $(DEL)
 
