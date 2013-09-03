@@ -1,8 +1,39 @@
-llvm-toolchain-3.3 (3.3-debian5ppa2) precise; urgency=low
+llvm-toolchain-3.3 (3.3-debian8ppa2) precise; urgency=low
 
   * ppa for precise
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 08 Aug 2013 02:25:00 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Tue, 03 Sep 2013 18:45:00 +0900
+
+llvm-toolchain-3.3 (1:3.3-8) unstable; urgency=low
+
+  [ Sylvestre Ledru ]
+  * Fix another issues under HURD...
+
+  [ Luca Falavigna ]
+  * debian/patches/libprofile_rt_sparc.patch:
+    - Re-enable libprofile_rt on Sparc, fix FTBFS.
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Fri, 23 Aug 2013 15:02:05 +0200
+
+llvm-toolchain-3.3 (1:3.3-7) unstable; urgency=low
+
+  * debhelper version 9.20130720 fails on the call to dh_auto_clean
+    Remove it. It was anyway useless.
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Thu, 22 Aug 2013 14:28:25 +0200
+
+llvm-toolchain-3.3 (1:3.3-6) unstable; urgency=low
+
+  * Fix the FTBFS under hurd and KFreeBSD
+  * Do not remove all *.o in tests. Some of them are from upstream source
+    tarball. Thanks to Maarten Lankhorst for the fix.
+  * Fix the lintian error 'lldb-3.3: postinst-must-call-ldconfig'
+  * Add the manpages of clang-format-3.3
+  * Overrides the manpages warnings
+  * Also apply unwind-chain-inclusion.diff from the snapshot branch to make sure
+    we can build the package locally even if libclang-dev is installed
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Sun, 18 Aug 2013 16:45:53 +0200
 
 llvm-toolchain-3.3 (1:3.3-5) unstable; urgency=low
 

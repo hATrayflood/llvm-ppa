@@ -1,3 +1,5 @@
 # That is normal. The lib is not shipped as a new package
 lldb-3.3: package-name-doesnt-match-sonames liblldb
 lldb-3.3: non-dev-pkg-with-shlib-symlink usr/lib/*/liblldb.so.1 usr/lib/*/liblldb.so
+lldb-3.3: manpage-has-useless-whatis-entry usr/share/man/man1/lldb-3.3.1.gz
+

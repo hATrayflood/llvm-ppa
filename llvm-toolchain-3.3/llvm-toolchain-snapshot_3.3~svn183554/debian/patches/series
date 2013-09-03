@@ -28,5 +28,10 @@ lldb33-to-r183444.patch
 use-deb-json.diff
 mipsel-ftbfs.diff
 patch-bug-16511.diff
-98-unwind.h.patch
+kfreebsd-lldb.diff
+disable-execinfo-usage.diff
+unwind-chain-inclusion.diff
+hurd-pathmax.diff
+libprofile_rt_sparc.patch
+#98-unwind.h.patch
 99-python-bindings.patch

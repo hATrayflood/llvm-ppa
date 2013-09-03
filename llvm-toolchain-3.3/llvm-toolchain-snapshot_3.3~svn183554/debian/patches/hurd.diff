@@ -1,0 +1,19 @@
+Index: llvm-toolchain-3.3-3.3/clang/lib/Basic/FileManager.cpp
+===================================================================
+--- llvm-toolchain-3.3-3.3.orig/clang/lib/Basic/FileManager.cpp	2013-01-26 17:29:36.000000000 +0100
++++ llvm-toolchain-3.3-3.3/clang/lib/Basic/FileManager.cpp	2013-08-18 16:44:39.364713179 +0200
+@@ -43,6 +43,14 @@
+ #if defined(LLVM_ON_UNIX)
+ #include <limits.h>
+ #endif
++
++// For GNU Hurd
++#if defined(__GNU__) && !defined(PATH_MAX)
++# define PATH_MAX 4096
++#endif
++
++
++
+ using namespace clang;
+ 
+ // FIXME: Enhance libsystem to support inode and other fields.

@@ -171,13 +171,12 @@ build_doc:
 	help2man --version-string=$(LLVM_VERSION) clang/tools/scan-view/scan-view > debian/man/scan-view.1
 	help2man --version-string=$(LLVM_VERSION) clang/tools/clang-format/clang-format-diff.py > debian/man/clang-format-diff-$(LLVM_VERSION).1
 
-
 	for f in clang clang-tblgen clang-check; do \
-		help2man --version-string=$(LLVM_VERSION) build-llvm/Release/bin/$$f > debian/man/$$f.1; \
+		help2man --version-string=$(LLVM_VERSION) $(TARGET_BUILD)/Release/bin/$$f > debian/man/$$f.1; \
 	done
 
 	for f in llvm-dwarfdump llvm-mc llvm-mcmarkup llvm-objdump llvm-rtdyld llvm-size llvm-tblgen macho-dump lldb clang-format cpp11-migrate; do \
-		help2man --version-string=$(LLVM_VERSION) build-llvm/Release/bin/$$f > debian/man/$$f-$(LLVM_VERSION).1; \
+		help2man --version-string=$(LLVM_VERSION) $(TARGET_BUILD)/Release/bin/$$f > debian/man/$$f-$(LLVM_VERSION).1; \
     done
 
 override_dh_auto_install:
@@ -287,11 +286,11 @@ override_dh_gencontrol:
 	dh_gencontrol -- $(control_vars)
 
 override_dh_auto_clean:
-	dh_auto_clean
 	rm -rf $(TARGET_BUILD) tools/clang/include/clang/Debian/debian_path.h docs/_build/ tools/clang/docs/_html/
 	rm -f `ls debian/*.in|sed -e "s|.in$$||g"`
 	find utils -name '*.pyc' | xargs -r rm -f
-	find test -name '*.pyc' -o -name '*.o' -o -name '*.cm[ix]' | xargs -r rm -f
+	find test -name '*.pyc' -o -name '*.cm[ix]' | xargs -r rm -f
+	find test/Bindings -name '*.o' | xargs -r rm -f
 	rm -f tools/clang tools/polly tools/lldb projects/compiler-rt
 	rm -rf tools/clang/tools/extra
 
