@@ -183,7 +183,6 @@ override_dh_auto_test:
 	$(MAKE) -C $(TARGET_BUILD) check || true
 
 override_dh_auto_clean:
-	dh_auto_clean
 	rm -rf $(TARGET_BUILD) tools/clang/include/clang/Debian/debian_path.h docs/_build/
 	rm -f `ls debian/*.in|sed -e "s|.in$$||g"`
 	find utils -name '*.pyc' | xargs -r rm -f

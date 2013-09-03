@@ -1,0 +1,33 @@
+Description: Add saucy to the list of Ubuntu releases.
+Author: Adam Conrad <adconrad@ubuntu.com>
+Forwarded: no
+
+Index: clang-3.2/clang/lib/Driver/ToolChains.cpp
+===================================================================
+--- clang-3.2/clang/lib/Driver/ToolChains.cpp	2013-05-01 18:20:18.230411573 -0600
++++ clang-3.2/clang/lib/Driver/ToolChains.cpp	2013-05-01 18:23:23.350409764 -0600
+@@ -1868,6 +1868,7 @@
+   UbuntuPrecise,
+   UbuntuQuantal,
+   UbuntuRaring,
++  UbuntuSaucy,
+   UnknownDistro
+ };
+ 
+@@ -1885,7 +1886,7 @@
+ }
+ 
+ static bool IsUbuntu(enum LinuxDistro Distro) {
+-  return Distro >= UbuntuHardy && Distro <= UbuntuRaring;
++  return Distro >= UbuntuHardy && Distro <= UbuntuSaucy;
+ }
+ 
+ static LinuxDistro DetectLinuxDistro(llvm::Triple::ArchType Arch) {
+@@ -1909,6 +1910,7 @@
+           .Case("precise", UbuntuPrecise)
+           .Case("quantal", UbuntuQuantal)
+           .Case("raring", UbuntuRaring)
++          .Case("saucy", UbuntuSaucy)
+           .Default(UnknownDistro);
+     return Version;
+   }

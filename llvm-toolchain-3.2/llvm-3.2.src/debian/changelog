@@ -1,8 +1,26 @@
-llvm-toolchain-3.2 (3.2repack-debian10ppa3) precise; urgency=low
+llvm-toolchain-3.2 (3.2repack-debian11ppa3) precise; urgency=low
 
   * ppa for precise
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Tue, 02 Jul 2013 12:55:00 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Tue, 03 Sep 2013 18:00:00 +0900
+
+llvm-toolchain-3.2 (1:3.2repack-11) unstable; urgency=low
+
+  * dh_auto_clean removed, just like in the 3.3
+  * Use the static library libjsoncpp.a instead of shipping library in polly
+    Backport of the modification of 3.3
+
+  [ Adam Conrad ]
+  * Revive deltas from the previous Ubuntu versions of llvm and clang:
+    - debian/patches/35-ubuntu-releases.diff: Add UbuntuSaucy to table.
+    - debian/patches/JITEmitter.patch: Fix a segfault in the exception
+      table of the JIT code emitter (See Launchpad bug #1160587)
+
+  [ Luca Falavigna ]
+  * debian/patches/libprofile_rt_sparc.patch:
+    - Re-enable libprofile_rt on Sparc, fix FTBFS.
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Fri, 23 Aug 2013 11:49:09 +0200
 
 llvm-toolchain-3.2 (1:3.2repack-10) unstable; urgency=low
 

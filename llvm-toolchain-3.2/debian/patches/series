@@ -43,6 +43,9 @@ lldb-hurd.diff
 lldb-user-remove.diff
 lldb-apple_only.diff
 kfreebsd-thread.diff
+35-ubuntu-releases.diff
+JITEmitter.patch
 
 ia64-fix.diff
-add-ubuntu-saucy.patch
+libprofile_rt_sparc.patch
+use-deb-json.diff
