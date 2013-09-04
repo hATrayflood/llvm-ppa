@@ -58,6 +58,8 @@ EOC
 make -C dh-exec extract
 make -C dh-exec
 sudo make -C dh-exec install
+make -C dh-exec distclean
 make -C isl extract
 make -C isl
 sudo make -C isl install
+make -C isl distclean
