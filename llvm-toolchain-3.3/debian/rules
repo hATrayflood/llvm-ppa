@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 TARGET_BUILD	:= build-llvm
-GCC_VERSION     := 4.7
+GCC_VERSION     := $(shell dpkg-query -W -f '$${Version}' g++ | sed -rne 's,^([0-9]+:)?([0-9]+\.[0-9]+).*$$,\2,p')
 LLVM_VERSION	:= 3.3
 SONAME_EXT      := 1
 DEBIAN_REVISION := $(shell dpkg-parsechangelog | sed -rne 's,^Version: .*-(.*),\1,p')
@@ -18,11 +18,8 @@ DEB_HOST_ARCH       = $(shell dpkg-architecture -qDEB_HOST_ARCH)
 
 OCAML_STDLIB_DIR    ?= $(shell ocamlc -where)
 
-distribution := $(shell lsb_release --id --short)
-distrel := $(shell lsb_release --codename --short)
-ifeq ($(distrel),n/a)
-  distrel := sid
-endif
+export CC=gcc-$(GCC_VERSION)
+export CXX=g++-$(GCC_VERSION)
 
 LDFLAGS_EXTRA=
 CXXFLAGS_EXTRA=
@@ -44,29 +41,20 @@ ifneq (,$(findstring $(DEB_HOST_ARCH),armel))
   opt_flags += -marm
 endif
 
-ifeq ($(distribution),Ubuntu)
-	ifeq ($(distrel),precise)
-		control_vars = '-Vdep:devlibs=libstdc++6-4.6-dev'
-	endif
-	ifeq ($(distrel),quantal)
-		control_vars = '-Vdep:devlibs=libstdc++6-4.7-dev'
-	endif
-	ifeq ($(distrel),raring)
-		control_vars = '-Vdep:devlibs=libstdc++6-4.7-dev, libgcc-4.7-dev, libobjc-4.7-dev'
-	endif
-
+ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' g++-$(GCC_VERSION)) ge 4.8-20121128-1~ ; echo $$?),0)
+	control_vars = '-Vdep:devlibs=libstdc++-$(GCC_VERSION)-dev, libgcc-$(GCC_VERSION)-dev, libobjc-$(GCC_VERSION)-dev'
+else ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' g++-$(GCC_VERSION)) ge 4.7.2-10~ ; echo $$?),0)
+	control_vars = '-Vdep:devlibs=libstdc++6-$(GCC_VERSION)-dev, libgcc-$(GCC_VERSION)-dev, libobjc-$(GCC_VERSION)-dev'
 else
-    ifeq ($(distrel),wheezy)
-        control_vars = '-Vdep:devlibs=libstdc++6-4.7-dev'
-	else
-		# Debian experimental
-		control_vars = '-Vdep:devlibs=libstdc++6-4.7-dev, libgcc-4.7-dev, libobjc-4.7-dev'
-	endif
+	control_vars = '-Vdep:devlibs=libstdc++6-$(GCC_VERSION)-dev'
 endif
 
 BINUTILS_GOLD_ARCHS := amd64 armhf i386 powerpc powerpcspe ppc64 sparc sparc64 x32
+ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' binutils) ge 2.23.1-1~exp3 ; echo $$?),0)
 ifneq (,$(findstring $(DEB_HOST_ARCH),$(BINUTILS_GOLD_ARCHS)))
+# -fused-ld=gold enables the gold linker (but is not supported by all archs / distro)
 	LDFLAGS_EXTRA += -fuse-ld=gold
+endif
 endif
 
 
@@ -90,6 +78,8 @@ debian/%: debian/%.in
 	sed -e 's|@DEB_HOST_MULTIARCH@|$(DEB_HOST_MULTIARCH)|g' -e "s|@OCAML_STDLIB_DIR@|$(OCAML_STDLIB_DIR)|g" -e "s|@LLVM_VERSION@|$(LLVM_VERSION)|g" $< > $@
 
 override_dh_auto_configure: debian/lldb-$(LLVM_VERSION).install debian/lldb-$(LLVM_VERSION).links debian/libllvm$(LLVM_VERSION).install debian/llvm-$(LLVM_VERSION)-dev.links debian/libllvm-$(LLVM_VERSION)-ocaml-dev.install debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs debian/llvm-$(LLVM_VERSION)-runtime.binfmt debian/llvm-$(LLVM_VERSION)-runtime.prerm debian/pollycc
+	echo "Using gcc: "
+	$(CC) -v
 	mkdir -p $(TARGET_BUILD)
 	mkdir -p clang/include/clang/Debian
 	sed -e "s|@DEB_HOST_MULTIARCH@|$(DEB_HOST_MULTIARCH)|" \
@@ -146,7 +136,7 @@ override_dh_auto_configure: debian/lldb-$(LLVM_VERSION).install debian/lldb-$(LL
 
 
 override_dh_auto_build:
-	$(MAKE) $(NJOBS) -C $(TARGET_BUILD) VERBOSE=1 CLANG_VENDOR=$(VENDOR) CXXFLAGS="$(CXXFLAGS_EXTRA) -std=c++0x"  LDFLAGS="$(LDFLAGS_EXTRA)" REQUIRES_RTTI=1
+	$(MAKE) $(NJOBS) -C $(TARGET_BUILD) VERBOSE=1 CLANG_VENDOR=$(VENDOR) CXXFLAGS="$(CXXFLAGS_EXTRA) -std=c++0x"  LDFLAGS="$(LDFLAGS_EXTRA)" REQUIRES_RTTI=1 DEBUGMAKE=1
 
 override_dh_prep: build_doc
 	dh_prep

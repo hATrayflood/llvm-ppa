@@ -1,3 +1,34 @@
+llvm-toolchain-3.3 (1:3.3-9) unstable; urgency=low
+
+  [ Luca Falavigna ]
+  * debian/control:
+    - Add llvm-3.3-dev to lldb-3.3 Depends field (Closes: #715129).
+
+  [ Sylvestre Ledru ]
+  * Only use -fuse-ld=gold on supported distribution. Simplify the
+    backports.
+  * Fix  'bits/c++config.h' file not found under i386
+    See libstdc++-header-i386.diff. (Closes: #714890)
+  * Add more fixes for the HURD port... (but still fails)
+
+  [ Robert Millan ]
+  * clang under KfFreeBSD was not exporting the correct defines
+    (Closes: #721880)
+
+  [ Jon Severinsson ]
+  * Merge from llvm-toolchain-3.2 branch up to 3.2repack-11.
+  * Drop auto-generated file debian/libllvm3.3.install.
+  * Automatically determine GCC_VERSION and dep:devlibs based on g++ package
+    version.
+  * Automatically determine if -fuse-ld=gold is supported based on binutils
+    package version.
+
+  [ Adam Conrad ]
+  * debian/patches/lldb-link-atomic.diff: Link lldb with -latomic to get
+    builtin GCC atomic helpers on arches (like powerpc) that need them.
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Mon, 26 Aug 2013 14:48:42 +0200
+
 llvm-toolchain-3.3 (1:3.3-8) unstable; urgency=low
 
   [ Sylvestre Ledru ]
@@ -117,7 +148,118 @@ llvm-toolchain-3.3 (1:3.3~+rc3-1~exp1) experimental; urgency=low
 
  -- Sylvestre Ledru <sylvestre@debian.org>  Fri, 19 Apr 2013 09:31:38 +0200
 
-llvm-toolchain-3.2 (1:3.2repack-1~exp3) experimental; urgency=low
+llvm-toolchain-3.2 (1:3.2repack-11) unstable; urgency=low
+
+  * dh_auto_clean removed, just like in the 3.3
+  * Use the static library libjsoncpp.a instead of shipping library in polly
+    Backport of the modification of 3.3
+
+  [ Adam Conrad ]
+  * Revive deltas from the previous Ubuntu versions of llvm and clang:
+    - debian/patches/35-ubuntu-releases.diff: Add UbuntuSaucy to table.
+    - debian/patches/JITEmitter.patch: Fix a segfault in the exception
+      table of the JIT code emitter (See Launchpad bug #1160587)
+
+  [ Luca Falavigna ]
+  * debian/patches/libprofile_rt_sparc.patch:
+    - Re-enable libprofile_rt on Sparc, fix FTBFS.
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Fri, 23 Aug 2013 11:49:09 +0200
+
+llvm-toolchain-3.2 (1:3.2repack-10) unstable; urgency=low
+
+  * Fix the wrong package declaration on libstdc++-4.8-dev (Closes: #713944)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Mon, 24 Jun 2013 23:00:47 +0200
+
+llvm-toolchain-3.2 (1:3.2repack-9) unstable; urgency=low
+
+  * Switch to libstdc++ 4.8 instead of 4.7 for the headers (Closes: #712520)
+  * Depends against libobjc-4.8-dev and libgcc-4.8-dev
+  * Disable the usage of binutils-gold under armel. It currently fails with:
+      "attempt to map 2752512 bytes at offset 2066666 exceeds size of file;
+      the file may be corrupt"
+  * Add DEBUGMAKE=1 to get information about compiler-rt compilation
+  * Fix "libclang-common-dev: missing-depends-line"
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Sat, 22 Jun 2013 07:38:41 +0200
+
+llvm-toolchain-3.2 (1:3.2repack-8) unstable; urgency=low
+
+  * Fix the build under ia64. Thanks to Luca Falavigna for the patch
+    (ia64-fix.diff)
+  * Disable lldb-3.2:
+    - the quality is not good enough
+    - We have lldb-3.3 now in the archive
+    - Too many backported patches would be necessary for lldb-3.2 to work
+    - It blocks some important transitions (mesa)
+  * Add the detection of Ubuntu saucy
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Mon, 03 Jun 2013 11:32:29 +0200
+
+llvm-toolchain-3.2 (1:3.2repack-7) unstable; urgency=low
+
+  * For now, enable only lldb for amd64 and i386 (blocks too many things)
+    (Bis) (Closes: #707866)
+  * Add a symlink of libLLVM-3.2.so.1 to usr/lib/llvm-3.2/lib/libLLVM-3.2.so
+    to fix make the llvm-config-3.2 --libdir work (Closes: #708677)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Mon, 27 May 2013 13:20:30 +0200
+
+llvm-toolchain-3.2 (1:3.2repack-6) unstable; urgency=low
+
+  * Create the compiler-rt directory to make the install of compiler-rt works
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Sat, 18 May 2013 18:08:52 +0200
+
+llvm-toolchain-3.2 (1:3.2repack-5) unstable; urgency=low
+
+  * For now, enable only lldb for amd64 and i386 (blocks too many things)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Sat, 18 May 2013 10:24:04 +0200
+
+llvm-toolchain-3.2 (1:3.2repack-4) unstable; urgency=low
+
+  * Add several patches which, hopefully, will fix the build under ARM, S390,
+    S390X, etc (lldb-apple_only.diff, lldb-user-remove.diff & lldb-hurd.diff)
+  * Include sys/wait.h also under kfreebsd (kfreebsd-thread.diff)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Wed, 15 May 2013 12:04:24 +0200
+
+llvm-toolchain-3.2 (1:3.2repack-3) unstable; urgency=low
+
+  * Before the configure, show which version of CC is being used.
+  * Add support of kfreebsd and hurd in lldb (kfreebsd-hurd-lldb.diff)
+  * Force the usage of gcc 4.7 for all archs. Should fix some FTBFS
+    (Closes: #707866)
+  * Fix the symlink on clang++.1.gz llvm-clang.1.gz (Closes: #707832)
+
+  [ Jon Severinsson ]
+  * Re-enable the r600 backend and update it to the mesa-9.1.1 tag.
+   (Closes: #708009)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Tue, 14 May 2013 12:10:07 +0200
+
+llvm-toolchain-3.2 (1:3.2repack-2) unstable; urgency=low
+
+  * Do not depend on libobjc-4.7-dev & libgcc-4.7-dev.
+    They are still only in experimental
+  * Disable the usage of binutils-gold under [powerpc powerpcspe ppc64 sparc
+    sparc64] to fix FTBFS
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Tue, 07 May 2013 13:15:20 +0200
+
+llvm-toolchain-3.2 (1:3.2repack-1) unstable; urgency=low
+
+  * Upload to unstable
+  * Standards-Version update to 3.9.4
+  * clang pure virtual function call crash with binaries built with C++11's
+    std::thread. Upstream commit 178816 (Closes: #705838)
+  * Introduce a symbols file for libclang1 (Closes: #705672)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Sun, 21 Apr 2013 14:06:23 +0200
+
+llvm-toolchain-3.2 (1:3.2repack-1~exp4) experimental; urgency=low
 
   * Build using binutls-gold to improve the quality of the binaries.
     See: http://allievi.sssup.it/techblog/?p=791
@@ -126,6 +268,17 @@ llvm-toolchain-3.2 (1:3.2repack-1~exp3) experimental; urgency=low
     See: 31-powerpcspe.diff
   * Fix the path detection of scan-build (Closes: #698352)
     See: 32-scan-build-path.diff
+  * debian/patches/r600-snapshot.diff: Move backports into individual patches.
+  * debian/patches/r600-snapshot.diff: Update to mesa-9.1 git tag.
+    (Closes: #703671, #697356)
+  * Fix a typo in the detection of the vendor
+
+  [ Peter Michael Green ]
+  * Use binutils-gold only on architectures where it is actually available
+  * 33-armhf-defaults.diff Fix defaults to use correct CPU and FPU for
+    debian  armhf (Closes: #704111)
+  * 34-powerpc-no-altivec.diff disable altivec by default on powerpc because
+    debian powerpc does not require altivec (patch cherry picked from ubuntu)
 
  -- Sylvestre Ledru <sylvestre@debian.org>  Thu, 14 Mar 2013 17:47:12 +0100
 

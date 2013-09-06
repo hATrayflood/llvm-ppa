@@ -6,7 +6,7 @@
 27-fix_clang_stdint.diff
 26-set-correct-float-abi.diff
 profile_rt.diff
-28-gcc-4.7-paths.diff
+#28-gcc-4.7-paths.diff
 30-kfreebsd.diff
 0003-Debian-version-info-and-bugreport.patch
 0021-shared-lib-debian.patch
@@ -33,5 +33,8 @@ disable-execinfo-usage.diff
 unwind-chain-inclusion.diff
 hurd-pathmax.diff
 libprofile_rt_sparc.patch
+lldb-hurd.diff
+libstdc++-header-i386.diff
+kfreebsd_target_info_clang33.diff
 #98-unwind.h.patch
 99-python-bindings.patch
