@@ -24,6 +24,7 @@ apt-get -y install libdbus-glib-1-dev
 apt-get -y install libidl-dev
 
 apt-get -y install meld
+apt-get -y install python-nose
 apt-get -y install devscripts
 apt-get -y install dh-make
 apt-get -y install flex
