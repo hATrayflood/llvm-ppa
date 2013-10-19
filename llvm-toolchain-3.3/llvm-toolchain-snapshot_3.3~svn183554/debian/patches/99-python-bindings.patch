@@ -1,6 +1,6 @@
 diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/README.txt llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/README.txt
 --- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/README.txt	2010-05-01 06:51:10.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/README.txt	2013-07-01 14:11:02.111224777 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/README.txt	2013-10-18 23:21:31.714083758 +0900
 @@ -4,12 +4,9 @@
  
  This directory implements Python bindings for Clang.
@@ -18,7 +18,7 @@ diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/READM
  
 diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/clang/cindex.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/clang/cindex.py
 --- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/clang/cindex.py	2013-04-22 03:35:51.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/clang/cindex.py	2013-07-01 14:12:56.095789988 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/clang/cindex.py	2013-10-18 23:23:49.494766979 +0900
 @@ -65,7 +65,7 @@
  from ctypes import *
  import collections
@@ -28,15 +28,6 @@ diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/clang
  
  # ctypes doesn't implicitly convert c_void_p to the appropriate wrapper
  # object. This is a problem, because it means that from_parameter will see an
-@@ -3197,7 +3197,7 @@
-         elif name == 'Windows':
-             file = 'libclang.dll'
-         else:
--            file = 'libclang.so'
-+            file = '/usr/lib/llvm-3.3/lib/libclang.so.1'
- 
-         if Config.library_path:
-             file = Config.library_path + '/' + file
 @@ -3224,7 +3224,7 @@
          return True
  
@@ -48,7 +39,7 @@ diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/clang
  conf = Config()
 diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/examples/cindex/cindex-dump.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/examples/cindex/cindex-dump.py
 --- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/examples/cindex/cindex-dump.py	2010-02-14 03:33:28.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/examples/cindex/cindex-dump.py	2013-07-01 14:13:24.879932714 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/examples/cindex/cindex-dump.py	2013-10-18 23:21:31.714083758 +0900
 @@ -54,7 +54,7 @@
               'children' : children }
  
@@ -60,7 +51,7 @@ diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/examp
      from optparse import OptionParser, OptionGroup
 diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/examples/cindex/cindex-includes.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/examples/cindex/cindex-includes.py
 --- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/examples/cindex/cindex-includes.py	2010-02-14 03:33:28.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/examples/cindex/cindex-includes.py	2013-07-01 14:13:37.823996914 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/examples/cindex/cindex-includes.py	2013-10-18 23:21:31.718083762 +0900
 @@ -16,7 +16,7 @@
  
  def main():
@@ -72,7 +63,7 @@ diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/examp
  
 diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_cdb.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_cdb.py
 --- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_cdb.py	2012-07-10 09:00:05.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_cdb.py	2013-07-01 14:14:09.656154757 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_cdb.py	2013-10-18 23:21:31.718083762 +0900
 @@ -1,7 +1,7 @@
 -from clang.cindex import CompilationDatabase
 -from clang.cindex import CompilationDatabaseError
@@ -87,7 +78,7 @@ diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests
  
 diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_code_completion.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_code_completion.py
 --- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_code_completion.py	2012-10-07 20:46:37.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_code_completion.py	2013-07-01 14:14:18.176196988 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_code_completion.py	2013-10-18 23:21:31.718083762 +0900
 @@ -1,4 +1,4 @@
 -from clang.cindex import TranslationUnit
 +from clang33.cindex import TranslationUnit
@@ -96,7 +87,7 @@ diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests
      assert cr is not None
 diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_cursor.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_cursor.py
 --- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_cursor.py	2013-01-03 07:31:57.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_cursor.py	2013-07-01 14:14:30.112256181 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_cursor.py	2013-10-18 23:21:31.718083762 +0900
 @@ -1,8 +1,8 @@
  import gc
  
@@ -111,7 +102,7 @@ diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests
  from .util import get_tu
 diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_cursor_kind.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_cursor_kind.py
 --- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_cursor_kind.py	2012-02-05 20:42:09.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_cursor_kind.py	2013-07-01 14:14:41.960314946 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_cursor_kind.py	2013-10-18 23:21:31.718083762 +0900
 @@ -1,4 +1,4 @@
 -from clang.cindex import CursorKind
 +from clang33.cindex import CursorKind
@@ -120,7 +111,7 @@ diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests
      assert CursorKind.UNEXPOSED_DECL.name is 'UNEXPOSED_DECL'
 diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_diagnostics.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_diagnostics.py
 --- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_diagnostics.py	2012-03-11 07:19:05.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_diagnostics.py	2013-07-01 14:14:50.384356714 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_diagnostics.py	2013-10-18 23:21:31.718083762 +0900
 @@ -1,4 +1,4 @@
 -from clang.cindex import *
 +from clang33.cindex import *
@@ -129,7 +120,7 @@ diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests
  # FIXME: We need support for invalid translation units to test better.
 diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_file.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_file.py
 --- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_file.py	2011-10-31 09:07:19.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_file.py	2013-07-01 14:14:58.360396258 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_file.py	2013-10-18 23:21:31.718083762 +0900
 @@ -1,4 +1,4 @@
 -from clang.cindex import Index, File
 +from clang33.cindex import Index, File
@@ -138,7 +129,7 @@ diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests
    index = Index.create()
 diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_index.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_index.py
 --- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_index.py	2010-01-24 11:02:07.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_index.py	2013-07-01 14:15:05.928433800 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_index.py	2013-10-18 23:21:31.718083762 +0900
 @@ -1,4 +1,4 @@
 -from clang.cindex import *
 +from clang33.cindex import *
@@ -147,7 +138,7 @@ diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests
  kInputsDir = os.path.join(os.path.dirname(__file__), 'INPUTS')
 diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_location.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_location.py
 --- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_location.py	2012-06-11 20:11:48.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_location.py	2013-07-01 14:15:15.272480104 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_location.py	2013-10-18 23:21:31.718083762 +0900
 @@ -1,7 +1,7 @@
 -from clang.cindex import Cursor
 -from clang.cindex import File
@@ -162,7 +153,7 @@ diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests
  
 diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_token_kind.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_token_kind.py
 --- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_token_kind.py	2012-07-12 16:21:12.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_token_kind.py	2013-07-01 14:15:24.848527598 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_token_kind.py	2013-10-18 23:21:31.718083762 +0900
 @@ -1,4 +1,4 @@
 -from clang.cindex import TokenKind
 +from clang33.cindex import TokenKind
@@ -171,7 +162,7 @@ diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests
  from nose.tools import raises
 diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_tokens.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_tokens.py
 --- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_tokens.py	2012-07-12 16:21:12.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_tokens.py	2013-07-01 14:15:38.384594709 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_tokens.py	2013-10-18 23:21:31.718083762 +0900
 @@ -1,8 +1,8 @@
 -from clang.cindex import CursorKind
 -from clang.cindex import Index
@@ -188,7 +179,7 @@ diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests
  
 diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_translation_unit.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_translation_unit.py
 --- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_translation_unit.py	2013-03-20 00:30:48.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_translation_unit.py	2013-07-01 14:15:53.912671709 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_translation_unit.py	2013-10-18 23:21:31.722083767 +0900
 @@ -1,15 +1,15 @@
  import gc
  import os
@@ -216,7 +207,7 @@ diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests
  
 diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_type.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_type.py
 --- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_type.py	2013-04-11 10:20:11.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_type.py	2013-07-01 14:16:04.320723359 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_type.py	2013-10-18 23:21:31.722083767 +0900
 @@ -1,8 +1,8 @@
  import gc
  
@@ -231,7 +222,7 @@ diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests
  from .util import get_tu
 diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/util.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/util.py
 --- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/util.py	2013-04-11 10:20:11.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/util.py	2013-07-01 14:16:14.288772749 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/util.py	2013-10-18 23:21:31.722083767 +0900
 @@ -1,7 +1,7 @@
  # This file provides common utility functions for the test suite.
  

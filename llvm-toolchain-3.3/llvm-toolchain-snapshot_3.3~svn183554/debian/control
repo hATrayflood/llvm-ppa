@@ -2,8 +2,8 @@ Source: llvm-toolchain-3.3
 Section: devel
 Priority: extra
 Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
-Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl8.5, expect,
-    autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
+Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl, expect,
+    autoconf, automake, perl, libtool, doxygen, chrpath, texinfo,
     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
     lsb-release, patchutils, diffstat, xz-utils, chrpath, python-dev,
     libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev,
@@ -106,6 +106,8 @@ Description: C, C++ and Objective-C compiler (LLVM based) - Documentation
 Package: libclang1-3.3
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs}
+Pre-Depends: ${misc:Pre-Depends}
+Multi-Arch: same
 Description: clang library
  Clang project is a C, C++, Objective C and Objective C++ front-end
  for the LLVM compiler. Some of its goals include the following:
@@ -132,6 +134,36 @@ Description: clang library
     * Conformance with C/C++/ObjC and their variants
  .
  This package contains the clang library.
+
+Package: clang-3.3-relaxng
+Architecture: all
+Section: misc
+Description: clang Relax NG schema for the XML
+ Clang project is a C, C++, Objective C and Objective C++ front-end
+ for the LLVM compiler. Some of its goals include the following:
+ .
+ End-User Features:
+ .
+    * Fast compiles and low memory use
+    * Expressive diagnostics (examples)
+    * GCC compatibility
+ .
+ Utility and Applications:
+ .
+    * Modular library based architecture
+    * Support diverse clients (refactoring, static analysis, code
+      generation, etc)
+    * Allow tight integration with IDEs
+    * Use the LLVM 'BSD' License
+ .
+ Internal Design and Implementation:
+ .
+    * A real-world, production quality compiler
+    * A simple and hackable code base
+    * A single unified parser for C, Objective C, C++, and Objective C++
+    * Conformance with C/C++/ObjC and their variants
+ .
+ This package contains the clang Relax NG schema for the XML.
 
 Package: libclang-3.3-dev
 Architecture: any
@@ -199,67 +231,15 @@ Description: clang library - Common development package
  This package contains the clang generic headers and some libraries
  (profiling, etc).
 
-Package: python-clang-3.3
-Architecture: any
-Section: python
-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
- libclang1-3.3 (= ${binary:Version}), python2.7
-Description: clang python bindings
- Clang project is a C, C++, Objective C and Objective C++ front-end
- for the LLVM compiler. Some of its goals include the following:
- .
- End-User Features:
- .
-    * Fast compiles and low memory use
-    * Expressive diagnostics (examples)
-    * GCC compatibility
- .
- Utility and Applications:
- .
-    * Modular library based architecture
-    * Support diverse clients (refactoring, static analysis, code
-      generation, etc)
-    * Allow tight integration with IDEs
-    * Use the LLVM 'BSD' License
- .
- Internal Design and Implementation:
- .
-    * A real-world, production quality compiler
-    * A simple and hackable code base
-    * A single unified parser for C, Objective C, C++, and Objective C++
-    * Conformance with C/C++/ObjC and their variants
- .
- This package contains the clang python bindings.
 
-Package: clang-3.3-relaxng
-Architecture: all
-Section: misc
-Description: clang Relax NG schema for the XML
- Clang project is a C, C++, Objective C and Objective C++ front-end
- for the LLVM compiler. Some of its goals include the following:
- .
- End-User Features:
- .
-    * Fast compiles and low memory use
-    * Expressive diagnostics (examples)
-    * GCC compatibility
- .
- Utility and Applications:
- .
-    * Modular library based architecture
-    * Support diverse clients (refactoring, static analysis, code
-      generation, etc)
-    * Allow tight integration with IDEs
-    * Use the LLVM 'BSD' License
- .
- Internal Design and Implementation:
- .
-    * A real-world, production quality compiler
-    * A simple and hackable code base
-    * A single unified parser for C, Objective C, C++, and Objective C++
-    * Conformance with C/C++/ObjC and their variants
- .
- This package contains the clang Relax NG schema for the XML.
+
+Package: python-clang-3.3
+Section: python
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python
+Description: Clang Python Bindings
+ This binding package provides access to the Clang compiler and libraries.
+
 
 Package: libllvm3.3
 Architecture: any
@@ -267,23 +247,25 @@ Section: libs
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Pre-Depends: ${misc:Pre-Depends}
 Multi-Arch: same
-Description: Low-Level Virtual Machine (LLVM), runtime library
- The Low-Level Virtual Machine (LLVM) is a collection of libraries and
- tools that make it easy to build compilers, optimizers, Just-In-Time
- code generators, and many other compiler-related programs.
+Description: Modular compiler and toolchain technologies, runtime library
+ LLVM is a collection of libraries and tools that make it easy to build
+ compilers, optimizers, just-in-time code generators, and many other
+ compiler-related programs.
  .
  This package contains the LLVM runtime library.
+
 
 Package: llvm-3.3
 Architecture: any
 Suggests: llvm-3.3-doc
 Depends: llvm-3.3-runtime (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Recommends: llvm-3.3-dev
-Description: Low-Level Virtual Machine (LLVM)
- The Low-Level Virtual Machine (LLVM) is a collection of libraries and
- tools that make it easy to build compilers, optimizers, Just-In-Time
- code generators, and many other compiler-related programs. LLVM
- uses a single, language-independent virtual instruction set both
+Description: Modular compiler and toolchain technologies
+ LLVM is a collection of libraries and tools that make it easy to build
+ compilers, optimizers, just-in-time code generators, and many other
+ compiler-related programs.
+ .
+ LLVM uses a single, language-independent virtual instruction set both
  as an offline code representation (to communicate code between
  compiler phases and to run-time systems) and as the compiler internal
  representation (to analyze and transform programs). This persistent
@@ -297,9 +279,9 @@ Description: Low-Level Virtual Machine (LLVM)
  compiler debugging support, extensibility, and its stability and
  reliability. LLVM is currently being used to host a wide variety of
  academic research projects and commercial projects. LLVM includes C
- and C++ front-ends, a front-end for a Forth-like language (Stacker), 
+ and C++ front-ends, a front-end for a Forth-like language (Stacker),
  a young scheme front-end, and Java support is in development. LLVM can
- generate code for X86, SparcV9, PowerPC, or it can emit C code.
+ generate code for X86, SparcV9, PowerPC or many other architectures.
  .
  LLVM is the key component of the clang compiler and the gcc plugin called
  dragonegg.
@@ -307,11 +289,12 @@ Description: Low-Level Virtual Machine (LLVM)
 Package: llvm-3.3-runtime
 Architecture: any
 Depends: binfmt-support, ${shlibs:Depends}, ${misc:Depends}
-Description: Low-Level Virtual Machine (LLVM), bytecode interpreter
- The Low-Level Virtual Machine (LLVM) is a collection of libraries and
- tools that make it easy to build compilers, optimizers, Just-In-Time
- code generators, and many other compiler-related programs. LLVM
- uses a single, language-independent virtual instruction set both
+Description: Modular compiler and toolchain technologies, IR interpreter
+ LLVM is a collection of libraries and tools that make it easy to build
+ compilers, optimizers, just-in-time code generators, and many other
+ compiler-related programs.
+ .
+ LLVM uses a single, language-independent virtual instruction set both
  as an offline code representation (to communicate code between
  compiler phases and to run-time systems) and as the compiler internal
  representation (to analyze and transform programs). This persistent
@@ -325,11 +308,12 @@ Description: Low-Level Virtual Machine (LLVM), bytecode interpreter
 Package: llvm-3.3-dev
 Architecture: any
 Depends: ${shlibs:Depends}, libffi-dev (>= 3.0.9), ${misc:Depends}, llvm-3.3 (= ${binary:Version})
-Description: Low-Level Virtual Machine (LLVM), libraries and headers
- The Low-Level Virtual Machine (LLVM) is a collection of libraries and
- tools that make it easy to build compilers, optimizers, Just-In-Time
- code generators, and many other compiler-related programs. LLVM
- uses a single, language-independent virtual instruction set both
+Description: Modular compiler and toolchain technologies, libraries and headers
+ LLVM is a collection of libraries and tools that make it easy to build
+ compilers, optimizers, just-in-time code generators, and many other
+ compiler-related programs.
+ .
+ LLVM uses a single, language-independent virtual instruction set both
  as an offline code representation (to communicate code between
  compiler phases and to run-time systems) and as the compiler internal
  representation (to analyze and transform programs). This persistent
@@ -346,11 +330,12 @@ Architecture: any
 Suggests: llvm-3.3-doc
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${ocaml:Depends}, llvm-3.3-dev (= ${binary:Version})
 Provides: ${ocaml:Provides}
-Description: Low-Level Virtual Machine (LLVM), bindings for OCaml
- The Low-Level Virtual Machine (LLVM) is a collection of libraries and
- tools that make it easy to build compilers, optimizers, Just-In-Time
- code generators, and many other compiler-related programs. LLVM
- uses a single, language-independent virtual instruction set both
+Description: Modular compiler and toolchain technologies, OCaml bindings
+ LLVM is a collection of libraries and tools that make it easy to build
+ compilers, optimizers, just-in-time code generators, and many other
+ compiler-related programs.
+ .
+ LLVM uses a single, language-independent virtual instruction set both
  as an offline code representation (to communicate code between
  compiler phases and to run-time systems) and as the compiler internal
  representation (to analyze and transform programs). This persistent
@@ -364,11 +349,12 @@ Package: llvm-3.3-doc
 Section: doc
 Architecture: all
 Depends: ${misc:Depends}, libjs-jquery, libjs-underscore
-Description: Low-Level Virtual Machine (LLVM), documentation
- The Low-Level Virtual Machine (LLVM) is a collection of libraries and
- tools that make it easy to build compilers, optimizers, Just-In-Time
- code generators, and many other compiler-related programs. LLVM
- uses a single, language-independent virtual instruction set both
+Description: Modular compiler and toolchain technologies, documentation
+ LLVM is a collection of libraries and tools that make it easy to build
+ compilers, optimizers, just-in-time code generators, and many other
+ compiler-related programs.
+ .
+ LLVM uses a single, language-independent virtual instruction set both
  as an offline code representation (to communicate code between
  compiler phases and to run-time systems) and as the compiler internal
  representation (to analyze and transform programs). This persistent
@@ -382,11 +368,12 @@ Package: llvm-3.3-examples
 Section: doc
 Architecture: all
 Depends: ${misc:Depends}, llvm-3.3-dev (>= ${source:Version}), llvm-3.3-dev (<< ${source:Version}+c~)
-Description: Low-Level Virtual Machine (LLVM), examples
- The Low-Level Virtual Machine (LLVM) is a collection of libraries and
- tools that make it easy to build compilers, optimizers, Just-In-Time
- code generators, and many other compiler-related programs. LLVM
- uses a single, language-independent virtual instruction set both
+Description: Modular compiler and toolchain technologies, examples
+ LLVM is a collection of libraries and tools that make it easy to build
+ compilers, optimizers, just-in-time code generators, and many other
+ compiler-related programs.
+ .
+ LLVM uses a single, language-independent virtual instruction set both
  as an offline code representation (to communicate code between
  compiler phases and to run-time systems) and as the compiler internal
  representation (to analyze and transform programs). This persistent
@@ -396,23 +383,3 @@ Description: Low-Level Virtual Machine (LLVM), examples
  .
  This package contains examples for using LLVM, both in developing
  extensions to LLVM and in using it to compile code.
-
-# Package: llvm-3.3-source
-# Architecture: all
-# Depends: ${shlibs:Depends}, ${misc:Depends}
-# Description: Low-Level Virtual Machine (LLVM), source code
-#  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
-#  tools that make it easy to build compilers, optimizers, Just-In-Time
-#  code generators, and many other compiler-related programs. LLVM
-#  uses a single, language-independent virtual instruction set both
-#  as an offline code representation (to communicate code between
-#  compiler phases and to run-time systems) and as the compiler internal
-#  representation (to analyze and transform programs). This persistent
-#  code representation allows a common set of sophisticated compiler
-#  techniques to be applied at compile-time, link-time, install-time,
-#  run-time, or "idle-time" (between program runs).
-#  .
-#  This package contains the llvm source code.
-
-
-

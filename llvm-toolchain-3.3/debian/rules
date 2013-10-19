@@ -70,6 +70,12 @@ ifneq (,$(filter scan-build,$(DEB_BUILD_OPTIONS)))
 	PRE_CONFIGURE=scan-build
 endif
 
+LLDB_ARCHS := hurd-i386
+LLDB_ENABLE=yes
+ifneq (,$(findstring $(DEB_HOST_ARCH),$(LLDB_ARCHS)))
+        LLDB_ENABLE=no
+endif
+
 %:
 	dh $@
 # --buildsystem=cmake --builddirectory=$(TARGET_BUILD)
@@ -77,7 +83,7 @@ endif
 debian/%: debian/%.in
 	sed -e 's|@DEB_HOST_MULTIARCH@|$(DEB_HOST_MULTIARCH)|g' -e "s|@OCAML_STDLIB_DIR@|$(OCAML_STDLIB_DIR)|g" -e "s|@LLVM_VERSION@|$(LLVM_VERSION)|g" $< > $@
 
-override_dh_auto_configure: debian/lldb-$(LLVM_VERSION).install debian/lldb-$(LLVM_VERSION).links debian/libllvm$(LLVM_VERSION).install debian/llvm-$(LLVM_VERSION)-dev.links debian/libllvm-$(LLVM_VERSION)-ocaml-dev.install debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs debian/llvm-$(LLVM_VERSION)-runtime.binfmt debian/llvm-$(LLVM_VERSION)-runtime.prerm debian/pollycc
+override_dh_auto_configure: debian/lldb-$(LLVM_VERSION).install debian/lldb-$(LLVM_VERSION).links debian/libllvm$(LLVM_VERSION).install debian/llvm-$(LLVM_VERSION)-dev.links debian/libllvm-$(LLVM_VERSION)-ocaml-dev.install debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs debian/llvm-$(LLVM_VERSION)-runtime.binfmt debian/llvm-$(LLVM_VERSION)-runtime.prerm debian/libclang-$(LLVM_VERSION)-dev.links debian/libclang1-$(LLVM_VERSION).install debian/pollycc
 	echo "Using gcc: "
 	$(CC) -v
 	mkdir -p $(TARGET_BUILD)
@@ -94,15 +100,18 @@ override_dh_auto_configure: debian/lldb-$(LLVM_VERSION).install debian/lldb-$(LL
 	fi; \
     ln -s ../clang .; \
 	readlink clang; \
-	if test -h lldb; then \
-		rm lldb; \
-	fi; \
-    ln -s ../lldb .; \
     if test -h polly; then \
         rm polly; \
     fi; \
-    ln -s ../polly .; \
+    ln -s ../polly .
 
+	if test $(LLDB_ENABLE) = yes; then \
+	    cd tools/ && \
+	    if test -h lldb; then \
+		   rm lldb; \
+	    fi; \
+		ln -s ../lldb .; \
+	fi
 
 	cd projects/ && \
 	if test -h compiler-rt; then \
@@ -167,17 +176,26 @@ build_doc:
 
 	for f in llvm-dwarfdump llvm-mc llvm-mcmarkup llvm-objdump llvm-rtdyld llvm-size llvm-tblgen macho-dump lldb clang-format cpp11-migrate; do \
 		help2man --version-string=$(LLVM_VERSION) $(TARGET_BUILD)/Release/bin/$$f > debian/man/$$f-$(LLVM_VERSION).1; \
-    done
+	done
 
 override_dh_auto_install:
-	$(MAKE) -C $(TARGET_BUILD)  VERBOSE=1 install DESTDIR=$(CURDIR)/debian/tmp/
+	$(MAKE) -C $(TARGET_BUILD) VERBOSE=1 install DESTDIR=$(CURDIR)/debian/tmp/
+
 	chrpath -d $(TARGET_BUILD)/Release/bin/clang
 	chrpath -d `find $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/bin/ -type f -executable`
 
 	mv $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/libLLVM-$(LLVM_VERSION)*.so $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/libLLVM-$(LLVM_VERSION).so.$(SONAME_EXT)
-	mv $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/liblldb.so $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/liblldb.so.$(SONAME_EXT)
 
-	cd debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/ && mv libclang.so libclang.so.$(SONAME_EXT) && ln -s libclang.so.$(SONAME_EXT) libclang.so
+	if test $(LLDB_ENABLE) = yes; then \
+		mv $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/liblldb.so $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/liblldb.so.$(SONAME_EXT); \
+	fi
+
+	cd debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/ && \
+	if test ! -f libclang-$(LLVM_VERSION).so.$(SONAME_EXT); then \
+		mv libclang.so libclang-$(LLVM_VERSION).so.$(SONAME_EXT) && \
+		ln -s libclang-$(LLVM_VERSION).so.$(SONAME_EXT) libclang.so.$(SONAME_EXT); \
+	fi
+
 #	cd $(TARGET_BUILD)/tools/clang/runtime/compiler-rt/ && rm -rf $$(find . -iname "SubDir.lib*" -o -iname .dir) && rm -rf $$(find -empty)
 
 	mkdir -p $(CURDIR)/debian/clang-$(LLVM_VERSION)/usr/bin/
@@ -250,9 +268,12 @@ override_dh_auto_test:
 	$(MAKE) -C $(TARGET_BUILD) check || true
 # clang tests
 	cd $(TARGET_BUILD)/ && $(MAKE) -C tools/clang/ test || true
+
 # lldb tests
-	cd $(TARGET_BUILD)/Release/lib/python2.7/site-packages/lldb && if test ! -h _lldb.so -o ! -f _lldb.so; then ln -s ../../../liblldb.so _lldb.so; fi
-	cd $(TARGET_BUILD)/Release/lib/python2.7/site-packages/lldb && if test ! -h libLLVM-$(LLVM_VERSION).so.$(SONAME_EXT) -o ! -f _lldb.so; then ln -s ../../../libLLVM-$(LLVM_VERSION).so libLLVM-$(LLVM_VERSION).so.$(SONAME_EXT); fi
+	if test $(LLDB_ENABLE) = yes; then \
+	cd $(TARGET_BUILD)/Release/lib/python2.7/site-packages/lldb && if test ! -h _lldb.so -o ! -f _lldb.so; then ln -s ../../../liblldb.so _lldb.so; fi; \
+	if test ! -h libLLVM-$(LLVM_VERSION).so.$(SONAME_EXT) -o ! -f _lldb.so; then ln -s ../../../libLLVM-$(LLVM_VERSION).so libLLVM-$(LLVM_VERSION).so.$(SONAME_EXT); fi; \
+	fi
 #	cd $(TARGET_BUILD)/ && $(MAKE) -C tools/lldb/test || true
 #	if test -d $(TARGET_BUILD)/tools/lldb/test/lldb-test-traces/; then \
 #		cat $(TARGET_BUILD)/tools/lldb/test/lldb-test-traces/*; \

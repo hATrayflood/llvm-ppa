@@ -36,5 +36,10 @@ libprofile_rt_sparc.patch
 lldb-hurd.diff
 libstdc++-header-i386.diff
 kfreebsd_target_info_clang33.diff
+lldb-install-headers.diff
+atomic_library_1.diff
+atomic_library_2.diff
+removeduplicatedeclaration.diff
+python-clangpath.diff
 #98-unwind.h.patch
 99-python-bindings.patch

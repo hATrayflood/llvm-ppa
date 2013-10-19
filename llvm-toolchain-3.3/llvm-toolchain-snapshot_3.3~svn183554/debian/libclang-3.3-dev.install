@@ -2,7 +2,6 @@ usr/lib/llvm-3.3/include/clang
 usr/lib/llvm-3.3/include/clang-c
 #usr/include/clang                  /usr/include/
 #usr/include/clang-c                /usr/include/
-usr/lib/llvm-3.3/lib/libclang.so
 #usr/lib/libclang.so                /usr/lib/
 usr/lib/llvm-3.3/lib/libclang*a
 #usr/lib/libclang*a                 /usr/lib/

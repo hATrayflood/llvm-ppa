@@ -1,0 +1,45 @@
+Index: llvm-toolchain-3.3-3.3/clang/lib/Basic/Targets.cpp
+===================================================================
+--- llvm-toolchain-3.3-3.3.orig/clang/lib/Basic/Targets.cpp	2013-09-25 18:22:44.000000000 +0200
++++ llvm-toolchain-3.3-3.3/clang/lib/Basic/Targets.cpp	2013-09-25 18:22:44.000000000 +0200
+@@ -3579,6 +3579,20 @@
+     return Version >= 7;
+   }
+ 
++  static bool shouldUseInlineAtomic(const llvm::Triple &T) {
++    // On linux, binaries targeting old cpus call functions in libgcc to
++    // perform atomic operations. The implementation in libgcc then calls into
++    // the kernel which on armv6 and newer uses ldrex and strex. The net result
++    // is that if we assume the kernel is at least as recent as the hardware,
++    // it is safe to use atomic instructions on armv6 and newer.
++    if (T.getOS() != llvm::Triple::Linux)
++     return false;
++    StringRef ArchName = T.getArchName();
++    if (ArchName.startswith("armv6") || ArchName.startswith("armv7"))
++      return true;
++    return false;
++  }
++
+ public:
+   ARMTargetInfo(const std::string &TripleStr)
+     : TargetInfo(TripleStr), ABI("aapcs-linux"), CPU("arm1136j-s"), IsAAPCS(true)
+Index: llvm-toolchain-3.3-3.3/clang/test/CodeGen/linux-arm-atomic.c
+===================================================================
+--- llvm-toolchain-3.3-3.3.orig/clang/test/CodeGen/linux-arm-atomic.c	2013-09-25 18:22:44.000000000 +0200
++++ llvm-toolchain-3.3-3.3/clang/test/CodeGen/linux-arm-atomic.c	2013-09-25 18:22:44.000000000 +0200
+@@ -1,5 +1,15 @@
+ // RUN: %clang_cc1 %s -emit-llvm -o - -triple=armv7-unknown-linux | FileCheck %s
+ // RUN: %clang_cc1 %s -emit-llvm -o - -triple=armv6-unknown-linux | FileCheck %s
++
++typedef int _Atomic_word;
++_Atomic_word exchange_and_add(volatile _Atomic_word *__mem, int __val) {
++  return __atomic_fetch_add(__mem, __val, __ATOMIC_ACQ_REL);
++}
++
++// CHECK: define {{.*}} @exchange_and_add
++// CHECK: atomicrmw {{.*}} add
++// RUN: %clang_cc1 %s -emit-llvm -o - -triple=armv7-unknown-linux | FileCheck %s
++// RUN: %clang_cc1 %s -emit-llvm -o - -triple=armv6-unknown-linux | FileCheck %s
+ // RUN: %clang_cc1 %s -emit-llvm -o - -triple=thumbv7-unknown-linux | FileCheck %s
+ 
+ typedef int _Atomic_word;

@@ -1,3 +1,25 @@
+llvm-toolchain-3.3 (1:3.3-10) unstable; urgency=low
+
+  * Update of the description of LLVM packages
+    (LLVM no longer mean Low Level Virtual Machine)
+  * Disable the build of lldb under HURD
+  * Ship the lldb headers into lldb-X.Y-dev (Closes: #723743)
+    I might create a liblldb-X.Y library at some point but I think it is too
+    early.
+  * Fix "cannot compile this atomic library call"
+    Thanks to Francisco Facioni for the refresh (Closes: #705115)
+  * Install libclang.so in /usr/lib/*/libclang-3.3.so
+  * Install libclang.so.1 in /usr/lib/*/libclang-3.3.so.1
+  * Also ship the python clang binding (python-clang-3.3)
+  * Fix a FTBFS with a duplicate declaration of shouldUseInlineAtomic
+  * Build depend automake1.9 => automake (Closes: #724414)
+  * Update the build dependency from tcl8.5 to tcl (Closes: #725953)
+  * To build libclang, update the upstream Makefile to use LLVMLibsOptions
+    instead of LDFLAGS. Overriding LDFLAGS was removing some information.
+    example: make LDFLAGS=" -fuse-ld=gold"
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Mon, 09 Sep 2013 14:35:08 +0200
+
 llvm-toolchain-3.3 (1:3.3-9) unstable; urgency=low
 
   [ Luca Falavigna ]
