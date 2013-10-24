@@ -1,19 +1,19 @@
 diff -urN debian/changelog llvm-3.2.src/debian/changelog
---- debian/changelog	2013-04-06 21:05:50.000000000 +0900
-+++ llvm-3.2.src/debian/changelog	2013-06-22 03:53:05.070707128 +0900
+--- debian/changelog	2013-09-04 18:21:38.499124975 +0900
++++ llvm-3.2.src/debian/changelog	2013-10-24 15:37:15.281874421 +0900
 @@ -1,3 +1,9 @@
-+llvm-3.2 (3.2-debian5ppa2) precise; urgency=low
++llvm-3.2 (3.2-debian5ppa3) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sat, 22 Jun 2013 03:45:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 24 Oct 2013 15:25:00 +0900
 +
  llvm-3.2 (3.2-5) unstable; urgency=low
  
    * Fixes a segfault in the exception table of the JIT code emitter.
 diff -urN debian/control llvm-3.2.src/debian/control
---- debian/control	2012-12-26 21:37:58.000000000 +0900
-+++ llvm-3.2.src/debian/control	2013-01-12 18:28:22.735400434 +0900
+--- debian/control	2013-09-04 18:21:38.499124975 +0900
++++ llvm-3.2.src/debian/control	2013-09-04 18:21:38.507125007 +0900
 @@ -1,8 +1,7 @@
  Source: llvm-3.2
  Section: devel
@@ -59,15 +59,48 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Architecture: any
  Suggests: llvm-3.2-doc
 diff -urN debian/libllvm-3.2-ocaml-dev.dirs.in llvm-3.2.src/debian/libllvm-3.2-ocaml-dev.dirs.in
---- debian/libllvm-3.2-ocaml-dev.dirs.in	2012-12-26 21:37:58.000000000 +0900
-+++ llvm-3.2.src/debian/libllvm-3.2-ocaml-dev.dirs.in	2013-01-12 18:17:25.128139529 +0900
+--- debian/libllvm-3.2-ocaml-dev.dirs.in	2013-09-04 18:21:38.499124975 +0900
++++ llvm-3.2.src/debian/libllvm-3.2-ocaml-dev.dirs.in	2013-09-04 18:21:38.507125007 +0900
 @@ -1,2 +1,2 @@
 -@OCAML_STDLIB_DIR@/META/
 +@OCAML_STDLIB_DIR@/METAS
  
+diff -urN debian/llvm-3.2-runtime.postinst llvm-3.2.src/debian/llvm-3.2-runtime.postinst
+--- debian/llvm-3.2-runtime.postinst	2013-09-04 18:21:38.499124975 +0900
++++ llvm-3.2.src/debian/llvm-3.2-runtime.postinst	1970-01-01 09:00:00.000000000 +0900
+@@ -1,9 +0,0 @@
+-#!/bin/sh -e
+-
+-if test "$1" = "configure"; then
+-    if test -x /usr/sbin/update-binfmts; then
+-        update-binfmts --import llvm-3.2-runtime.binfmt || true
+-    fi
+-fi
+-
+-#DEBHELPER#
+diff -urN debian/llvm-3.2-runtime.prerm.in llvm-3.2.src/debian/llvm-3.2-runtime.prerm.in
+--- debian/llvm-3.2-runtime.prerm.in	2013-09-04 18:21:38.499124975 +0900
++++ llvm-3.2.src/debian/llvm-3.2-runtime.prerm.in	1970-01-01 09:00:00.000000000 +0900
+@@ -1,16 +0,0 @@
+-#!/bin/sh -e
+-
+-if test "$1" = "remove"; then
+-    if test -x /usr/sbin/update-binfmts; then
+-        update-binfmts --package llvm-@LLVM_VERSION@-runtime \
+-            --remove llvm-@LLVM_VERSION@-runtime.binfmt /usr/bin/lli-@LLVM_VERSION@ || true
+-        if test -f /var/lib/binfmts/llvm-@LLVM_VERSION@.binfmt; then
+-            # Purge old file
+-            update-binfmts --package llvm-@LLVM_VERSION@-runtime \
+-                --remove llvm-@LLVM_VERSION@.binfmt /usr/bin/lli-@LLVM_VERSION@ || true
+-        fi
+-    fi
+-fi
+-
+-#DEBHELPER#
+-
 diff -urN debian/rules llvm-3.2.src/debian/rules
---- debian/rules	2013-03-22 17:06:52.000000000 +0900
-+++ llvm-3.2.src/debian/rules	2013-06-21 23:47:31.084389000 +0900
+--- debian/rules	2013-09-04 18:21:38.507125007 +0900
++++ llvm-3.2.src/debian/rules	2013-10-24 16:00:06.481707002 +0900
 @@ -1,11 +1,13 @@
  #!/usr/bin/make -f
  
@@ -99,7 +132,7 @@ diff -urN debian/rules llvm-3.2.src/debian/rules
  	sed -e 's|@DEB_HOST_MULTIARCH@|$(DEB_HOST_MULTIARCH)|g' -e "s|@OCAML_STDLIB_DIR@|$(OCAML_STDLIB_DIR)|g" -e "s|@LLVM_VERSION@|$(LLVM_VERSION)|g" $< > $@
  
 -override_dh_auto_configure: debian/libllvm$(LLVM_VERSION).install debian/llvm-$(LLVM_VERSION)-dev.links debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs debian/llvm-$(LLVM_VERSION)-runtime.binfmt debian/llvm-$(LLVM_VERSION)-runtime.prerm
-+override_dh_auto_configure: debian/libllvm$(LLVM_VERSION).install debian/llvm-$(LLVM_VERSION)-dev.links debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs debian/llvm-$(LLVM_VERSION)-runtime.binfmt debian/llvm-$(LLVM_VERSION)-runtime.prerm debian/libllvm-$(LLVM_VERSION)-ocaml-dev.install
++override_dh_auto_configure: debian/libllvm$(LLVM_VERSION).install debian/llvm-$(LLVM_VERSION)-dev.links debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs debian/llvm-$(LLVM_VERSION)-runtime.binfmt debian/libllvm-$(LLVM_VERSION)-ocaml-dev.install
  	mkdir -p $(TARGET_BUILD)
  	echo "#define LLVM_DEBIAN_INFO \"$(DISTRELEASE) $(LLVM_FULL_VERSION)\"" > $(TARGET_BUILD)/debian.h
  	cd $(TARGET_BUILD) && \

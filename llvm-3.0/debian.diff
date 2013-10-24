@@ -1,19 +1,19 @@
 diff -urN debian/changelog llvm-3.0.src/debian/changelog
---- debian/changelog	2012-07-13 20:35:29.000000000 +0900
-+++ llvm-3.0.src/debian/changelog	2013-06-22 03:48:22.223794827 +0900
+--- debian/changelog	2013-09-04 18:21:38.375124362 +0900
++++ llvm-3.0.src/debian/changelog	2013-10-24 15:29:54.875690581 +0900
 @@ -1,3 +1,9 @@
-+llvm-3.0 (3.0-debian10ppa2) precise; urgency=low
++llvm-3.0 (3.0-debian10ppa3) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sat, 22 Jun 2013 03:45:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 24 Oct 2013 15:25:00 +0900
 +
  llvm-3.0 (3.0-10) unstable; urgency=low
  
    * Rebuild package to fix symbol issues (Closes: #680326, #681109)
 diff -urN debian/control llvm-3.0.src/debian/control
---- debian/control	2012-07-13 20:36:21.000000000 +0900
-+++ llvm-3.0.src/debian/control	2013-06-22 01:10:57.170411344 +0900
+--- debian/control	2013-09-04 18:21:38.375124362 +0900
++++ llvm-3.0.src/debian/control	2013-10-24 16:24:08.148855855 +0900
 @@ -1,8 +1,7 @@
  Source: llvm-3.0
  Section: devel
@@ -38,8 +38,8 @@ diff -urN debian/control llvm-3.0.src/debian/control
  
  Package: libllvm3.0
 diff -urN debian/control.in/source llvm-3.0.src/debian/control.in/source
---- debian/control.in/source	2012-04-06 19:54:36.000000000 +0900
-+++ llvm-3.0.src/debian/control.in/source	2013-01-10 16:28:12.710140842 +0900
+--- debian/control.in/source	2013-09-04 18:21:38.375124362 +0900
++++ llvm-3.0.src/debian/control.in/source	2013-09-04 18:21:38.375124362 +0900
 @@ -1,8 +1,7 @@
  Source: @PKGSOURCE@
  Section: devel
@@ -62,9 +62,37 @@ diff -urN debian/control.in/source llvm-3.0.src/debian/control.in/source
 +Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
  
  
+diff -urN debian/debhelper.in/llvm-runtime.postinst llvm-3.0.src/debian/debhelper.in/llvm-runtime.postinst
+--- debian/debhelper.in/llvm-runtime.postinst	2013-09-04 18:21:38.375124362 +0900
++++ llvm-3.0.src/debian/debhelper.in/llvm-runtime.postinst	1970-01-01 09:00:00.000000000 +0900
+@@ -1,9 +0,0 @@
+-#!/bin/sh -e
+-
+-if test "$1" = "configure"; then
+-    if test -x /usr/sbin/update-binfmts; then
+-        update-binfmts --import llvm-@UVERSION@.binfmt || true
+-    fi
+-fi
+-
+-#DEBHELPER#
+diff -urN debian/debhelper.in/llvm-runtime.prerm llvm-3.0.src/debian/debhelper.in/llvm-runtime.prerm
+--- debian/debhelper.in/llvm-runtime.prerm	2013-09-04 18:21:38.375124362 +0900
++++ llvm-3.0.src/debian/debhelper.in/llvm-runtime.prerm	1970-01-01 09:00:00.000000000 +0900
+@@ -1,11 +0,0 @@
+-#!/bin/sh -e
+-
+-if test "$1" = "remove"; then
+-    if test -x /usr/sbin/update-binfmts; then
+-        update-binfmts --package llvm \
+-            --remove llvm /usr/bin/lli-@UVERSION@ || true
+-    fi
+-fi
+-
+-#DEBHELPER#
+-
 diff -urN debian/rules llvm-3.0.src/debian/rules
---- debian/rules	2012-04-06 19:54:36.000000000 +0900
-+++ llvm-3.0.src/debian/rules	2013-06-21 23:07:41.734222041 +0900
+--- debian/rules	2013-09-04 18:21:38.375124362 +0900
++++ llvm-3.0.src/debian/rules	2013-09-04 18:21:38.383124401 +0900
 @@ -16,7 +16,7 @@
  
  define pkgname
@@ -75,8 +103,8 @@ diff -urN debian/rules llvm-3.0.src/debian/rules
  
  define buildof
 diff -urN debian/rules.d/control.mk llvm-3.0.src/debian/rules.d/control.mk
---- debian/rules.d/control.mk	2012-04-06 19:54:36.000000000 +0900
-+++ llvm-3.0.src/debian/rules.d/control.mk	2013-06-21 23:08:16.567802685 +0900
+--- debian/rules.d/control.mk	2013-09-04 18:21:38.375124362 +0900
++++ llvm-3.0.src/debian/rules.d/control.mk	2013-09-04 18:21:38.383124401 +0900
 @@ -10,7 +10,7 @@
  	    -e "s/ *@BUILDDEPS@/$(BUILDDEPS)/g"			\
  	    -e "s/ *@BUILDCONFLICTS@/$(BUILDCONFLICTS)/g"	\
@@ -87,8 +115,8 @@ diff -urN debian/rules.d/control.mk llvm-3.0.src/debian/rules.d/control.mk
  	    -e "s/ , /, /g"					\
  	    $@.in/source $(addprefix $@.in/,$(packages)) > $@
 diff -urN debian/rules.d/vars.mk llvm-3.0.src/debian/rules.d/vars.mk
---- debian/rules.d/vars.mk	2012-04-06 19:54:36.000000000 +0900
-+++ llvm-3.0.src/debian/rules.d/vars.mk	2013-06-21 23:09:40.561130095 +0900
+--- debian/rules.d/vars.mk	2013-09-04 18:21:38.375124362 +0900
++++ llvm-3.0.src/debian/rules.d/vars.mk	2013-09-04 18:21:38.383124401 +0900
 @@ -7,6 +7,7 @@
  MINOR_VERSION := 0
  UVERSION	:= $(MAJOR_VERSION).$(MINOR_VERSION)

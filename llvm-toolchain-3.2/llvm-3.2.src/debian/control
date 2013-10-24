@@ -106,6 +106,36 @@ Description: clang library
  .
  This package contains the clang library.
 
+Package: clang-3.2-relaxng
+Architecture: all
+Section: misc
+Description: clang Relax NG schema for the XML
+ Clang project is a C, C++, Objective C and Objective C++ front-end
+ for the LLVM compiler. Some of its goals include the following:
+ .
+ End-User Features:
+ .
+    * Fast compiles and low memory use
+    * Expressive diagnostics (examples)
+    * GCC compatibility
+ .
+ Utility and Applications:
+ .
+    * Modular library based architecture
+    * Support diverse clients (refactoring, static analysis, code
+      generation, etc)
+    * Allow tight integration with IDEs
+    * Use the LLVM 'BSD' License
+ .
+ Internal Design and Implementation:
+ .
+    * A real-world, production quality compiler
+    * A simple and hackable code base
+    * A single unified parser for C, Objective C, C++, and Objective C++
+    * Conformance with C/C++/ObjC and their variants
+ .
+ This package contains the clang Relax NG schema for the XML.
+
 Package: libclang-3.2-dev
 Architecture: any
 Section: libdevel
@@ -224,36 +254,6 @@ Description: clang python bindings
     * Conformance with C/C++/ObjC and their variants
  .
  This package contains the clang python bindings.
-
-Package: clang-3.2-relaxng
-Architecture: all
-Section: misc
-Description: clang Relax NG schema for the XML
- Clang project is a C, C++, Objective C and Objective C++ front-end
- for the LLVM compiler. Some of its goals include the following:
- .
- End-User Features:
- .
-    * Fast compiles and low memory use
-    * Expressive diagnostics (examples)
-    * GCC compatibility
- .
- Utility and Applications:
- .
-    * Modular library based architecture
-    * Support diverse clients (refactoring, static analysis, code
-      generation, etc)
-    * Allow tight integration with IDEs
-    * Use the LLVM 'BSD' License
- .
- Internal Design and Implementation:
- .
-    * A real-world, production quality compiler
-    * A simple and hackable code base
-    * A single unified parser for C, Objective C, C++, and Objective C++
-    * Conformance with C/C++/ObjC and their variants
- .
- This package contains the clang Relax NG schema for the XML.
 
 Package: libllvm3.2
 Architecture: any

@@ -1,19 +1,19 @@
 diff -urN debian/changelog llvm-2.9/debian/changelog
---- debian/changelog	2012-05-20 23:21:30.000000000 +0900
-+++ llvm-2.9/debian/changelog	2013-06-22 03:44:23.454610839 +0900
+--- debian/changelog	2013-09-04 18:21:38.319124078 +0900
++++ llvm-2.9/debian/changelog	2013-10-24 15:24:19.694028524 +0900
 @@ -1,3 +1,9 @@
-+llvm-2.9 (2.9+dfsg-debian7ppa2) precise; urgency=low
++llvm-2.9 (2.9+dfsg-debian7ppa3) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sat, 22 Jun 2013 03:45:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 24 Oct 2013 15:25:00 +0900
 +
  llvm-2.9 (2.9+dfsg-7) unstable; urgency=low
  
    [ Vincent Legout ]
 diff -urN debian/control llvm-2.9/debian/control
---- debian/control	2012-05-20 23:25:51.000000000 +0900
-+++ llvm-2.9/debian/control	2013-06-22 03:44:34.738666787 +0900
+--- debian/control	2013-09-04 18:21:38.319124078 +0900
++++ llvm-2.9/debian/control	2013-10-24 16:05:46.723394176 +0900
 @@ -1,8 +1,7 @@
  Source: llvm-2.9
  Section: devel
@@ -38,8 +38,8 @@ diff -urN debian/control llvm-2.9/debian/control
  
  Package: libllvm2.9
 diff -urN debian/control.in/source llvm-2.9/debian/control.in/source
---- debian/control.in/source	2012-05-18 16:22:45.000000000 +0900
-+++ llvm-2.9/debian/control.in/source	2013-01-27 18:26:27.191075697 +0900
+--- debian/control.in/source	2013-09-04 18:21:38.319124078 +0900
++++ llvm-2.9/debian/control.in/source	2013-09-04 18:21:38.323124118 +0900
 @@ -1,8 +1,7 @@
  Source: @PKGSOURCE@
  Section: devel
@@ -62,9 +62,37 @@ diff -urN debian/control.in/source llvm-2.9/debian/control.in/source
 +Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
  
  
+diff -urN debian/debhelper.in/llvm-runtime.postinst llvm-2.9/debian/debhelper.in/llvm-runtime.postinst
+--- debian/debhelper.in/llvm-runtime.postinst	2013-09-04 18:21:38.319124078 +0900
++++ llvm-2.9/debian/debhelper.in/llvm-runtime.postinst	1970-01-01 09:00:00.000000000 +0900
+@@ -1,9 +0,0 @@
+-#!/bin/sh -e
+-
+-if test "$1" = "configure"; then
+-    if test -x /usr/sbin/update-binfmts; then
+-        update-binfmts --import llvm-@UVERSION@.binfmt || true
+-    fi
+-fi
+-
+-#DEBHELPER#
+diff -urN debian/debhelper.in/llvm-runtime.prerm llvm-2.9/debian/debhelper.in/llvm-runtime.prerm
+--- debian/debhelper.in/llvm-runtime.prerm	2013-09-04 18:21:38.319124078 +0900
++++ llvm-2.9/debian/debhelper.in/llvm-runtime.prerm	1970-01-01 09:00:00.000000000 +0900
+@@ -1,11 +0,0 @@
+-#!/bin/sh -e
+-
+-if test "$1" = "remove"; then
+-    if test -x /usr/sbin/update-binfmts; then
+-        update-binfmts --package llvm \
+-            --remove llvm /usr/bin/lli-@UVERSION@ || true
+-    fi
+-fi
+-
+-#DEBHELPER#
+-
 diff -urN debian/rules llvm-2.9/debian/rules
---- debian/rules	2012-05-18 16:22:46.000000000 +0900
-+++ llvm-2.9/debian/rules	2013-06-21 23:21:29.596646000 +0900
+--- debian/rules	2013-09-04 18:21:38.323124118 +0900
++++ llvm-2.9/debian/rules	2013-09-04 18:21:38.327124127 +0900
 @@ -17,7 +17,7 @@
  
  define pkgname
@@ -82,8 +110,8 @@ diff -urN debian/rules llvm-2.9/debian/rules
  
  .PHONY: clean
 diff -urN debian/rules.d/control.mk llvm-2.9/debian/rules.d/control.mk
---- debian/rules.d/control.mk	2012-05-18 16:22:46.000000000 +0900
-+++ llvm-2.9/debian/rules.d/control.mk	2013-06-21 23:22:04.940821266 +0900
+--- debian/rules.d/control.mk	2013-09-04 18:21:38.323124118 +0900
++++ llvm-2.9/debian/rules.d/control.mk	2013-09-04 18:21:38.327124127 +0900
 @@ -10,7 +10,7 @@
  	    -e "s/ *@BUILDDEPS@/$(BUILDDEPS)/g"			\
  	    -e "s/ *@BUILDCONFLICTS@/$(BUILDCONFLICTS)/g"	\
@@ -94,8 +122,8 @@ diff -urN debian/rules.d/control.mk llvm-2.9/debian/rules.d/control.mk
  	    -e "s/ , /, /g"					\
  	    $@.in/source $(addprefix $@.in/,$(packages)) > $@
 diff -urN debian/rules.d/vars.mk llvm-2.9/debian/rules.d/vars.mk
---- debian/rules.d/vars.mk	2012-05-18 16:22:46.000000000 +0900
-+++ llvm-2.9/debian/rules.d/vars.mk	2013-06-21 23:23:23.257209620 +0900
+--- debian/rules.d/vars.mk	2013-09-04 18:21:38.323124118 +0900
++++ llvm-2.9/debian/rules.d/vars.mk	2013-09-04 18:21:38.327124127 +0900
 @@ -3,6 +3,7 @@
  VERSION		:= $(shell dpkg-parsechangelog | grep ^Version | sed -e 's/^Version: //')
  UXVERSION	:= $(shell echo $(VERSION) | cut -d'-' -f1)
