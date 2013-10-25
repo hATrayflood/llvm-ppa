@@ -1,8 +1,15 @@
-llvm-toolchain-3.3 (3.3-debian10ppa2) precise; urgency=low
+llvm-toolchain-3.3 (3.3-debian11ppa2) precise; urgency=low
 
   * ppa for precise
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 18 Oct 2013 21:00:00 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 25 Oct 2013 10:30:00 +0900
+
+llvm-toolchain-3.3 (1:3.3-11) unstable; urgency=low
+
+  * Honor the option "nocheck"
+  * Fix the detection of hurd (was failing i386) (Closes: #727157)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Wed, 16 Oct 2013 18:10:17 +0200
 
 llvm-toolchain-3.3 (1:3.3-10) unstable; urgency=low
 

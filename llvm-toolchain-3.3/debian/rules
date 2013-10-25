@@ -70,9 +70,8 @@ ifneq (,$(filter scan-build,$(DEB_BUILD_OPTIONS)))
 	PRE_CONFIGURE=scan-build
 endif
 
-LLDB_ARCHS := hurd-i386
 LLDB_ENABLE=yes
-ifneq (,$(findstring $(DEB_HOST_ARCH),$(LLDB_ARCHS)))
+ifeq ($(DEB_HOST_ARCH),hurd-i386)
         LLDB_ENABLE=no
 endif
 
@@ -263,6 +262,7 @@ override_dh_installdeb:
 	rm -f $(CURDIR)/debian/lldb-$(LLVM_VERSION)/usr/lib/python*/dist-packages/lldb/__init__.pyc
 
 
+ifeq (,$(filter nocheck, $(DEB_BUILD_OPTIONS)))
 override_dh_auto_test:
 # LLVM tests
 	$(MAKE) -C $(TARGET_BUILD) check || true
@@ -292,6 +292,10 @@ override_dh_auto_test:
 		lcov --remove $$REPORT "$(TARGET_BUILD)/*" -o $$REPORT; \
 		genhtml -o reports/coverage --show-details --highlight --legend $$REPORT; \
 	fi
+else
+override_dh_auto_test:
+endif
+
 
 override_dh_gencontrol:
 	dh_gencontrol -- $(control_vars)
