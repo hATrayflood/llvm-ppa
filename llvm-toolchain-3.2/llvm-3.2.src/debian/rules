@@ -9,6 +9,8 @@ ifneq (,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
   NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
 endif
 
+VENDOR=Debian
+
 DEB_HOST_MULTIARCH  = $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 DEB_HOST_GNU_TYPE   = $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_HOST_ARCH_BITS  = $(shell dpkg-architecture -qDEB_HOST_ARCH_BITS)
@@ -101,13 +103,13 @@ override_dh_auto_configure: debian/lldb-$(LLVM_VERSION).install debian/lldb-$(LL
 	--with-bug-report-url=http://bugs.debian.org/ \
 	--enable-shared \
     --enable-experimental-targets=R600 \
-	CLANG_VENDOR=Debian CC=gcc-$(GCC_VERSION) CXX=g++-$(GCC_VERSION) || { cat config.log tools/polly/config.log; exit 1; }
+	CLANG_VENDOR=$(VENDOR) CC=gcc-$(GCC_VERSION) CXX=g++-$(GCC_VERSION) || { cat config.log tools/polly/config.log; exit 1; }
 #	cd $(TARGET_BUILD) && cmake ../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON
 #	mkdir build-compiler-rt && cd build-compiler-rt && cmake ../compiler-rt
 
 
 override_dh_auto_build:
-	$(MAKE) $(NJOBS) -C $(TARGET_BUILD) VERBOSE=1 CLANG_VENDOR=Debian CXXFLAGS=-std=c++0x  REQUIRES_RTTI=1 DEBUGMAKE=1
+	$(MAKE) $(NJOBS) -C $(TARGET_BUILD) VERBOSE=1 CLANG_VENDOR=$(VENDOR) CXXFLAGS=-std=c++0x  REQUIRES_RTTI=1 DEBUGMAKE=1
 	cd $(CURDIR)/docs && make -f Makefile.sphinx && make -f Makefile.sphinx man
 #	$(MAKE) $(NJOBS) -C build-compiler-rt VERBOSE=1
 # Only available in clang 3.3

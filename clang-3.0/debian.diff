@@ -1,19 +1,19 @@
 diff -urN debian/changelog clang-3.0/debian/changelog
---- debian/changelog	2013-03-29 03:03:16.000000000 +0900
-+++ clang-3.0/debian/changelog	2013-06-22 03:49:28.650946180 +0900
+--- debian/changelog	2013-09-04 18:21:38.231123653 +0900
++++ clang-3.0/debian/changelog	2013-10-24 20:03:20.381405008 +0900
 @@ -1,3 +1,9 @@
-+clang-3.0 (3.0-debian6.2ppa2) precise; urgency=low
++clang-3.0 (3.0-debian6.2ppa3) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sat, 22 Jun 2013 03:45:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 24 Oct 2013 20:00:00 +0900
 +
  clang (1:3.0-6.2) unstable; urgency=low
  
    * Non-maintainer upload with maintainer's approval.
 diff -urN debian/control clang-3.0/debian/control
---- debian/control	2013-03-31 10:15:22.000000000 +0900
-+++ clang-3.0/debian/control	2013-06-24 01:56:55.148611803 +0900
+--- debian/control	2013-09-04 18:21:38.231123653 +0900
++++ clang-3.0/debian/control	2013-10-24 23:37:31.040690227 +0900
 @@ -1,24 +1,21 @@
 -Source: clang
 +Source: clang-3.0
@@ -131,8 +131,8 @@ diff -urN debian/control clang-3.0/debian/control
 + .
 + This package contains the clang python bindings.
 diff -urN debian/control.in/clang clang-3.0/debian/control.in/clang
---- debian/control.in/clang	2011-12-20 22:40:25.000000000 +0900
-+++ clang-3.0/debian/control.in/clang	2013-01-09 17:43:51.913503459 +0900
+--- debian/control.in/clang	2013-09-04 18:21:38.231123653 +0900
++++ clang-3.0/debian/control.in/clang	2013-09-04 18:21:38.199123492 +0900
 @@ -1,7 +1,7 @@
 -Package: clang
 +Package: clang-@UVERSION@
@@ -144,8 +144,8 @@ diff -urN debian/control.in/clang clang-3.0/debian/control.in/clang
  Description: Low-Level Virtual Machine (LLVM), C language family frontend
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
 diff -urN debian/control.in/libclang-common-dev clang-3.0/debian/control.in/libclang-common-dev
---- debian/control.in/libclang-common-dev	2011-12-26 08:50:52.000000000 +0900
-+++ clang-3.0/debian/control.in/libclang-common-dev	2013-01-09 17:42:53.785215365 +0900
+--- debian/control.in/libclang-common-dev	2013-09-04 18:21:38.231123653 +0900
++++ clang-3.0/debian/control.in/libclang-common-dev	2013-09-04 18:21:38.203123509 +0900
 @@ -1,7 +1,7 @@
  
 -Package: libclang-common-dev
@@ -157,8 +157,8 @@ diff -urN debian/control.in/libclang-common-dev clang-3.0/debian/control.in/libc
  Description: clang library - Common development package
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
 diff -urN debian/control.in/libclang-dev clang-3.0/debian/control.in/libclang-dev
---- debian/control.in/libclang-dev	2011-12-20 22:38:39.000000000 +0900
-+++ clang-3.0/debian/control.in/libclang-dev	2013-01-09 17:43:24.029365302 +0900
+--- debian/control.in/libclang-dev	2013-09-04 18:21:38.231123653 +0900
++++ clang-3.0/debian/control.in/libclang-dev	2013-09-04 18:21:38.203123509 +0900
 @@ -1,9 +1,9 @@
  
 -Package: libclang-dev
@@ -172,8 +172,8 @@ diff -urN debian/control.in/libclang-dev clang-3.0/debian/control.in/libclang-de
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
 diff -urN debian/control.in/libclang1 clang-3.0/debian/control.in/libclang1
---- debian/control.in/libclang1	2011-10-08 01:14:48.000000000 +0900
-+++ clang-3.0/debian/control.in/libclang1	2013-01-09 17:43:37.657432844 +0900
+--- debian/control.in/libclang1	2013-09-04 18:21:38.231123653 +0900
++++ clang-3.0/debian/control.in/libclang1	2013-09-04 18:21:38.203123509 +0900
 @@ -1,4 +1,4 @@
 -Package: libclang1
 +Package: libclang1-@UVERSION@
@@ -182,7 +182,7 @@ diff -urN debian/control.in/libclang1 clang-3.0/debian/control.in/libclang1
  Description: clang library
 diff -urN debian/control.in/python-clang clang-3.0/debian/control.in/python-clang
 --- debian/control.in/python-clang	1970-01-01 09:00:00.000000000 +0900
-+++ clang-3.0/debian/control.in/python-clang	2013-06-23 11:41:48.463695971 +0900
++++ clang-3.0/debian/control.in/python-clang	2013-09-04 18:21:38.203123509 +0900
 @@ -0,0 +1,43 @@
 +
 +Package: python-clang-@UVERSION@
@@ -228,8 +228,8 @@ diff -urN debian/control.in/python-clang clang-3.0/debian/control.in/python-clan
 + .
 + This package contains the clang python bindings.
 diff -urN debian/control.in/source clang-3.0/debian/control.in/source
---- debian/control.in/source	2011-12-08 00:39:17.000000000 +0900
-+++ clang-3.0/debian/control.in/source	2013-01-10 16:40:31.509804341 +0900
+--- debian/control.in/source	2013-09-04 18:21:38.231123653 +0900
++++ clang-3.0/debian/control.in/source	2013-09-04 18:21:38.203123509 +0900
 @@ -1,17 +1,14 @@
  Source: @PKGSOURCE@
  Section: devel
@@ -254,8 +254,8 @@ diff -urN debian/control.in/source clang-3.0/debian/control.in/source
  
  
 diff -urN debian/debhelper.in/clang.install clang-3.0/debian/debhelper.in/clang.install
---- debian/debhelper.in/clang.install	2011-09-23 05:02:23.000000000 +0900
-+++ clang-3.0/debian/debhelper.in/clang.install	2013-01-09 17:36:23.467279839 +0900
+--- debian/debhelper.in/clang.install	2013-09-04 18:21:38.231123653 +0900
++++ clang-3.0/debian/debhelper.in/clang.install	2013-09-04 18:21:38.203123509 +0900
 @@ -1,5 +1,4 @@
 -debian/@TMP@/@PF@/bin/clang			@PF@/bin/
 -debian/@TMP@/@PF@/bin/clang++			@PF@/bin/
@@ -267,8 +267,8 @@ diff -urN debian/debhelper.in/clang.install clang-3.0/debian/debhelper.in/clang.
 +tools/clang/tools/scan-build			@PF@/lib/llvm-3.0/share/
 +tools/clang/tools/scan-view			@PF@/lib/llvm-3.0/share/
 diff -urN debian/debhelper.in/clang.links clang-3.0/debian/debhelper.in/clang.links
---- debian/debhelper.in/clang.links	2011-06-27 17:12:38.000000000 +0900
-+++ clang-3.0/debian/debhelper.in/clang.links	2013-01-09 18:56:43.672474508 +0900
+--- debian/debhelper.in/clang.links	2013-09-04 18:21:38.231123653 +0900
++++ clang-3.0/debian/debhelper.in/clang.links	2013-09-04 18:21:38.203123509 +0900
 @@ -1,5 +1,7 @@
 -usr/share/man/man1/clang.1.gz		usr/share/man/man1/llvm-clang.1.gz
 -usr/share/man/man1/clang.1.gz		usr/share/man/man1/clang++.1.gz
@@ -283,15 +283,15 @@ diff -urN debian/debhelper.in/clang.links clang-3.0/debian/debhelper.in/clang.li
 +@PF@/share/man/man1/clang-3.0.1.gz			@PF@/share/man/man1/llvm-clang-3.0.1.gz
 +@PF@/share/man/man1/clang-3.0.1.gz			@PF@/share/man/man1/clang++-3.0.1.gz
 diff -urN debian/debhelper.in/clang.manpages clang-3.0/debian/debhelper.in/clang.manpages
---- debian/debhelper.in/clang.manpages	2011-06-27 17:12:38.000000000 +0900
-+++ clang-3.0/debian/debhelper.in/clang.manpages	2013-01-09 17:36:09.591211032 +0900
+--- debian/debhelper.in/clang.manpages	2013-09-04 18:21:38.231123653 +0900
++++ clang-3.0/debian/debhelper.in/clang.manpages	2013-09-04 18:21:38.203123509 +0900
 @@ -1 +1,3 @@
 -debian/man/scan*.1
 +debian/man/scan-build.1
 +debian/man/scan-view.1
 +debian/@TMP@/@PF@/share/man/man1/clang.1
 diff -urN debian/debhelper.in/clang.postinst clang-3.0/debian/debhelper.in/clang.postinst
---- debian/debhelper.in/clang.postinst	2011-06-27 17:12:38.000000000 +0900
+--- debian/debhelper.in/clang.postinst	2013-09-04 18:21:38.231123653 +0900
 +++ clang-3.0/debian/debhelper.in/clang.postinst	1970-01-01 09:00:00.000000000 +0900
 @@ -1,19 +0,0 @@
 -#! /bin/sh -e
@@ -314,7 +314,7 @@ diff -urN debian/debhelper.in/clang.postinst clang-3.0/debian/debhelper.in/clang
 -
 -exit 0
 diff -urN debian/debhelper.in/clang.prerm clang-3.0/debian/debhelper.in/clang.prerm
---- debian/debhelper.in/clang.prerm	2011-06-27 17:12:38.000000000 +0900
+--- debian/debhelper.in/clang.prerm	2013-09-04 18:21:38.231123653 +0900
 +++ clang-3.0/debian/debhelper.in/clang.prerm	1970-01-01 09:00:00.000000000 +0900
 @@ -1,12 +0,0 @@
 -#!/bin/sh
@@ -330,8 +330,8 @@ diff -urN debian/debhelper.in/clang.prerm clang-3.0/debian/debhelper.in/clang.pr
 -
 -exit 0
 diff -urN debian/debhelper.in/libclang-dev.install clang-3.0/debian/debhelper.in/libclang-dev.install
---- debian/debhelper.in/libclang-dev.install	2011-12-20 22:41:09.000000000 +0900
-+++ clang-3.0/debian/debhelper.in/libclang-dev.install	2013-01-09 12:44:38.832123037 +0900
+--- debian/debhelper.in/libclang-dev.install	2013-09-04 18:21:38.231123653 +0900
++++ clang-3.0/debian/debhelper.in/libclang-dev.install	2013-09-04 18:21:38.203123509 +0900
 @@ -1,3 +1,3 @@
 -debian/@TMP@/@PF@/include/clang                  @PF@/include/
 -debian/@TMP@/@PF@/include/clang-c                  @PF@/include/
@@ -340,22 +340,22 @@ diff -urN debian/debhelper.in/libclang-dev.install clang-3.0/debian/debhelper.in
 +debian/@TMP@/@PF@/include/clang-c                @PF@/lib/llvm-3.0/include/
 +debian/@TMP@/@PF@/lib/libclang.so                @PF@/lib/llvm-3.0/lib/
 diff -urN debian/debhelper.in/libclang1.install clang-3.0/debian/debhelper.in/libclang1.install
---- debian/debhelper.in/libclang1.install	2011-10-08 01:14:24.000000000 +0900
-+++ clang-3.0/debian/debhelper.in/libclang1.install	2013-01-09 12:44:55.324204819 +0900
+--- debian/debhelper.in/libclang1.install	2013-09-04 18:21:38.231123653 +0900
++++ clang-3.0/debian/debhelper.in/libclang1.install	2013-09-04 18:21:38.203123509 +0900
 @@ -1 +1 @@
 -debian/@TMP@/@PF@/lib/libclang.so.1                       @PF@/lib/
 +debian/@TMP@/@PF@/lib/libclang.so.1                       @PF@/lib/llvm-3.0/lib/
 diff -urN debian/debhelper.in/python-clang.install clang-3.0/debian/debhelper.in/python-clang.install
 --- debian/debhelper.in/python-clang.install	1970-01-01 09:00:00.000000000 +0900
-+++ clang-3.0/debian/debhelper.in/python-clang.install	2013-06-24 01:27:14.078420096 +0900
++++ clang-3.0/debian/debhelper.in/python-clang.install	2013-09-04 18:21:38.203123509 +0900
 @@ -0,0 +1,4 @@
 +tools/clang/bindings/python/clang/*	@PF@/lib/python2.7/dist-packages/clang30/
 +tools/clang/bindings/python/README.txt	@PF@/share/doc/python-clang-3.0/
 +tools/clang/bindings/python/examples	@PF@/share/doc/python-clang-3.0/
 +tools/clang/bindings/python/tests	@PF@/share/doc/python-clang-3.0/
 diff -urN debian/packages.d/tools.mk clang-3.0/debian/packages.d/tools.mk
---- debian/packages.d/tools.mk	2011-12-07 18:08:40.000000000 +0900
-+++ clang-3.0/debian/packages.d/tools.mk	2013-01-11 00:43:35.616496767 +0900
+--- debian/packages.d/tools.mk	2013-09-04 18:21:38.231123653 +0900
++++ clang-3.0/debian/packages.d/tools.mk	2013-09-04 18:21:38.203123509 +0900
 @@ -6,7 +6,7 @@
  
  BUILDDEPS	:= \
@@ -367,7 +367,7 @@ diff -urN debian/packages.d/tools.mk clang-3.0/debian/packages.d/tools.mk
  
 diff -urN debian/patches/99-python-bindings.patch clang-3.0/debian/patches/99-python-bindings.patch
 --- debian/patches/99-python-bindings.patch	1970-01-01 09:00:00.000000000 +0900
-+++ clang-3.0/debian/patches/99-python-bindings.patch	2013-06-23 11:52:09.258774327 +0900
++++ clang-3.0/debian/patches/99-python-bindings.patch	2013-09-04 18:21:38.203123509 +0900
 @@ -0,0 +1,117 @@
 +diff -urN clang-3.0.orig/tools/clang/bindings/python/README.txt clang-3.0/tools/clang/bindings/python/README.txt
 +--- clang-3.0.orig/tools/clang/bindings/python/README.txt	2010-05-01 06:51:10.000000000 +0900
@@ -487,16 +487,16 @@ diff -urN debian/patches/99-python-bindings.patch clang-3.0/debian/patches/99-py
 + kInput = """\
 + 
 diff -urN debian/patches/series clang-3.0/debian/patches/series
---- debian/patches/series	2013-03-28 18:01:26.000000000 +0900
-+++ clang-3.0/debian/patches/series	2013-06-23 11:53:14.231096510 +0900
+--- debian/patches/series	2013-09-04 18:21:38.231123653 +0900
++++ clang-3.0/debian/patches/series	2013-09-04 18:21:38.203123509 +0900
 @@ -11,3 +11,4 @@
  28-gcc-4.7.diff
  29-set-default-cpu-for-armhf.diff
  30-powerpc-no-altivec.patch
 +99-python-bindings.patch
 diff -urN debian/rules clang-3.0/debian/rules
---- debian/rules	2013-02-06 19:13:50.000000000 +0900
-+++ clang-3.0/debian/rules	2013-06-21 23:14:55.250690541 +0900
+--- debian/rules	2013-09-04 18:21:38.231123653 +0900
++++ clang-3.0/debian/rules	2013-09-04 18:21:38.203123509 +0900
 @@ -17,7 +17,7 @@
  
  define pkgname
@@ -507,8 +507,8 @@ diff -urN debian/rules clang-3.0/debian/rules
  
  define buildof
 diff -urN debian/rules.d/binary.mk clang-3.0/debian/rules.d/binary.mk
---- debian/rules.d/binary.mk	2011-10-04 21:58:06.000000000 +0900
-+++ clang-3.0/debian/rules.d/binary.mk	2013-06-23 23:43:40.398487621 +0900
+--- debian/rules.d/binary.mk	2013-09-04 18:21:38.231123653 +0900
++++ clang-3.0/debian/rules.d/binary.mk	2013-09-04 18:21:38.203123509 +0900
 @@ -73,6 +73,10 @@
  	dh_fixperms -p$(call pkgname,$*)
  	DH_VERBOSE=1 dh_makeshlibs -p$(call pkgname,$*)
@@ -521,8 +521,8 @@ diff -urN debian/rules.d/binary.mk clang-3.0/debian/rules.d/binary.mk
  	dh_gencontrol -p$(call pkgname,$*)
  	dh_md5sums -p$(call pkgname,$*)
 diff -urN debian/rules.d/control.mk clang-3.0/debian/rules.d/control.mk
---- debian/rules.d/control.mk	2011-12-20 22:40:50.000000000 +0900
-+++ clang-3.0/debian/rules.d/control.mk	2013-06-23 11:54:02.851337603 +0900
+--- debian/rules.d/control.mk	2013-09-04 18:21:38.231123653 +0900
++++ clang-3.0/debian/rules.d/control.mk	2013-09-04 18:21:38.203123509 +0900
 @@ -1,7 +1,7 @@
  $(foreach var,BUILDDEPS BUILDCONFLICTS,$(eval \
    $(if $(strip $($(var))),$(eval $(var) :=, $($(var))),$(eval $(var) :=))))
@@ -542,8 +542,8 @@ diff -urN debian/rules.d/control.mk clang-3.0/debian/rules.d/control.mk
  	    -e "s/ , /, /g"					\
  	    $@.in/source $(addprefix $@.in/,$(packages)) > $@
 diff -urN debian/rules.d/vars.mk clang-3.0/debian/rules.d/vars.mk
---- debian/rules.d/vars.mk	2011-12-08 02:05:16.000000000 +0900
-+++ clang-3.0/debian/rules.d/vars.mk	2013-06-21 23:17:05.243335137 +0900
+--- debian/rules.d/vars.mk	2013-09-04 18:21:38.231123653 +0900
++++ clang-3.0/debian/rules.d/vars.mk	2013-10-24 20:05:24.546020694 +0900
 @@ -5,6 +5,7 @@
  PATCHSETVERSION	:= $(shell echo $(VERSION) | cut -d'-' -f2)
  UVERSION	:= 3.0
@@ -552,6 +552,15 @@ diff -urN debian/rules.d/vars.mk clang-3.0/debian/rules.d/vars.mk
  OS		:= $(shell lsb_release -is)
  PF		:= /usr/lib/llvm-$(UVERSION)
  D		:= $(CURDIR)
+@@ -18,7 +19,7 @@
+ SUFFIX		:= $(subst $(PKGNAME),,$(PKGSOURCE))
+ 
+ # for the shared lib
+-pkg_version	:= $(UVERSION)-3
++pkg_version	:= $(UVERSION)
+ shlib_name	:= libLLVM-$(pkg_version)rc
+ 
+ # for llvm-gcc and tools
 @@ -59,10 +60,10 @@
  endif
  

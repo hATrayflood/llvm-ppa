@@ -19,7 +19,7 @@ PKGNAME		:= $(subst -$(UVERSION),,$(PKGSOURCE))
 SUFFIX		:= $(subst $(PKGNAME),,$(PKGSOURCE))
 
 # for the shared lib
-pkg_version	:= $(UVERSION)-3
+pkg_version	:= $(UVERSION)
 shlib_name	:= libLLVM-$(pkg_version)rc
 
 # for llvm-gcc and tools

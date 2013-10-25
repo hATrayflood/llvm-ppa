@@ -32,7 +32,6 @@ clean-common:
 	dh_clean
 	find $(srcdir)/test/Bindings/Ocaml -type f \
 	  -name "*.o" -or -name "*.cmx" | xargs $(RM)
-	$(RM) -r tools/clang/include/clang/Debian
 	$(RM) -r $(D)/debian/tmp-*
 	$(RM) $(D)/test/Bindings/Ocaml/*.cm[io]
 	$(RM) $(D)/debian/log-check-* $(D)/debian/logwatch-*.pid

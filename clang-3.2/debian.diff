@@ -1,24 +1,24 @@
 diff -urN debian/changelog clang-3.2/debian/changelog
---- debian/changelog	2013-04-03 02:43:05.000000000 +0900
-+++ clang-3.2/debian/changelog	2013-06-24 19:56:36.876507009 +0900
+--- debian/changelog	2013-09-04 18:21:38.311124043 +0900
++++ clang-3.2/debian/changelog	2013-10-24 20:28:27.278198294 +0900
 @@ -1,3 +1,9 @@
-+clang-3.2 (3.2-debian1ppa3~exp9) precise; urgency=low
++clang-3.2 (3.2-debian1ppa4~exp9) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sat, 22 Jun 2013 03:45:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 24 Oct 2013 20:00:00 +0900
 +
  clang (1:3.2-1~exp9) experimental; urgency=low
  
    [ Peter Michael Green ]
 diff -urN debian/clang-3.2-relaxng.install clang-3.2/debian/clang-3.2-relaxng.install
 --- debian/clang-3.2-relaxng.install	1970-01-01 09:00:00.000000000 +0900
-+++ clang-3.2/debian/clang-3.2-relaxng.install	2013-06-23 15:45:49.235796569 +0900
++++ clang-3.2/debian/clang-3.2-relaxng.install	2013-09-04 18:21:38.267123821 +0900
 @@ -0,0 +1 @@
 +tools/clang/bindings/xml/comment-xml-schema.rng	/usr/share/xml/clang-3.2-relaxng/
 diff -urN debian/clang-3.2.install clang-3.2/debian/clang-3.2.install
---- debian/clang-3.2.install	2013-01-15 20:03:33.000000000 +0900
-+++ clang-3.2/debian/clang-3.2.install	2013-01-14 13:54:00.581664600 +0900
+--- debian/clang-3.2.install	2013-09-04 18:21:38.311124043 +0900
++++ clang-3.2/debian/clang-3.2.install	2013-09-04 18:21:38.267123821 +0900
 @@ -1,7 +1,6 @@
 -usr/bin/clang			/usr/bin/
 -usr/bin/clang++			/usr/bin/
@@ -34,8 +34,8 @@ diff -urN debian/clang-3.2.install clang-3.2/debian/clang-3.2.install
 +tools/clang/tools/scan-build	/usr/lib/llvm-3.2/share/
 +tools/clang/tools/scan-view	/usr/lib/llvm-3.2/share/
 diff -urN debian/clang-3.2.links clang-3.2/debian/clang-3.2.links
---- debian/clang-3.2.links	2012-12-06 22:08:52.000000000 +0900
-+++ clang-3.2/debian/clang-3.2.links	2013-01-14 13:55:11.150014597 +0900
+--- debian/clang-3.2.links	2013-09-04 18:21:38.311124043 +0900
++++ clang-3.2/debian/clang-3.2.links	2013-09-04 18:21:38.267123821 +0900
 @@ -1,5 +1,9 @@
 -usr/share/man/man1/clang.1.gz		usr/share/man/man1/llvm-clang.1.gz
 -usr/share/man/man1/clang.1.gz		usr/share/man/man1/clang++.1.gz
@@ -52,15 +52,15 @@ diff -urN debian/clang-3.2.links clang-3.2/debian/clang-3.2.links
 +usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/llvm-clang-3.2.1.gz
 +usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/clang++-3.2.1.gz
 diff -urN debian/clang-3.2.manpages clang-3.2/debian/clang-3.2.manpages
---- debian/clang-3.2.manpages	2013-01-15 20:03:33.000000000 +0900
-+++ clang-3.2/debian/clang-3.2.manpages	2013-01-12 17:27:42.152258197 +0900
+--- debian/clang-3.2.manpages	2013-09-04 18:21:38.311124043 +0900
++++ clang-3.2/debian/clang-3.2.manpages	2013-09-04 18:21:38.267123821 +0900
 @@ -1 +1,3 @@
 -debian/man/scan*.1
 +debian/tmp/usr/share/man/man1/scan-build-3.2.1
 +debian/tmp/usr/share/man/man1/scan-view-3.2.1
 +debian/tmp/usr/share/man/man1/clang-3.2.1
 diff -urN debian/clang-3.2.postinst clang-3.2/debian/clang-3.2.postinst
---- debian/clang-3.2.postinst	2012-12-06 22:08:52.000000000 +0900
+--- debian/clang-3.2.postinst	2013-09-04 18:21:38.311124043 +0900
 +++ clang-3.2/debian/clang-3.2.postinst	1970-01-01 09:00:00.000000000 +0900
 @@ -1,31 +0,0 @@
 -#! /bin/sh -e
@@ -95,7 +95,7 @@ diff -urN debian/clang-3.2.postinst clang-3.2/debian/clang-3.2.postinst
 -
 -exit 0
 diff -urN debian/clang-3.2.prerm clang-3.2/debian/clang-3.2.prerm
---- debian/clang-3.2.prerm	2012-12-10 22:37:47.000000000 +0900
+--- debian/clang-3.2.prerm	2013-09-04 18:21:38.311124043 +0900
 +++ clang-3.2/debian/clang-3.2.prerm	1970-01-01 09:00:00.000000000 +0900
 @@ -1,14 +0,0 @@
 -#!/bin/sh
@@ -114,19 +114,19 @@ diff -urN debian/clang-3.2.prerm clang-3.2/debian/clang-3.2.prerm
 -exit 0
 diff -urN debian/compiler-rt-3.2.install clang-3.2/debian/compiler-rt-3.2.install
 --- debian/compiler-rt-3.2.install	1970-01-01 09:00:00.000000000 +0900
-+++ clang-3.2/debian/compiler-rt-3.2.install	2013-01-06 17:27:19.000000000 +0900
++++ clang-3.2/debian/compiler-rt-3.2.install	2013-09-04 18:21:38.267123821 +0900
 @@ -0,0 +1,3 @@
 +build-clang/tools/clang/runtime/compiler-rt/clang_linux/asan-*/ /usr/lib/clang/3.2/
 +build-clang/tools/clang/runtime/compiler-rt/clang_linux/profile-*/ /usr/lib/clang/3.2/
 +build-clang/tools/clang/runtime/compiler-rt/clang_linux/full-*/ /usr/lib/clang/3.2/
 diff -urN debian/compiler-rt-3.2.links clang-3.2/debian/compiler-rt-3.2.links
 --- debian/compiler-rt-3.2.links	1970-01-01 09:00:00.000000000 +0900
-+++ clang-3.2/debian/compiler-rt-3.2.links	2013-01-12 21:59:49.041578627 +0900
++++ clang-3.2/debian/compiler-rt-3.2.links	2013-09-04 18:21:38.267123821 +0900
 @@ -0,0 +1 @@
 +usr/lib/clang/3.2/bin/asan_symbolize	usr/bin/asan_symbolize-3.2
 diff -urN debian/control clang-3.2/debian/control
---- debian/control	2013-04-03 02:43:05.000000000 +0900
-+++ clang-3.2/debian/control	2013-06-23 14:34:21.473456212 +0900
+--- debian/control	2013-09-04 18:21:38.315124055 +0900
++++ clang-3.2/debian/control	2013-09-04 18:21:38.267123821 +0900
 @@ -1,23 +1,25 @@
 -Source: clang
 +Source: clang-3.2
@@ -361,13 +361,13 @@ diff -urN debian/control clang-3.2/debian/control
 + This package contains the clang Relax NG schema for the XML.
 diff -urN debian/libclang-3.2-common-dev.install clang-3.2/debian/libclang-3.2-common-dev.install
 --- debian/libclang-3.2-common-dev.install	1970-01-01 09:00:00.000000000 +0900
-+++ clang-3.2/debian/libclang-3.2-common-dev.install	2012-11-29 00:58:14.000000000 +0900
++++ clang-3.2/debian/libclang-3.2-common-dev.install	2013-09-04 18:21:38.267123821 +0900
 @@ -0,0 +1,2 @@
 +usr/lib/clang/3.2/include/         /usr/include/clang/3.2/
 +usr/lib/clang/3.2/lib             /usr/lib/clang/3.2/
 diff -urN debian/libclang-3.2-dev.install clang-3.2/debian/libclang-3.2-dev.install
 --- debian/libclang-3.2-dev.install	1970-01-01 09:00:00.000000000 +0900
-+++ clang-3.2/debian/libclang-3.2-dev.install	2013-01-12 21:08:24.721234171 +0900
++++ clang-3.2/debian/libclang-3.2-dev.install	2013-09-04 18:21:38.267123821 +0900
 @@ -0,0 +1,4 @@
 +usr/include/clang                  /usr/include/clang-3.2/
 +usr/include/clang-c                /usr/include/clang-c-3.2/
@@ -375,18 +375,18 @@ diff -urN debian/libclang-3.2-dev.install clang-3.2/debian/libclang-3.2-dev.inst
 +usr/lib/libclang*a                 /usr/lib/llvm-3.2/lib/
 diff -urN debian/libclang-3.2-dev.links clang-3.2/debian/libclang-3.2-dev.links
 --- debian/libclang-3.2-dev.links	1970-01-01 09:00:00.000000000 +0900
-+++ clang-3.2/debian/libclang-3.2-dev.links	2013-01-12 21:11:19.490100807 +0900
++++ clang-3.2/debian/libclang-3.2-dev.links	2013-09-04 18:21:38.267123821 +0900
 @@ -0,0 +1,2 @@
 +usr/include/clang-3.2/clang	usr/lib/llvm-3.2/include/clang
 +usr/include/clang-c-3.2/clang-c	usr/lib/llvm-3.2/include/clang-c
 diff -urN debian/libclang1-3.2.install clang-3.2/debian/libclang1-3.2.install
 --- debian/libclang1-3.2.install	1970-01-01 09:00:00.000000000 +0900
-+++ clang-3.2/debian/libclang1-3.2.install	2013-01-12 17:57:10.737029201 +0900
++++ clang-3.2/debian/libclang1-3.2.install	2013-09-04 18:21:38.267123821 +0900
 @@ -0,0 +1 @@
 +usr/lib/libclang.so.1	/usr/lib/llvm-3.2/lib/
 diff -urN debian/patches/99-python-bindings.patch clang-3.2/debian/patches/99-python-bindings.patch
 --- debian/patches/99-python-bindings.patch	1970-01-01 09:00:00.000000000 +0900
-+++ clang-3.2/debian/patches/99-python-bindings.patch	2013-06-23 23:27:31.564685939 +0900
++++ clang-3.2/debian/patches/99-python-bindings.patch	2013-09-04 18:21:38.267123821 +0900
 @@ -0,0 +1,242 @@
 +diff -urN clang-3.2.orig/tools/clang/bindings/python/README.txt clang-3.2/tools/clang/bindings/python/README.txt
 +--- clang-3.2.orig/tools/clang/bindings/python/README.txt	2010-05-01 06:51:10.000000000 +0900
@@ -631,8 +631,8 @@ diff -urN debian/patches/99-python-bindings.patch clang-3.2/debian/patches/99-py
 + def get_tu(source, lang='c', all_warnings=False):
 +     """Obtain a translation unit from source and language.
 diff -urN debian/patches/series clang-3.2/debian/patches/series
---- debian/patches/series	2013-04-03 02:43:05.000000000 +0900
-+++ clang-3.2/debian/patches/series	2013-06-23 14:20:19.873282945 +0900
+--- debian/patches/series	2013-09-04 18:21:38.315124055 +0900
++++ clang-3.2/debian/patches/series	2013-09-04 18:21:38.267123821 +0900
 @@ -14,3 +14,4 @@
  32-scan-build-path.diff
  33-armhf-defaults.diff
@@ -640,16 +640,16 @@ diff -urN debian/patches/series clang-3.2/debian/patches/series
 +99-python-bindings.patch
 diff -urN debian/python-clang-3.2.install clang-3.2/debian/python-clang-3.2.install
 --- debian/python-clang-3.2.install	1970-01-01 09:00:00.000000000 +0900
-+++ clang-3.2/debian/python-clang-3.2.install	2013-06-24 02:39:07.121167180 +0900
++++ clang-3.2/debian/python-clang-3.2.install	2013-09-04 18:21:38.267123821 +0900
 @@ -0,0 +1,4 @@
 +tools/clang/bindings/python/clang/*	/usr/lib/python2.7/dist-packages/clang32/
 +tools/clang/bindings/python/README.txt	/usr/share/doc/python-clang-3.2/
 +tools/clang/bindings/python/examples	/usr/share/doc/python-clang-3.2/
 +tools/clang/bindings/python/tests	/usr/share/doc/python-clang-3.2/
 diff -urN debian/rules clang-3.2/debian/rules
---- debian/rules	2013-03-15 22:45:44.000000000 +0900
-+++ clang-3.2/debian/rules	2013-06-24 19:56:23.580441090 +0900
-@@ -1,14 +1,13 @@
+--- debian/rules	2013-09-04 18:21:38.315124055 +0900
++++ clang-3.2/debian/rules	2013-10-24 20:29:09.062405491 +0900
+@@ -1,14 +1,15 @@
  #!/usr/bin/make -f
  
  TARGET_BUILD	:= build-clang
@@ -662,10 +662,12 @@ diff -urN debian/rules clang-3.2/debian/rules
    NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
  endif
 -VENDOR=$(lsb_release -is)
++
++VENDOR=Debian
  
  DEB_HOST_MULTIARCH  = $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
  DEB_HOST_GNU_TYPE   = $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-@@ -17,6 +16,8 @@
+@@ -17,6 +18,8 @@
  
  
  confargs := \
@@ -674,20 +676,7 @@ diff -urN debian/rules clang-3.2/debian/rules
          --with-c-include-dirs=/usr/include/$(DEB_HOST_MULTIARCH):/usr/include/$(DEB_HOST_GNU_TYPE):/usr/include \
  	--with-cxx-include-root=/usr/include/c++/$(GCC_VERSION) \
  	--with-cxx-include-arch=$(DEB_HOST_GNU_TYPE) \
-@@ -72,10 +73,10 @@
- 	--prefix=/usr/ \
- 	--disable-assertions --enable-shared --enable-optimized \
- 	--with-optimize-option=' $(opt_flags)' --enable-pic --enable-libffi \
--	CLANG_VENDOR=$(VENDOR)	|| { cat config.log; exit 1; }
-+	CLANG_VENDOR=Debian	|| { cat config.log; exit 1; }
- 
- override_dh_auto_build:
--	$(MAKE) $(NJOBS) -C $(TARGET_BUILD) VERBOSE=1 ONLY_TOOLS="clang" CLANG_VENDOR=$(VENDOR) CXXFLAGS=-std=c++0x
-+	$(MAKE) $(NJOBS) -C $(TARGET_BUILD) VERBOSE=1 ONLY_TOOLS="clang" CLANG_VENDOR=Debian CXXFLAGS=-std=c++0x
- # Only available in clang 3.3
- #	cd $(CURDIR)/tools/clang/docs && make -f Makefile.sphinx
- # && make -f Makefile.sphinx man
-@@ -85,15 +86,21 @@
+@@ -85,15 +88,21 @@
  	$(MAKE) -C $(TARGET_BUILD)  VERBOSE=1  ONLY_TOOLS="clang" install DESTDIR=$(CURDIR)/debian/tmp/
  	cd debian/tmp/usr/lib/&& mv libclang.so libclang.so.$(SONAME_EXT) && ln -s libclang.so.$(SONAME_EXT) libclang.so
  #	cd build-clang/tools/clang/runtime/compiler-rt/ && rm -rf $$(find . -iname "SubDir.lib*" -o -iname .dir) && rm -rf $$(find -empty)
