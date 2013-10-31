@@ -1,8 +1,17 @@
-llvm-toolchain-3.3 (3.3-debian11ppa2) precise; urgency=low
+llvm-toolchain-3.3 (3.3-debian12ppa2) precise; urgency=low
 
   * ppa for precise
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 25 Oct 2013 10:30:00 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 31 Oct 2013 14:40:00 +0900
+
+llvm-toolchain-3.3 (1:3.3-12) unstable; urgency=low
+
+  * Update of the clang descriptions (Closes: #727684)
+  * The package wasn't cleaned correctly (Closes: #722155)
+  * Bring back /usr/lib/llvm-3.3/lib/libclang.so (libclang-3.3-dev) and
+    /usr/lib/llvm-3.3/lib/libclang.so.1 (libclang1-3.3)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Tue, 29 Oct 2013 13:49:59 +0100
 
 llvm-toolchain-3.3 (1:3.3-11) unstable; urgency=low
 

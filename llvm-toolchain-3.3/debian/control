@@ -27,28 +27,11 @@ Replaces: clang (<< 1:3.3), clang-3.1, clang-3.2, clang-3.4, compiler-rt
 Breaks: clang (<< 1:3.3), clang-3.1, clang-3.2, clang-3.4, compiler-rt
 Description: C, C++ and Objective-C compiler (LLVM based)
  Clang project is a C, C++, Objective C and Objective C++ front-end
- for the LLVM compiler. Some of its goals include the following:
+ for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+ Collection (GCC).
  .
- End-User Features:
- .
-    * Fast compiles and low memory use
-    * Expressive diagnostics (examples)
-    * GCC compatibility
- .
- Utility and Applications:
- .
-    * Modular library based architecture
-    * Support diverse clients (refactoring, static analysis, code
-      generation, etc)
-    * Allow tight integration with IDEs
-    * Use the LLVM 'BSD' License
- .
- Internal Design and Implementation:
- .
-    * A real-world, production quality compiler
-    * A simple and hackable code base
-    * A single unified parser for C, Objective C, C++, and Objective C++
-    * Conformance with C/C++/ObjC and their variants
+ Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
+ a partial support of C++1y.
 
 Package: clang-format-3.3
 Architecture: any
@@ -86,28 +69,11 @@ Section: doc
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: C, C++ and Objective-C compiler (LLVM based) - Documentation
  Clang project is a C, C++, Objective C and Objective C++ front-end
- for the LLVM compiler. Some of its goals include the following:
+ for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+ Collection (GCC).
  .
- End-User Features:
- .
-    * Fast compiles and low memory use
-    * Expressive diagnostics (examples)
-    * GCC compatibility
- .
- Utility and Applications:
- .
-    * Modular library based architecture
-    * Support diverse clients (refactoring, static analysis, code
-      generation, etc)
-    * Allow tight integration with IDEs
-    * Use the LLVM 'BSD' License
- .
- Internal Design and Implementation:
- .
-    * A real-world, production quality compiler
-    * A simple and hackable code base
-    * A single unified parser for C, Objective C, C++, and Objective C++
-    * Conformance with C/C++/ObjC and their variants
+ Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
+ a partial support of C++1y.
  .
  This package contains the documentation.
 
@@ -116,32 +82,22 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs}
 Pre-Depends: ${misc:Pre-Depends}
 Multi-Arch: same
-Description: clang library
+Description: C interface to the clang library
  Clang project is a C, C++, Objective C and Objective C++ front-end
- for the LLVM compiler. Some of its goals include the following:
+ for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+ Collection (GCC).
  .
- End-User Features:
- .
-    * Fast compiles and low memory use
-    * Expressive diagnostics (examples)
-    * GCC compatibility
- .
- Utility and Applications:
- .
-    * Modular library based architecture
-    * Support diverse clients (refactoring, static analysis, code
-      generation, etc)
-    * Allow tight integration with IDEs
-    * Use the LLVM 'BSD' License
- .
- Internal Design and Implementation:
- .
-    * A real-world, production quality compiler
-    * A simple and hackable code base
-    * A single unified parser for C, Objective C, C++, and Objective C++
-    * Conformance with C/C++/ObjC and their variants
+ Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
+ a partial support of C++1y.
  .
  This package contains the clang library.
+ .
+ The C Interface to Clang provides a relatively small API that exposes
+ facilities for parsing source code into an abstract syntax tree (AST),
+ loading already-parsed ASTs, traversing the AST, associating physical source
+ locations with elements within the AST, and other facilities that support
+ Clang-based development tools.
+
 
 Package: libclang1-3.3-dbg
 Architecture: any
@@ -150,28 +106,11 @@ Priority: extra
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs}, libclang1-3.3
 Description: clang library
  Clang project is a C, C++, Objective C and Objective C++ front-end
- for the LLVM compiler. Some of its goals include the following:
+ for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+ Collection (GCC).
  .
- End-User Features:
- .
-    * Fast compiles and low memory use
-    * Expressive diagnostics (examples)
-    * GCC compatibility
- .
- Utility and Applications:
- .
-    * Modular library based architecture
-    * Support diverse clients (refactoring, static analysis, code
-      generation, etc)
-    * Allow tight integration with IDEs
-    * Use the LLVM 'BSD' License
- .
- Internal Design and Implementation:
- .
-    * A real-world, production quality compiler
-    * A simple and hackable code base
-    * A single unified parser for C, Objective C, C++, and Objective C++
-    * Conformance with C/C++/ObjC and their variants
+ Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
+ a partial support of C++1y.
  .
  This package contains the debugging symbols.
 
@@ -182,28 +121,11 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs},
  libclang1-3.3 (= ${binary:Version}), libclang-common-3.3-dev (= ${binary:Version})
 Description: clang library - Development package
  Clang project is a C, C++, Objective C and Objective C++ front-end
- for the LLVM compiler. Some of its goals include the following:
+ for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+ Collection (GCC).
  .
- End-User Features:
- .
-    * Fast compiles and low memory use
-    * Expressive diagnostics (examples)
-    * GCC compatibility
- .
- Utility and Applications:
- .
-    * Modular library based architecture
-    * Support diverse clients (refactoring, static analysis, code
-      generation, etc)
-    * Allow tight integration with IDEs
-    * Use the LLVM 'BSD' License
- .
- Internal Design and Implementation:
- .
-    * A real-world, production quality compiler
-    * A simple and hackable code base
-    * A single unified parser for C, Objective C, C++, and Objective C++
-    * Conformance with C/C++/ObjC and their variants
+ Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
+ a partial support of C++1y.
  .
  This package contains the clang headers to develop extensions over
  libclang1-3.3.
@@ -216,28 +138,11 @@ Replaces: llvm-3.3-dev (<< 1:3.2repack), libclang-3.3-dev
 Breaks: llvm-3.3-dev (<< 1:3.2repack)
 Description: clang library - Common development package
  Clang project is a C, C++, Objective C and Objective C++ front-end
- for the LLVM compiler. Some of its goals include the following:
+ for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+ Collection (GCC).
  .
- End-User Features:
- .
-    * Fast compiles and low memory use
-    * Expressive diagnostics (examples)
-    * GCC compatibility
- .
- Utility and Applications:
- .
-    * Modular library based architecture
-    * Support diverse clients (refactoring, static analysis, code
-      generation, etc)
-    * Allow tight integration with IDEs
-    * Use the LLVM 'BSD' License
- .
- Internal Design and Implementation:
- .
-    * A real-world, production quality compiler
-    * A simple and hackable code base
-    * A single unified parser for C, Objective C, C++, and Objective C++
-    * Conformance with C/C++/ObjC and their variants
+ Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
+ a partial support of C++1y.
  .
  This package contains the clang generic headers and some libraries
  (profiling, etc).
