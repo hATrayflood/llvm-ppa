@@ -129,8 +129,8 @@ override_dh_auto_install:
 	cd debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/ && mv libclang.so libclang.so.$(SONAME_EXT) && ln -s libclang.so.$(SONAME_EXT) libclang.so
 #	cd $(TARGET_BUILD)/tools/clang/runtime/compiler-rt/ && rm -rf $$(find . -iname "SubDir.lib*" -o -iname .dir) && rm -rf $$(find -empty)
 
-	mkdir -p $(CURDIR)/debian/compiler-rt-$(LLVM_VERSION)/usr/lib/clang/$(LLVM_VERSION)/bin/
-	cp compiler-rt/lib/asan/scripts/asan_symbolize.py $(CURDIR)/debian/compiler-rt-$(LLVM_VERSION)/usr/lib/clang/$(LLVM_VERSION)/bin/asan_symbolize
+	mkdir -p $(CURDIR)/debian/clang-$(LLVM_VERSION)/usr/lib/clang/$(LLVM_VERSION)/bin/
+	cp compiler-rt/lib/asan/scripts/asan_symbolize.py $(CURDIR)/debian/clang-$(LLVM_VERSION)/usr/lib/clang/$(LLVM_VERSION)/bin/asan_symbolize
 
 # Create this fake directory to make the install libclang-common-dev happy
 # under the unsupported archs of compiler-rt

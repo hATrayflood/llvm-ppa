@@ -202,26 +202,26 @@ Description: clang library - Common development package
  (profiling, etc).
 
 
-Package: compiler-rt-3.2
-Architecture: amd64 i386
-Replaces: libclang-3.2-dev
-Section: libdevel
-Depends: ${misc:Depends}, python
-Description: Runtime C library - LLVM based
- The compiler-rt project is a simple library that provides an implementation of
- the low-level target-specific hooks required by code generation and other
- runtime components. For example, when compiling for a 32-bit target,
- converting a double to a 64-bit unsigned integer is compiling into a runtime
- call to the "__fixunsdfdi" function. The compiler-rt library provides
- optimized implementations of this and other low-level routines.
- .
- The current feature set of compiler-rt is:
- .
-    * Full support for the libgcc interfaces on supported targets.
-    * High performance hand tuned implementations of commonly used functions
-      like __floatundidf in assembly that are dramatically faster than the
-      libgcc implementations.
- .
+# Package: compiler-rt
+# Architecture: amd64 i386
+# Replaces: libclang-dev
+# Section: libdevel
+# Depends: ${misc:Depends}, python
+# Description: Runtime C library - LLVM based
+#  The compiler-rt project is a simple library that provides an implementation of
+#  the low-level target-specific hooks required by code generation and other
+#  runtime components. For example, when compiling for a 32-bit target,
+#  converting a double to a 64-bit unsigned integer is compiling into a runtime
+#  call to the "__fixunsdfdi" function. The compiler-rt library provides
+#  optimized implementations of this and other low-level routines.
+#  .
+#  The current feature set of compiler-rt is:
+#  .
+#     * Full support for the libgcc interfaces on supported targets.
+#     * High performance hand tuned implementations of commonly used functions
+#       like __floatundidf in assembly that are dramatically faster than the
+#       libgcc implementations.
+#  .
 
 Package: python-clang-3.2
 Architecture: any
@@ -339,6 +339,8 @@ Section: ocaml
 Architecture: any
 Suggests: llvm-3.2-doc
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${ocaml:Depends}, llvm-3.2-dev (= ${binary:Version})
+Replaces: libllvm-ocaml-3.2-dev
+Conflicts: libllvm-ocaml-3.2-dev
 Provides: ${ocaml:Provides}
 Description: Low-Level Virtual Machine (LLVM), bindings for OCaml
  The Low-Level Virtual Machine (LLVM) is a collection of libraries and

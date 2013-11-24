@@ -1,12 +1,12 @@
 diff -urN debian/changelog llvm-3.2.src/debian/changelog
 --- debian/changelog	2013-09-04 18:21:38.571125327 +0900
-+++ llvm-3.2.src/debian/changelog	2013-10-25 09:11:53.849925151 +0900
++++ llvm-3.2.src/debian/changelog	2013-11-24 19:03:05.264109503 +0900
 @@ -1,3 +1,9 @@
-+llvm-toolchain-3.2 (3.2repack-debian11ppa4) precise; urgency=low
++llvm-toolchain-3.2 (3.2repack-debian11ppa5) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 24 Oct 2013 20:00:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sun, 24 Nov 2013 19:00:00 +0900
 +
  llvm-toolchain-3.2 (1:3.2repack-11) unstable; urgency=low
  
@@ -18,7 +18,7 @@ diff -urN debian/clang-3.2-relaxng.install llvm-3.2.src/debian/clang-3.2-relaxng
 +clang/bindings/xml/comment-xml-schema.rng	/usr/share/xml/clang-3.2-relaxng/
 diff -urN debian/clang-3.2.install llvm-3.2.src/debian/clang-3.2.install
 --- debian/clang-3.2.install	2013-09-04 18:21:38.571125327 +0900
-+++ llvm-3.2.src/debian/clang-3.2.install	2013-09-04 18:21:38.579125384 +0900
++++ llvm-3.2.src/debian/clang-3.2.install	2013-11-24 19:04:00.996385266 +0900
 @@ -1,9 +1,9 @@
 -usr/lib/llvm-3.2/bin/clang			/usr/bin/
 -usr/lib/llvm-3.2/bin/clang++			/usr/bin/
@@ -38,8 +38,8 @@ diff -urN debian/clang-3.2.install llvm-3.2.src/debian/clang-3.2.install
  
 diff -urN debian/clang-3.2.links llvm-3.2.src/debian/clang-3.2.links
 --- debian/clang-3.2.links	2013-09-04 18:21:38.571125327 +0900
-+++ llvm-3.2.src/debian/clang-3.2.links	2013-09-04 18:21:38.579125384 +0900
-@@ -1,5 +1,10 @@
++++ llvm-3.2.src/debian/clang-3.2.links	2013-11-24 14:07:55.979918937 +0900
+@@ -1,5 +1,11 @@
 -usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/llvm-clang.1.gz
 -usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/clang++.1.gz
 -/usr/share/clang/scan-build/scan-build	/usr/bin/scan-build
@@ -53,6 +53,7 @@ diff -urN debian/clang-3.2.links llvm-3.2.src/debian/clang-3.2.links
 +/usr/lib/llvm-3.2/share/scan-build/scan-build	/usr/bin/scan-build-3.2
 +/usr/lib/llvm-3.2/share/scan-view/scan-view	/usr/bin/scan-view-3.2
 +/usr/lib/llvm-3.2/bin/pollycc			/usr/bin/pollycc-3.2
++/usr/lib/clang/3.2/bin/asan_symbolize		/usr/bin/asan_symbolize-3.2
 +usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/llvm-clang-3.2.1.gz
 +usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/clang++-3.2.1.gz
 diff -urN debian/clang-3.2.manpages llvm-3.2.src/debian/clang-3.2.manpages
@@ -115,21 +116,9 @@ diff -urN debian/clang-3.2.prerm llvm-3.2.src/debian/clang-3.2.prerm
 -#DEBHELPER#
 -
 -exit 0
-diff -urN debian/compiler-rt-3.2.install llvm-3.2.src/debian/compiler-rt-3.2.install
---- debian/compiler-rt-3.2.install	1970-01-01 09:00:00.000000000 +0900
-+++ llvm-3.2.src/debian/compiler-rt-3.2.install	2013-09-04 18:21:38.579125384 +0900
-@@ -0,0 +1,3 @@
-+build-llvm/tools/clang/runtime/compiler-rt/clang_linux/asan-*/		/usr/lib/clang/3.2/
-+build-llvm/tools/clang/runtime/compiler-rt/clang_linux/profile-*/	/usr/lib/clang/3.2/
-+build-llvm/tools/clang/runtime/compiler-rt/clang_linux/full-*/		/usr/lib/clang/3.2/
-diff -urN debian/compiler-rt-3.2.links llvm-3.2.src/debian/compiler-rt-3.2.links
---- debian/compiler-rt-3.2.links	1970-01-01 09:00:00.000000000 +0900
-+++ llvm-3.2.src/debian/compiler-rt-3.2.links	2013-09-04 18:21:38.579125384 +0900
-@@ -0,0 +1 @@
-+usr/lib/clang/3.2/bin/asan_symbolize	usr/bin/asan_symbolize-3.2
 diff -urN debian/control llvm-3.2.src/debian/control
 --- debian/control	2013-09-04 18:21:38.571125327 +0900
-+++ llvm-3.2.src/debian/control	2013-10-24 16:04:12.118925054 +0900
++++ llvm-3.2.src/debian/control	2013-11-23 23:42:29.107437123 +0900
 @@ -1,30 +1,25 @@
  Source: llvm-toolchain-3.2
  Section: devel
@@ -232,51 +221,10 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Description: clang library - Common development package
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -210,26 +202,58 @@
-  (profiling, etc).
+@@ -231,6 +223,38 @@
+ #       libgcc implementations.
+ #  .
  
- 
--# Package: compiler-rt
--# Architecture: amd64 i386
--# Replaces: libclang-dev
--# Section: libdevel
--# Depends: ${misc:Depends}, python
--# Description: Runtime C library - LLVM based
--#  The compiler-rt project is a simple library that provides an implementation of
--#  the low-level target-specific hooks required by code generation and other
--#  runtime components. For example, when compiling for a 32-bit target,
--#  converting a double to a 64-bit unsigned integer is compiling into a runtime
--#  call to the "__fixunsdfdi" function. The compiler-rt library provides
--#  optimized implementations of this and other low-level routines.
--#  .
--#  The current feature set of compiler-rt is:
--#  .
--#     * Full support for the libgcc interfaces on supported targets.
--#     * High performance hand tuned implementations of commonly used functions
--#       like __floatundidf in assembly that are dramatically faster than the
--#       libgcc implementations.
--#  .
-+Package: compiler-rt-3.2
-+Architecture: amd64 i386
-+Replaces: libclang-3.2-dev
-+Section: libdevel
-+Depends: ${misc:Depends}, python
-+Description: Runtime C library - LLVM based
-+ The compiler-rt project is a simple library that provides an implementation of
-+ the low-level target-specific hooks required by code generation and other
-+ runtime components. For example, when compiling for a 32-bit target,
-+ converting a double to a 64-bit unsigned integer is compiling into a runtime
-+ call to the "__fixunsdfdi" function. The compiler-rt library provides
-+ optimized implementations of this and other low-level routines.
-+ .
-+ The current feature set of compiler-rt is:
-+ .
-+    * Full support for the libgcc interfaces on supported targets.
-+    * High performance hand tuned implementations of commonly used functions
-+      like __floatundidf in assembly that are dramatically faster than the
-+      libgcc implementations.
-+ .
-+
 +Package: python-clang-3.2
 +Architecture: any
 +Section: python
@@ -308,9 +256,10 @@ diff -urN debian/control llvm-3.2.src/debian/control
 +    * Conformance with C/C++/ObjC and their variants
 + .
 + This package contains the clang python bindings.
- 
++
  Package: libllvm3.2
  Architecture: any
+ Section: libs
 @@ -244,27 +268,11 @@
   .
   This package contains the LLVM runtime library.
@@ -356,15 +305,6 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Description: Low-Level Virtual Machine (LLVM), libraries and headers
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
-@@ -334,8 +339,6 @@
- Architecture: any
- Suggests: llvm-3.2-doc
- Depends: ${shlibs:Depends}, ${misc:Depends}, ${ocaml:Depends}, llvm-3.2-dev (= ${binary:Version})
--Replaces: libllvm-ocaml-3.2-dev
--Conflicts: libllvm-ocaml-3.2-dev
- Provides: ${ocaml:Provides}
- Description: Low-Level Virtual Machine (LLVM), bindings for OCaml
-  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
 diff -urN debian/libclang-3.2-common-dev.install llvm-3.2.src/debian/libclang-3.2-common-dev.install
 --- debian/libclang-3.2-common-dev.install	1970-01-01 09:00:00.000000000 +0900
 +++ llvm-3.2.src/debian/libclang-3.2-common-dev.install	2013-09-04 18:21:38.579125384 +0900
@@ -975,7 +915,7 @@ diff -urN debian/python-clang-3.2.install llvm-3.2.src/debian/python-clang-3.2.i
 +clang/bindings/python/tests		/usr/share/doc/python-clang-3.2/
 diff -urN debian/rules llvm-3.2.src/debian/rules
 --- debian/rules	2013-09-04 18:21:38.579125384 +0900
-+++ llvm-3.2.src/debian/rules	2013-10-24 20:22:16.220596851 +0900
++++ llvm-3.2.src/debian/rules	2013-11-23 23:45:18.964279393 +0900
 @@ -1,7 +1,7 @@
  #!/usr/bin/make -f
  
@@ -1009,8 +949,8 @@ diff -urN debian/rules llvm-3.2.src/debian/rules
  
 -	mkdir -p $(CURDIR)/debian/clang-$(LLVM_VERSION)/usr/bin/
 -	cp compiler-rt/lib/asan/scripts/asan_symbolize.py $(CURDIR)/debian/clang-$(LLVM_VERSION)/usr/bin/asan_symbolize
-+	mkdir -p $(CURDIR)/debian/compiler-rt-$(LLVM_VERSION)/usr/lib/clang/$(LLVM_VERSION)/bin/
-+	cp compiler-rt/lib/asan/scripts/asan_symbolize.py $(CURDIR)/debian/compiler-rt-$(LLVM_VERSION)/usr/lib/clang/$(LLVM_VERSION)/bin/asan_symbolize
++	mkdir -p $(CURDIR)/debian/clang-$(LLVM_VERSION)/usr/lib/clang/$(LLVM_VERSION)/bin/
++	cp compiler-rt/lib/asan/scripts/asan_symbolize.py $(CURDIR)/debian/clang-$(LLVM_VERSION)/usr/lib/clang/$(LLVM_VERSION)/bin/asan_symbolize
  
  # Create this fake directory to make the install libclang-common-dev happy
  # under the unsupported archs of compiler-rt
