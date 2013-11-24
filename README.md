@@ -3,6 +3,8 @@ LLVM/clang PPA
 
 Porting from [Debian LLVM Packages](http://qa.debian.org/developer.php?login=pkg-llvm-team@lists.alioth.debian.org) to Ubuntu 12.04
 
+**if you failed to upgrade, purge and re-install.**
+
 provides
 --------
     /usr/bin/clang-2.9
