@@ -11,10 +11,12 @@ Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl, expect,
     libisl-dev (>= 0.11.1), libjsoncpp-dev,
     lcov, procps, help2man
 Build-Conflicts: oprofile, ocaml
-Standards-Version: 3.9.4
+Standards-Version: 3.9.5
 Homepage: http://www.llvm.org/
 Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/llvm-toolchain/branches/3.3/
 Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/llvm-toolchain/branches/3.3/
+
+# ------------- clang -------------
 
 Package: clang-3.3
 Architecture: any
@@ -23,8 +25,10 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs},
  libclang1-3.3 (= ${binary:Version})
 Provides: c-compiler, objc-compiler, c++-compiler
 Recommends: llvm-3.3-dev, python
-Replaces: clang (<< 1:3.3), clang-3.1, clang-3.2, clang-3.4, compiler-rt
-Breaks: clang (<< 1:3.3), clang-3.1, clang-3.2, clang-3.4, compiler-rt
+Replaces: clang (<< 1:3.3), clang-3.1, clang-3.2, clang-3.4, compiler-rt,
+ llvm-3.3 (<< 1:3.3-13)
+Breaks: clang (<< 1:3.3), clang-3.1, clang-3.2, clang-3.4, compiler-rt,
+ llvm-3.3 (<< 1:3.3-13)
 Description: C, C++ and Objective-C compiler (LLVM based)
  Clang project is a C, C++, Objective C and Objective C++ front-end
  for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
@@ -158,6 +162,22 @@ Breaks: python-clang-3.4
 Description: Clang Python Bindings
  This binding package provides access to the Clang compiler and libraries.
 
+
+Package: clang-3.3-examples
+Architecture: any
+Section: doc
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Clang examples
+ Clang project is a C, C++, Objective C and Objective C++ front-end
+ for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+ Collection (GCC).
+ .
+ Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
+ a partial support of C++1y.
+ .
+ This package contains the clang examples.
+
+# ------------- LLVM -------------
 
 Package: libllvm3.3
 Architecture: any
@@ -322,6 +342,8 @@ Description: Modular compiler and toolchain technologies, examples
  .
  This package contains examples for using LLVM, both in developing
  extensions to LLVM and in using it to compile code.
+
+# ------------- lldb -------------
 
 Package: lldb-3.3
 Architecture: amd64 armel armhf i386 ia64 kfreebsd-amd64 kfreebsd-i386 mips mipsel powerpc s390 s390x sparc alpha arm64 hppa m68k powerpcspe ppc64 sh4 sparc64 x32

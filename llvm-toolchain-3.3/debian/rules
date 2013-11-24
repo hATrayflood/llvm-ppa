@@ -252,6 +252,8 @@ override_dh_installdeb:
 	dh_installdeb -a
 
 	rm -f $(CURDIR)/debian/lldb-$(LLVM_VERSION)/usr/lib/python*/dist-packages/lldb/__init__.pyc
+	rm -f $(CURDIR)/debian/clang-$(LLVM_VERSION)-examples/usr/share/doc/clang-$(LLVM_VERSION)-examples/examples/*Make*
+
 
 
 ifeq (,$(filter nocheck, $(DEB_BUILD_OPTIONS)))

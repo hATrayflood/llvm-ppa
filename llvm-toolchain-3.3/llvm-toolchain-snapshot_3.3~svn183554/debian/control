@@ -10,9 +10,11 @@ Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl, expect,
     libisl-dev (>= 0.11.1), libjsoncpp-dev,
     lcov, procps, help2man
 Build-Conflicts: oprofile, ocaml
-Standards-Version: 3.9.4
+Standards-Version: 3.9.5
 Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
 Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
+
+# ------------- clang -------------
 
 Package: clang-3.3
 Architecture: any
@@ -66,6 +68,8 @@ Description: C, C++ and Objective-C compiler (LLVM based) - Documentation
  .
  Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
  a partial support of C++1y.
+ .
+ This package contains the documentation.
 
 Package: libclang1-3.3
 Architecture: any
@@ -106,7 +110,7 @@ Architecture: any
 Section: libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs},
  libclang1-3.3 (= ${binary:Version}), libclang-common-3.3-dev (= ${binary:Version})
-Description: clang library
+Description: clang library - Development package
  Clang project is a C, C++, Objective C and Objective C++ front-end
  for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
  Collection (GCC).
@@ -142,6 +146,22 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, python
 Description: Clang Python Bindings
  This binding package provides access to the Clang compiler and libraries.
 
+
+Package: clang-3.3-examples
+Architecture: any
+Section: doc
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Clang examples
+ Clang project is a C, C++, Objective C and Objective C++ front-end
+ for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+ Collection (GCC).
+ .
+ Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
+ a partial support of C++1y.
+ .
+ This package contains the clang examples.
+
+# ------------- LLVM -------------
 
 Package: libllvm3.3
 Architecture: any
@@ -231,6 +251,8 @@ Section: ocaml
 Architecture: any
 Suggests: llvm-3.3-doc
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${ocaml:Depends}, llvm-3.3-dev (= ${binary:Version})
+Replaces: libllvm-ocaml-3.3-dev
+Conflicts: libllvm-ocaml-3.3-dev
 Provides: ${ocaml:Provides}
 Description: Modular compiler and toolchain technologies, OCaml bindings
  LLVM is a collection of libraries and tools that make it easy to build
