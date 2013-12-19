@@ -41,5 +41,6 @@ atomic_library_1.diff
 atomic_library_2.diff
 removeduplicatedeclaration.diff
 python-clangpath.diff
+debian-mips64-n32-multiarch.diff
 #98-unwind.h.patch
 99-python-bindings.patch

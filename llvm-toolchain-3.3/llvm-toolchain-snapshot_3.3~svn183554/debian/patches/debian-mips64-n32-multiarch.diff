@@ -1,0 +1,74 @@
+Index: llvm-toolchain-3.3-3.3/clang/lib/Driver/ToolChains.cpp
+===================================================================
+--- llvm-toolchain-3.3-3.3.orig/clang/lib/Driver/ToolChains.cpp	2013-11-21 18:38:32.860732069 +0800
++++ llvm-toolchain-3.3-3.3/clang/lib/Driver/ToolChains.cpp	2013-11-21 18:49:15.656277394 +0800
+@@ -1133,9 +1133,15 @@
+   };
+ 
+   static const char *const MIPS64LibDirs[] = { "/lib64", "/lib" };
+-  static const char *const MIPS64Triples[] = { "mips64-linux-gnu" };
++  static const char *const MIPS64Triples[] = {
++    "mips64-linux-gnu",
++    "mips64-linux-gnuabi64"
++  };
+   static const char *const MIPS64ELLibDirs[] = { "/lib64", "/lib" };
+-  static const char *const MIPS64ELTriples[] = { "mips64el-linux-gnu" };
++  static const char *const MIPS64ELTriples[] = {
++    "mips64el-linux-gnu",
++    "mips64el-linux-gnuabi64"
++  };
+ 
+   static const char *const PPCLibDirs[] = { "/lib32", "/lib" };
+   static const char *const PPCTriples[] = {
+@@ -1296,9 +1302,9 @@
+ }
+ 
+ static bool isMipsArch(llvm::Triple::ArchType Arch) {
+-  return Arch == llvm::Triple::mips ||
+-         Arch == llvm::Triple::mipsel ||
+-         Arch == llvm::Triple::mips64 ||
++  return Arch == llvm::Triple::mips      ||
++         Arch == llvm::Triple::mipsel    ||
++         Arch == llvm::Triple::mips64    ||
+          Arch == llvm::Triple::mips64el;
+ }
+ 
+@@ -2168,6 +2174,14 @@
+     if (llvm::sys::fs::exists(SysRoot + "/lib/mipsel-linux-gnu"))
+       return "mipsel-linux-gnu";
+     return TargetTriple.str();
++  case llvm::Triple::mips64:
++    if (llvm::sys::fs::exists(SysRoot + "/lib/mips64-linux-gnuabi64"))
++      return "mips64-linux-gnuabi64";
++    return TargetTriple.str();
++  case llvm::Triple::mips64el:
++    if (llvm::sys::fs::exists(SysRoot + "/lib/mips64el-linux-gnuabi64"))
++      return "mips64el-linux-gnuabi64";
++    return TargetTriple.str();
+   case llvm::Triple::ppc:
+     if (llvm::sys::fs::exists(SysRoot + "/lib/powerpc-linux-gnuspe"))
+       return "powerpc-linux-gnuspe";
+@@ -2486,6 +2500,12 @@
+   const StringRef MIPSELMultiarchIncludeDirs[] = {
+     "/usr/include/mipsel-linux-gnu"
+   };
++  const StringRef MIPS64MultiarchIncludeDirs[] = {
++    "/usr/include/mips64-linux-gnuabi64"
++  };
++  const StringRef MIPS64ELMultiarchIncludeDirs[] = {
++    "/usr/include/mips64el-linux-gnuabi64"
++  };
+   const StringRef PPCMultiarchIncludeDirs[] = {
+     "/usr/include/powerpc-linux-gnu"
+   };
+@@ -2508,6 +2528,10 @@
+     MultiarchIncludeDirs = MIPSMultiarchIncludeDirs;
+   } else if (getTriple().getArch() == llvm::Triple::mipsel) {
+     MultiarchIncludeDirs = MIPSELMultiarchIncludeDirs;
++  } else if (getTriple().getArch() == llvm::Triple::mips64) {
++    MultiarchIncludeDirs = MIPS64MultiarchIncludeDirs;
++  } else if (getTriple().getArch() == llvm::Triple::mips64el) {
++    MultiarchIncludeDirs = MIPS64ELMultiarchIncludeDirs;
+   } else if (getTriple().getArch() == llvm::Triple::ppc) {
+     MultiarchIncludeDirs = PPCMultiarchIncludeDirs;
+   } else if (getTriple().getArch() == llvm::Triple::ppc64) {
