@@ -1,3 +1,10 @@
+llvm-toolchain-3.3 (1:3.3-16) unstable; urgency=low
+
+  * Make lldb-3.3-dev dependencies matches lldb-3.3.
+  * Disable the lldb build under ia64 (so, now: ia64 mips mipsel hurd)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Wed, 18 Dec 2013 11:19:50 +0100
+
 llvm-toolchain-3.3 (1:3.3-15) unstable; urgency=low
 
   * Add the Ocaml ABI dependency (Closes: #731344)
