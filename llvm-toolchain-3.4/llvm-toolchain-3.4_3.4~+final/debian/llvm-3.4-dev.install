@@ -1,0 +1,21 @@
+usr/lib/llvm-3.4/lib/libLLVM*.a
+usr/lib/llvm-3.4/lib/libllvm*.a
+usr/lib/llvm-3.4/lib/LLVM*.so
+usr/lib/llvm-3.4/lib/libLTO.*
+usr/lib/llvm-3.4/include/llvm/      usr/include/llvm-3.4/
+usr/lib/llvm-3.4/include/llvm-c/	usr/include/llvm-c-3.4/
+cmake/modules/*.cmake               usr/share/llvm-3.4/cmake/
+
+build-llvm/Makefile.common		/usr/lib/llvm-3.4/build/
+build-llvm/Makefile.config		/usr/lib/llvm-3.4/build/
+build-llvm/config.status		/usr/lib/llvm-3.4/build/
+Makefile.rules			        /usr/lib/llvm-3.4/build/
+configure			            /usr/lib/llvm-3.4/build/
+autoconf/			            /usr/lib/llvm-3.4/build/
+
+utils/vim/llvm.vim		        usr/share/vim/addons/syntax/llvm-3.4.vim
+utils/vim/tablegen.vim		    usr/share/vim/addons/syntax/tablegen-3.4.vim
+
+utils/emacs/emacs.el		    usr/share/emacs/site-lisp/llvm-3.4/
+utils/emacs/llvm-mode.el	    usr/share/emacs/site-lisp/llvm-3.4/
+utils/emacs/tablegen-mode.el	usr/share/emacs/site-lisp/llvm-3.4/

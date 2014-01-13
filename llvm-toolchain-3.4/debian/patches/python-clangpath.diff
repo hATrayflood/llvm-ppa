@@ -1,0 +1,13 @@
+Index: llvm-toolchain-snapshot_3.4~svn193982/clang/bindings/python/clang/cindex.py
+===================================================================
+--- llvm-toolchain-snapshot_3.4~svn193982.orig/clang/bindings/python/clang/cindex.py	2013-11-04 09:46:51.136669417 +0100
++++ llvm-toolchain-snapshot_3.4~svn193982/clang/bindings/python/clang/cindex.py	2013-11-04 09:46:51.136669417 +0100
+@@ -3358,7 +3358,7 @@
+         elif name == 'Windows':
+             file = 'libclang.dll'
+         else:
+-            file = 'libclang.so'
++            file = 'libclang-3.3.so'
+ 
+         if Config.library_path:
+             file = Config.library_path + '/' + file

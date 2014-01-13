@@ -1,0 +1,44 @@
+Index: llvm-toolchain-3.4-3.4~+rc2/clang/lib/Driver/ToolChains.h
+===================================================================
+--- llvm-toolchain-3.4-3.4~+rc2.orig/clang/lib/Driver/ToolChains.h	2013-11-17 23:36:07.000000000 +0100
++++ llvm-toolchain-3.4-3.4~+rc2/clang/lib/Driver/ToolChains.h	2013-12-05 09:07:45.000000000 +0100
+@@ -164,6 +164,8 @@
+   virtual bool isPICDefault() const;
+   virtual bool isPIEDefault() const;
+   virtual bool isPICDefaultForced() const;
++  virtual void AddClangSystemIncludeArgs(const llvm::opt::ArgList &DriverArgs,
++                                        llvm::opt::ArgStringList &CC1Args) const;
+ 
+ protected:
+   virtual Tool *getTool(Action::ActionClass AC) const;
+Index: llvm-toolchain-3.4-3.4~+rc2/clang/lib/Driver/ToolChains.cpp
+===================================================================
+--- llvm-toolchain-3.4-3.4~+rc2.orig/clang/lib/Driver/ToolChains.cpp	2013-12-02 11:00:07.000000000 +0100
++++ llvm-toolchain-3.4-3.4~+rc2/clang/lib/Driver/ToolChains.cpp	2013-12-05 09:08:49.000000000 +0100
+@@ -973,6 +973,13 @@
+   return GoodVersion;
+ }
+ 
++void Generic_GCC::AddClangSystemIncludeArgs(const llvm::opt::ArgList &DriverArgs,
++                                      llvm::opt::ArgStringList &CC1Args) const {
++  // Under Debian, clang headers are installed into
++  // '/usr/include/clang/VERSION/include/'
++  addSystemInclude(DriverArgs, CC1Args, "/usr/include/clang/" + std::string(CLANG_VERSION_STRING) + "/include/");
++}
++
+ /// \brief Less-than for GCCVersion, implementing a Strict Weak Ordering.
+ bool Generic_GCC::GCCVersion::isOlderThan(int RHSMajor, int RHSMinor,
+                                           int RHSPatch,
+Index: llvm-toolchain-3.4-3.4~+rc2/lldb/source/Host/common/Host.cpp
+===================================================================
+--- llvm-toolchain-3.4-3.4~+rc2.orig/lldb/source/Host/common/Host.cpp	2013-12-05 09:08:49.000000000 +0100
++++ llvm-toolchain-3.4-3.4~+rc2/lldb/source/Host/common/Host.cpp	2013-12-05 09:09:17.294953434 +0100
+@@ -1546,7 +1546,7 @@
+     return error;
+ }
+ 
+-#if defined(__linux__) or defined(__FreeBSD__)
++#if defined(__linux__) || defined(__FreeBSD__) || defined(__GLIBC__)
+ // The functions below implement process launching via posix_spawn() for Linux
+ // and FreeBSD.
+ 

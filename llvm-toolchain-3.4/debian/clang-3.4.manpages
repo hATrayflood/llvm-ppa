@@ -1,0 +1,6 @@
+build-llvm/tools/clang/docs/tools/clang.1
+clang/tools/scan-build/scan-build.1
+debian/man/clang-check.1
+debian/man/clang-tblgen.1
+debian/man/scan-view.1
+
