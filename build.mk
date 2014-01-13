@@ -1,4 +1,4 @@
-all:
+all: debclean
 	cd $(DIR) && debuild -uc -us
 
 dput:
@@ -16,13 +16,11 @@ install:
 clean:
 	cd $(DIR) && debuild clean
 
-distclean: clean
-	for F in `ls -a $(DIR)` ; do \
-		if [ "$$F" != "debian" ] && [ "$$F" != "." ] && [ "$$F" != ".." ] ; then \
-			rm -fr $(DIR)/$$F ; \
-		fi ; \
-	done
+debclean:
 	rm -f  *.deb
 	rm -f  $(DEL)
 
-.PHONY: all dput install extract clean distclean
+distclean: clean debclean
+	rm -fr $(addprefix $(DIR)/,$(filter-out . .. debian,$(shell ls -a $(DIR))))
+
+.PHONY: all dput install extract clean debclean distclean
