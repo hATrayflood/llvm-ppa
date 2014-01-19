@@ -1,12 +1,12 @@
 diff -urN debian/changelog llvm-toolchain-snapshot_3.3~svn183554/debian/changelog
 --- debian/changelog	2013-12-18 19:33:46.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/changelog	2014-01-11 21:59:12.271133052 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/changelog	2014-01-19 21:33:55.404655552 +0900
 @@ -1,3 +1,9 @@
-+llvm-toolchain-3.3 (1:3.3-debian16ppa3) precise; urgency=low
++llvm-toolchain-3.3 (1:3.3-debian16ppa4) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sat, 11 Jan 2014 21:45:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sun, 19 Jan 2014 21:35:00 +0900
 +
  llvm-toolchain-3.3 (1:3.3-16) unstable; urgency=low
  
@@ -18,47 +18,46 @@ diff -urN debian/clang-3.3-relaxng.install llvm-toolchain-snapshot_3.3~svn183554
 +clang/bindings/xml/comment-xml-schema.rng	/usr/share/xml/clang-3.3-relaxng/
 diff -urN debian/clang-3.3.install llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.install
 --- debian/clang-3.3.install	2013-11-05 21:23:55.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.install	2013-11-18 16:21:48.421986005 +0900
-@@ -1,10 +1,9 @@
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.install	2014-01-19 20:26:46.711383235 +0900
+@@ -1,10 +1,15 @@
 -usr/lib/llvm-3.3/bin/clang			/usr/bin/
 -usr/lib/llvm-3.3/bin/clang++			/usr/bin/
 -usr/lib/llvm-3.3/bin/clang-check			/usr/bin/
 -usr/lib/llvm-3.3/bin/clang-tblgen			/usr/bin/
--usr/lib/llvm-3.3/bin/c-index-test*
--usr/bin/c-index-test*
--tools/clang/tools/scan-build			/usr/share/clang/
--tools/clang/tools/scan-view			/usr/share/clang/
 +usr/lib/llvm-3.3/bin/clang		/usr/lib/llvm-3.3/bin/
 +usr/lib/llvm-3.3/bin/clang++		/usr/lib/llvm-3.3/bin/
 +usr/lib/llvm-3.3/bin/clang-check	/usr/lib/llvm-3.3/bin/
 +usr/lib/llvm-3.3/bin/clang-tblgen	/usr/lib/llvm-3.3/bin/
-+usr/lib/llvm-3.3/bin/c-index-test	/usr/lib/llvm-3.3/bin/
-+tools/clang/tools/scan-build		/usr/lib/llvm-3.3/share/
-+tools/clang/tools/scan-view		/usr/lib/llvm-3.3/share/
++usr/bin/clang-3.3
++usr/bin/clang++-3.3
++usr/bin/clang-check-3.3
++usr/bin/clang-tblgen-3.3
+ usr/lib/llvm-3.3/bin/c-index-test*
+ usr/bin/c-index-test*
+-tools/clang/tools/scan-build			/usr/share/clang/
+-tools/clang/tools/scan-view			/usr/share/clang/
++clang/tools/scan-build			/usr/lib/llvm-3.3/share/
++clang/tools/scan-view			/usr/lib/llvm-3.3/share/
  #usr/share/man/man1/clang.1	usr/share/man/man1/
 -debian/pollycc		/usr/bin/
 +debian/pollycc				/usr/lib/llvm-3.3/bin/
++compiler-rt/lib/asan/scripts/asan_symbolize.py	/usr/lib/llvm-3.3/bin/
 diff -urN debian/clang-3.3.links llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.links
 --- debian/clang-3.3.links	2013-10-14 19:49:12.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.links	2013-11-18 16:22:59.518338555 +0900
-@@ -1,5 +1,12 @@
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.links	2014-01-19 16:50:41.587442158 +0900
+@@ -1,5 +1,7 @@
 -usr/share/man/man1/clang-3.3.1.gz		usr/share/man/man1/llvm-clang.1.gz
 -usr/share/man/man1/clang-3.3.1.gz		usr/share/man/man1/clang++.1.gz
 -/usr/share/clang/scan-build/scan-build	/usr/bin/scan-build
 -/usr/share/clang/scan-view/scan-view	/usr/bin/scan-view
 -/usr/bin/clang				/usr/bin/llvm-clang
-+/usr/lib/llvm-3.3/bin/clang			/usr/bin/llvm-clang-3.3
-+/usr/lib/llvm-3.3/bin/clang			/usr/bin/clang-3.3
-+/usr/lib/llvm-3.3/bin/clang++			/usr/bin/clang++-3.3
-+/usr/lib/llvm-3.3/bin/clang-check		/usr/bin/clang-check-3.3
-+/usr/lib/llvm-3.3/bin/clang-tblgen		/usr/bin/clang-tblgen-3.3
-+/usr/lib/llvm-3.3/bin/c-index-test		/usr/bin/c-index-test-3.3
-+/usr/lib/llvm-3.3/share/scan-build/scan-build	/usr/bin/scan-build-3.3
-+/usr/lib/llvm-3.3/share/scan-view/scan-view	/usr/bin/scan-view-3.3
-+/usr/lib/llvm-3.3/bin/pollycc			/usr/bin/pollycc-3.3
-+/usr/lib/llvm-3.3/bin/asan_symbolize		/usr/bin/asan_symbolize-3.3
 +usr/share/man/man1/clang-3.3.1.gz		usr/share/man/man1/llvm-clang-3.3.1.gz
 +usr/share/man/man1/clang-3.3.1.gz		usr/share/man/man1/clang++-3.3.1.gz
++usr/lib/llvm-3.3/share/scan-build/scan-build	usr/bin/scan-build-3.3
++usr/lib/llvm-3.3/share/scan-view/scan-view	usr/bin/scan-view-3.3
++usr/lib/llvm-3.3/bin/clang			usr/bin/llvm-clang-3.3
++usr/lib/llvm-3.3/bin/pollycc			usr/bin/pollycc-3.3
++usr/lib/llvm-3.3/bin/asan_symbolize.py		usr/bin/asan_symbolize-3.3
 diff -urN debian/clang-3.3.manpages llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.manpages
 --- debian/clang-3.3.manpages	2013-10-14 19:49:12.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.manpages	2013-09-04 18:21:38.835126651 +0900
@@ -138,15 +137,15 @@ diff -urN debian/clang-format-3.3.install llvm-toolchain-snapshot_3.3~svn183554/
 -usr/lib/llvm-3.3/bin/clang-format
 diff -urN debian/clang-format-3.3.links llvm-toolchain-snapshot_3.3~svn183554/debian/clang-format-3.3.links
 --- debian/clang-format-3.3.links	1970-01-01 09:00:00.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-format-3.3.links	2013-09-04 18:21:38.835126651 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-format-3.3.links	2014-01-19 04:59:39.223726630 +0900
 @@ -0,0 +1,3 @@
-+/usr/lib/llvm-3.3/bin/clang-format.py		/usr/share/vim/addons/syntax/clang-format-3.3.py
-+/usr/lib/llvm-3.3/bin/clang-format.py		/usr/bin/clang-format-3.3
-+/usr/lib/llvm-3.3/bin/clang-format-diff.py	/usr/bin/clang-format-diff-3.3
++usr/lib/llvm-3.3/bin/clang-format.py		usr/share/vim/addons/syntax/clang-format-3.3.py
++usr/lib/llvm-3.3/bin/clang-format.py		usr/bin/clang-format-3.3
++usr/lib/llvm-3.3/bin/clang-format-diff.py	usr/bin/clang-format-diff-3.3
 diff -urN debian/control llvm-toolchain-snapshot_3.3~svn183554/debian/control
 --- debian/control	2013-12-18 19:33:46.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/control	2013-12-12 02:05:38.246043381 +0900
-@@ -1,20 +1,18 @@
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/control	2014-01-14 05:50:00.699418112 +0900
+@@ -1,8 +1,7 @@
  Source: llvm-toolchain-3.3
  Section: devel
 -Priority: optional
@@ -157,11 +156,8 @@ diff -urN debian/control llvm-toolchain-snapshot_3.3~svn183554/debian/control
  Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl, expect,
      autoconf, automake, perl, libtool, doxygen, chrpath, texinfo,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
-     lsb-release, patchutils, diffstat, xz-utils, chrpath, python-dev,
-     libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev,
-     libisl-dev (>= 0.11.1), libjsoncpp-dev,
--    lcov, procps, help2man, dh-ocaml
-+    lcov, procps, help2man
+@@ -12,9 +11,8 @@
+     lcov, procps, help2man, dh-ocaml
  Build-Conflicts: oprofile, ocaml
  Standards-Version: 3.9.5
 -Homepage: http://www.llvm.org/
@@ -201,11 +197,10 @@ diff -urN debian/control llvm-toolchain-snapshot_3.3~svn183554/debian/control
  Description: Tool to convert C++98 and C++03 code to C++11
   The purpose of the C++11 Migrator is to do source-to-source translation to
   migrate existing C++ code to use C++11 features to enhance
-@@ -102,12 +92,9 @@
-  locations with elements within the AST, and other facilities that support
+@@ -103,11 +93,9 @@
   Clang-based development tools.
  
--
+ 
 -Package: libclang1-3.3-dbg
 -Architecture: any
 -Section: debug
@@ -217,7 +212,7 @@ diff -urN debian/control llvm-toolchain-snapshot_3.3~svn183554/debian/control
  Description: clang library
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
-@@ -116,7 +103,7 @@
+@@ -116,7 +104,7 @@
   Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
   a partial support of C++1y.
   .
@@ -226,7 +221,7 @@ diff -urN debian/control llvm-toolchain-snapshot_3.3~svn183554/debian/control
  
  Package: libclang-3.3-dev
  Architecture: any
-@@ -138,8 +125,7 @@
+@@ -138,8 +126,7 @@
  Architecture: any
  Section: libdevel
  Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.3 (= ${binary:Version})
@@ -236,16 +231,18 @@ diff -urN debian/control llvm-toolchain-snapshot_3.3~svn183554/debian/control
  Description: clang library - Common development package
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
-@@ -157,8 +143,6 @@
+@@ -156,9 +143,7 @@
+ Package: python-clang-3.3
  Section: python
  Architecture: any
- Depends: ${shlibs:Depends}, ${misc:Depends}, python
+-Depends: ${shlibs:Depends}, ${misc:Depends}, python
 -Replaces: python-clang-3.4
 -Breaks: python-clang-3.4
++Depends: ${shlibs:Depends}, ${misc:Depends}, libclang-3.3-dev, python2.7
  Description: Clang Python Bindings
   This binding package provides access to the Clang compiler and libraries.
  
-@@ -193,27 +177,11 @@
+@@ -193,27 +178,11 @@
   This package contains the LLVM runtime library.
  
  
@@ -273,7 +270,7 @@ diff -urN debian/control llvm-toolchain-snapshot_3.3~svn183554/debian/control
  Description: Modular compiler and toolchain technologies
   LLVM is a collection of libraries and tools that make it easy to build
   compilers, optimizers, just-in-time code generators, and many other
-@@ -243,8 +211,6 @@
+@@ -243,8 +212,6 @@
  Package: llvm-3.3-runtime
  Architecture: any
  Depends: binfmt-support, ${shlibs:Depends}, ${misc:Depends}
@@ -282,7 +279,7 @@ diff -urN debian/control llvm-toolchain-snapshot_3.3~svn183554/debian/control
  Description: Modular compiler and toolchain technologies, IR interpreter
   LLVM is a collection of libraries and tools that make it easy to build
   compilers, optimizers, just-in-time code generators, and many other
-@@ -264,7 +230,6 @@
+@@ -264,7 +231,6 @@
  Package: llvm-3.3-dev
  Architecture: any
  Depends: ${shlibs:Depends}, libffi-dev (>= 3.0.9), ${misc:Depends}, llvm-3.3 (= ${binary:Version})
@@ -290,7 +287,7 @@ diff -urN debian/control llvm-toolchain-snapshot_3.3~svn183554/debian/control
  Description: Modular compiler and toolchain technologies, libraries and headers
   LLVM is a collection of libraries and tools that make it easy to build
   compilers, optimizers, just-in-time code generators, and many other
-@@ -342,29 +307,3 @@
+@@ -342,29 +308,3 @@
   .
   This package contains examples for using LLVM, both in developing
   extensions to LLVM and in using it to compile code.
@@ -320,563 +317,6 @@ diff -urN debian/control llvm-toolchain-snapshot_3.3~svn183554/debian/control
 - Project, such as the Clang expression parser and LLVM disassembler.
 - .
 - This package provides the header files to build extension over lldb.
-diff -urN debian/libclang1-3.3.symbols llvm-toolchain-snapshot_3.3~svn183554/debian/libclang1-3.3.symbols
---- debian/libclang1-3.3.symbols	2013-10-16 16:21:51.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/libclang1-3.3.symbols	2013-10-25 12:29:59.708295647 +0900
-@@ -1,277 +1,277 @@
- libclang.so.1 libclang1-3.3 #MINVER#
-- clang_BlockCommandComment_getArgText@Base 1:3.3
-- clang_BlockCommandComment_getCommandName@Base 1:3.3
-- clang_BlockCommandComment_getNumArgs@Base 1:3.3
-- clang_BlockCommandComment_getParagraph@Base 1:3.3
-- clang_CXCursorSet_contains@Base 1:3.3
-- clang_CXCursorSet_insert@Base 1:3.3
-- clang_CXIndex_getGlobalOptions@Base 1:3.3
-- clang_CXIndex_setGlobalOptions@Base 1:3.3
-- clang_CXXMethod_isStatic@Base 1:3.3
-- clang_CXXMethod_isVirtual@Base 1:3.3
-- clang_Comment_getChild@Base 1:3.3
-- clang_Comment_getKind@Base 1:3.3
-- clang_Comment_getNumChildren@Base 1:3.3
-- clang_Comment_isWhitespace@Base 1:3.3
-- clang_CompilationDatabase_dispose@Base 1:3.3
-- clang_CompilationDatabase_fromDirectory@Base 1:3.3
-- clang_CompilationDatabase_getAllCompileCommands@Base 1:3.3
-- clang_CompilationDatabase_getCompileCommands@Base 1:3.3
-- clang_CompileCommand_getArg@Base 1:3.3
-- clang_CompileCommand_getDirectory@Base 1:3.3
-- clang_CompileCommand_getNumArgs@Base 1:3.3
-- clang_CompileCommands_dispose@Base 1:3.3
-- clang_CompileCommands_getCommand@Base 1:3.3
-- clang_CompileCommands_getSize@Base 1:3.3
-- clang_Cursor_getArgument@Base 1:3.3
-- clang_Cursor_getBriefCommentText@Base 1:3.3
-- clang_Cursor_getCommentRange@Base 1:3.3
-- clang_Cursor_getModule@Base 1:3.3
-- clang_Cursor_getNumArguments@Base 1:3.3
-- clang_Cursor_getObjCDeclQualifiers@Base 1:3.3
-- clang_Cursor_getObjCPropertyAttributes@Base 1:3.3
-- clang_Cursor_getObjCSelectorIndex@Base 1:3.3
-- clang_Cursor_getParsedComment@Base 1:3.3
-- clang_Cursor_getRawCommentText@Base 1:3.3
-- clang_Cursor_getReceiverType@Base 1:3.3
-- clang_Cursor_getSpellingNameRange@Base 1:3.3
-- clang_Cursor_getTranslationUnit@Base 1:3.3
-- clang_Cursor_isBitField@Base 1:3.3
-- clang_Cursor_isDynamicCall@Base 1:3.3
-- clang_Cursor_isNull@Base 1:3.3
-- clang_Cursor_isVariadic@Base 1:3.3
-- clang_FullComment_getAsHTML@Base 1:3.3
-- clang_FullComment_getAsXML@Base 1:3.3
-- clang_HTMLStartTagComment_isSelfClosing@Base 1:3.3
-- clang_HTMLStartTag_getAttrName@Base 1:3.3
-- clang_HTMLStartTag_getAttrValue@Base 1:3.3
-- clang_HTMLStartTag_getNumAttrs@Base 1:3.3
-- clang_HTMLTagComment_getAsString@Base 1:3.3
-- clang_HTMLTagComment_getTagName@Base 1:3.3
-- clang_IndexAction_create@Base 1:3.3
-- clang_IndexAction_dispose@Base 1:3.3
-- clang_InlineCommandComment_getArgText@Base 1:3.3
-- clang_InlineCommandComment_getCommandName@Base 1:3.3
-- clang_InlineCommandComment_getNumArgs@Base 1:3.3
-- clang_InlineCommandComment_getRenderKind@Base 1:3.3
-- clang_InlineContentComment_hasTrailingNewline@Base 1:3.3
-- clang_Location_isInSystemHeader@Base 1:3.3
-- clang_Module_getASTFile@Base 1:3.3
-- clang_Module_getFullName@Base 1:3.3
-- clang_Module_getName@Base 1:3.3
-- clang_Module_getNumTopLevelHeaders@Base 1:3.3
-- clang_Module_getParent@Base 1:3.3
-- clang_Module_getTopLevelHeader@Base 1:3.3
-- clang_ParamCommandComment_getDirection@Base 1:3.3
-- clang_ParamCommandComment_getParamIndex@Base 1:3.3
-- clang_ParamCommandComment_getParamName@Base 1:3.3
-- clang_ParamCommandComment_isDirectionExplicit@Base 1:3.3
-- clang_ParamCommandComment_isParamIndexValid@Base 1:3.3
-- clang_Range_isNull@Base 1:3.3
-- clang_TParamCommandComment_getDepth@Base 1:3.3
-- clang_TParamCommandComment_getIndex@Base 1:3.3
-- clang_TParamCommandComment_getParamName@Base 1:3.3
-- clang_TParamCommandComment_isParamPositionValid@Base 1:3.3
-- clang_TextComment_getText@Base 1:3.3
-- clang_Type_getAlignOf@Base 1:3.3
-- clang_Type_getOffsetOf@Base 1:3.3
-- clang_Type_getSizeOf@Base 1:3.3
-- clang_VerbatimBlockLineComment_getText@Base 1:3.3
-- clang_VerbatimLineComment_getText@Base 1:3.3
-- clang_annotateTokens@Base 1:3.3
-- clang_codeCompleteAt@Base 1:3.3
-- clang_codeCompleteGetContainerKind@Base 1:3.3
-- clang_codeCompleteGetContainerUSR@Base 1:3.3
-- clang_codeCompleteGetContexts@Base 1:3.3
-- clang_codeCompleteGetDiagnostic@Base 1:3.3
-- clang_codeCompleteGetNumDiagnostics@Base 1:3.3
-- clang_codeCompleteGetObjCSelector@Base 1:3.3
-- clang_constructUSR_ObjCCategory@Base 1:3.3
-- clang_constructUSR_ObjCClass@Base 1:3.3
-- clang_constructUSR_ObjCIvar@Base 1:3.3
-- clang_constructUSR_ObjCMethod@Base 1:3.3
-- clang_constructUSR_ObjCProperty@Base 1:3.3
-- clang_constructUSR_ObjCProtocol@Base 1:3.3
-- clang_createCXCursorSet@Base 1:3.3
-- clang_createIndex@Base 1:3.3
-- clang_createTranslationUnit@Base 1:3.3
-- clang_createTranslationUnitFromSourceFile@Base 1:3.3
-- clang_defaultCodeCompleteOptions@Base 1:3.3
-- clang_defaultDiagnosticDisplayOptions@Base 1:3.3
-- clang_defaultEditingTranslationUnitOptions@Base 1:3.3
-- clang_defaultReparseOptions@Base 1:3.3
-- clang_defaultSaveOptions@Base 1:3.3
-- clang_disposeCXCursorSet@Base 1:3.3
-- clang_disposeCXPlatformAvailability@Base 1:3.3
-- clang_disposeCXTUResourceUsage@Base 1:3.3
-- clang_disposeCodeCompleteResults@Base 1:3.3
-- clang_disposeDiagnostic@Base 1:3.3
-- clang_disposeDiagnosticSet@Base 1:3.3
-- clang_disposeIndex@Base 1:3.3
-- clang_disposeOverriddenCursors@Base 1:3.3
-- clang_disposeString@Base 1:3.3
-- clang_disposeTokens@Base 1:3.3
-- clang_disposeTranslationUnit@Base 1:3.3
-- clang_enableStackTraces@Base 1:3.3
-- clang_equalCursors@Base 1:3.3
-- clang_equalLocations@Base 1:3.3
-- clang_equalRanges@Base 1:3.3
-- clang_equalTypes@Base 1:3.3
-- clang_executeOnThread@Base 1:3.3
-- clang_findIncludesInFile@Base 1:3.3
-- clang_findIncludesInFileWithBlock@Base 1:3.3
-- clang_findReferencesInFile@Base 1:3.3
-- clang_findReferencesInFileWithBlock@Base 1:3.3
-- clang_formatDiagnostic@Base 1:3.3
-- clang_getArgType@Base 1:3.3
-- clang_getArrayElementType@Base 1:3.3
-- clang_getArraySize@Base 1:3.3
-- clang_getCString@Base 1:3.3
-- clang_getCXTUResourceUsage@Base 1:3.3
-- clang_getCXXAccessSpecifier@Base 1:3.3
-- clang_getCanonicalCursor@Base 1:3.3
-- clang_getCanonicalType@Base 1:3.3
-- clang_getChildDiagnostics@Base 1:3.3
-- clang_getClangVersion@Base 1:3.3
-- clang_getCompletionAnnotation@Base 1:3.3
-- clang_getCompletionAvailability@Base 1:3.3
-- clang_getCompletionBriefComment@Base 1:3.3
-- clang_getCompletionChunkCompletionString@Base 1:3.3
-- clang_getCompletionChunkKind@Base 1:3.3
-- clang_getCompletionChunkText@Base 1:3.3
-- clang_getCompletionNumAnnotations@Base 1:3.3
-- clang_getCompletionParent@Base 1:3.3
-- clang_getCompletionPriority@Base 1:3.3
-- clang_getCursor@Base 1:3.3
-- clang_getCursorAvailability@Base 1:3.3
-- clang_getCursorCompletionString@Base 1:3.3
-- clang_getCursorDefinition@Base 1:3.3
-- clang_getCursorDisplayName@Base 1:3.3
-- clang_getCursorExtent@Base 1:3.3
-- clang_getCursorKind@Base 1:3.3
-- clang_getCursorKindSpelling@Base 1:3.3
-- clang_getCursorLanguage@Base 1:3.3
-- clang_getCursorLexicalParent@Base 1:3.3
-- clang_getCursorLinkage@Base 1:3.3
-- clang_getCursorLocation@Base 1:3.3
-- clang_getCursorPlatformAvailability@Base 1:3.3
-- clang_getCursorReferenceNameRange@Base 1:3.3
-- clang_getCursorReferenced@Base 1:3.3
-- clang_getCursorResultType@Base 1:3.3
-- clang_getCursorSemanticParent@Base 1:3.3
-- clang_getCursorSpelling@Base 1:3.3
-- clang_getCursorType@Base 1:3.3
-- clang_getCursorUSR@Base 1:3.3
-- clang_getDeclObjCTypeEncoding@Base 1:3.3
-- clang_getDefinitionSpellingAndExtent@Base 1:3.3
-- clang_getDiagnostic@Base 1:3.3
-- clang_getDiagnosticCategory@Base 1:3.3
-- clang_getDiagnosticCategoryName@Base 1:3.3
-- clang_getDiagnosticCategoryText@Base 1:3.3
-- clang_getDiagnosticFixIt@Base 1:3.3
-- clang_getDiagnosticInSet@Base 1:3.3
-- clang_getDiagnosticLocation@Base 1:3.3
-- clang_getDiagnosticNumFixIts@Base 1:3.3
-- clang_getDiagnosticNumRanges@Base 1:3.3
-- clang_getDiagnosticOption@Base 1:3.3
-- clang_getDiagnosticRange@Base 1:3.3
-- clang_getDiagnosticSetFromTU@Base 1:3.3
-- clang_getDiagnosticSeverity@Base 1:3.3
-- clang_getDiagnosticSpelling@Base 1:3.3
-- clang_getElementType@Base 1:3.3
-- clang_getEnumConstantDeclUnsignedValue@Base 1:3.3
-- clang_getEnumConstantDeclValue@Base 1:3.3
-- clang_getEnumDeclIntegerType@Base 1:3.3
-- clang_getExpansionLocation@Base 1:3.3
-- clang_getFieldDeclBitWidth@Base 1:3.3
-- clang_getFile@Base 1:3.3
-- clang_getFileLocation@Base 1:3.3
-- clang_getFileName@Base 1:3.3
-- clang_getFileTime@Base 1:3.3
-- clang_getFileUniqueID@Base 1:3.3
-- clang_getFunctionTypeCallingConv@Base 1:3.3
-- clang_getIBOutletCollectionType@Base 1:3.3
-- clang_getIncludedFile@Base 1:3.3
-- clang_getInclusions@Base 1:3.3
-- clang_getInstantiationLocation@Base 1:3.3
-- clang_getLocation@Base 1:3.3
-- clang_getLocationForOffset@Base 1:3.3
-- clang_getNullCursor@Base 1:3.3
-- clang_getNullLocation@Base 1:3.3
-- clang_getNullRange@Base 1:3.3
-- clang_getNumArgTypes@Base 1:3.3
-- clang_getNumCompletionChunks@Base 1:3.3
-- clang_getNumDiagnostics@Base 1:3.3
-- clang_getNumDiagnosticsInSet@Base 1:3.3
-- clang_getNumElements@Base 1:3.3
-- clang_getNumOverloadedDecls@Base 1:3.3
-- clang_getOverloadedDecl@Base 1:3.3
-- clang_getOverriddenCursors@Base 1:3.3
-- clang_getPointeeType@Base 1:3.3
-- clang_getPresumedLocation@Base 1:3.3
-- clang_getRange@Base 1:3.3
-- clang_getRangeEnd@Base 1:3.3
-- clang_getRangeStart@Base 1:3.3
-- clang_getRemappings@Base 1:3.3
-- clang_getRemappingsFromFileList@Base 1:3.3
-- clang_getResultType@Base 1:3.3
-- clang_getSpecializedCursorTemplate@Base 1:3.3
-- clang_getSpellingLocation@Base 1:3.3
-- clang_getTUResourceUsageName@Base 1:3.3
-- clang_getTemplateCursorKind@Base 1:3.3
-- clang_getTokenExtent@Base 1:3.3
-- clang_getTokenKind@Base 1:3.3
-- clang_getTokenLocation@Base 1:3.3
-- clang_getTokenSpelling@Base 1:3.3
-- clang_getTranslationUnitCursor@Base 1:3.3
-- clang_getTranslationUnitSpelling@Base 1:3.3
-- clang_getTypeDeclaration@Base 1:3.3
-- clang_getTypeKindSpelling@Base 1:3.3
-- clang_getTypeSpelling@Base 1:3.3
-- clang_getTypedefDeclUnderlyingType@Base 1:3.3
-- clang_hashCursor@Base 1:3.3
-- clang_indexLoc_getCXSourceLocation@Base 1:3.3
-- clang_indexLoc_getFileLocation@Base 1:3.3
-- clang_indexSourceFile@Base 1:3.3
-- clang_indexTranslationUnit@Base 1:3.3
-- clang_index_getCXXClassDeclInfo@Base 1:3.3
-- clang_index_getClientContainer@Base 1:3.3
-- clang_index_getClientEntity@Base 1:3.3
-- clang_index_getIBOutletCollectionAttrInfo@Base 1:3.3
-- clang_index_getObjCCategoryDeclInfo@Base 1:3.3
-- clang_index_getObjCContainerDeclInfo@Base 1:3.3
-- clang_index_getObjCInterfaceDeclInfo@Base 1:3.3
-- clang_index_getObjCPropertyDeclInfo@Base 1:3.3
-- clang_index_getObjCProtocolRefListInfo@Base 1:3.3
-- clang_index_isEntityObjCContainerKind@Base 1:3.3
-- clang_index_setClientContainer@Base 1:3.3
-- clang_index_setClientEntity@Base 1:3.3
-- clang_isAttribute@Base 1:3.3
-- clang_isConstQualifiedType@Base 1:3.3
-- clang_isCursorDefinition@Base 1:3.3
-- clang_isDeclaration@Base 1:3.3
-- clang_isExpression@Base 1:3.3
-- clang_isFileMultipleIncludeGuarded@Base 1:3.3
-- clang_isFunctionTypeVariadic@Base 1:3.3
-- clang_isInvalid@Base 1:3.3
-- clang_isPODType@Base 1:3.3
-- clang_isPreprocessing@Base 1:3.3
-- clang_isReference@Base 1:3.3
-- clang_isRestrictQualifiedType@Base 1:3.3
-- clang_isStatement@Base 1:3.3
-- clang_isTranslationUnit@Base 1:3.3
-- clang_isUnexposed@Base 1:3.3
-- clang_isVirtualBase@Base 1:3.3
-- clang_isVolatileQualifiedType@Base 1:3.3
-- clang_loadDiagnostics@Base 1:3.3
-- clang_parseTranslationUnit@Base 1:3.3
-- clang_remap_dispose@Base 1:3.3
-- clang_remap_getFilenames@Base 1:3.3
-- clang_remap_getNumFiles@Base 1:3.3
-- clang_reparseTranslationUnit@Base 1:3.3
-- clang_saveTranslationUnit@Base 1:3.3
-- clang_sortCodeCompletionResults@Base 1:3.3
-- clang_toggleCrashRecovery@Base 1:3.3
-- clang_tokenize@Base 1:3.3
-- clang_visitChildren@Base 1:3.3
-- clang_visitChildrenWithBlock@Base 1:3.3
-+ clang_BlockCommandComment_getArgText@Base 3.3-debian11ppa2
-+ clang_BlockCommandComment_getCommandName@Base 3.3-debian11ppa2
-+ clang_BlockCommandComment_getNumArgs@Base 3.3-debian11ppa2
-+ clang_BlockCommandComment_getParagraph@Base 3.3-debian11ppa2
-+ clang_CXCursorSet_contains@Base 3.3-debian11ppa2
-+ clang_CXCursorSet_insert@Base 3.3-debian11ppa2
-+ clang_CXIndex_getGlobalOptions@Base 3.3-debian11ppa2
-+ clang_CXIndex_setGlobalOptions@Base 3.3-debian11ppa2
-+ clang_CXXMethod_isStatic@Base 3.3-debian11ppa2
-+ clang_CXXMethod_isVirtual@Base 3.3-debian11ppa2
-+ clang_Comment_getChild@Base 3.3-debian11ppa2
-+ clang_Comment_getKind@Base 3.3-debian11ppa2
-+ clang_Comment_getNumChildren@Base 3.3-debian11ppa2
-+ clang_Comment_isWhitespace@Base 3.3-debian11ppa2
-+ clang_CompilationDatabase_dispose@Base 3.3-debian11ppa2
-+ clang_CompilationDatabase_fromDirectory@Base 3.3-debian11ppa2
-+ clang_CompilationDatabase_getAllCompileCommands@Base 3.3-debian11ppa2
-+ clang_CompilationDatabase_getCompileCommands@Base 3.3-debian11ppa2
-+ clang_CompileCommand_getArg@Base 3.3-debian11ppa2
-+ clang_CompileCommand_getDirectory@Base 3.3-debian11ppa2
-+ clang_CompileCommand_getNumArgs@Base 3.3-debian11ppa2
-+ clang_CompileCommands_dispose@Base 3.3-debian11ppa2
-+ clang_CompileCommands_getCommand@Base 3.3-debian11ppa2
-+ clang_CompileCommands_getSize@Base 3.3-debian11ppa2
-+ clang_Cursor_getArgument@Base 3.3-debian11ppa2
-+ clang_Cursor_getBriefCommentText@Base 3.3-debian11ppa2
-+ clang_Cursor_getCommentRange@Base 3.3-debian11ppa2
-+ clang_Cursor_getModule@Base 3.3-debian11ppa2
-+ clang_Cursor_getNumArguments@Base 3.3-debian11ppa2
-+ clang_Cursor_getObjCDeclQualifiers@Base 3.3-debian11ppa2
-+ clang_Cursor_getObjCPropertyAttributes@Base 3.3-debian11ppa2
-+ clang_Cursor_getObjCSelectorIndex@Base 3.3-debian11ppa2
-+ clang_Cursor_getParsedComment@Base 3.3-debian11ppa2
-+ clang_Cursor_getRawCommentText@Base 3.3-debian11ppa2
-+ clang_Cursor_getReceiverType@Base 3.3-debian11ppa2
-+ clang_Cursor_getSpellingNameRange@Base 3.3-debian11ppa2
-+ clang_Cursor_getTranslationUnit@Base 3.3-debian11ppa2
-+ clang_Cursor_isBitField@Base 3.3-debian11ppa2
-+ clang_Cursor_isDynamicCall@Base 3.3-debian11ppa2
-+ clang_Cursor_isNull@Base 3.3-debian11ppa2
-+ clang_Cursor_isVariadic@Base 3.3-debian11ppa2
-+ clang_FullComment_getAsHTML@Base 3.3-debian11ppa2
-+ clang_FullComment_getAsXML@Base 3.3-debian11ppa2
-+ clang_HTMLStartTagComment_isSelfClosing@Base 3.3-debian11ppa2
-+ clang_HTMLStartTag_getAttrName@Base 3.3-debian11ppa2
-+ clang_HTMLStartTag_getAttrValue@Base 3.3-debian11ppa2
-+ clang_HTMLStartTag_getNumAttrs@Base 3.3-debian11ppa2
-+ clang_HTMLTagComment_getAsString@Base 3.3-debian11ppa2
-+ clang_HTMLTagComment_getTagName@Base 3.3-debian11ppa2
-+ clang_IndexAction_create@Base 3.3-debian11ppa2
-+ clang_IndexAction_dispose@Base 3.3-debian11ppa2
-+ clang_InlineCommandComment_getArgText@Base 3.3-debian11ppa2
-+ clang_InlineCommandComment_getCommandName@Base 3.3-debian11ppa2
-+ clang_InlineCommandComment_getNumArgs@Base 3.3-debian11ppa2
-+ clang_InlineCommandComment_getRenderKind@Base 3.3-debian11ppa2
-+ clang_InlineContentComment_hasTrailingNewline@Base 3.3-debian11ppa2
-+ clang_Location_isInSystemHeader@Base 3.3-debian11ppa2
-+ clang_Module_getASTFile@Base 3.3-debian11ppa2
-+ clang_Module_getFullName@Base 3.3-debian11ppa2
-+ clang_Module_getName@Base 3.3-debian11ppa2
-+ clang_Module_getNumTopLevelHeaders@Base 3.3-debian11ppa2
-+ clang_Module_getParent@Base 3.3-debian11ppa2
-+ clang_Module_getTopLevelHeader@Base 3.3-debian11ppa2
-+ clang_ParamCommandComment_getDirection@Base 3.3-debian11ppa2
-+ clang_ParamCommandComment_getParamIndex@Base 3.3-debian11ppa2
-+ clang_ParamCommandComment_getParamName@Base 3.3-debian11ppa2
-+ clang_ParamCommandComment_isDirectionExplicit@Base 3.3-debian11ppa2
-+ clang_ParamCommandComment_isParamIndexValid@Base 3.3-debian11ppa2
-+ clang_Range_isNull@Base 3.3-debian11ppa2
-+ clang_TParamCommandComment_getDepth@Base 3.3-debian11ppa2
-+ clang_TParamCommandComment_getIndex@Base 3.3-debian11ppa2
-+ clang_TParamCommandComment_getParamName@Base 3.3-debian11ppa2
-+ clang_TParamCommandComment_isParamPositionValid@Base 3.3-debian11ppa2
-+ clang_TextComment_getText@Base 3.3-debian11ppa2
-+ clang_Type_getAlignOf@Base 3.3-debian11ppa2
-+ clang_Type_getOffsetOf@Base 3.3-debian11ppa2
-+ clang_Type_getSizeOf@Base 3.3-debian11ppa2
-+ clang_VerbatimBlockLineComment_getText@Base 3.3-debian11ppa2
-+ clang_VerbatimLineComment_getText@Base 3.3-debian11ppa2
-+ clang_annotateTokens@Base 3.3-debian11ppa2
-+ clang_codeCompleteAt@Base 3.3-debian11ppa2
-+ clang_codeCompleteGetContainerKind@Base 3.3-debian11ppa2
-+ clang_codeCompleteGetContainerUSR@Base 3.3-debian11ppa2
-+ clang_codeCompleteGetContexts@Base 3.3-debian11ppa2
-+ clang_codeCompleteGetDiagnostic@Base 3.3-debian11ppa2
-+ clang_codeCompleteGetNumDiagnostics@Base 3.3-debian11ppa2
-+ clang_codeCompleteGetObjCSelector@Base 3.3-debian11ppa2
-+ clang_constructUSR_ObjCCategory@Base 3.3-debian11ppa2
-+ clang_constructUSR_ObjCClass@Base 3.3-debian11ppa2
-+ clang_constructUSR_ObjCIvar@Base 3.3-debian11ppa2
-+ clang_constructUSR_ObjCMethod@Base 3.3-debian11ppa2
-+ clang_constructUSR_ObjCProperty@Base 3.3-debian11ppa2
-+ clang_constructUSR_ObjCProtocol@Base 3.3-debian11ppa2
-+ clang_createCXCursorSet@Base 3.3-debian11ppa2
-+ clang_createIndex@Base 3.3-debian11ppa2
-+ clang_createTranslationUnit@Base 3.3-debian11ppa2
-+ clang_createTranslationUnitFromSourceFile@Base 3.3-debian11ppa2
-+ clang_defaultCodeCompleteOptions@Base 3.3-debian11ppa2
-+ clang_defaultDiagnosticDisplayOptions@Base 3.3-debian11ppa2
-+ clang_defaultEditingTranslationUnitOptions@Base 3.3-debian11ppa2
-+ clang_defaultReparseOptions@Base 3.3-debian11ppa2
-+ clang_defaultSaveOptions@Base 3.3-debian11ppa2
-+ clang_disposeCXCursorSet@Base 3.3-debian11ppa2
-+ clang_disposeCXPlatformAvailability@Base 3.3-debian11ppa2
-+ clang_disposeCXTUResourceUsage@Base 3.3-debian11ppa2
-+ clang_disposeCodeCompleteResults@Base 3.3-debian11ppa2
-+ clang_disposeDiagnostic@Base 3.3-debian11ppa2
-+ clang_disposeDiagnosticSet@Base 3.3-debian11ppa2
-+ clang_disposeIndex@Base 3.3-debian11ppa2
-+ clang_disposeOverriddenCursors@Base 3.3-debian11ppa2
-+ clang_disposeString@Base 3.3-debian11ppa2
-+ clang_disposeTokens@Base 3.3-debian11ppa2
-+ clang_disposeTranslationUnit@Base 3.3-debian11ppa2
-+ clang_enableStackTraces@Base 3.3-debian11ppa2
-+ clang_equalCursors@Base 3.3-debian11ppa2
-+ clang_equalLocations@Base 3.3-debian11ppa2
-+ clang_equalRanges@Base 3.3-debian11ppa2
-+ clang_equalTypes@Base 3.3-debian11ppa2
-+ clang_executeOnThread@Base 3.3-debian11ppa2
-+ clang_findIncludesInFile@Base 3.3-debian11ppa2
-+ clang_findIncludesInFileWithBlock@Base 3.3-debian11ppa2
-+ clang_findReferencesInFile@Base 3.3-debian11ppa2
-+ clang_findReferencesInFileWithBlock@Base 3.3-debian11ppa2
-+ clang_formatDiagnostic@Base 3.3-debian11ppa2
-+ clang_getArgType@Base 3.3-debian11ppa2
-+ clang_getArrayElementType@Base 3.3-debian11ppa2
-+ clang_getArraySize@Base 3.3-debian11ppa2
-+ clang_getCString@Base 3.3-debian11ppa2
-+ clang_getCXTUResourceUsage@Base 3.3-debian11ppa2
-+ clang_getCXXAccessSpecifier@Base 3.3-debian11ppa2
-+ clang_getCanonicalCursor@Base 3.3-debian11ppa2
-+ clang_getCanonicalType@Base 3.3-debian11ppa2
-+ clang_getChildDiagnostics@Base 3.3-debian11ppa2
-+ clang_getClangVersion@Base 3.3-debian11ppa2
-+ clang_getCompletionAnnotation@Base 3.3-debian11ppa2
-+ clang_getCompletionAvailability@Base 3.3-debian11ppa2
-+ clang_getCompletionBriefComment@Base 3.3-debian11ppa2
-+ clang_getCompletionChunkCompletionString@Base 3.3-debian11ppa2
-+ clang_getCompletionChunkKind@Base 3.3-debian11ppa2
-+ clang_getCompletionChunkText@Base 3.3-debian11ppa2
-+ clang_getCompletionNumAnnotations@Base 3.3-debian11ppa2
-+ clang_getCompletionParent@Base 3.3-debian11ppa2
-+ clang_getCompletionPriority@Base 3.3-debian11ppa2
-+ clang_getCursor@Base 3.3-debian11ppa2
-+ clang_getCursorAvailability@Base 3.3-debian11ppa2
-+ clang_getCursorCompletionString@Base 3.3-debian11ppa2
-+ clang_getCursorDefinition@Base 3.3-debian11ppa2
-+ clang_getCursorDisplayName@Base 3.3-debian11ppa2
-+ clang_getCursorExtent@Base 3.3-debian11ppa2
-+ clang_getCursorKind@Base 3.3-debian11ppa2
-+ clang_getCursorKindSpelling@Base 3.3-debian11ppa2
-+ clang_getCursorLanguage@Base 3.3-debian11ppa2
-+ clang_getCursorLexicalParent@Base 3.3-debian11ppa2
-+ clang_getCursorLinkage@Base 3.3-debian11ppa2
-+ clang_getCursorLocation@Base 3.3-debian11ppa2
-+ clang_getCursorPlatformAvailability@Base 3.3-debian11ppa2
-+ clang_getCursorReferenceNameRange@Base 3.3-debian11ppa2
-+ clang_getCursorReferenced@Base 3.3-debian11ppa2
-+ clang_getCursorResultType@Base 3.3-debian11ppa2
-+ clang_getCursorSemanticParent@Base 3.3-debian11ppa2
-+ clang_getCursorSpelling@Base 3.3-debian11ppa2
-+ clang_getCursorType@Base 3.3-debian11ppa2
-+ clang_getCursorUSR@Base 3.3-debian11ppa2
-+ clang_getDeclObjCTypeEncoding@Base 3.3-debian11ppa2
-+ clang_getDefinitionSpellingAndExtent@Base 3.3-debian11ppa2
-+ clang_getDiagnostic@Base 3.3-debian11ppa2
-+ clang_getDiagnosticCategory@Base 3.3-debian11ppa2
-+ clang_getDiagnosticCategoryName@Base 3.3-debian11ppa2
-+ clang_getDiagnosticCategoryText@Base 3.3-debian11ppa2
-+ clang_getDiagnosticFixIt@Base 3.3-debian11ppa2
-+ clang_getDiagnosticInSet@Base 3.3-debian11ppa2
-+ clang_getDiagnosticLocation@Base 3.3-debian11ppa2
-+ clang_getDiagnosticNumFixIts@Base 3.3-debian11ppa2
-+ clang_getDiagnosticNumRanges@Base 3.3-debian11ppa2
-+ clang_getDiagnosticOption@Base 3.3-debian11ppa2
-+ clang_getDiagnosticRange@Base 3.3-debian11ppa2
-+ clang_getDiagnosticSetFromTU@Base 3.3-debian11ppa2
-+ clang_getDiagnosticSeverity@Base 3.3-debian11ppa2
-+ clang_getDiagnosticSpelling@Base 3.3-debian11ppa2
-+ clang_getElementType@Base 3.3-debian11ppa2
-+ clang_getEnumConstantDeclUnsignedValue@Base 3.3-debian11ppa2
-+ clang_getEnumConstantDeclValue@Base 3.3-debian11ppa2
-+ clang_getEnumDeclIntegerType@Base 3.3-debian11ppa2
-+ clang_getExpansionLocation@Base 3.3-debian11ppa2
-+ clang_getFieldDeclBitWidth@Base 3.3-debian11ppa2
-+ clang_getFile@Base 3.3-debian11ppa2
-+ clang_getFileLocation@Base 3.3-debian11ppa2
-+ clang_getFileName@Base 3.3-debian11ppa2
-+ clang_getFileTime@Base 3.3-debian11ppa2
-+ clang_getFileUniqueID@Base 3.3-debian11ppa2
-+ clang_getFunctionTypeCallingConv@Base 3.3-debian11ppa2
-+ clang_getIBOutletCollectionType@Base 3.3-debian11ppa2
-+ clang_getIncludedFile@Base 3.3-debian11ppa2
-+ clang_getInclusions@Base 3.3-debian11ppa2
-+ clang_getInstantiationLocation@Base 3.3-debian11ppa2
-+ clang_getLocation@Base 3.3-debian11ppa2
-+ clang_getLocationForOffset@Base 3.3-debian11ppa2
-+ clang_getNullCursor@Base 3.3-debian11ppa2
-+ clang_getNullLocation@Base 3.3-debian11ppa2
-+ clang_getNullRange@Base 3.3-debian11ppa2
-+ clang_getNumArgTypes@Base 3.3-debian11ppa2
-+ clang_getNumCompletionChunks@Base 3.3-debian11ppa2
-+ clang_getNumDiagnostics@Base 3.3-debian11ppa2
-+ clang_getNumDiagnosticsInSet@Base 3.3-debian11ppa2
-+ clang_getNumElements@Base 3.3-debian11ppa2
-+ clang_getNumOverloadedDecls@Base 3.3-debian11ppa2
-+ clang_getOverloadedDecl@Base 3.3-debian11ppa2
-+ clang_getOverriddenCursors@Base 3.3-debian11ppa2
-+ clang_getPointeeType@Base 3.3-debian11ppa2
-+ clang_getPresumedLocation@Base 3.3-debian11ppa2
-+ clang_getRange@Base 3.3-debian11ppa2
-+ clang_getRangeEnd@Base 3.3-debian11ppa2
-+ clang_getRangeStart@Base 3.3-debian11ppa2
-+ clang_getRemappings@Base 3.3-debian11ppa2
-+ clang_getRemappingsFromFileList@Base 3.3-debian11ppa2
-+ clang_getResultType@Base 3.3-debian11ppa2
-+ clang_getSpecializedCursorTemplate@Base 3.3-debian11ppa2
-+ clang_getSpellingLocation@Base 3.3-debian11ppa2
-+ clang_getTUResourceUsageName@Base 3.3-debian11ppa2
-+ clang_getTemplateCursorKind@Base 3.3-debian11ppa2
-+ clang_getTokenExtent@Base 3.3-debian11ppa2
-+ clang_getTokenKind@Base 3.3-debian11ppa2
-+ clang_getTokenLocation@Base 3.3-debian11ppa2
-+ clang_getTokenSpelling@Base 3.3-debian11ppa2
-+ clang_getTranslationUnitCursor@Base 3.3-debian11ppa2
-+ clang_getTranslationUnitSpelling@Base 3.3-debian11ppa2
-+ clang_getTypeDeclaration@Base 3.3-debian11ppa2
-+ clang_getTypeKindSpelling@Base 3.3-debian11ppa2
-+ clang_getTypeSpelling@Base 3.3-debian11ppa2
-+ clang_getTypedefDeclUnderlyingType@Base 3.3-debian11ppa2
-+ clang_hashCursor@Base 3.3-debian11ppa2
-+ clang_indexLoc_getCXSourceLocation@Base 3.3-debian11ppa2
-+ clang_indexLoc_getFileLocation@Base 3.3-debian11ppa2
-+ clang_indexSourceFile@Base 3.3-debian11ppa2
-+ clang_indexTranslationUnit@Base 3.3-debian11ppa2
-+ clang_index_getCXXClassDeclInfo@Base 3.3-debian11ppa2
-+ clang_index_getClientContainer@Base 3.3-debian11ppa2
-+ clang_index_getClientEntity@Base 3.3-debian11ppa2
-+ clang_index_getIBOutletCollectionAttrInfo@Base 3.3-debian11ppa2
-+ clang_index_getObjCCategoryDeclInfo@Base 3.3-debian11ppa2
-+ clang_index_getObjCContainerDeclInfo@Base 3.3-debian11ppa2
-+ clang_index_getObjCInterfaceDeclInfo@Base 3.3-debian11ppa2
-+ clang_index_getObjCPropertyDeclInfo@Base 3.3-debian11ppa2
-+ clang_index_getObjCProtocolRefListInfo@Base 3.3-debian11ppa2
-+ clang_index_isEntityObjCContainerKind@Base 3.3-debian11ppa2
-+ clang_index_setClientContainer@Base 3.3-debian11ppa2
-+ clang_index_setClientEntity@Base 3.3-debian11ppa2
-+ clang_isAttribute@Base 3.3-debian11ppa2
-+ clang_isConstQualifiedType@Base 3.3-debian11ppa2
-+ clang_isCursorDefinition@Base 3.3-debian11ppa2
-+ clang_isDeclaration@Base 3.3-debian11ppa2
-+ clang_isExpression@Base 3.3-debian11ppa2
-+ clang_isFileMultipleIncludeGuarded@Base 3.3-debian11ppa2
-+ clang_isFunctionTypeVariadic@Base 3.3-debian11ppa2
-+ clang_isInvalid@Base 3.3-debian11ppa2
-+ clang_isPODType@Base 3.3-debian11ppa2
-+ clang_isPreprocessing@Base 3.3-debian11ppa2
-+ clang_isReference@Base 3.3-debian11ppa2
-+ clang_isRestrictQualifiedType@Base 3.3-debian11ppa2
-+ clang_isStatement@Base 3.3-debian11ppa2
-+ clang_isTranslationUnit@Base 3.3-debian11ppa2
-+ clang_isUnexposed@Base 3.3-debian11ppa2
-+ clang_isVirtualBase@Base 3.3-debian11ppa2
-+ clang_isVolatileQualifiedType@Base 3.3-debian11ppa2
-+ clang_loadDiagnostics@Base 3.3-debian11ppa2
-+ clang_parseTranslationUnit@Base 3.3-debian11ppa2
-+ clang_remap_dispose@Base 3.3-debian11ppa2
-+ clang_remap_getFilenames@Base 3.3-debian11ppa2
-+ clang_remap_getNumFiles@Base 3.3-debian11ppa2
-+ clang_reparseTranslationUnit@Base 3.3-debian11ppa2
-+ clang_saveTranslationUnit@Base 3.3-debian11ppa2
-+ clang_sortCodeCompletionResults@Base 3.3-debian11ppa2
-+ clang_toggleCrashRecovery@Base 3.3-debian11ppa2
-+ clang_tokenize@Base 3.3-debian11ppa2
-+ clang_visitChildren@Base 3.3-debian11ppa2
-+ clang_visitChildrenWithBlock@Base 3.3-debian11ppa2
 diff -urN debian/libllvm-3.3-ocaml-dev.dirs.in llvm-toolchain-snapshot_3.3~svn183554/debian/libllvm-3.3-ocaml-dev.dirs.in
 --- debian/libllvm-3.3-ocaml-dev.dirs.in	2013-10-14 19:49:12.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/libllvm-3.3-ocaml-dev.dirs.in	2013-09-04 18:21:38.839126659 +0900
@@ -884,20 +324,6 @@ diff -urN debian/libllvm-3.3-ocaml-dev.dirs.in llvm-toolchain-snapshot_3.3~svn18
 -@OCAML_STDLIB_DIR@/META/
 +@OCAML_STDLIB_DIR@/METAS
  
-diff -urN debian/llvm-3.3-dev.install llvm-toolchain-snapshot_3.3~svn183554/debian/llvm-3.3-dev.install
---- debian/llvm-3.3-dev.install	2013-10-14 19:49:12.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/llvm-3.3-dev.install	2013-09-04 18:21:38.839126659 +0900
-@@ -13,8 +13,8 @@
- configure			            /usr/lib/llvm-3.3/build/
- autoconf/			            /usr/lib/llvm-3.3/build/
- 
--utils/vim/llvm-3.3.vim		        usr/share/vim/addons/syntax/
--utils/vim/tablegen-3.3.vim		    usr/share/vim/addons/syntax/
-+utils/vim/llvm.vim                      usr/share/vim/addons/syntax/llvm-3.3.vim
-+utils/vim/tablegen.vim                      usr/share/vim/addons/syntax/tablegen-3.3.vim
- 
- utils/emacs/emacs.el		    usr/share/emacs/site-lisp/llvm-3.3/
- utils/emacs/llvm-mode.el	    usr/share/emacs/site-lisp/llvm-3.3/
 diff -urN debian/llvm-3.3-runtime.postinst llvm-toolchain-snapshot_3.3~svn183554/debian/llvm-3.3-runtime.postinst
 --- debian/llvm-3.3-runtime.postinst	2013-10-14 19:49:12.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/llvm-3.3-runtime.postinst	1970-01-01 09:00:00.000000000 +0900
@@ -931,40 +357,6 @@ diff -urN debian/llvm-3.3-runtime.prerm.in llvm-toolchain-snapshot_3.3~svn183554
 -
 -#DEBHELPER#
 -
-diff -urN debian/man/clang-format-diff-3.3.1 llvm-toolchain-snapshot_3.3~svn183554/debian/man/clang-format-diff-3.3.1
---- debian/man/clang-format-diff-3.3.1	2013-08-01 21:04:41.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/man/clang-format-diff-3.3.1	2013-12-19 21:50:10.253154939 +0900
-@@ -1,9 +1,9 @@
--.\" DO NOT MODIFY THIS FILE!  It was generated by help2man 1.41.2.
--.TH CLANG-FORMAT-DIFF-3.3 "1" "June 2013" "clang-format-diff-3.3 3.3" "User Commands"
-+.\" DO NOT MODIFY THIS FILE!  It was generated by help2man 1.40.4.
-+.TH CLANG-FORMAT-DIFF.PY "1" "December 2013" "clang-format-diff.py 3.3" "User Commands"
- .SH NAME
--clang-format-diff-3.3 \- manual page for clang-format-diff-3.3 3.3
-+clang-format-diff.py \- manual page for clang-format-diff.py 3.3
- .SH DESCRIPTION
--usage: clang\-format\-diff\-3.3 [\-h] [\-p P] [\-style STYLE]
-+usage: clang\-format\-diff.py [\-h] [\-p P] [\-style STYLE]
- .PP
- Reformat changed lines in diff
- .SS "optional arguments:"
-@@ -18,13 +18,13 @@
- formatting style to apply (LLVM, Google, Chromium)
- .SH "SEE ALSO"
- The full documentation for
--.B clang-format-diff-3.3
-+.B clang-format-diff.py
- is maintained as a Texinfo manual.  If the
- .B info
- and
--.B clang-format-diff-3.3
-+.B clang-format-diff.py
- programs are properly installed at your site, the command
- .IP
--.B info clang-format-diff-3.3
-+.B info clang-format-diff.py
- .PP
- should give you access to the complete manual.
 diff -urN debian/patches/28-gcc-4.7-paths.diff llvm-toolchain-snapshot_3.3~svn183554/debian/patches/28-gcc-4.7-paths.diff
 --- debian/patches/28-gcc-4.7-paths.diff	1970-01-01 09:00:00.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/patches/28-gcc-4.7-paths.diff	2013-09-04 18:21:38.839126659 +0900
@@ -1309,7 +701,7 @@ diff -urN debian/pollycc.in llvm-toolchain-snapshot_3.3~svn183554/debian/pollycc
 +clang-@LLVM_VERSION@ -Xclang -load -Xclang /usr/lib/llvm-@LLVM_VERSION@/lib/LLVMPolly.so $@
 diff -urN debian/python-clang-3.3.install llvm-toolchain-snapshot_3.3~svn183554/debian/python-clang-3.3.install
 --- debian/python-clang-3.3.install	2013-10-14 19:49:12.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/python-clang-3.3.install	2013-10-18 20:34:20.772736054 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/python-clang-3.3.install	2014-01-19 18:38:21.028719317 +0900
 @@ -1 +1,4 @@
 -tools/clang/bindings/python/clang/ /usr/lib/python2.7/dist-packages/
 +clang/bindings/python/clang/*		/usr/lib/python2.7/dist-packages/clang33/
@@ -1318,7 +710,7 @@ diff -urN debian/python-clang-3.3.install llvm-toolchain-snapshot_3.3~svn183554/
 +clang/bindings/python/tests		/usr/share/doc/python-clang-3.3/
 diff -urN debian/rules llvm-toolchain-snapshot_3.3~svn183554/debian/rules
 --- debian/rules	2013-12-05 01:51:37.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/rules	2013-12-12 02:05:19.253949249 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/rules	2014-01-19 18:38:14.444686642 +0900
 @@ -1,7 +1,7 @@
  #!/usr/bin/make -f
  
@@ -1337,38 +729,33 @@ diff -urN debian/rules llvm-toolchain-snapshot_3.3~svn183554/debian/rules
  
  DEB_HOST_MULTIARCH  = $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
  DEB_HOST_GNU_TYPE   = $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-@@ -79,20 +79,14 @@
-         LLDB_ENABLE=no
- endif
+@@ -72,6 +72,7 @@
  
--
- %:
--	dh $@ --with ocaml
--
-+	dh $@
-+# --buildsystem=cmake --builddirectory=$(TARGET_BUILD)
+ LLDB_ENABLE=yes
+ LLDB_DISABLE_ARCHS := hurd-i386 mips mipsel
++LLDB_DISABLE_ARCHS += i386 amd64
+ # hurd has threading issues
+ # mips* fails with "undefined references to `__atomic_load_8'"
+ ifeq (,$(filter-out $(LLDB_DISABLE_ARCHS), $(DEB_HOST_ARCH)))
+@@ -92,7 +93,9 @@
+ override_dh_ocamlclean:
  
- debian/%: debian/%.in
- 	sed -e 's|@DEB_HOST_MULTIARCH@|$(DEB_HOST_MULTIARCH)|g' -e "s|@OCAML_STDLIB_DIR@|$(OCAML_STDLIB_DIR)|g" -e "s|@LLVM_VERSION@|$(LLVM_VERSION)|g" $< > $@
  
--
--override_dh_ocamlinit:
--override_dh_ocamlclean:
--
--
 -override_dh_auto_configure: debian/lldb-$(LLVM_VERSION).install debian/lldb-$(LLVM_VERSION).links debian/libllvm$(LLVM_VERSION).install debian/llvm-$(LLVM_VERSION)-dev.links debian/libllvm-$(LLVM_VERSION)-ocaml-dev.install debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs debian/llvm-$(LLVM_VERSION)-runtime.binfmt debian/llvm-$(LLVM_VERSION)-runtime.prerm debian/libclang1-$(LLVM_VERSION).links debian/libclang-$(LLVM_VERSION)-dev.links debian/libclang1-$(LLVM_VERSION).install debian/pollycc
 +override_dh_auto_configure: debian/lldb-$(LLVM_VERSION).install debian/lldb-$(LLVM_VERSION).links debian/libllvm$(LLVM_VERSION).install debian/llvm-$(LLVM_VERSION)-dev.links debian/libllvm-$(LLVM_VERSION)-ocaml-dev.install debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs debian/llvm-$(LLVM_VERSION)-runtime.binfmt debian/libclang1-$(LLVM_VERSION).links debian/libclang-$(LLVM_VERSION)-dev.links debian/libclang1-$(LLVM_VERSION).install debian/pollycc
++	chmod +x debian/pollycc
++	chmod +x compiler-rt/lib/asan/scripts/asan_symbolize.py
  	echo "Using gcc: "
  	$(CC) -v
  	mkdir -p $(TARGET_BUILD)
-@@ -176,11 +170,12 @@
+@@ -176,11 +179,11 @@
  		cd $$d && rm -f underscore.js && ln -s /usr/share/javascript/underscore/underscore.js; \
  	done
  
 -	help2man --version-string=$(LLVM_VERSION) clang/tools/scan-view/scan-view > debian/man/scan-view.1
+-	help2man --version-string=$(LLVM_VERSION) clang/tools/clang-format/clang-format-diff.py > debian/man/clang-format-diff-$(LLVM_VERSION).1
 +	cp clang/tools/scan-build/scan-build.1 debian/man/scan-build-$(LLVM_VERSION).1
 +	help2man --version-string=$(LLVM_VERSION) clang/tools/scan-view/scan-view > debian/man/scan-view-$(LLVM_VERSION).1
- 	help2man --version-string=$(LLVM_VERSION) clang/tools/clang-format/clang-format-diff.py > debian/man/clang-format-diff-$(LLVM_VERSION).1
  
  	for f in clang clang-tblgen clang-check; do \
 -		help2man --version-string=$(LLVM_VERSION) $(TARGET_BUILD)/Release/bin/$$f > debian/man/$$f.1; \
@@ -1376,43 +763,28 @@ diff -urN debian/rules llvm-toolchain-snapshot_3.3~svn183554/debian/rules
  	done
  
  	for f in llvm-dwarfdump llvm-mc llvm-mcmarkup llvm-objdump llvm-rtdyld llvm-size llvm-tblgen macho-dump lldb clang-format cpp11-migrate; do \
-@@ -207,8 +202,8 @@
+@@ -207,9 +210,6 @@
  
  #	cd $(TARGET_BUILD)/tools/clang/runtime/compiler-rt/ && rm -rf $$(find . -iname "SubDir.lib*" -o -iname .dir) && rm -rf $$(find -empty)
  
 -	mkdir -p $(CURDIR)/debian/clang-$(LLVM_VERSION)/usr/bin/
 -	cp compiler-rt/lib/asan/scripts/asan_symbolize.py $(CURDIR)/debian/clang-$(LLVM_VERSION)/usr/bin/asan_symbolize
-+	mkdir -p $(CURDIR)/debian/clang-$(LLVM_VERSION)/usr/lib/llvm-$(LLVM_VERSION)/bin
-+	cp compiler-rt/lib/asan/scripts/asan_symbolize.py $(CURDIR)/debian/clang-$(LLVM_VERSION)/usr/lib/llvm-$(LLVM_VERSION)/bin/asan_symbolize
- 
+-
  # Create this fake directory to make the install libclang-common-dev happy
  # under the unsupported archs of compiler-rt
-@@ -227,14 +222,6 @@
- # Rename some stuff with the version name
- 	mv $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang.1 $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang-$(LLVM_VERSION).1
+ 	mkdir -p $(CURDIR)/debian/tmp/usr/lib/clang/$(LLVM_VERSION)/lib
+@@ -231,9 +231,7 @@
  
--	cp -f $(CURDIR)/utils/vim/llvm.vim $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim
--
--	cp -f $(CURDIR)/utils/vim/tablegen.vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
--
+ 	cp -f $(CURDIR)/utils/vim/tablegen.vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
+ 
 -	cp -f $(CURDIR)/clang/tools/clang-format/clang-format-diff.py $(CURDIR)/clang/tools/clang-format/clang-format-diff-$(LLVM_VERSION)
 -
 -	cp -f $(CURDIR)/clang/tools/clang-format/clang-format.py clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
--
++	cp -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
+ 
  # Remove some license files
  	rm -f $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/include/llvm/Support/LICENSE.TXT \
- 	$(CURDIR)/debian/llvm-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/build/autoconf/LICENSE.TXT
-@@ -242,6 +229,9 @@
- # Managed in lldb-X.Y.links.in
- 	rm -f $(CURDIR)/$(TARGET_BUILD)/Release/lib/python*/site-packages/lldb/_lldb.so
- 
-+	cp $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META \
-+		$(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
-+
- override_dh_installman:
- 	dh_installman
- # Make sure that lli manpage is only in llvm-3.2-runtime (See #697117)
-@@ -250,8 +240,6 @@
+@@ -250,8 +248,6 @@
  
  .PHONY: override_dh_strip
  override_dh_strip:
@@ -1421,7 +793,7 @@ diff -urN debian/rules llvm-toolchain-snapshot_3.3~svn183554/debian/rules
  	dh_strip -a
  
  override_dh_shlibdeps:
-@@ -264,7 +252,14 @@
+@@ -264,6 +260,11 @@
  	rm -f $(CURDIR)/debian/lldb-$(LLVM_VERSION)/usr/lib/python*/dist-packages/lldb/__init__.pyc
  	rm -f $(CURDIR)/debian/clang-$(LLVM_VERSION)-examples/usr/share/doc/clang-$(LLVM_VERSION)-examples/examples/*Make*
  
@@ -1431,16 +803,12 @@ diff -urN debian/rules llvm-toolchain-snapshot_3.3~svn183554/debian/rules
 +		find $(CURDIR)/debian/clang-$(LLVM_VERSION)-relaxng/usr/share/xml/clang-$(LLVM_VERSION)-relaxng -name "*.gz" -exec gzip -d {} \; ; \
 +	fi
  
-+	chmod +x $(CURDIR)/debian/clang-$(LLVM_VERSION)/usr/lib/llvm-3.3/bin/pollycc
-+	chmod +x $(CURDIR)/debian/clang-format-$(LLVM_VERSION)/usr/lib/llvm-3.3/bin/clang-format.py
  
  ifeq (,$(filter nocheck, $(DEB_BUILD_OPTIONS)))
- override_dh_auto_test:
-@@ -314,7 +309,12 @@
- 	find test/Bindings -name '*.o' | xargs -r rm -f
+@@ -315,6 +316,12 @@
  	rm -f tools/clang tools/polly tools/lldb projects/compiler-rt
  	rm -rf tools/clang/tools/extra clang/tools/extra/
--	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
+ 	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
 -	rm -f $(CURDIR)/clang/tools/clang-format/clang-format-diff-$(LLVM_VERSION)
 -	rm -f $(CURDIR)/clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
 +	rm -f debian/man/scan-build-$(LLVM_VERSION).1

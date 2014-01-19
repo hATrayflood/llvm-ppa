@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl, expect,
     lsb-release, patchutils, diffstat, xz-utils, chrpath, python-dev,
     libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev,
     libisl-dev (>= 0.11.1), libjsoncpp-dev,
-    lcov, procps, help2man
+    lcov, procps, help2man, dh-ocaml
 Build-Conflicts: oprofile, ocaml
 Standards-Version: 3.9.5
 Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
@@ -92,6 +92,7 @@ Description: C interface to the clang library
  locations with elements within the AST, and other facilities that support
  Clang-based development tools.
 
+
 Package: clang-3.3-relaxng
 Architecture: all
 Section: misc
@@ -142,7 +143,7 @@ Description: clang library - Common development package
 Package: python-clang-3.3
 Section: python
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, python
+Depends: ${shlibs:Depends}, ${misc:Depends}, libclang-3.3-dev, python2.7
 Description: Clang Python Bindings
  This binding package provides access to the Clang compiler and libraries.
 
