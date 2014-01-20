@@ -49,4 +49,5 @@ JITEmitter.patch
 ia64-fix.diff
 libprofile_rt_sparc.patch
 use-deb-json.diff
+python-clangpath.diff
 99-python-bindings.patch

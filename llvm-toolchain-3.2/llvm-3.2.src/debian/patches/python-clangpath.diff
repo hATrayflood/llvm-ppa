@@ -1,0 +1,12 @@
+diff -urN llvm-3.2.src.orig/clang/bindings/python/clang/cindex.py llvm-3.2.src/clang/bindings/python/clang/cindex.py
+--- llvm-3.2.src.orig/clang/bindings/python/clang/cindex.py	2012-11-01 14:46:30.000000000 +0900
++++ llvm-3.2.src/clang/bindings/python/clang/cindex.py	2013-06-26 23:07:13.592529725 +0900
+@@ -3097,7 +3097,7 @@
+         elif name == 'Windows':
+             file = 'libclang.dll'
+         else:
+-            file = 'libclang.so'
++            file = 'libclang-3.2.so'
+ 
+         if Config.library_path:
+             file = Config.library_path + '/' + file

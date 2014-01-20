@@ -1,9 +1,14 @@
-usr/lib/llvm-3.2/bin/clang			/usr/lib/llvm-3.2/bin/
-usr/lib/llvm-3.2/bin/clang++			/usr/lib/llvm-3.2/bin/
-usr/lib/llvm-3.2/bin/clang-check		/usr/lib/llvm-3.2/bin/
-usr/lib/llvm-3.2/bin/clang-tblgen		/usr/lib/llvm-3.2/bin/
-tools/clang/tools/scan-build			/usr/lib/llvm-3.2/share/
-tools/clang/tools/scan-view			/usr/lib/llvm-3.2/share/
+usr/lib/llvm-3.2/bin/clang		/usr/lib/llvm-3.2/bin/
+usr/lib/llvm-3.2/bin/clang++		/usr/lib/llvm-3.2/bin/
+usr/lib/llvm-3.2/bin/clang-check	/usr/lib/llvm-3.2/bin/
+usr/lib/llvm-3.2/bin/clang-tblgen	/usr/lib/llvm-3.2/bin/
+usr/bin/clang-3.2
+usr/bin/clang++-3.2
+usr/bin/clang-check-3.2
+usr/bin/clang-tblgen-3.2
+clang/tools/scan-build			/usr/lib/llvm-3.2/share/
+clang/tools/scan-view			/usr/lib/llvm-3.2/share/
 #usr/share/man/man1/clang.1	usr/share/man/man1/
-debian/pollycc		/usr/lib/llvm-3.2/bin/
+debian/pollycc				/usr/lib/llvm-3.2/bin/
+compiler-rt/lib/asan/scripts/asan_symbolize.py	/usr/lib/llvm-3.2/bin/
 

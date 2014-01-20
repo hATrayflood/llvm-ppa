@@ -9,6 +9,7 @@ Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl8.5, expect,
     libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev,
     libisl-dev (>= 0.11.1), binutils-gold [amd64 armhf i386],
     gcc-4.6, g++-4.6, libjsoncpp-dev
+    , dh-ocaml
 Build-Conflicts: oprofile, ocaml
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
@@ -17,7 +18,7 @@ Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
 Package: clang-3.2
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
- libclang-3.2-common-dev (= ${binary:Version})
+ libclang-common-3.2-dev (= ${binary:Version})
 Provides: c-compiler, objc-compiler, c++-compiler
 Recommends: llvm-3.2-dev, python
 Description: C, C++ and Objective-C compiler (LLVM based)
@@ -140,7 +141,7 @@ Package: libclang-3.2-dev
 Architecture: any
 Section: libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
- libclang1-3.2 (= ${binary:Version}), libclang-3.2-common-dev (= ${binary:Version})
+ libclang1-3.2 (= ${binary:Version}), libclang-common-3.2-dev (= ${binary:Version})
 Description: clang library - Development package
  Clang project is a C, C++, Objective C and Objective C++ front-end
  for the LLVM compiler. Some of its goals include the following:
@@ -168,10 +169,10 @@ Description: clang library - Development package
  .
  This package contains the clang headers to develop extensions over libclang.
 
-Package: libclang-3.2-common-dev
+Package: libclang-common-3.2-dev
 Architecture: any
 Section: libdevel
-Depends: ${shlibs:Depends}, ${misc:Depends}, llvm-3.2-dev (= ${binary:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Replaces: libclang-3.2-dev
 Description: clang library - Common development package
  Clang project is a C, C++, Objective C and Objective C++ front-end
@@ -226,8 +227,7 @@ Description: clang library - Common development package
 Package: python-clang-3.2
 Architecture: any
 Section: python
-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
- libclang1-3.2 (= ${binary:Version}), python2.7
+Depends: ${shlibs:Depends}, ${misc:Depends}, libclang-3.2-dev, python2.7
 Description: clang python bindings
  Clang project is a C, C++, Objective C and Objective C++ front-end
  for the LLVM compiler. Some of its goals include the following:

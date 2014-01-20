@@ -28,15 +28,6 @@ diff -urN llvm-3.2.src.orig/clang/bindings/python/clang/cindex.py llvm-3.2.src/c
  
  # ctypes doesn't implicitly convert c_void_p to the appropriate wrapper
  # object. This is a problem, because it means that from_parameter will see an
-@@ -3097,7 +3097,7 @@
-         elif name == 'Windows':
-             file = 'libclang.dll'
-         else:
--            file = 'libclang.so'
-+            file = '/usr/lib/llvm-3.2/lib/libclang.so.1'
- 
-         if Config.library_path:
-             file = Config.library_path + '/' + file
 @@ -3124,7 +3124,7 @@
          return True
  
