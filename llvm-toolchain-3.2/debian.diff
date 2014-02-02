@@ -120,8 +120,8 @@ diff -urN debian/clang-3.2.prerm llvm-3.2.src/debian/clang-3.2.prerm
 -exit 0
 diff -urN debian/control llvm-3.2.src/debian/control
 --- debian/control	2013-09-04 18:21:38.571125327 +0900
-+++ llvm-3.2.src/debian/control	2014-02-02 19:33:47.705879166 +0900
-@@ -1,30 +1,26 @@
++++ llvm-3.2.src/debian/control	2014-02-03 00:03:32.832197456 +0900
+@@ -1,30 +1,25 @@
  Source: llvm-toolchain-3.2
  Section: devel
 -Priority: optional
@@ -137,9 +137,8 @@ diff -urN debian/control llvm-3.2.src/debian/control
 -    libisl-dev (>= 0.11.1), binutils-gold [amd64 armhf i386 x32],
 -    gcc-4.7, g++-4.7, libjsoncpp-dev
 +    libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev-lts,
-+    libisl-dev-lts,
-+    gcc-4.6, g++-4.6, libjsoncpp-dev
-+    , dh-ocaml
++    libisl-dev-lts, libjsoncpp-dev,
++    dh-ocaml
  Build-Conflicts: oprofile, ocaml
  Standards-Version: 3.9.4
 -Homepage: http://www.llvm.org/
@@ -162,7 +161,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Description: C, C++ and Objective-C compiler (LLVM based)
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -81,9 +77,9 @@
+@@ -81,9 +76,9 @@
   .
   This package contains the documentation.
  
@@ -174,7 +173,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Description: clang library
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -111,12 +107,10 @@
+@@ -111,12 +106,10 @@
   .
   This package contains the clang library.
  
@@ -191,7 +190,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
   .
-@@ -141,13 +135,13 @@
+@@ -141,13 +134,13 @@
      * A single unified parser for C, Objective C, C++, and Objective C++
      * Conformance with C/C++/ObjC and their variants
   .
@@ -209,7 +208,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Description: clang library - Development package
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -175,12 +169,11 @@
+@@ -175,12 +168,11 @@
   .
   This package contains the clang headers to develop extensions over libclang.
  
@@ -224,7 +223,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Description: clang library - Common development package
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -231,6 +224,37 @@
+@@ -231,6 +223,37 @@
  #       libgcc implementations.
  #  .
  
@@ -262,7 +261,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Package: libllvm3.2
  Architecture: any
  Section: libs
-@@ -244,27 +268,11 @@
+@@ -244,27 +267,11 @@
   .
   This package contains the LLVM runtime library.
  
@@ -290,7 +289,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Description: Low-Level Virtual Machine (LLVM)
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
-@@ -293,8 +301,6 @@
+@@ -293,8 +300,6 @@
  Package: llvm-3.2-runtime
  Architecture: any
  Depends: binfmt-support, ${shlibs:Depends}, ${misc:Depends}
@@ -299,7 +298,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Description: Low-Level Virtual Machine (LLVM), bytecode interpreter
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
-@@ -313,7 +319,6 @@
+@@ -313,7 +318,6 @@
  Package: llvm-3.2-dev
  Architecture: any
  Depends: ${shlibs:Depends}, libffi-dev (>= 3.0.9), ${misc:Depends}, llvm-3.2 (= ${binary:Version})
