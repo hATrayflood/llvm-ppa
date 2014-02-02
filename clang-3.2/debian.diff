@@ -126,8 +126,8 @@ diff -urN debian/compiler-rt-3.2.links clang-3.2/debian/compiler-rt-3.2.links
 +usr/lib/clang/3.2/bin/asan_symbolize	usr/bin/asan_symbolize-3.2
 diff -urN debian/control clang-3.2/debian/control
 --- debian/control	2013-09-04 18:21:38.315124055 +0900
-+++ clang-3.2/debian/control	2013-09-04 18:21:38.267123821 +0900
-@@ -1,23 +1,25 @@
++++ clang-3.2/debian/control	2014-02-02 18:18:44.922113621 +0900
+@@ -1,23 +1,24 @@
 -Source: clang
 +Source: clang-3.2
  Section: devel
@@ -140,9 +140,9 @@ diff -urN debian/control clang-3.2/debian/control
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
      lsb-release, patchutils, diffstat, xz-utils, llvm-3.2-dev (>= 3.2),
-     llvm-3.2-source (>= 3.2), chrpath, python, 
+-    llvm-3.2-source (>= 3.2), chrpath, python, 
 -    binutils-gold [amd64 armel armhf i386 powerpc powerpcspe ppc64 sparc sparc64 x32]
-+    binutils-gold [amd64 armel armhf i386 powerpc powerpcspe ppc64 sparc sparc64]
++    llvm-3.2-source (>= 3.2), chrpath, python
  Build-Conflicts: oprofile, ocaml
  Standards-Version: 3.9.3
 -Homepage: http://clang.llvm.org/
@@ -164,7 +164,7 @@ diff -urN debian/control clang-3.2/debian/control
  Description: C, C++ and Objective-C compiler (LLVM based)
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -43,15 +45,11 @@
+@@ -43,15 +44,11 @@
      * A single unified parser for C, Objective C, C++, and Objective C++
      * Conformance with C/C++/ObjC and their variants
  
@@ -185,7 +185,7 @@ diff -urN debian/control clang-3.2/debian/control
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
   .
-@@ -75,12 +73,13 @@
+@@ -75,12 +72,13 @@
      * A simple and hackable code base
      * A single unified parser for C, Objective C, C++, and Objective C++
      * Conformance with C/C++/ObjC and their variants
@@ -204,7 +204,7 @@ diff -urN debian/control clang-3.2/debian/control
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
   .
-@@ -105,12 +104,14 @@
+@@ -105,12 +103,14 @@
      * A single unified parser for C, Objective C, C++, and Objective C++
      * Conformance with C/C++/ObjC and their variants
   .
@@ -223,7 +223,7 @@ diff -urN debian/control clang-3.2/debian/control
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
   .
-@@ -135,14 +136,14 @@
+@@ -135,14 +135,14 @@
      * A single unified parser for C, Objective C, C++, and Objective C++
      * Conformance with C/C++/ObjC and their variants
   .
@@ -244,7 +244,7 @@ diff -urN debian/control clang-3.2/debian/control
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
   .
-@@ -167,14 +168,48 @@
+@@ -167,14 +167,48 @@
      * A single unified parser for C, Objective C, C++, and Objective C++
      * Conformance with C/C++/ObjC and their variants
   .
@@ -299,7 +299,7 @@ diff -urN debian/control clang-3.2/debian/control
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
   .
-@@ -199,14 +234,24 @@
+@@ -199,14 +233,24 @@
      * A single unified parser for C, Objective C, C++, and Objective C++
      * Conformance with C/C++/ObjC and their variants
   .
@@ -331,7 +331,7 @@ diff -urN debian/control clang-3.2/debian/control
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
   .
-@@ -231,26 +276,4 @@
+@@ -231,26 +275,4 @@
      * A single unified parser for C, Objective C, C++, and Objective C++
      * Conformance with C/C++/ObjC and their variants
   .

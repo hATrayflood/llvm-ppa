@@ -47,7 +47,6 @@ apt-get -y install python-sphinx
 apt-get -y install dh-autoreconf
 apt-get -y install libpipeline-dev
 apt-get -y install binfmt-support
-apt-get -y install binutils-gold
 apt-get -y install swig
 apt-get -y install libedit-dev
 apt-get -y install libcloog-isl-dev-lts
