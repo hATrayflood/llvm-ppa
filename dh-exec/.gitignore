@@ -1,4 +1,0 @@
-*.deb
-dh-exec_0.4-*
-dh-exec-0.4/
-!dh-exec-0.4/debian

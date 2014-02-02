@@ -13,8 +13,8 @@ diff -urN debian/changelog llvm-3.2.src/debian/changelog
    * Fixes a segfault in the exception table of the JIT code emitter.
 diff -urN debian/control llvm-3.2.src/debian/control
 --- debian/control	2013-09-04 18:21:38.499124975 +0900
-+++ llvm-3.2.src/debian/control	2013-09-04 18:21:38.507125007 +0900
-@@ -1,8 +1,7 @@
++++ llvm-3.2.src/debian/control	2014-02-02 11:43:21.530776145 +0900
+@@ -1,18 +1,16 @@
  Source: llvm-3.2
  Section: devel
 -Priority: optional
@@ -25,7 +25,8 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Build-Depends: debhelper (>= 9), flex, bison, dejagnu, tcl8.5, expect,
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo, quilt,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
-@@ -10,9 +9,8 @@
+-    lsb-release, xz-utils, dh-exec (>=0.3), python, python-sphinx,
++    lsb-release, xz-utils, python, python-sphinx,
      binutils-dev (>= 2.20.51.20100222-1~), ocaml-nox (>= 3.11.2), ocaml-best-compilers | ocaml-nox, dh-ocaml (>= 0.9.1)
  Build-Conflicts: oprofile
  Standards-Version: 3.9.3
