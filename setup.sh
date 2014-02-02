@@ -50,13 +50,9 @@ apt-get -y install binfmt-support
 apt-get -y install binutils-gold
 apt-get -y install swig
 apt-get -y install libedit-dev
-apt-get -y install libcloog-isl-dev
+apt-get -y install libcloog-isl-dev-lts
+apt-get -y install libisl-dev-lts
 apt-get -y install lcov
 apt-get -y install help2man
 apt-get -y install libjsoncpp-dev
 EOC
-
-make -C isl extract
-make -C isl
-sudo make -C isl install
-make -C isl distclean

@@ -58,8 +58,8 @@ endif
 
 # Enable polly (or not)
 POLLY_ENABLE=no
-ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' libisl-dev) ge 0.12.1; echo $$?),0)
-ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' libcloog-isl-dev) ge 0.18.1; echo $$?),0)
+ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' libisl-dev-lts) ge 0.12.1; echo $$?),0)
+ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' libcloog-isl-dev-lts) ge 0.18.1; echo $$?),0)
 POLLY_ENABLE=yes
 endif
 endif

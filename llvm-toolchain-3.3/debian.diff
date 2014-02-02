@@ -144,8 +144,8 @@ diff -urN debian/clang-format-3.3.links llvm-toolchain-snapshot_3.3~svn183554/de
 +usr/lib/llvm-3.3/bin/clang-format-diff.py	usr/bin/clang-format-diff-3.3
 diff -urN debian/control llvm-toolchain-snapshot_3.3~svn183554/debian/control
 --- debian/control	2013-12-18 19:33:46.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/control	2014-01-14 05:50:00.699418112 +0900
-@@ -1,8 +1,7 @@
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/control	2014-02-02 14:09:18.704212265 +0900
+@@ -1,20 +1,18 @@
  Source: llvm-toolchain-3.3
  Section: devel
 -Priority: optional
@@ -156,7 +156,11 @@ diff -urN debian/control llvm-toolchain-snapshot_3.3~svn183554/debian/control
  Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl, expect,
      autoconf, automake, perl, libtool, doxygen, chrpath, texinfo,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
-@@ -12,9 +11,8 @@
+     lsb-release, patchutils, diffstat, xz-utils, chrpath, python-dev,
+-    libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev,
+-    libisl-dev (>= 0.11.1), libjsoncpp-dev,
++    libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev-lts,
++    libisl-dev-lts, libjsoncpp-dev,
      lcov, procps, help2man, dh-ocaml
  Build-Conflicts: oprofile, ocaml
  Standards-Version: 3.9.5

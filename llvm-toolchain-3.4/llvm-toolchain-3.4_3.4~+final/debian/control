@@ -6,8 +6,8 @@ Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl, expect,
     autoconf, automake, perl, libtool, doxygen, chrpath, texinfo,
     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
     lsb-release, patchutils, diffstat, xz-utils, chrpath, python-dev,
-    libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev,
-    libisl-dev (>= 0.11.1), libjsoncpp-dev,
+    libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev-lts,
+    libisl-dev-lts, libjsoncpp-dev,
     lcov, procps, help2man, dh-ocaml
 # gcc-4.8, g++-4.8, 
 Build-Conflicts: oprofile, ocaml
