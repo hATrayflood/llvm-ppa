@@ -13,8 +13,8 @@ Makefile.rules			        /usr/lib/llvm-3.4/build/
 configure			            /usr/lib/llvm-3.4/build/
 autoconf/			            /usr/lib/llvm-3.4/build/
 
-utils/vim/llvm.vim		        usr/share/vim/addons/syntax/llvm-3.4.vim
-utils/vim/tablegen.vim		    usr/share/vim/addons/syntax/tablegen-3.4.vim
+utils/vim/llvm-3.4.vim		        usr/share/vim/addons/syntax/
+utils/vim/tablegen-3.4.vim		    usr/share/vim/addons/syntax/
 
 utils/emacs/emacs.el		    usr/share/emacs/site-lisp/llvm-3.4/
 utils/emacs/llvm-mode.el	    usr/share/emacs/site-lisp/llvm-3.4/
