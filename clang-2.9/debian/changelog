@@ -1,3 +1,9 @@
+clang (2.9-16) unstable; urgency=low
+
+  * Fix one more path issues under i386 ... (Closes: #643959)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Thu, 13 Oct 2011 13:31:16 +0200
+
 clang (2.9-15) unstable; urgency=low
 
   * Refactoring of some patches

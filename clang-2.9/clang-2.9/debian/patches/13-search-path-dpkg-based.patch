@@ -36,11 +36,10 @@ Seulement dans clang-2.9.orig//tools/clang/lib/Driver: ToolChains.cpp.orig
  using namespace clang;
  using namespace clang::frontend;
  
-@@ -450,6 +451,11 @@
+@@ -450,6 +451,10 @@
      break;
    }
  
-+  AddPath("/usr/include/", System, true, false, false);
 +  std::string pathInclude = "/usr/include/" + std::string(DEB_HOST_MULTIARCH_TRIPLET) + "/";
 +  AddPath(pathInclude, System, true, false, false);
 +

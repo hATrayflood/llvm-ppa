@@ -34,6 +34,7 @@ usage
 
 upstream
 --------
+https://launchpad.net/debian/+source/clang  
 http://packages.qa.debian.org/c/clang.html  
 http://packages.qa.debian.org/l/llvm-2.9.html  
 http://packages.qa.debian.org/l/llvm-3.0.html  

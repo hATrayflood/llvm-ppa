@@ -7,7 +7,7 @@ Uploaders: Arthur Loiret <aloiret@debian.org>,
 Build-Depends: debhelper (>= 6.0.0), flex, bison, dejagnu, tcl8.5, expect,
     autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
-    lsb-release, xz-utils, llvm-2.9-dev (>= 2.9), llvm-2.9-source (>= 2.9)
+    lsb-release, patchutils, diffstat, xz-utils, llvm-2.9-dev (>= 2.9), llvm-2.9-source (>= 2.9)
 Build-Conflicts: oprofile, ocaml, ocaml-nox
 Standards-Version: 3.9.2
 Homepage: http://www.llvm.org/
@@ -16,7 +16,7 @@ Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/clang/trunk/
 
 Package: clang
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev (>= 4.6.1-8)
+Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev
 Recommends: llvm-2.9-dev, python
 Description: Low-Level Virtual Machine (LLVM), C language family frontend
  The Low-Level Virtual Machine (LLVM) is a collection of libraries and

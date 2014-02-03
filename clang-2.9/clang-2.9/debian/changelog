@@ -1,8 +1,14 @@
-clang-2.9 (2.9-debian15ppa3) precise; urgency=low
+clang-2.9 (2.9-debian16ppa3) precise; urgency=low
 
   * ppa for precise
 
  -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 24 Oct 2013 20:00:00 +0900
+
+clang (2.9-16) unstable; urgency=low
+
+  * Fix one more path issues under i386 ... (Closes: #643959)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Thu, 13 Oct 2011 13:31:16 +0200
 
 clang (2.9-15) unstable; urgency=low
 
