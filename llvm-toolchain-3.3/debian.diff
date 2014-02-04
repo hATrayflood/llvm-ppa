@@ -144,7 +144,7 @@ diff -urN debian/clang-format-3.3.links llvm-toolchain-snapshot_3.3~svn183554/de
 +usr/lib/llvm-3.3/bin/clang-format-diff.py	usr/bin/clang-format-diff-3.3
 diff -urN debian/control llvm-toolchain-snapshot_3.3~svn183554/debian/control
 --- debian/control	2013-12-18 19:33:46.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/control	2014-02-02 14:09:18.704212265 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/control	2014-02-04 00:57:14.835704353 +0900
 @@ -1,20 +1,18 @@
  Source: llvm-toolchain-3.3
  Section: devel
@@ -242,7 +242,7 @@ diff -urN debian/control llvm-toolchain-snapshot_3.3~svn183554/debian/control
 -Depends: ${shlibs:Depends}, ${misc:Depends}, python
 -Replaces: python-clang-3.4
 -Breaks: python-clang-3.4
-+Depends: ${shlibs:Depends}, ${misc:Depends}, libclang-3.3-dev, python2.7
++Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-3.3, python2.7
  Description: Clang Python Bindings
   This binding package provides access to the Clang compiler and libraries.
  
@@ -678,6 +678,18 @@ diff -urN debian/patches/99-python-bindings.patch llvm-toolchain-snapshot_3.3~sv
 + 
 + def get_tu(source, lang='c', all_warnings=False, flags=[]):
 +     """Obtain a translation unit from source and language.
+diff -urN debian/patches/python-clangpath.diff llvm-toolchain-snapshot_3.3~svn183554/debian/patches/python-clangpath.diff
+--- debian/patches/python-clangpath.diff	2013-10-14 23:22:49.000000000 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/patches/python-clangpath.diff	2014-02-04 00:57:38.563822002 +0900
+@@ -7,7 +7,7 @@
+              file = 'libclang.dll'
+          else:
+ -            file = 'libclang.so'
+-+            file = 'libclang-3.3.so'
+++            file = 'libclang-3.3.so.1'
+  
+          if Config.library_path:
+              file = Config.library_path + '/' + file
 diff -urN debian/patches/series llvm-toolchain-snapshot_3.3~svn183554/debian/patches/series
 --- debian/patches/series	2013-12-01 00:37:53.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/patches/series	2013-12-11 23:12:42.404538389 +0900

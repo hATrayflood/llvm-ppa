@@ -120,7 +120,7 @@ diff -urN debian/clang-3.2.prerm llvm-3.2.src/debian/clang-3.2.prerm
 -exit 0
 diff -urN debian/control llvm-3.2.src/debian/control
 --- debian/control	2013-09-04 18:21:38.571125327 +0900
-+++ llvm-3.2.src/debian/control	2014-02-03 00:03:32.832197456 +0900
++++ llvm-3.2.src/debian/control	2014-02-04 00:58:39.852125908 +0900
 @@ -1,30 +1,25 @@
  Source: llvm-toolchain-3.2
  Section: devel
@@ -230,7 +230,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
 +Package: python-clang-3.2
 +Architecture: any
 +Section: python
-+Depends: ${shlibs:Depends}, ${misc:Depends}, libclang-3.2-dev, python2.7
++Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-3.2, python2.7
 +Description: clang python bindings
 + Clang project is a C, C++, Objective C and Objective C++ front-end
 + for the LLVM compiler. Some of its goals include the following:
@@ -908,7 +908,7 @@ diff -urN debian/patches/99-python-bindings.patch llvm-3.2.src/debian/patches/99
 +     """Obtain a translation unit from source and language.
 diff -urN debian/patches/python-clangpath.diff llvm-3.2.src/debian/patches/python-clangpath.diff
 --- debian/patches/python-clangpath.diff	1970-01-01 09:00:00.000000000 +0900
-+++ llvm-3.2.src/debian/patches/python-clangpath.diff	2014-01-19 22:44:04.118750034 +0900
++++ llvm-3.2.src/debian/patches/python-clangpath.diff	2014-02-04 00:58:49.708174788 +0900
 @@ -0,0 +1,12 @@
 +diff -urN llvm-3.2.src.orig/clang/bindings/python/clang/cindex.py llvm-3.2.src/clang/bindings/python/clang/cindex.py
 +--- llvm-3.2.src.orig/clang/bindings/python/clang/cindex.py	2012-11-01 14:46:30.000000000 +0900
@@ -918,7 +918,7 @@ diff -urN debian/patches/python-clangpath.diff llvm-3.2.src/debian/patches/pytho
 +             file = 'libclang.dll'
 +         else:
 +-            file = 'libclang.so'
-++            file = 'libclang-3.2.so'
+++            file = 'libclang-3.2.so.1'
 + 
 +         if Config.library_path:
 +             file = Config.library_path + '/' + file

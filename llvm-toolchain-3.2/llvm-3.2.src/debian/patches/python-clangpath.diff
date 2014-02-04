@@ -6,7 +6,7 @@ diff -urN llvm-3.2.src.orig/clang/bindings/python/clang/cindex.py llvm-3.2.src/c
              file = 'libclang.dll'
          else:
 -            file = 'libclang.so'
-+            file = 'libclang-3.2.so'
++            file = 'libclang-3.2.so.1'
  
          if Config.library_path:
              file = Config.library_path + '/' + file

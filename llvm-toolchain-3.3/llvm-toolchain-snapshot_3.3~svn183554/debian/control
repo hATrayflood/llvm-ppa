@@ -143,7 +143,7 @@ Description: clang library - Common development package
 Package: python-clang-3.3
 Section: python
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libclang-3.3-dev, python2.7
+Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-3.3, python2.7
 Description: Clang Python Bindings
  This binding package provides access to the Clang compiler and libraries.
 

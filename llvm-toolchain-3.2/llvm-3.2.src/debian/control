@@ -226,7 +226,7 @@ Description: clang library - Common development package
 Package: python-clang-3.2
 Architecture: any
 Section: python
-Depends: ${shlibs:Depends}, ${misc:Depends}, libclang-3.2-dev, python2.7
+Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-3.2, python2.7
 Description: clang python bindings
  Clang project is a C, C++, Objective C and Objective C++ front-end
  for the LLVM compiler. Some of its goals include the following:

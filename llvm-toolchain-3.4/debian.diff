@@ -147,7 +147,7 @@ diff -urN debian/clang-format-3.4.links llvm-toolchain-3.4_3.4~+final/debian/cla
 +usr/lib/llvm-3.3/bin/clang-format-diff.py	usr/bin/clang-format-diff-3.4
 diff -urN debian/control llvm-toolchain-3.4_3.4~+final/debian/control
 --- debian/control	2013-12-24 23:19:08.000000000 +0900
-+++ llvm-toolchain-3.4_3.4~+final/debian/control	2014-02-03 20:13:11.242697502 +0900
++++ llvm-toolchain-3.4_3.4~+final/debian/control	2014-02-03 22:59:50.798344631 +0900
 @@ -1,21 +1,18 @@
  Source: llvm-toolchain-3.4
  Section: devel
@@ -257,7 +257,7 @@ diff -urN debian/control llvm-toolchain-3.4_3.4~+final/debian/control
 -Depends: ${shlibs:Depends}, ${misc:Depends}, python
 -Replaces: python-clang-3.3, python-clang-3.5
 -Breaks: python-clang-3.3, python-clang-3.5
-+Depends: ${shlibs:Depends}, ${misc:Depends}, libclang-3.4-dev, python2.7
++Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-3.4, python2.7
  Description: Clang Python Bindings
   This binding package provides access to the Clang compiler and libraries.
  
@@ -627,13 +627,13 @@ diff -urN debian/patches/99-python-bindings.patch llvm-toolchain-3.4_3.4~+final/
 +     """Obtain a translation unit from source and language.
 diff -urN debian/patches/python-clangpath.diff llvm-toolchain-3.4_3.4~+final/debian/patches/python-clangpath.diff
 --- debian/patches/python-clangpath.diff	2013-12-02 01:45:15.000000000 +0900
-+++ llvm-toolchain-3.4_3.4~+final/debian/patches/python-clangpath.diff	2014-01-12 22:05:39.371326494 +0900
++++ llvm-toolchain-3.4_3.4~+final/debian/patches/python-clangpath.diff	2014-02-03 23:00:29.762537840 +0900
 @@ -7,7 +7,7 @@
               file = 'libclang.dll'
           else:
  -            file = 'libclang.so'
 -+            file = 'libclang-3.3.so'
-++            file = 'libclang-3.4.so'
+++            file = 'libclang-3.4.so.1'
   
           if Config.library_path:
               file = Config.library_path + '/' + file
