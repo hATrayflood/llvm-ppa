@@ -35,5 +35,6 @@ ifneq (,$(strip $(tarball)))
 endif
 	$(RM) -r $(D)/debian/ccache
 	find utils -name '*.py[co]' | xargs rm -f
+	rm -f $(D)/utils/vim/llvm-$(UVERSION).vim $(D)/utils/vim/tablegen-$(UVERSION).vim
 
 .PHONY: clean

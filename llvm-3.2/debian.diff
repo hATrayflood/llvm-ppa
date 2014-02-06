@@ -13,7 +13,7 @@ diff -urN debian/changelog llvm-3.2.src/debian/changelog
    * Fixes a segfault in the exception table of the JIT code emitter.
 diff -urN debian/control llvm-3.2.src/debian/control
 --- debian/control	2013-09-04 18:21:38.499124975 +0900
-+++ llvm-3.2.src/debian/control	2014-02-02 11:43:21.530776145 +0900
++++ llvm-3.2.src/debian/control	2014-02-05 12:49:37.896309964 +0900
 @@ -1,18 +1,16 @@
  Source: llvm-3.2
  Section: devel
@@ -38,7 +38,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
  
  
  Package: libllvm3.2
-@@ -28,20 +26,6 @@
+@@ -28,27 +26,11 @@
   .
   This package contains the LLVM runtime library.
  
@@ -59,6 +59,30 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Package: llvm-3.2
  Architecture: any
  Suggests: llvm-3.2-doc
+ Depends: llvm-3.2-runtime (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+ Recommends: llvm-3.2-dev
+-Conflicts: llvm (<< 2.7-1)
+-Replaces: llvm (<< 2.7-1)
+ Description: Low-Level Virtual Machine (LLVM)
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+@@ -77,8 +59,6 @@
+ Package: llvm-3.2-runtime
+ Architecture: any
+ Depends: binfmt-support, ${shlibs:Depends}, ${misc:Depends}
+-Conflicts: llvm (<< 2.7-1)
+-Replaces: llvm (<< 2.7-1)
+ Description: Low-Level Virtual Machine (LLVM), bytecode interpreter
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+@@ -97,7 +77,6 @@
+ Package: llvm-3.2-dev
+ Architecture: any
+ Depends: ${shlibs:Depends}, libffi-dev (>= 3.0.9), ${misc:Depends}, llvm-3.2 (= ${binary:Version})
+-Replaces: llvm (<< 2.2-3)
+ Description: Low-Level Virtual Machine (LLVM), libraries and headers
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
 diff -urN debian/libllvm-3.2-ocaml-dev.dirs.in llvm-3.2.src/debian/libllvm-3.2-ocaml-dev.dirs.in
 --- debian/libllvm-3.2-ocaml-dev.dirs.in	2013-09-04 18:21:38.499124975 +0900
 +++ llvm-3.2.src/debian/libllvm-3.2-ocaml-dev.dirs.in	2013-09-04 18:21:38.507125007 +0900
@@ -66,6 +90,20 @@ diff -urN debian/libllvm-3.2-ocaml-dev.dirs.in llvm-3.2.src/debian/libllvm-3.2-o
 -@OCAML_STDLIB_DIR@/META/
 +@OCAML_STDLIB_DIR@/METAS
  
+diff -urN debian/llvm-3.2-dev.install llvm-3.2.src/debian/llvm-3.2-dev.install
+--- debian/llvm-3.2-dev.install	2013-09-04 18:21:38.499124975 +0900
++++ llvm-3.2.src/debian/llvm-3.2-dev.install	2014-02-05 12:51:41.336922085 +0900
+@@ -9,8 +9,8 @@
+ configure			/usr/lib/llvm-3.2/build/
+ autoconf/			/usr/lib/llvm-3.2/build/
+ 
+-utils/vim/llvm.vim		usr/share/vim/addons/syntax/llvm-3.2.vim
+-utils/vim/tablegen.vim		usr/share/vim/addons/syntax/tablegen-3.2.vim
++utils/vim/llvm-3.2.vim		usr/share/vim/addons/syntax/
++utils/vim/tablegen-3.2.vim	usr/share/vim/addons/syntax/
+ 
+ utils/emacs/emacs.el		usr/share/emacs/site-lisp/llvm-3.2/
+ utils/emacs/llvm-mode.el	usr/share/emacs/site-lisp/llvm-3.2/
 diff -urN debian/llvm-3.2-runtime.postinst llvm-3.2.src/debian/llvm-3.2-runtime.postinst
 --- debian/llvm-3.2-runtime.postinst	2013-09-04 18:21:38.499124975 +0900
 +++ llvm-3.2.src/debian/llvm-3.2-runtime.postinst	1970-01-01 09:00:00.000000000 +0900
@@ -101,7 +139,7 @@ diff -urN debian/llvm-3.2-runtime.prerm.in llvm-3.2.src/debian/llvm-3.2-runtime.
 -
 diff -urN debian/rules llvm-3.2.src/debian/rules
 --- debian/rules	2013-09-04 18:21:38.507125007 +0900
-+++ llvm-3.2.src/debian/rules	2013-10-24 16:00:06.481707002 +0900
++++ llvm-3.2.src/debian/rules	2014-02-05 13:39:07.211034004 +0900
 @@ -1,11 +1,13 @@
  #!/usr/bin/make -f
  
@@ -128,22 +166,40 @@ diff -urN debian/rules llvm-3.2.src/debian/rules
  --disable-assertions --prefix=/usr/lib/llvm-$(LLVM_VERSION) \
  --enable-optimized --with-optimize-option=' -g -O2' --enable-pic \
  --enable-libffi --with-ocaml-libdir=/usr/lib/ocaml/llvm-$(LLVM_VERSION) \
-@@ -29,7 +34,7 @@
+@@ -23,13 +28,20 @@
+ --enable-experimental-targets=R600 \
+ --enable-shared
+ 
++
+ %:
+-	dh $@
++	dh $@ --with ocaml
++
+ 
  debian/%: debian/%.in
  	sed -e 's|@DEB_HOST_MULTIARCH@|$(DEB_HOST_MULTIARCH)|g' -e "s|@OCAML_STDLIB_DIR@|$(OCAML_STDLIB_DIR)|g" -e "s|@LLVM_VERSION@|$(LLVM_VERSION)|g" $< > $@
  
 -override_dh_auto_configure: debian/libllvm$(LLVM_VERSION).install debian/llvm-$(LLVM_VERSION)-dev.links debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs debian/llvm-$(LLVM_VERSION)-runtime.binfmt debian/llvm-$(LLVM_VERSION)-runtime.prerm
++
++override_dh_ocamlinit:
++override_dh_ocamlclean:
++
++
 +override_dh_auto_configure: debian/libllvm$(LLVM_VERSION).install debian/llvm-$(LLVM_VERSION)-dev.links debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs debian/llvm-$(LLVM_VERSION)-runtime.binfmt debian/libllvm-$(LLVM_VERSION)-ocaml-dev.install
  	mkdir -p $(TARGET_BUILD)
  	echo "#define LLVM_DEBIAN_INFO \"$(DISTRELEASE) $(LLVM_FULL_VERSION)\"" > $(TARGET_BUILD)/debian.h
  	cd $(TARGET_BUILD) && \
-@@ -87,14 +92,14 @@
+@@ -87,14 +99,18 @@
  	for f in *.1; do \
  		echo "$$f"|grep "3\.2" || mv $$f `echo $$f|sed "s|\.1|-$(LLVM_VERSION).1|"`; \
  	done
 +
-+	cp $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META \
-+           $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
++	cp -f $(CURDIR)/utils/vim/llvm.vim $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim
++
++	cp -f $(CURDIR)/utils/vim/tablegen.vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
++
++	cp -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
++
  	dh_auto_install
  
  override_dh_shlibdeps:
@@ -155,8 +211,10 @@ diff -urN debian/rules llvm-3.2.src/debian/rules
  override_dh_installdeb:
  	# Belong to llvm runtime
  	rm -f $(CURDIR)/debian/llvm-$(LLVM_VERSION)/usr/share/man/man1/lli*
-@@ -113,3 +118,4 @@
+@@ -112,4 +128,6 @@
+ 	rm -rf $(TARGET_BUILD)
  	find utils -name '*.pyc' | xargs -r rm -f
  	find test -name '*.pyc' -o -name '*.o' -o -name '*.cm[ix]' | xargs -r rm -f
++	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
  	for i in debian/*.in; do rm -f $${i%*.in}; done
 +	rm -rf docs/_build

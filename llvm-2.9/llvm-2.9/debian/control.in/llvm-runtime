@@ -1,8 +1,6 @@
 Package: llvm-@UVERSION@-runtime
 Architecture: any
 Depends: binfmt-support, ${shlibs:Depends}, ${misc:Depends}
-Conflicts: llvm (<< 2.7-1)
-Replaces: llvm (<< 2.7-1)
 Description: Low-Level Virtual Machine (LLVM), bytecode interpreter
  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
  tools that make it easy to build compilers, optimizers, Just-In-Time

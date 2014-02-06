@@ -68,6 +68,8 @@ define llvm_extra_install
 	mkdir -p $(D)/debian/tmp-llvm/usr/lib/$(DEB_HOST_MULTIARCH)
 	mv $(D)/debian/tmp-llvm/$(PF)/lib/$(shlib_name).so \
 	  $(D)/debian/tmp-llvm/usr/lib/$(DEB_HOST_MULTIARCH)/$(shlib_name).so.1
+	cp -f $(D)/utils/vim/llvm.vim $(D)/utils/vim/llvm-$(UVERSION).vim
+	cp -f $(D)/utils/vim/tablegen.vim $(D)/utils/vim/tablegen-$(UVERSION).vim
 endef
 
 define llvm-runtime_extra_binary

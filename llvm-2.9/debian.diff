@@ -13,7 +13,7 @@ diff -urN debian/changelog llvm-2.9/debian/changelog
    [ Vincent Legout ]
 diff -urN debian/control llvm-2.9/debian/control
 --- debian/control	2013-09-04 18:21:38.319124078 +0900
-+++ llvm-2.9/debian/control	2013-10-24 16:05:46.723394176 +0900
++++ llvm-2.9/debian/control	2014-02-05 21:25:58.646700792 +0900
 @@ -1,8 +1,7 @@
  Source: llvm-2.9
  Section: devel
@@ -37,6 +37,67 @@ diff -urN debian/control llvm-2.9/debian/control
  
  
  Package: libllvm2.9
+@@ -33,8 +31,6 @@
+ Suggests: llvm-2.9-doc
+ Depends: llvm-2.9-runtime (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+ Recommends: llvm-2.9-dev
+-Conflicts: llvm (<< 2.7-1)
+-Replaces: llvm (<< 2.7-1)
+ Description: Low-Level Virtual Machine (LLVM)
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+@@ -63,8 +59,6 @@
+ Package: llvm-2.9-runtime
+ Architecture: any
+ Depends: binfmt-support, ${shlibs:Depends}, ${misc:Depends}
+-Conflicts: llvm (<< 2.7-1)
+-Replaces: llvm (<< 2.7-1)
+ Description: Low-Level Virtual Machine (LLVM), bytecode interpreter
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+@@ -83,7 +77,6 @@
+ Package: llvm-2.9-dev
+ Architecture: any
+ Depends: ${shlibs:Depends}, libffi-dev (>= 3.0.9), ${misc:Depends}, llvm-2.9 (= ${binary:Version})
+-Replaces: llvm (<< 2.2-3)
+ Description: Low-Level Virtual Machine (LLVM), libraries and headers
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+diff -urN debian/control.in/llvm llvm-2.9/debian/control.in/llvm
+--- debian/control.in/llvm	2013-09-04 18:21:38.319124078 +0900
++++ llvm-2.9/debian/control.in/llvm	2014-02-05 20:53:40.197088527 +0900
+@@ -3,8 +3,6 @@
+ Suggests: llvm-@UVERSION@-doc
+ Depends: llvm-@UVERSION@-runtime (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+ Recommends: llvm-@UVERSION@-dev
+-Conflicts: llvm (<< 2.7-1)
+-Replaces: llvm (<< 2.7-1)
+ Description: Low-Level Virtual Machine (LLVM)
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+diff -urN debian/control.in/llvm-dev llvm-2.9/debian/control.in/llvm-dev
+--- debian/control.in/llvm-dev	2013-09-04 18:21:38.319124078 +0900
++++ llvm-2.9/debian/control.in/llvm-dev	2014-02-05 20:53:47.829126382 +0900
+@@ -1,7 +1,6 @@
+ Package: llvm-@UVERSION@-dev
+ Architecture: any
+ Depends: ${shlibs:Depends}, libffi-dev (>= 3.0.9), ${misc:Depends}, llvm-@UVERSION@ (= ${binary:Version})
+-Replaces: llvm (<< 2.2-3)
+ Description: Low-Level Virtual Machine (LLVM), libraries and headers
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+diff -urN debian/control.in/llvm-runtime llvm-2.9/debian/control.in/llvm-runtime
+--- debian/control.in/llvm-runtime	2013-09-04 18:21:38.319124078 +0900
++++ llvm-2.9/debian/control.in/llvm-runtime	2014-02-05 20:54:05.477213890 +0900
+@@ -1,8 +1,6 @@
+ Package: llvm-@UVERSION@-runtime
+ Architecture: any
+ Depends: binfmt-support, ${shlibs:Depends}, ${misc:Depends}
+-Conflicts: llvm (<< 2.7-1)
+-Replaces: llvm (<< 2.7-1)
+ Description: Low-Level Virtual Machine (LLVM), bytecode interpreter
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
 diff -urN debian/control.in/source llvm-2.9/debian/control.in/source
 --- debian/control.in/source	2013-09-04 18:21:38.319124078 +0900
 +++ llvm-2.9/debian/control.in/source	2013-09-04 18:21:38.323124118 +0900
@@ -62,6 +123,20 @@ diff -urN debian/control.in/source llvm-2.9/debian/control.in/source
 +Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
  
  
+diff -urN debian/debhelper.in/llvm-dev.install llvm-2.9/debian/debhelper.in/llvm-dev.install
+--- debian/debhelper.in/llvm-dev.install	2013-09-04 18:21:38.319124078 +0900
++++ llvm-2.9/debian/debhelper.in/llvm-dev.install	2014-02-05 20:54:46.117415416 +0900
+@@ -8,8 +8,8 @@
+ configure			@PF@/build/
+ autoconf/			@PF@/build/
+ 
+-utils/vim/llvm.vim		usr/share/vim/addons/syntax/llvm-2.9.vim
+-utils/vim/tablegen.vim		usr/share/vim/addons/syntax/tablegen-2.9.vim
++utils/vim/llvm-2.9.vim		usr/share/vim/addons/syntax/
++utils/vim/tablegen-2.9.vim	usr/share/vim/addons/syntax/
+ 
+ utils/emacs/emacs.el		usr/share/emacs/site-lisp/llvm-2.9/
+ utils/emacs/llvm-mode.el	usr/share/emacs/site-lisp/llvm-2.9/
 diff -urN debian/debhelper.in/llvm-runtime.postinst llvm-2.9/debian/debhelper.in/llvm-runtime.postinst
 --- debian/debhelper.in/llvm-runtime.postinst	2013-09-04 18:21:38.319124078 +0900
 +++ llvm-2.9/debian/debhelper.in/llvm-runtime.postinst	1970-01-01 09:00:00.000000000 +0900
@@ -90,9 +165,21 @@ diff -urN debian/debhelper.in/llvm-runtime.prerm llvm-2.9/debian/debhelper.in/ll
 -
 -#DEBHELPER#
 -
+diff -urN debian/packages.d/llvm.mk llvm-2.9/debian/packages.d/llvm.mk
+--- debian/packages.d/llvm.mk	2013-09-04 18:21:38.323124118 +0900
++++ llvm-2.9/debian/packages.d/llvm.mk	2014-02-05 20:55:17.605571563 +0900
+@@ -68,6 +68,8 @@
+ 	mkdir -p $(D)/debian/tmp-llvm/usr/lib/$(DEB_HOST_MULTIARCH)
+ 	mv $(D)/debian/tmp-llvm/$(PF)/lib/$(shlib_name).so \
+ 	  $(D)/debian/tmp-llvm/usr/lib/$(DEB_HOST_MULTIARCH)/$(shlib_name).so.1
++	cp -f $(D)/utils/vim/llvm.vim $(D)/utils/vim/llvm-$(UVERSION).vim
++	cp -f $(D)/utils/vim/tablegen.vim $(D)/utils/vim/tablegen-$(UVERSION).vim
+ endef
+ 
+ define llvm-runtime_extra_binary
 diff -urN debian/rules llvm-2.9/debian/rules
 --- debian/rules	2013-09-04 18:21:38.323124118 +0900
-+++ llvm-2.9/debian/rules	2013-09-04 18:21:38.327124127 +0900
++++ llvm-2.9/debian/rules	2014-02-05 20:55:35.557660573 +0900
 @@ -17,7 +17,7 @@
  
  define pkgname
@@ -102,11 +189,12 @@ diff -urN debian/rules llvm-2.9/debian/rules
  endef
  
  define buildof
-@@ -36,5 +36,6 @@
+@@ -36,5 +36,7 @@
  endif
  	$(RM) -r $(D)/debian/ccache
  	find utils -name '*.py[co]' | xargs rm -f
 +	find test  -name '*.py[co]' | xargs rm -f
++	rm -f $(D)/utils/vim/llvm-$(UVERSION).vim $(D)/utils/vim/tablegen-$(UVERSION).vim
  
  .PHONY: clean
 diff -urN debian/rules.d/control.mk llvm-2.9/debian/rules.d/control.mk

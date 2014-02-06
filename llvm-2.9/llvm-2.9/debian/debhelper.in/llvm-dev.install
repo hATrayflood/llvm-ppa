@@ -8,8 +8,8 @@ Makefile.rules			@PF@/build/
 configure			@PF@/build/
 autoconf/			@PF@/build/
 
-utils/vim/llvm.vim		usr/share/vim/addons/syntax/llvm-2.9.vim
-utils/vim/tablegen.vim		usr/share/vim/addons/syntax/tablegen-2.9.vim
+utils/vim/llvm-2.9.vim		usr/share/vim/addons/syntax/
+utils/vim/tablegen-2.9.vim	usr/share/vim/addons/syntax/
 
 utils/emacs/emacs.el		usr/share/emacs/site-lisp/llvm-2.9/
 utils/emacs/llvm-mode.el	usr/share/emacs/site-lisp/llvm-2.9/

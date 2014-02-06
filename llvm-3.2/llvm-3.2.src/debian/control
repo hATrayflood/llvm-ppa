@@ -31,8 +31,6 @@ Architecture: any
 Suggests: llvm-3.2-doc
 Depends: llvm-3.2-runtime (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Recommends: llvm-3.2-dev
-Conflicts: llvm (<< 2.7-1)
-Replaces: llvm (<< 2.7-1)
 Description: Low-Level Virtual Machine (LLVM)
  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
  tools that make it easy to build compilers, optimizers, Just-In-Time
@@ -61,8 +59,6 @@ Description: Low-Level Virtual Machine (LLVM)
 Package: llvm-3.2-runtime
 Architecture: any
 Depends: binfmt-support, ${shlibs:Depends}, ${misc:Depends}
-Conflicts: llvm (<< 2.7-1)
-Replaces: llvm (<< 2.7-1)
 Description: Low-Level Virtual Machine (LLVM), bytecode interpreter
  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
  tools that make it easy to build compilers, optimizers, Just-In-Time
@@ -81,7 +77,6 @@ Description: Low-Level Virtual Machine (LLVM), bytecode interpreter
 Package: llvm-3.2-dev
 Architecture: any
 Depends: ${shlibs:Depends}, libffi-dev (>= 3.0.9), ${misc:Depends}, llvm-3.2 (= ${binary:Version})
-Replaces: llvm (<< 2.2-3)
 Description: Low-Level Virtual Machine (LLVM), libraries and headers
  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
  tools that make it easy to build compilers, optimizers, Just-In-Time

@@ -1,7 +1,6 @@
 Package: llvm-@UVERSION@-dev
 Architecture: any
 Depends: ${shlibs:Depends}, libffi-dev (>= 3.0.9), ${misc:Depends}, llvm-@UVERSION@ (= ${binary:Version})
-Replaces: llvm (<< 2.2-3)
 Description: Low-Level Virtual Machine (LLVM), libraries and headers
  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
  tools that make it easy to build compilers, optimizers, Just-In-Time

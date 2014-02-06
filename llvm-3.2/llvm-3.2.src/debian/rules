@@ -28,11 +28,18 @@ confargs := \
 --enable-experimental-targets=R600 \
 --enable-shared
 
+
 %:
-	dh $@
+	dh $@ --with ocaml
+
 
 debian/%: debian/%.in
 	sed -e 's|@DEB_HOST_MULTIARCH@|$(DEB_HOST_MULTIARCH)|g' -e "s|@OCAML_STDLIB_DIR@|$(OCAML_STDLIB_DIR)|g" -e "s|@LLVM_VERSION@|$(LLVM_VERSION)|g" $< > $@
+
+
+override_dh_ocamlinit:
+override_dh_ocamlclean:
+
 
 override_dh_auto_configure: debian/libllvm$(LLVM_VERSION).install debian/llvm-$(LLVM_VERSION)-dev.links debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs debian/llvm-$(LLVM_VERSION)-runtime.binfmt debian/libllvm-$(LLVM_VERSION)-ocaml-dev.install
 	mkdir -p $(TARGET_BUILD)
@@ -93,8 +100,12 @@ override_dh_auto_install: llvm_source_package
 		echo "$$f"|grep "3\.2" || mv $$f `echo $$f|sed "s|\.1|-$(LLVM_VERSION).1|"`; \
 	done
 
-	cp $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META \
-           $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
+	cp -f $(CURDIR)/utils/vim/llvm.vim $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim
+
+	cp -f $(CURDIR)/utils/vim/tablegen.vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
+
+	cp -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
+
 	dh_auto_install
 
 override_dh_shlibdeps:
@@ -117,5 +128,6 @@ override_dh_auto_clean:
 	rm -rf $(TARGET_BUILD)
 	find utils -name '*.pyc' | xargs -r rm -f
 	find test -name '*.pyc' -o -name '*.o' -o -name '*.cm[ix]' | xargs -r rm -f
+	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
 	for i in debian/*.in; do rm -f $${i%*.in}; done
 	rm -rf docs/_build

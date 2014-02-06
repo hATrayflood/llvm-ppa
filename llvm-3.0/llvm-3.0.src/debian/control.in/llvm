@@ -3,8 +3,6 @@ Architecture: any
 Suggests: llvm-@UVERSION@-doc
 Depends: llvm-@UVERSION@-runtime (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Recommends: llvm-@UVERSION@-dev
-Conflicts: llvm (<< 2.7-1)
-Replaces: llvm (<< 2.7-1)
 Description: Low-Level Virtual Machine (LLVM)
  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
  tools that make it easy to build compilers, optimizers, Just-In-Time
