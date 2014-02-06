@@ -2,8 +2,11 @@ all: debclean
 	cd $(DIR) && debuild -uc -us
 
 dput:
+	rm -f *_source.changes
 	cd $(DIR) && debuild -S  -sa
+	@echo
 	@echo dput ppa:h-rayflood/llvm *_source.changes
+	@echo
 
 diff:
 	if test -d debian ; then \
@@ -17,8 +20,8 @@ clean:
 	cd $(DIR) && debuild clean
 
 debclean:
-	rm -f  *.deb
-	rm -f  $(DEL)
+	rm -f *.deb
+	rm -f $(DEL)
 
 distclean: clean debclean
 	rm -fr $(addprefix $(DIR)/,$(filter-out . .. debian,$(shell ls -a $(DIR))))
