@@ -11,4 +11,5 @@
 28-gcc-4.7.diff
 29-set-default-cpu-for-armhf.diff
 30-powerpc-no-altivec.patch
+python-clangpath.diff
 99-python-bindings.patch

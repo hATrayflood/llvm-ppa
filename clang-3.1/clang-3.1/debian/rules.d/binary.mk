@@ -17,6 +17,7 @@ debhelper-%:
 		-e "s/@PKG_VERSION@/$(pkg_version)/g" \
 		-e "s/@SHLIB_NAME@/$(shlib_name)/g" \
 		-e "s;@OCAML_STDLIB_DIR@;$(OCAML_STDLIB_DIR);g" \
+		-e "s;@DEB_HOST_MULTIARCH@;$(DEB_HOST_MULTIARCH);g" \
 		$(D)/debian/debhelper.in/$f > \
 		$(D)/debian/$(strip $(call pkgname,$*))$(strip $(suffix $(f))) \
 	&&) :

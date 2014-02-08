@@ -14,4 +14,5 @@ profile_rt.diff
 32-scan-build-path.diff
 33-armhf-defaults.diff
 34-powerpc-no-altivec.diff
+python-clangpath.diff
 99-python-bindings.patch

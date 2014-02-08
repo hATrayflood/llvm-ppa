@@ -14,7 +14,7 @@ Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
 Package: clang-2.9
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
- libclang-2.9-common-dev
+ libclang-common-2.9-dev (= ${binary:Version})
 Recommends: llvm-2.9-dev, python
 Description: Low-Level Virtual Machine (LLVM), C language family frontend
  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
@@ -97,7 +97,7 @@ Package: libclang-2.9-dev
 Architecture: any
 Section: libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
- libclang1-2.9 (= ${binary:Version}), libclang-2.9-common-dev
+ libclang1-2.9 (= ${binary:Version}), libclang-common-2.9-dev
 Description: clang library - Development package
  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
  tools that make it easy to build compilers, optimizers, Just-In-Time
@@ -136,7 +136,7 @@ Description: clang library - Development package
  .
  This package contains the clang headers.
 
-Package: libclang-2.9-common-dev
+Package: libclang-common-2.9-dev
 Architecture: any
 Replaces: libclang-2.9-dev
 Section: libdevel
@@ -181,8 +181,7 @@ Description: clang library - Common development package
 Package: python-clang-2.9
 Architecture: any
 Section: python
-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
- libclang1-2.9 (= ${binary:Version}), python2.7
+Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-2.9 (= ${binary:Version}), python2.7
 Description: clang python bindings
  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
  tools that make it easy to build compilers, optimizers, Just-In-Time

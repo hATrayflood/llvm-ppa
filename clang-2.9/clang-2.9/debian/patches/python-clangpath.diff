@@ -1,0 +1,12 @@
+diff -urN clang-2.9.orig/tools/clang/bindings/python/clang/cindex.py clang-2.9/tools/clang/bindings/python/clang/cindex.py
+--- clang-2.9.orig/tools/clang/bindings/python/clang/cindex.py	2011-02-06 02:54:10.000000000 +0900
++++ clang-2.9/tools/clang/bindings/python/clang/cindex.py	2013-06-23 02:19:21.757988613 +0900
+@@ -75,7 +75,7 @@
+     elif name == 'Windows':
+         return cdll.LoadLibrary('libclang.dll')
+     else:
+-        return cdll.LoadLibrary('libclang.so')
++        return cdll.LoadLibrary('libclang-2.9.so.1')
+ 
+ # ctypes doesn't implicitly convert c_void_p to the appropriate wrapper
+ # object. This is a problem, because it means that from_parameter will see an

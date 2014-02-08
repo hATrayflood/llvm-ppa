@@ -3,7 +3,7 @@ Package: libclang-2.9-dev
 Architecture: any
 Section: libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
- libclang1-2.9 (= ${binary:Version}), libclang-2.9-common-dev
+ libclang1-2.9 (= ${binary:Version}), libclang-common-2.9-dev
 Description: clang library - Development package
  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
  tools that make it easy to build compilers, optimizers, Just-In-Time

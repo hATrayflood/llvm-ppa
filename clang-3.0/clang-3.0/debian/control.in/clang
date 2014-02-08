@@ -1,7 +1,7 @@
 Package: clang-@UVERSION@
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
- libclang-@UVERSION@-common-dev
+ libclang-common-@UVERSION@-dev (= ${binary:Version})
 Recommends: llvm-@UVERSION@-dev, python
 Description: Low-Level Virtual Machine (LLVM), C language family frontend
  The Low-Level Virtual Machine (LLVM) is a collection of libraries and

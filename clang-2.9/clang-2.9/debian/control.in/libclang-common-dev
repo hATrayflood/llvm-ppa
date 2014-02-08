@@ -1,5 +1,5 @@
 
-Package: libclang-2.9-common-dev
+Package: libclang-common-2.9-dev
 Architecture: any
 Replaces: libclang-2.9-dev
 Section: libdevel

@@ -1,7 +1,7 @@
-@PF@/lib/llvm-2.9/bin/clang			@PF@/bin/llvm-clang-2.9
-@PF@/lib/llvm-2.9/bin/clang			@PF@/bin/clang-2.9
-@PF@/lib/llvm-2.9/bin/clang++			@PF@/bin/clang++-2.9
-@PF@/lib/llvm-2.9/share/scan-build/scan-build	@PF@/bin/scan-build-2.9
-@PF@/lib/llvm-2.9/share/scan-view/scan-view	@PF@/bin/scan-view-2.9
-@PF@/share/man/man1/clang-2.9.1.gz		@PF@/share/man/man1/llvm-clang-2.9.1.gz
-@PF@/share/man/man1/clang-2.9.1.gz		@PF@/share/man/man1/clang++-2.9.1.gz
+usr/share/man/man1/clang-2.9.1.gz		usr/share/man/man1/llvm-clang-2.9.1.gz
+usr/share/man/man1/clang-2.9.1.gz		usr/share/man/man1/clang++-2.9.1.gz
+usr/lib/llvm-2.9/share/scan-build/scan-build	usr/bin/scan-build-2.9
+usr/lib/llvm-2.9/share/scan-view/scan-view	usr/bin/scan-view-2.9
+usr/lib/llvm-2.9/bin/clang			usr/bin/llvm-clang-2.9
+usr/lib/llvm-2.9/bin/clang			usr/bin/clang-2.9
+usr/lib/llvm-2.9/bin/clang++			usr/bin/clang++-2.9

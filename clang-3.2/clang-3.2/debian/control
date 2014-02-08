@@ -12,12 +12,10 @@ Standards-Version: 3.9.3
 Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
 Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
 
-
 Package: clang-3.2
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
- libclang-3.2-common-dev (= ${binary:Version}), compiler-rt-3.2 (= ${binary:Version}) [amd64 i386]
-Provides: c-compiler, objc-compiler, c++-compiler
+ libclang-common-3.2-dev (= ${binary:Version}), compiler-rt-3.2 (= ${binary:Version}) [amd64 i386]
 Recommends: llvm-3.2-dev, python
 Description: C, C++ and Objective-C compiler (LLVM based)
  Clang project is a C, C++, Objective C and Objective C++ front-end
@@ -105,11 +103,41 @@ Description: clang library
  .
  This package contains the clang library.
 
+Package: clang-3.2-relaxng
+Architecture: all
+Section: misc
+Description: clang Relax NG schema for the XML
+ Clang project is a C, C++, Objective C and Objective C++ front-end
+ for the LLVM compiler. Some of its goals include the following:
+ .
+ End-User Features:
+ .
+    * Fast compiles and low memory use
+    * Expressive diagnostics (examples)
+    * GCC compatibility
+ .
+ Utility and Applications:
+ .
+    * Modular library based architecture
+    * Support diverse clients (refactoring, static analysis, code
+      generation, etc)
+    * Allow tight integration with IDEs
+    * Use the LLVM 'BSD' License
+ .
+ Internal Design and Implementation:
+ .
+    * A real-world, production quality compiler
+    * A simple and hackable code base
+    * A single unified parser for C, Objective C, C++, and Objective C++
+    * Conformance with C/C++/ObjC and their variants
+ .
+ This package contains the clang Relax NG schema for the XML.
+
 Package: libclang-3.2-dev
 Architecture: any
 Section: libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
- libclang1-3.2 (= ${binary:Version}), libclang-3.2-common-dev
+ libclang1-3.2 (= ${binary:Version}), libclang-common-3.2-dev
 Description: clang library - Development package
  Clang project is a C, C++, Objective C and Objective C++ front-end
  for the LLVM compiler. Some of its goals include the following:
@@ -137,7 +165,7 @@ Description: clang library - Development package
  .
  This package contains the clang headers to develop extensions over libclang.
 
-Package: libclang-3.2-common-dev
+Package: libclang-common-3.2-dev
 Architecture: any
 Replaces: libclang-3.2-dev
 Section: libdevel
@@ -191,24 +219,11 @@ Description: Runtime C library - LLVM based
       libgcc implementations.
  .
 
-
 Package: python-clang-3.2
 Architecture: any
 Section: python
-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
- libclang1-3.2 (= ${binary:Version}), python2.7
+Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-3.2 (= ${binary:Version}), python2.7
 Description: clang python bindings
- The Low-Level Virtual Machine (LLVM) is a collection of libraries and
- tools that make it easy to build compilers, optimizers, Just-In-Time
- code generators, and many other compiler-related programs. LLVM
- uses a single, language-independent virtual instruction set both
- as an offline code representation (to communicate code between
- compiler phases and to run-time systems) and as the compiler internal
- representation (to analyze and transform programs). This persistent
- code representation allows a common set of sophisticated compiler
- techniques to be applied at compile-time, link-time, install-time,
- run-time, or "idle-time" (between program runs).
- .
  Clang project is a C, C++, Objective C and Objective C++ front-end
  for the LLVM compiler. Some of its goals include the following:
  .
@@ -234,45 +249,3 @@ Description: clang python bindings
     * Conformance with C/C++/ObjC and their variants
  .
  This package contains the clang python bindings.
-
-
-Package: clang-3.2-relaxng
-Architecture: all
-Section: misc
-Description: clang Relax NG schema for the XML
- The Low-Level Virtual Machine (LLVM) is a collection of libraries and
- tools that make it easy to build compilers, optimizers, Just-In-Time
- code generators, and many other compiler-related programs. LLVM
- uses a single, language-independent virtual instruction set both
- as an offline code representation (to communicate code between
- compiler phases and to run-time systems) and as the compiler internal
- representation (to analyze and transform programs). This persistent
- code representation allows a common set of sophisticated compiler
- techniques to be applied at compile-time, link-time, install-time,
- run-time, or "idle-time" (between program runs).
- .
- Clang project is a C, C++, Objective C and Objective C++ front-end
- for the LLVM compiler. Some of its goals include the following:
- .
- End-User Features:
- .
-    * Fast compiles and low memory use
-    * Expressive diagnostics (examples)
-    * GCC compatibility
- .
- Utility and Applications:
- .
-    * Modular library based architecture
-    * Support diverse clients (refactoring, static analysis, code
-      generation, etc)
-    * Allow tight integration with IDEs
-    * Use the LLVM 'BSD' License
- .
- Internal Design and Implementation:
- .
-    * A real-world, production quality compiler
-    * A simple and hackable code base
-    * A single unified parser for C, Objective C, C++, and Objective C++
-    * Conformance with C/C++/ObjC and their variants
- .
- This package contains the clang Relax NG schema for the XML.

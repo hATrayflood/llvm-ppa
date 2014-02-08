@@ -86,10 +86,11 @@ $(install-stamp)-%: $(build-stamp)-% check
 	    L=$${L##$(D)/debian/tmp-$*} ; \
 	    ln -sf $$L $$i ; \
 	  done
-	(cd $(D)/debian/tmp-clang/usr/lib/; \
-		if test ! -h libclang.so; then \
-			ln -s libclang.so.$(SONAME_EXT) libclang.so; \
-	fi)
+	cd $(D)/debian/tmp-clang/usr/lib/ && \
+	if test ! -f libclang-$(UVERSION).so.$(SONAME_EXT); then \
+		mv libclang.so.$(SONAME_EXT) libclang-$(UVERSION).so.$(SONAME_EXT) && \
+		ln -s libclang-$(UVERSION).so.$(SONAME_EXT) libclang.so.$(SONAME_EXT); \
+	fi
 	chrpath -d $(D)/debian/tmp-clang/usr/bin/clang
 	$(call $*_extra_install)
 	touch $@

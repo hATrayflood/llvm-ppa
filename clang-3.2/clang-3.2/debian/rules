@@ -8,7 +8,6 @@ DEBIAN_REVISION := $(shell dpkg-parsechangelog | sed -rne 's,^Version: .*-(.*),\
 ifneq (,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
   NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
 endif
-
 VENDOR=Debian
 
 DEB_HOST_MULTIARCH  = $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
@@ -40,7 +39,10 @@ endif
 %:
 	dh $@
 
-override_dh_auto_configure:
+debian/%: debian/%.in
+	sed -e 's|@DEB_HOST_MULTIARCH@|$(DEB_HOST_MULTIARCH)|g' -e "s|@OCAML_STDLIB_DIR@|$(OCAML_STDLIB_DIR)|g" -e "s|@LLVM_VERSION@|$(LLVM_VERSION)|g" $< > $@
+
+override_dh_auto_configure: debian/libclang1-$(LLVM_VERSION).links debian/libclang-$(LLVM_VERSION)-dev.links debian/libclang1-$(LLVM_VERSION).install
 	xzcat /usr/src/llvm-$(LLVM_VERSION)/llvm-$(LLVM_VERSION).tar.xz|tar -x -f -
 	mkdir -p tools/clang/include/clang/Debian
 	mkdir -p $(TARGET_BUILD)
@@ -86,10 +88,12 @@ override_dh_auto_build:
 override_dh_auto_install:
 	chrpath -d build-clang/Release/bin/clang build-clang/Release/bin/clang-check build-clang/Release/bin/clang-tblgen
 	$(MAKE) -C $(TARGET_BUILD)  VERBOSE=1  ONLY_TOOLS="clang" install DESTDIR=$(CURDIR)/debian/tmp/
-	cd debian/tmp/usr/lib/&& mv libclang.so libclang.so.$(SONAME_EXT) && ln -s libclang.so.$(SONAME_EXT) libclang.so
+	cd debian/tmp/usr/lib/ && \
+	if test ! -f libclang-$(LLVM_VERSION).so.$(SONAME_EXT); then \
+		mv libclang.so libclang-$(LLVM_VERSION).so.$(SONAME_EXT) && \
+		ln -s libclang-$(LLVM_VERSION).so.$(SONAME_EXT) libclang.so.$(SONAME_EXT); \
+	fi
 #	cd build-clang/tools/clang/runtime/compiler-rt/ && rm -rf $$(find . -iname "SubDir.lib*" -o -iname .dir) && rm -rf $$(find -empty)
-	mkdir -p $(CURDIR)/debian/compiler-rt-$(LLVM_VERSION)/usr/lib/clang/$(LLVM_VERSION)/bin/
-	cp compiler-rt/lib/asan/scripts/asan_symbolize.py $(CURDIR)/debian/compiler-rt-$(LLVM_VERSION)/usr/lib/clang/$(LLVM_VERSION)/bin/asan_symbolize
 # Create this fake directory to make the install libclang-common-dev happy
 # under the unsupported archs of compiler-rt
 	mkdir -p $(CURDIR)/debian/tmp/usr/lib/clang/$(LLVM_VERSION)/lib
@@ -109,3 +113,4 @@ override_dh_auto_test:
 
 override_dh_auto_clean:
 	rm -rf build-clang llvm-$(LLVM_VERSION) tools/clang/include/clang/Debian/debian_path.h
+	rm -f `ls debian/*.in|sed -e "s|.in$$||g"`

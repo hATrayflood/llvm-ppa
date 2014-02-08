@@ -2,8 +2,7 @@
 Package: python-clang-@UVERSION@
 Architecture: any
 Section: python
-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
- libclang1-@UVERSION@ (= ${binary:Version}), python2.7
+Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-@UVERSION@ (= ${binary:Version}), python2.7
 Description: clang python bindings
  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
  tools that make it easy to build compilers, optimizers, Just-In-Time

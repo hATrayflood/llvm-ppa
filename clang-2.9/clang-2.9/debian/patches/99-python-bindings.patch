@@ -16,18 +16,6 @@ diff -urN clang-2.9.orig/tools/clang/bindings/python/README.txt clang-2.9/tools/
  tests.cindex.test_index.test_create ... ok
  ...
  
-diff -urN clang-2.9.orig/tools/clang/bindings/python/clang/cindex.py clang-2.9/tools/clang/bindings/python/clang/cindex.py
---- clang-2.9.orig/tools/clang/bindings/python/clang/cindex.py	2011-02-06 02:54:10.000000000 +0900
-+++ clang-2.9/tools/clang/bindings/python/clang/cindex.py	2013-06-23 02:19:21.757988613 +0900
-@@ -75,7 +75,7 @@
-     elif name == 'Windows':
-         return cdll.LoadLibrary('libclang.dll')
-     else:
--        return cdll.LoadLibrary('libclang.so')
-+        return cdll.LoadLibrary('/usr/lib/llvm-2.9/lib/libclang.so.1')
- 
- # ctypes doesn't implicitly convert c_void_p to the appropriate wrapper
- # object. This is a problem, because it means that from_parameter will see an
 diff -urN clang-2.9.orig/tools/clang/bindings/python/examples/cindex/cindex-dump.py clang-2.9/tools/clang/bindings/python/examples/cindex/cindex-dump.py
 --- clang-2.9.orig/tools/clang/bindings/python/examples/cindex/cindex-dump.py	2010-02-14 03:33:28.000000000 +0900
 +++ clang-2.9/tools/clang/bindings/python/examples/cindex/cindex-dump.py	2013-06-23 02:11:19.975599560 +0900

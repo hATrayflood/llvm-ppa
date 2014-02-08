@@ -1,5 +1,5 @@
 
-Package: libclang-@UVERSION@-common-dev
+Package: libclang-common-@UVERSION@-dev
 Architecture: any
 Replaces: libclang-@UVERSION@-dev
 Section: libdevel
