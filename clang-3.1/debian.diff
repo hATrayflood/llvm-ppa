@@ -1,19 +1,19 @@
 diff -urN debian/changelog clang-3.1/debian/changelog
 --- debian/changelog	2013-09-04 18:21:38.267123821 +0900
-+++ clang-3.1/debian/changelog	2013-10-24 20:08:53.867058663 +0900
++++ clang-3.1/debian/changelog	2014-02-09 21:24:03.568138730 +0900
 @@ -1,3 +1,9 @@
-+clang-3.1 (3.1-debian8ppa4) precise; urgency=low
++clang-3.1 (3.1-debian8ppa5) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 24 Oct 2013 20:00:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sun, 09 Feb 2014 21:15:00 +0900
 +
  clang (3.1-8) unstable; urgency=low
  
    * Also ship clang static libraries for the plugin developments
 diff -urN debian/control clang-3.1/debian/control
 --- debian/control	2013-09-04 18:21:38.267123821 +0900
-+++ clang-3.1/debian/control	2014-02-09 16:39:35.342590362 +0900
++++ clang-3.1/debian/control	2014-02-09 17:58:13.771240276 +0900
 @@ -1,26 +1,21 @@
 -Source: clang
 +Source: clang-3.1
