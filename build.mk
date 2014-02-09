@@ -1,3 +1,5 @@
+PPA = llvm
+
 all: debclean
 	cd $(DIR) && debuild -uc -us
 
@@ -5,7 +7,7 @@ dput:
 	rm -f *_source.changes
 	cd $(DIR) && debuild -S  -sa
 	@echo
-	@echo dput ppa:h-rayflood/llvm *_source.changes
+	@echo dput ppa:h-rayflood/$(PPA) *_source.changes
 	@echo
 
 diff:
