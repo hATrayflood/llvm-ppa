@@ -13,7 +13,7 @@ diff -urN debian/changelog clang-2.9/debian/changelog
    * Fix one more path issues under i386 ... (Closes: #643959)
 diff -urN debian/control clang-2.9/debian/control
 --- debian/control	2011-10-13 20:37:00.000000000 +0900
-+++ clang-2.9/debian/control	2014-02-08 13:09:47.230861334 +0900
++++ clang-2.9/debian/control	2014-02-09 16:42:57.155591112 +0900
 @@ -1,22 +1,20 @@
 -Source: clang
 +Source: clang-2.9
@@ -66,11 +66,11 @@ diff -urN debian/control clang-2.9/debian/control
  Section: libdevel
  Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
 - libclang1 (= ${binary:Version}) 
-+ libclang1-2.9 (= ${binary:Version}), libclang-common-2.9-dev
++ libclang1-2.9 (= ${binary:Version}), libclang-common-2.9-dev (= ${binary:Version})
  Description: clang library - Development package
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
-@@ -137,3 +135,87 @@
+@@ -137,3 +135,52 @@
      * Conformance with C/C++/ObjC and their variants
   .
   This package contains the clang headers.
@@ -121,43 +121,8 @@ diff -urN debian/control clang-2.9/debian/control
 +Architecture: any
 +Section: python
 +Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-2.9 (= ${binary:Version}), python2.7
-+Description: clang python bindings
-+ The Low-Level Virtual Machine (LLVM) is a collection of libraries and
-+ tools that make it easy to build compilers, optimizers, Just-In-Time
-+ code generators, and many other compiler-related programs. LLVM
-+ uses a single, language-independent virtual instruction set both
-+ as an offline code representation (to communicate code between
-+ compiler phases and to run-time systems) and as the compiler internal
-+ representation (to analyze and transform programs). This persistent
-+ code representation allows a common set of sophisticated compiler
-+ techniques to be applied at compile-time, link-time, install-time,
-+ run-time, or "idle-time" (between program runs).
-+ .
-+ Clang project is a C, C++, Objective C and Objective C++ front-end
-+ for the LLVM compiler. Some of its goals include the following:
-+ .
-+ End-User Features:
-+ .
-+    * Fast compiles and low memory use
-+    * Expressive diagnostics (examples)
-+    * GCC compatibility
-+ .
-+ Utility and Applications:
-+ .
-+    * Modular library based architecture
-+    * Support diverse clients (refactoring, static analysis, code
-+      generation, etc)
-+    * Allow tight integration with IDEs
-+    * Use the LLVM 'BSD' License
-+ .
-+ Internal Design and Implementation:
-+ .
-+    * A real-world, production quality compiler
-+    * A simple and hackable code base
-+    * A single unified parser for C, Objective C, C++, and Objective C++
-+    * Conformance with C/C++/ObjC and their variants
-+ .
-+ This package contains the clang python bindings.
++Description: Clang Python Bindings
++ This binding package provides access to the Clang compiler and libraries.
 diff -urN debian/control.in/clang clang-2.9/debian/control.in/clang
 --- debian/control.in/clang	2011-10-07 00:41:10.000000000 +0900
 +++ clang-2.9/debian/control.in/clang	2014-02-08 03:34:07.662222924 +0900
@@ -219,7 +184,7 @@ diff -urN debian/control.in/libclang-common-dev clang-2.9/debian/control.in/libc
 + This package contains the clang generic headers.
 diff -urN debian/control.in/libclang-dev clang-2.9/debian/control.in/libclang-dev
 --- debian/control.in/libclang-dev	2011-10-08 01:14:53.000000000 +0900
-+++ clang-2.9/debian/control.in/libclang-dev	2014-02-08 03:35:13.250547870 +0900
++++ clang-2.9/debian/control.in/libclang-dev	2014-02-09 16:42:50.955560358 +0900
 @@ -1,9 +1,9 @@
  
 -Package: libclang-dev
@@ -228,7 +193,7 @@ diff -urN debian/control.in/libclang-dev clang-2.9/debian/control.in/libclang-de
  Section: libdevel
  Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
 - libclang1 (= ${binary:Version}) 
-+ libclang1-2.9 (= ${binary:Version}), libclang-common-2.9-dev
++ libclang1-2.9 (= ${binary:Version}), libclang-common-2.9-dev (= ${binary:Version})
  Description: clang library - Development package
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
@@ -243,50 +208,15 @@ diff -urN debian/control.in/libclang1 clang-2.9/debian/control.in/libclang1
  Description: clang library
 diff -urN debian/control.in/python-clang clang-2.9/debian/control.in/python-clang
 --- debian/control.in/python-clang	1970-01-01 09:00:00.000000000 +0900
-+++ clang-2.9/debian/control.in/python-clang	2014-02-08 03:36:37.698966513 +0900
-@@ -0,0 +1,42 @@
++++ clang-2.9/debian/control.in/python-clang	2014-02-09 16:42:37.751494877 +0900
+@@ -0,0 +1,7 @@
 +
 +Package: python-clang-2.9
 +Architecture: any
 +Section: python
 +Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-2.9 (= ${binary:Version}), python2.7
-+Description: clang python bindings
-+ The Low-Level Virtual Machine (LLVM) is a collection of libraries and
-+ tools that make it easy to build compilers, optimizers, Just-In-Time
-+ code generators, and many other compiler-related programs. LLVM
-+ uses a single, language-independent virtual instruction set both
-+ as an offline code representation (to communicate code between
-+ compiler phases and to run-time systems) and as the compiler internal
-+ representation (to analyze and transform programs). This persistent
-+ code representation allows a common set of sophisticated compiler
-+ techniques to be applied at compile-time, link-time, install-time,
-+ run-time, or "idle-time" (between program runs).
-+ .
-+ Clang project is a C, C++, Objective C and Objective C++ front-end
-+ for the LLVM compiler. Some of its goals include the following:
-+ .
-+ End-User Features:
-+ .
-+    * Fast compiles and low memory use
-+    * Expressive diagnostics (examples)
-+    * GCC compatibility
-+ .
-+ Utility and Applications:
-+ .
-+    * Modular library based architecture
-+    * Support diverse clients (refactoring, static analysis, code
-+      generation, etc)
-+    * Allow tight integration with IDEs
-+    * Use the LLVM 'BSD' License
-+ .
-+ Internal Design and Implementation:
-+ .
-+    * A real-world, production quality compiler
-+    * A simple and hackable code base
-+    * A single unified parser for C, Objective C, C++, and Objective C++
-+    * Conformance with C/C++/ObjC and their variants
-+ .
-+ This package contains the clang python bindings.
++Description: Clang Python Bindings
++ This binding package provides access to the Clang compiler and libraries.
 diff -urN debian/control.in/source clang-2.9/debian/control.in/source
 --- debian/control.in/source	2011-06-27 17:12:38.000000000 +0900
 +++ clang-2.9/debian/control.in/source	2013-09-04 18:21:38.171123348 +0900
