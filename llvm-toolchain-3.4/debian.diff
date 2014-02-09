@@ -129,25 +129,22 @@ diff -urN debian/clang-3.4.prerm llvm-toolchain-3.4_3.4~+final/debian/clang-3.4.
 -exit 0
 diff -urN debian/clang-format-3.4.install llvm-toolchain-3.4_3.4~+final/debian/clang-format-3.4.install
 --- debian/clang-format-3.4.install	2013-11-26 22:45:51.000000000 +0900
-+++ llvm-toolchain-3.4_3.4~+final/debian/clang-format-3.4.install	2014-02-03 20:11:45.814273868 +0900
-@@ -1,5 +1,3 @@
--clang/tools/clang-format/clang-format-3.4.py usr/share/vim/addons/syntax/
++++ llvm-toolchain-3.4_3.4~+final/debian/clang-format-3.4.install	2014-02-09 03:26:00.945202319 +0900
+@@ -1,5 +1,5 @@
+ clang/tools/clang-format/clang-format-3.4.py usr/share/vim/addons/syntax/
 -clang/tools/clang-format/clang-format-diff-3.4 /usr/bin/
-+clang/tools/clang-format/clang-format.py	/usr/lib/llvm-3.4/bin/
 +clang/tools/clang-format/clang-format-diff.py	/usr/lib/llvm-3.4/bin/
  clang/tools/clang-format/clang-format.el usr/share/emacs/site-lisp/clang-format-3.4/
--usr/bin/clang-format-3.4
--usr/lib/llvm-3.4/bin/clang-format
+ usr/bin/clang-format-3.4
+ usr/lib/llvm-3.4/bin/clang-format
 diff -urN debian/clang-format-3.4.links llvm-toolchain-3.4_3.4~+final/debian/clang-format-3.4.links
 --- debian/clang-format-3.4.links	1970-01-01 09:00:00.000000000 +0900
-+++ llvm-toolchain-3.4_3.4~+final/debian/clang-format-3.4.links	2014-02-03 20:12:40.658545838 +0900
-@@ -0,0 +1,3 @@
-+usr/lib/llvm-3.3/bin/clang-format.py		usr/share/vim/addons/syntax/clang-format-3.4.py
-+usr/lib/llvm-3.3/bin/clang-format.py		usr/bin/clang-format-3.4
-+usr/lib/llvm-3.3/bin/clang-format-diff.py	usr/bin/clang-format-diff-3.4
++++ llvm-toolchain-3.4_3.4~+final/debian/clang-format-3.4.links	2014-02-09 03:27:37.981683508 +0900
+@@ -0,0 +1 @@
++usr/lib/llvm-3.4/bin/clang-format-diff.py	usr/bin/clang-format-diff-3.4
 diff -urN debian/control llvm-toolchain-3.4_3.4~+final/debian/control
 --- debian/control	2013-12-24 23:19:08.000000000 +0900
-+++ llvm-toolchain-3.4_3.4~+final/debian/control	2014-02-03 22:59:50.798344631 +0900
++++ llvm-toolchain-3.4_3.4~+final/debian/control	2014-02-09 14:44:04.933749309 +0900
 @@ -1,21 +1,18 @@
  Source: llvm-toolchain-3.4
  Section: devel
@@ -176,9 +173,11 @@ diff -urN debian/control llvm-toolchain-3.4_3.4~+final/debian/control
  
  # ------------- clang -------------
  
-@@ -26,10 +23,6 @@
+@@ -24,12 +21,7 @@
+ Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs},
+  libclang-common-3.4-dev (= ${binary:Version}),
   libclang1-3.4 (= ${binary:Version})
- Provides: c-compiler, objc-compiler, c++-compiler
+-Provides: c-compiler, objc-compiler, c++-compiler
  Recommends: llvm-3.4-dev, python
 -Replaces: clang (<< 1:3.4), clang-3.1, clang-3.2, clang-3.3, compiler-rt,
 - llvm-3.4 (<< 1:3.4~svn194058)
@@ -187,7 +186,7 @@ diff -urN debian/control llvm-toolchain-3.4_3.4~+final/debian/control
  Description: C, C++ and Objective-C compiler (LLVM based)
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
-@@ -41,8 +34,6 @@
+@@ -41,8 +33,6 @@
  Package: clang-format-3.4
  Architecture: any
  Depends: ${shlibs:Depends}, ${misc:Depends}, python
@@ -196,7 +195,7 @@ diff -urN debian/control llvm-toolchain-3.4_3.4~+final/debian/control
  Description: Tool to format C/C++/Obj-C code
   Clang-format is both a library and a stand-alone tool with the goal of
   automatically reformatting C++ sources files according to configurable
-@@ -58,8 +49,6 @@
+@@ -58,8 +48,6 @@
  Package: cpp11-migrate-3.4
  Architecture: any
  Depends: ${shlibs:Depends}, ${misc:Depends}, clang-modernize-3.4
@@ -205,18 +204,16 @@ diff -urN debian/control llvm-toolchain-3.4_3.4~+final/debian/control
  Description: Tool to convert C++98 and C++03 code to C++11
   The purpose of the C++11 Migrator is to do source-to-source translation to
   migrate existing C++ code to use C++11 features to enhance
-@@ -73,8 +62,8 @@
+@@ -73,8 +61,6 @@
  Package: clang-modernize-3.4
  Architecture: any
  Depends: ${shlibs:Depends}, ${misc:Depends}, clang-3.4
 -Replaces: cpp11-migrate-3.3, cpp11-migrate-3.4 (<< 1:3.4~svn189984-1)
 -Breaks: cpp11-migrate-3.3, cpp11-migrate-3.4 (<< 1:3.4~svn189984-1)
-+Replaces: cpp11-migrate-3.4 (<< 1:3.4~svn189984-1)
-+Breaks: cpp11-migrate-3.4 (<< 1:3.4~svn189984-1)
  Description: Tool to convert C++98 and C++03 code to C++11
   The purpose of the C++11 Migrator is to do source-to-source translation to
   migrate existing C++ code to use C++11 features to enhance
-@@ -119,11 +108,9 @@
+@@ -119,12 +105,10 @@
   locations with elements within the AST, and other facilities that support
   Clang-based development tools.
  
@@ -225,13 +222,15 @@ diff -urN debian/control llvm-toolchain-3.4_3.4~+final/debian/control
 -Section: debug
 -Priority: extra
 -Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs}, libclang1-3.4
+-Description: clang library
 +Package: clang-3.4-relaxng
 +Architecture: all
 +Section: misc
- Description: clang library
++Description: clang Relax NG schema for the XML
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
-@@ -132,7 +119,7 @@
+  Collection (GCC).
+@@ -132,7 +116,7 @@
   Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
   a partial support of C++1y.
   .
@@ -240,28 +239,30 @@ diff -urN debian/control llvm-toolchain-3.4_3.4~+final/debian/control
  
  Package: libclang-3.4-dev
  Architecture: any
-@@ -154,8 +141,7 @@
+@@ -153,9 +137,8 @@
+ Package: libclang-common-3.4-dev
  Architecture: any
  Section: libdevel
- Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.4 (= ${binary:Version})
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.4 (= ${binary:Version})
 -Replaces: llvm-3.4-dev (<< 1:3.2repack), libclang-3.4-dev
 -Breaks: llvm-3.4-dev (<< 1:3.2repack)
++Depends: ${shlibs:Depends}, ${misc:Depends}
 +Replaces: libclang-3.4-dev
  Description: clang library - Common development package
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
-@@ -171,9 +157,7 @@
+@@ -171,9 +154,7 @@
  Package: python-clang-3.4
  Section: python
  Architecture: any
 -Depends: ${shlibs:Depends}, ${misc:Depends}, python
 -Replaces: python-clang-3.3, python-clang-3.5
 -Breaks: python-clang-3.3, python-clang-3.5
-+Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-3.4, python2.7
++Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-3.4 (= ${binary:Version}), python2.7
  Description: Clang Python Bindings
   This binding package provides access to the Clang compiler and libraries.
  
-@@ -207,27 +191,11 @@
+@@ -207,27 +188,11 @@
   .
   This package contains the LLVM runtime library.
  
@@ -289,7 +290,7 @@ diff -urN debian/control llvm-toolchain-3.4_3.4~+final/debian/control
  Description: Modular compiler and toolchain technologies
   LLVM is a collection of libraries and tools that make it easy to build
   compilers, optimizers, just-in-time code generators, and many other
-@@ -257,8 +225,6 @@
+@@ -257,8 +222,6 @@
  Package: llvm-3.4-runtime
  Architecture: any
  Depends: binfmt-support, ${shlibs:Depends}, ${misc:Depends}
@@ -298,7 +299,7 @@ diff -urN debian/control llvm-toolchain-3.4_3.4~+final/debian/control
  Description: Modular compiler and toolchain technologies, IR interpreter
   LLVM is a collection of libraries and tools that make it easy to build
   compilers, optimizers, just-in-time code generators, and many other
-@@ -279,7 +245,6 @@
+@@ -279,7 +242,6 @@
  Architecture: any
  Depends: ${shlibs:Depends}, libffi-dev (>= 3.0.9), ${misc:Depends},
   llvm-3.4 (= ${binary:Version}), libtinfo-dev
@@ -306,7 +307,7 @@ diff -urN debian/control llvm-toolchain-3.4_3.4~+final/debian/control
  Description: Modular compiler and toolchain technologies, libraries and headers
   LLVM is a collection of libraries and tools that make it easy to build
   compilers, optimizers, just-in-time code generators, and many other
-@@ -357,30 +322,3 @@
+@@ -357,30 +319,3 @@
   .
   This package contains examples for using LLVM, both in developing
   extensions to LLVM and in using it to compile code.
@@ -664,7 +665,7 @@ diff -urN debian/python-clang-3.4.install llvm-toolchain-3.4_3.4~+final/debian/p
 +clang/bindings/python/tests		/usr/share/doc/python-clang-3.4/
 diff -urN debian/rules llvm-toolchain-3.4_3.4~+final/debian/rules
 --- debian/rules	2013-12-24 23:19:08.000000000 +0900
-+++ llvm-toolchain-3.4_3.4~+final/debian/rules	2014-02-03 20:30:04.063719794 +0900
++++ llvm-toolchain-3.4_3.4~+final/debian/rules	2014-02-09 03:35:05.027900262 +0900
 @@ -2,7 +2,7 @@
  
  TARGET_BUILD	:= build-llvm
@@ -738,7 +739,7 @@ diff -urN debian/rules llvm-toolchain-3.4_3.4~+final/debian/rules
  # Create this fake directory to make the install libclang-common-dev happy
  # under the unsupported archs of compiler-rt
  	mkdir -p $(CURDIR)/debian/tmp/usr/lib/clang/$(LLVM_VERSION)/lib
-@@ -279,14 +279,13 @@
+@@ -279,15 +279,16 @@
  # Rename some stuff with the version name
  	# WILL DO when we can install several clang versions together
  	#mv $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang.1 $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang-$(LLVM_VERSION).1
@@ -750,12 +751,14 @@ diff -urN debian/rules llvm-toolchain-3.4_3.4~+final/debian/rules
  
 -	cp -f $(CURDIR)/clang/tools/clang-format/clang-format-diff.py $(CURDIR)/clang/tools/clang-format/clang-format-diff-$(LLVM_VERSION)
 -
--	cp -f $(CURDIR)/clang/tools/clang-format/clang-format.py clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
-+	cp -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
+ 	cp -f $(CURDIR)/clang/tools/clang-format/clang-format.py clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
  
++	cp -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
++
  # Remove some license files
  	rm -f $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/include/llvm/Support/LICENSE.TXT \
-@@ -304,8 +303,6 @@
+ 	$(CURDIR)/debian/llvm-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/build/autoconf/LICENSE.TXT
+@@ -304,8 +305,6 @@
  
  .PHONY: override_dh_strip
  override_dh_strip:
@@ -764,7 +767,7 @@ diff -urN debian/rules llvm-toolchain-3.4_3.4~+final/debian/rules
  	dh_strip -a
  
  
-@@ -321,6 +318,11 @@
+@@ -321,6 +320,11 @@
  	rm -f $(CURDIR)/debian/clang-$(LLVM_VERSION)-examples/usr/share/doc/clang-$(LLVM_VERSION)-examples/examples/*Make*
  	rm -f $(CURDIR)//debian/llvm-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/build/autoconf/LICENSE.TXT
  
@@ -776,12 +779,12 @@ diff -urN debian/rules llvm-toolchain-3.4_3.4~+final/debian/rules
  
  
  ifeq (,$(filter nocheck, $(DEB_BUILD_OPTIONS)))
-@@ -388,5 +390,11 @@
+@@ -388,5 +392,12 @@
  	rm -f tools/clang tools/polly tools/lldb projects/compiler-rt
  	rm -rf tools/clang/tools/extra clang/tools/extra/
  	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
 -	rm -f $(CURDIR)/clang/tools/clang-format/clang-format-diff-$(LLVM_VERSION)
--	rm -f $(CURDIR)/clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
+ 	rm -f $(CURDIR)/clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
 +	rm -f debian/man/scan-build-$(LLVM_VERSION).1
 +	rm -f debian/man/scan-view-$(LLVM_VERSION).1
 +	for f in clang clang-tblgen clang-check; do \

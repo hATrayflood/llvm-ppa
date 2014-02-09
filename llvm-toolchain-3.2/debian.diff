@@ -120,8 +120,8 @@ diff -urN debian/clang-3.2.prerm llvm-3.2.src/debian/clang-3.2.prerm
 -exit 0
 diff -urN debian/control llvm-3.2.src/debian/control
 --- debian/control	2013-09-04 18:21:38.571125327 +0900
-+++ llvm-3.2.src/debian/control	2014-02-04 00:58:39.852125908 +0900
-@@ -1,30 +1,25 @@
++++ llvm-3.2.src/debian/control	2014-02-08 17:46:55.930320004 +0900
+@@ -1,30 +1,24 @@
  Source: llvm-toolchain-3.2
  Section: devel
 -Priority: optional
@@ -152,16 +152,16 @@ diff -urN debian/control llvm-3.2.src/debian/control
 -Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++-4.8-dev,
 - libclang-common-dev (= ${binary:Version}),
 - libobjc-4.8-dev, libgcc-4.8-dev
+-Provides: c-compiler, objc-compiler, c++-compiler
 +Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
 + libclang-common-3.2-dev (= ${binary:Version})
- Provides: c-compiler, objc-compiler, c++-compiler
  Recommends: llvm-3.2-dev, python
 -Replaces: clang (<< 1:3.1), clang-3.1, compiler-rt
 -Breaks: clang (<< 1:3.1), clang-3.1, compiler-rt
  Description: C, C++ and Objective-C compiler (LLVM based)
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -81,9 +76,9 @@
+@@ -81,9 +75,9 @@
   .
   This package contains the documentation.
  
@@ -173,7 +173,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Description: clang library
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -111,12 +106,10 @@
+@@ -111,12 +105,10 @@
   .
   This package contains the clang library.
  
@@ -190,7 +190,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
   .
-@@ -141,13 +134,13 @@
+@@ -141,13 +133,13 @@
      * A single unified parser for C, Objective C, C++, and Objective C++
      * Conformance with C/C++/ObjC and their variants
   .
@@ -208,7 +208,7 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Description: clang library - Development package
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -175,12 +168,11 @@
+@@ -175,12 +167,11 @@
   .
   This package contains the clang headers to develop extensions over libclang.
  
@@ -223,45 +223,21 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Description: clang library - Common development package
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -231,6 +223,37 @@
+@@ -231,6 +222,13 @@
  #       libgcc implementations.
  #  .
  
 +Package: python-clang-3.2
 +Architecture: any
 +Section: python
-+Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-3.2, python2.7
-+Description: clang python bindings
-+ Clang project is a C, C++, Objective C and Objective C++ front-end
-+ for the LLVM compiler. Some of its goals include the following:
-+ .
-+ End-User Features:
-+ .
-+    * Fast compiles and low memory use
-+    * Expressive diagnostics (examples)
-+    * GCC compatibility
-+ .
-+ Utility and Applications:
-+ .
-+    * Modular library based architecture
-+    * Support diverse clients (refactoring, static analysis, code
-+      generation, etc)
-+    * Allow tight integration with IDEs
-+    * Use the LLVM 'BSD' License
-+ .
-+ Internal Design and Implementation:
-+ .
-+    * A real-world, production quality compiler
-+    * A simple and hackable code base
-+    * A single unified parser for C, Objective C, C++, and Objective C++
-+    * Conformance with C/C++/ObjC and their variants
-+ .
-+ This package contains the clang python bindings.
++Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-3.2 (= ${binary:Version}), python2.7
++Description: Clang Python Bindings
++ This binding package provides access to the Clang compiler and libraries.
 +
  Package: libllvm3.2
  Architecture: any
  Section: libs
-@@ -244,27 +267,11 @@
+@@ -244,27 +242,11 @@
   .
   This package contains the LLVM runtime library.
  
@@ -282,14 +258,15 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Package: llvm-3.2
  Architecture: any
  Suggests: llvm-3.2-doc
- Depends: llvm-3.2-runtime (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, libjs-jquery
+-Depends: llvm-3.2-runtime (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, libjs-jquery
++Depends: llvm-3.2-runtime (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
  Recommends: llvm-3.2-dev
 -Conflicts: llvm (<< 2.7-1)
 -Replaces: llvm (<< 2.7-1)
  Description: Low-Level Virtual Machine (LLVM)
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
-@@ -293,8 +300,6 @@
+@@ -293,8 +275,6 @@
  Package: llvm-3.2-runtime
  Architecture: any
  Depends: binfmt-support, ${shlibs:Depends}, ${misc:Depends}
@@ -298,12 +275,21 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Description: Low-Level Virtual Machine (LLVM), bytecode interpreter
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
-@@ -313,7 +318,6 @@
+@@ -313,7 +293,6 @@
  Package: llvm-3.2-dev
  Architecture: any
  Depends: ${shlibs:Depends}, libffi-dev (>= 3.0.9), ${misc:Depends}, llvm-3.2 (= ${binary:Version})
 -Replaces: llvm (<< 2.2-3)
  Description: Low-Level Virtual Machine (LLVM), libraries and headers
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+@@ -354,7 +333,7 @@
+ Package: llvm-3.2-doc
+ Section: doc
+ Architecture: all
+-Depends: ${misc:Depends}
++Depends: ${misc:Depends}, libjs-jquery
+ Description: Low-Level Virtual Machine (LLVM), documentation
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
 diff -urN debian/libclang-3.2-dev.install llvm-3.2.src/debian/libclang-3.2-dev.install

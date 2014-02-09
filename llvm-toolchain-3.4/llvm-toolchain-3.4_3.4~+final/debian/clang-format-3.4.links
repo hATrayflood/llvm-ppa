@@ -1,3 +1,1 @@
-usr/lib/llvm-3.3/bin/clang-format.py		usr/share/vim/addons/syntax/clang-format-3.4.py
-usr/lib/llvm-3.3/bin/clang-format.py		usr/bin/clang-format-3.4
-usr/lib/llvm-3.3/bin/clang-format-diff.py	usr/bin/clang-format-diff-3.4
+usr/lib/llvm-3.4/bin/clang-format-diff.py	usr/bin/clang-format-diff-3.4

@@ -21,7 +21,6 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs},
  libclang-common-3.4-dev (= ${binary:Version}),
  libclang1-3.4 (= ${binary:Version})
-Provides: c-compiler, objc-compiler, c++-compiler
 Recommends: llvm-3.4-dev, python
 Description: C, C++ and Objective-C compiler (LLVM based)
  Clang project is a C, C++, Objective C and Objective C++ front-end
@@ -62,8 +61,6 @@ Description: Tool to convert C++98 and C++03 code to C++11
 Package: clang-modernize-3.4
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, clang-3.4
-Replaces: cpp11-migrate-3.4 (<< 1:3.4~svn189984-1)
-Breaks: cpp11-migrate-3.4 (<< 1:3.4~svn189984-1)
 Description: Tool to convert C++98 and C++03 code to C++11
  The purpose of the C++11 Migrator is to do source-to-source translation to
  migrate existing C++ code to use C++11 features to enhance
@@ -111,7 +108,7 @@ Description: C interface to the clang library
 Package: clang-3.4-relaxng
 Architecture: all
 Section: misc
-Description: clang library
+Description: clang Relax NG schema for the XML
  Clang project is a C, C++, Objective C and Objective C++ front-end
  for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
  Collection (GCC).
@@ -140,7 +137,7 @@ Description: clang library - Development package
 Package: libclang-common-3.4-dev
 Architecture: any
 Section: libdevel
-Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.4 (= ${binary:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Replaces: libclang-3.4-dev
 Description: clang library - Common development package
  Clang project is a C, C++, Objective C and Objective C++ front-end
@@ -157,7 +154,7 @@ Description: clang library - Common development package
 Package: python-clang-3.4
 Section: python
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-3.4, python2.7
+Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-3.4 (= ${binary:Version}), python2.7
 Description: Clang Python Bindings
  This binding package provides access to the Clang compiler and libraries.
 

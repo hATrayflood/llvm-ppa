@@ -231,6 +231,8 @@ override_dh_auto_install:
 
 	cp -f $(CURDIR)/utils/vim/tablegen.vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
 
+	cp -f $(CURDIR)/clang/tools/clang-format/clang-format.py clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
+
 	cp -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
 
 # Remove some license files
@@ -316,6 +318,7 @@ override_dh_auto_clean:
 	rm -f tools/clang tools/polly tools/lldb projects/compiler-rt
 	rm -rf tools/clang/tools/extra clang/tools/extra/
 	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
+	rm -f $(CURDIR)/clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
 	rm -f debian/man/scan-build-$(LLVM_VERSION).1
 	rm -f debian/man/scan-view-$(LLVM_VERSION).1
 	for f in clang clang-tblgen clang-check; do \
