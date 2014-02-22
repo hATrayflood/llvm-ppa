@@ -34,3 +34,5 @@ force-gcc-header-obj.diff
 do-not-fail-on-unexpected-pass.diff
 fix-an-issue-in-chroot-witout-proc.diff
 lldb-link-atomic.diff
+0007-install-dejagnu-files.patch
+fix-llvm-config-obj-src-root.patch

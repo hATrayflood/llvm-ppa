@@ -1,9 +1,58 @@
+llvm-toolchain-3.4 (1:3.4-2) unstable; urgency=medium
+
+  * Only explicit the link against atomic when running mips & mipsel
+  * Fix the cindex.py declaration (3.3 => 3.5). Closes upstream bug #18365
+  * Bring back the dependency on gcc 4.8. It breaks the nightly snapshot
+    packages and it should be the norm now...
+  * Introduce llvm-3.4-tools to contain the new files needed by Martin
+
+  [ Matthias Klose ]
+  * Disable the lldb build for AArch64.
+  * Don't run the lldb tests on armhf (time out on the buildd).
+
+  [ Martin Nowack ]
+  * Fixed build directory for llvm-config
+  * Add Unittests for running tests for llvm-based projects
+  * Install FileCheck and not for testing
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Tue, 11 Feb 2014 11:19:21 +0100
+
 llvm-toolchain-3.4 (1:3.4-1) unstable; urgency=medium
 
   * New upstream release
   * Remove explicit dep on gcc 4.8
 
  -- Sylvestre Ledru <sylvestre@debian.org>  Fri, 20 Dec 2013 18:36:58 +0100
+
+llvm-toolchain-3.4 (1:3.4~+rc3-1ubuntu4) trusty; urgency=medium
+
+  * Rebuild for ocaml-4.01.
+
+ -- Matthias Klose <doko@ubuntu.com>  Mon, 23 Dec 2013 12:11:17 +0000
+
+llvm-toolchain-3.4 (1:3.4~+rc3-1ubuntu3) trusty; urgency=low
+
+  * Bring over Ubuntu changes from 3.3:
+    - Revert to using the static copy of libjsoncpp, since the shared
+      library lacks sane versioning, and this is only a few thousand
+      lines of cargo-culted code from a reasonably stagnant upstream.
+    - Drop lcov build-dep to avoid pulling it into main, due to its
+      being fundamentally incompatibe with our newer GCC versions.
+
+ -- Matthias Klose <doko@ubuntu.com>  Fri, 20 Dec 2013 12:59:01 +0100
+
+llvm-toolchain-3.4 (1:3.4~+rc3-1ubuntu2) trusty; urgency=low
+
+  * Don't run the lldb tests on armhf (time out on the buildd).
+
+ -- Matthias Klose <doko@ubuntu.com>  Wed, 18 Dec 2013 12:29:56 +0100
+
+llvm-toolchain-3.4 (1:3.4~+rc3-1ubuntu1) trusty; urgency=low
+
+  * Disable the lldb build for AArch64.
+  * Build-depend on gcc-multilib on amd64 and i386.
+
+ -- Matthias Klose <doko@ubuntu.com>  Tue, 17 Dec 2013 18:44:50 +0100
 
 llvm-toolchain-3.4 (1:3.4~+rc3-1) unstable; urgency=low
 

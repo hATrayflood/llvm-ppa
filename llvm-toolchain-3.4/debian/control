@@ -9,8 +9,8 @@ Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl, expect,
     lsb-release, patchutils, diffstat, xz-utils, chrpath, python-dev,
     libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev,
     libisl-dev (>= 0.11.1), libjsoncpp-dev,
-    lcov, procps, help2man, dh-ocaml
-# gcc-4.8, g++-4.8, 
+    lcov, procps, help2man, dh-ocaml,
+    gcc-4.8, g++-4.8,
 Build-Conflicts: oprofile, ocaml
 Standards-Version: 3.9.5
 Homepage: http://www.llvm.org/
@@ -296,6 +296,25 @@ Description: Modular compiler and toolchain technologies, libraries and headers
  This package provides the libraries and headers to develop applications
  using llvm.
 
+Package: llvm-3.4-tools
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python,
+ llvm-3.4-dev (= ${binary:Version})
+Description: Modular compiler and toolchain technologies, tools
+ LLVM is a collection of libraries and tools that make it easy to build
+ compilers, optimizers, just-in-time code generators, and many other
+ compiler-related programs.
+ .
+ LLVM uses a single, language-independent virtual instruction set both
+ as an offline code representation (to communicate code between
+ compiler phases and to run-time systems) and as the compiler internal
+ representation (to analyze and transform programs). This persistent
+ code representation allows a common set of sophisticated compiler
+ techniques to be applied at compile-time, link-time, install-time,
+ run-time, or "idle-time" (between program runs).
+ .
+ This package provides tools for testing.
+
 Package: libllvm-3.4-ocaml-dev
 Section: ocaml
 Architecture: any
@@ -362,7 +381,7 @@ Description: Modular compiler and toolchain technologies, examples
 # ------------- lldb -------------
 
 Package: lldb-3.4
-Architecture: amd64 armel armhf i386  kfreebsd-amd64 kfreebsd-i386 s390 s390x sparc alpha arm64 hppa m68k powerpcspe ppc64 sh4 sparc64 x32 powerpc
+Architecture: amd64 armel armhf i386  kfreebsd-amd64 kfreebsd-i386 s390 s390x sparc alpha hppa m68k powerpcspe ppc64 sh4 sparc64 x32 powerpc
 # ia64 mips mipsel hurd have been removed
 Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.4 (= ${binary:Version}), python, llvm-3.4-dev
 Pre-Depends: ${misc:Pre-Depends}
@@ -374,7 +393,7 @@ Description: Next generation, high-performance debugger
  Project, such as the Clang expression parser and LLVM disassembler.
 
 Package: lldb-3.4-dev
-Architecture: amd64 armel armhf i386  kfreebsd-amd64 kfreebsd-i386 s390 s390x sparc alpha arm64 hppa m68k powerpcspe ppc64 sh4 sparc64 x32 powerpc
+Architecture: amd64 armel armhf i386  kfreebsd-amd64 kfreebsd-i386 s390 s390x sparc alpha hppa m68k powerpcspe ppc64 sh4 sparc64 x32 powerpc
 # ia64 mips mipsel hurd have been removed
 Depends: ${shlibs:Depends}, ${misc:Depends}, lldb-3.4 (= ${binary:Version})
 Pre-Depends: ${misc:Pre-Depends}

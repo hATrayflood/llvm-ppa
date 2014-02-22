@@ -1,0 +1,16 @@
+Index: llvm-toolchain-3.3/tools/llvm-config/llvm-config.cpp
+===================================================================
+--- llvm-toolchain-3.3.orig/tools/llvm-config/llvm-config.cpp	2013-11-26 10:49:16.183929247 +0100
++++ llvm-toolchain-3.3/tools/llvm-config/llvm-config.cpp	2013-11-26 10:49:16.179929247 +0100
+@@ -302,9 +302,9 @@
+       } else if (Arg == "--build-mode") {
+         OS << LLVM_BUILDMODE << '\n';
+       } else if (Arg == "--obj-root") {
+-        OS << LLVM_OBJ_ROOT << '\n';
++        OS << ActivePrefix << "/build/" << '\n';
+       } else if (Arg == "--src-root") {
+-        OS << LLVM_SRC_ROOT << '\n';
++        OS << ActivePrefix << "/build/" << '\n';
+       } else {
+         usage();
+       }

@@ -9,7 +9,7 @@ Last-Update: 2013-08-21
      LLVMLibsOptions += -Wl,--no-undefined
      # Link in python
      LLVMLibsOptions += $(PYTHON_BUILD_FLAGS) -lrt
-+    ifneq (,$(filter $(shell dpkg-architecture -qDEB_HOST_ARCH), mips mipsel))
++    ifneq (,$(filter $(shell dpkg-architecture -qDEB_HOST_ARCH), mips mipsel powerpc powerpcspe))
 +    # Link GCC atomic helper library
 +    LLVMLibsOptions += -latomic
 +    endif

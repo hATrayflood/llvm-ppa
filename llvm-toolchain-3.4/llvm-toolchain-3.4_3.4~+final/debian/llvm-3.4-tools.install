@@ -1,0 +1,7 @@
+usr/lib/llvm-3.4/bin/not*
+usr/lib/llvm-3.4/bin/FileCheck*
+
+unittests/Makefile.unittest           /usr/lib/llvm-3.4/build/unittests/
+
+utils/lit/*             /usr/lib/llvm-3.4/build/utils/lit/
+

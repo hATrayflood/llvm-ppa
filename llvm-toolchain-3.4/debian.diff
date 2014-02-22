@@ -1,23 +1,23 @@
 diff -urN debian/changelog llvm-toolchain-3.4_3.4~+final/debian/changelog
---- debian/changelog	2013-12-24 23:20:07.000000000 +0900
-+++ llvm-toolchain-3.4_3.4~+final/debian/changelog	2014-02-09 21:35:40.499594643 +0900
+--- debian/changelog	2014-02-14 00:48:20.000000000 +0900
++++ llvm-toolchain-3.4_3.4~+final/debian/changelog	2014-02-22 00:46:28.456677487 +0900
 @@ -1,3 +1,9 @@
-+llvm-toolchain-3.4 (1:3.4-debian1ppa2) precise; urgency=medium
++llvm-toolchain-3.4 (1:3.4-debian2ppa2) precise; urgency=medium
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sun, 09 Feb 2014 21:15:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sat, 22 Feb 2014 00:45:00 +0900
 +
- llvm-toolchain-3.4 (1:3.4-1) unstable; urgency=medium
+ llvm-toolchain-3.4 (1:3.4-2) unstable; urgency=medium
  
-   * New upstream release
+   * Only explicit the link against atomic when running mips & mipsel
 diff -urN debian/clang-3.4-relaxng.install llvm-toolchain-3.4_3.4~+final/debian/clang-3.4-relaxng.install
 --- debian/clang-3.4-relaxng.install	1970-01-01 09:00:00.000000000 +0900
 +++ llvm-toolchain-3.4_3.4~+final/debian/clang-3.4-relaxng.install	2014-01-12 17:15:10.887800337 +0900
 @@ -0,0 +1 @@
 +clang/bindings/xml/comment-xml-schema.rng	/usr/share/xml/clang-3.4-relaxng/
 diff -urN debian/clang-3.4.install llvm-toolchain-3.4_3.4~+final/debian/clang-3.4.install
---- debian/clang-3.4.install	2013-11-26 22:45:51.000000000 +0900
+--- debian/clang-3.4.install	2014-02-14 00:48:10.000000000 +0900
 +++ llvm-toolchain-3.4_3.4~+final/debian/clang-3.4.install	2014-02-03 20:22:56.837601297 +0900
 @@ -1,11 +1,16 @@
 -usr/lib/llvm-3.4/bin/clang			/usr/bin/
@@ -44,7 +44,7 @@ diff -urN debian/clang-3.4.install llvm-toolchain-3.4_3.4~+final/debian/clang-3.
 +compiler-rt/lib/asan/scripts/asan_symbolize.py	/usr/lib/llvm-3.4/bin/
  
 diff -urN debian/clang-3.4.links llvm-toolchain-3.4_3.4~+final/debian/clang-3.4.links
---- debian/clang-3.4.links	2013-11-26 22:45:51.000000000 +0900
+--- debian/clang-3.4.links	2014-02-14 00:48:10.000000000 +0900
 +++ llvm-toolchain-3.4_3.4~+final/debian/clang-3.4.links	2014-02-03 20:09:32.357612105 +0900
 @@ -1,5 +1,7 @@
 -usr/share/man/man1/clang-3.4.1.gz		usr/share/man/man1/llvm-clang.1.gz
@@ -60,7 +60,7 @@ diff -urN debian/clang-3.4.links llvm-toolchain-3.4_3.4~+final/debian/clang-3.4.
 +usr/lib/llvm-3.4/bin/pollycc			usr/bin/pollycc-3.4
 +usr/lib/llvm-3.4/bin/asan_symbolize.py		usr/bin/asan_symbolize-3.4
 diff -urN debian/clang-3.4.manpages llvm-toolchain-3.4_3.4~+final/debian/clang-3.4.manpages
---- debian/clang-3.4.manpages	2013-11-26 22:45:51.000000000 +0900
+--- debian/clang-3.4.manpages	2014-02-14 00:48:10.000000000 +0900
 +++ llvm-toolchain-3.4_3.4~+final/debian/clang-3.4.manpages	2014-01-12 17:02:36.335094198 +0900
 @@ -1,6 +1,6 @@
 -build-llvm/tools/clang/docs/tools/clang.1
@@ -75,7 +75,7 @@ diff -urN debian/clang-3.4.manpages llvm-toolchain-3.4_3.4~+final/debian/clang-3
 +debian/man/scan-view-3.4.1
  
 diff -urN debian/clang-3.4.postinst llvm-toolchain-3.4_3.4~+final/debian/clang-3.4.postinst
---- debian/clang-3.4.postinst	2013-11-26 22:45:51.000000000 +0900
+--- debian/clang-3.4.postinst	2014-02-14 00:48:10.000000000 +0900
 +++ llvm-toolchain-3.4_3.4~+final/debian/clang-3.4.postinst	1970-01-01 09:00:00.000000000 +0900
 @@ -1,31 +0,0 @@
 -#! /bin/sh -e
@@ -110,7 +110,7 @@ diff -urN debian/clang-3.4.postinst llvm-toolchain-3.4_3.4~+final/debian/clang-3
 -
 -exit 0
 diff -urN debian/clang-3.4.prerm llvm-toolchain-3.4_3.4~+final/debian/clang-3.4.prerm
---- debian/clang-3.4.prerm	2013-11-26 22:45:51.000000000 +0900
+--- debian/clang-3.4.prerm	2014-02-14 00:48:10.000000000 +0900
 +++ llvm-toolchain-3.4_3.4~+final/debian/clang-3.4.prerm	1970-01-01 09:00:00.000000000 +0900
 @@ -1,14 +0,0 @@
 -#!/bin/sh
@@ -128,7 +128,7 @@ diff -urN debian/clang-3.4.prerm llvm-toolchain-3.4_3.4~+final/debian/clang-3.4.
 -
 -exit 0
 diff -urN debian/clang-format-3.4.install llvm-toolchain-3.4_3.4~+final/debian/clang-format-3.4.install
---- debian/clang-format-3.4.install	2013-11-26 22:45:51.000000000 +0900
+--- debian/clang-format-3.4.install	2014-02-14 00:48:10.000000000 +0900
 +++ llvm-toolchain-3.4_3.4~+final/debian/clang-format-3.4.install	2014-02-09 03:26:00.945202319 +0900
 @@ -1,5 +1,5 @@
  clang/tools/clang-format/clang-format-3.4.py usr/share/vim/addons/syntax/
@@ -143,8 +143,8 @@ diff -urN debian/clang-format-3.4.links llvm-toolchain-3.4_3.4~+final/debian/cla
 @@ -0,0 +1 @@
 +usr/lib/llvm-3.4/bin/clang-format-diff.py	usr/bin/clang-format-diff-3.4
 diff -urN debian/control llvm-toolchain-3.4_3.4~+final/debian/control
---- debian/control	2013-12-24 23:19:08.000000000 +0900
-+++ llvm-toolchain-3.4_3.4~+final/debian/control	2014-02-09 14:44:04.933749309 +0900
+--- debian/control	2014-02-14 00:48:10.000000000 +0900
++++ llvm-toolchain-3.4_3.4~+final/debian/control	2014-02-22 00:48:02.680232500 +0900
 @@ -1,21 +1,18 @@
  Source: llvm-toolchain-3.4
  Section: devel
@@ -159,10 +159,11 @@ diff -urN debian/control llvm-toolchain-3.4_3.4~+final/debian/control
      lsb-release, patchutils, diffstat, xz-utils, chrpath, python-dev,
 -    libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev,
 -    libisl-dev (>= 0.11.1), libjsoncpp-dev,
+-    lcov, procps, help2man, dh-ocaml,
+-    gcc-4.8, g++-4.8,
 +    libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev-lts,
 +    libisl-dev-lts, libjsoncpp-dev,
-     lcov, procps, help2man, dh-ocaml
--# gcc-4.8, g++-4.8, 
++    lcov, procps, help2man, dh-ocaml
  Build-Conflicts: oprofile, ocaml
  Standards-Version: 3.9.5
 -Homepage: http://www.llvm.org/
@@ -307,7 +308,7 @@ diff -urN debian/control llvm-toolchain-3.4_3.4~+final/debian/control
  Description: Modular compiler and toolchain technologies, libraries and headers
   LLVM is a collection of libraries and tools that make it easy to build
   compilers, optimizers, just-in-time code generators, and many other
-@@ -357,30 +319,3 @@
+@@ -376,30 +338,3 @@
   .
   This package contains examples for using LLVM, both in developing
   extensions to LLVM and in using it to compile code.
@@ -316,7 +317,7 @@ diff -urN debian/control llvm-toolchain-3.4_3.4~+final/debian/control
 -# ------------- lldb -------------
 -
 -Package: lldb-3.4
--Architecture: amd64 armel armhf i386  kfreebsd-amd64 kfreebsd-i386 s390 s390x sparc alpha arm64 hppa m68k powerpcspe ppc64 sh4 sparc64 x32 powerpc
+-Architecture: amd64 armel armhf i386  kfreebsd-amd64 kfreebsd-i386 s390 s390x sparc alpha hppa m68k powerpcspe ppc64 sh4 sparc64 x32 powerpc
 -# ia64 mips mipsel hurd have been removed
 -Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.4 (= ${binary:Version}), python, llvm-3.4-dev
 -Pre-Depends: ${misc:Pre-Depends}
@@ -328,7 +329,7 @@ diff -urN debian/control llvm-toolchain-3.4_3.4~+final/debian/control
 - Project, such as the Clang expression parser and LLVM disassembler.
 -
 -Package: lldb-3.4-dev
--Architecture: amd64 armel armhf i386  kfreebsd-amd64 kfreebsd-i386 s390 s390x sparc alpha arm64 hppa m68k powerpcspe ppc64 sh4 sparc64 x32 powerpc
+-Architecture: amd64 armel armhf i386  kfreebsd-amd64 kfreebsd-i386 s390 s390x sparc alpha hppa m68k powerpcspe ppc64 sh4 sparc64 x32 powerpc
 -# ia64 mips mipsel hurd have been removed
 -Depends: ${shlibs:Depends}, ${misc:Depends}, lldb-3.4 (= ${binary:Version})
 -Pre-Depends: ${misc:Pre-Depends}
@@ -339,14 +340,14 @@ diff -urN debian/control llvm-toolchain-3.4_3.4~+final/debian/control
 - .
 - This package provides the header files to build extension over lldb.
 diff -urN debian/libllvm-3.4-ocaml-dev.dirs.in llvm-toolchain-3.4_3.4~+final/debian/libllvm-3.4-ocaml-dev.dirs.in
---- debian/libllvm-3.4-ocaml-dev.dirs.in	2013-11-26 22:45:51.000000000 +0900
+--- debian/libllvm-3.4-ocaml-dev.dirs.in	2014-02-14 00:48:10.000000000 +0900
 +++ llvm-toolchain-3.4_3.4~+final/debian/libllvm-3.4-ocaml-dev.dirs.in	2014-01-12 17:12:07.450890709 +0900
 @@ -1,2 +1,2 @@
 -@OCAML_STDLIB_DIR@/META/
 +@OCAML_STDLIB_DIR@/METAS
  
 diff -urN debian/llvm-3.4-runtime.postinst llvm-toolchain-3.4_3.4~+final/debian/llvm-3.4-runtime.postinst
---- debian/llvm-3.4-runtime.postinst	2013-11-26 22:45:51.000000000 +0900
+--- debian/llvm-3.4-runtime.postinst	2014-02-14 00:48:10.000000000 +0900
 +++ llvm-toolchain-3.4_3.4~+final/debian/llvm-3.4-runtime.postinst	1970-01-01 09:00:00.000000000 +0900
 @@ -1,9 +0,0 @@
 -#!/bin/sh -e
@@ -359,7 +360,7 @@ diff -urN debian/llvm-3.4-runtime.postinst llvm-toolchain-3.4_3.4~+final/debian/
 -
 -#DEBHELPER#
 diff -urN debian/llvm-3.4-runtime.prerm.in llvm-toolchain-3.4_3.4~+final/debian/llvm-3.4-runtime.prerm.in
---- debian/llvm-3.4-runtime.prerm.in	2013-11-26 22:45:51.000000000 +0900
+--- debian/llvm-3.4-runtime.prerm.in	2014-02-14 00:48:10.000000000 +0900
 +++ llvm-toolchain-3.4_3.4~+final/debian/llvm-3.4-runtime.prerm.in	1970-01-01 09:00:00.000000000 +0900
 @@ -1,16 +0,0 @@
 -#!/bin/sh -e
@@ -627,27 +628,27 @@ diff -urN debian/patches/99-python-bindings.patch llvm-toolchain-3.4_3.4~+final/
 + def get_tu(source, lang='c', all_warnings=False, flags=[]):
 +     """Obtain a translation unit from source and language.
 diff -urN debian/patches/python-clangpath.diff llvm-toolchain-3.4_3.4~+final/debian/patches/python-clangpath.diff
---- debian/patches/python-clangpath.diff	2013-12-02 01:45:15.000000000 +0900
+--- debian/patches/python-clangpath.diff	2014-02-13 00:57:49.000000000 +0900
 +++ llvm-toolchain-3.4_3.4~+final/debian/patches/python-clangpath.diff	2014-02-03 23:00:29.762537840 +0900
 @@ -7,7 +7,7 @@
               file = 'libclang.dll'
           else:
  -            file = 'libclang.so'
--+            file = 'libclang-3.3.so'
+-+            file = 'libclang-3.4.so'
 ++            file = 'libclang-3.4.so.1'
   
           if Config.library_path:
               file = Config.library_path + '/' + file
 diff -urN debian/patches/series llvm-toolchain-3.4_3.4~+final/debian/patches/series
---- debian/patches/series	2013-12-17 19:43:24.000000000 +0900
-+++ llvm-toolchain-3.4_3.4~+final/debian/patches/series	2014-01-12 20:11:48.462842847 +0900
-@@ -34,3 +34,4 @@
- do-not-fail-on-unexpected-pass.diff
- fix-an-issue-in-chroot-witout-proc.diff
+--- debian/patches/series	2014-02-13 00:57:49.000000000 +0900
++++ llvm-toolchain-3.4_3.4~+final/debian/patches/series	2014-02-22 00:45:11.930054202 +0900
+@@ -36,3 +36,4 @@
  lldb-link-atomic.diff
+ 0007-install-dejagnu-files.patch
+ fix-llvm-config-obj-src-root.patch
 +99-python-bindings.patch
 diff -urN debian/pollycc.in llvm-toolchain-3.4_3.4~+final/debian/pollycc.in
---- debian/pollycc.in	2013-11-26 22:45:51.000000000 +0900
+--- debian/pollycc.in	2014-02-14 00:48:10.000000000 +0900
 +++ llvm-toolchain-3.4_3.4~+final/debian/pollycc.in	2014-01-12 14:22:51.693134681 +0900
 @@ -1,3 +1,3 @@
  #!/bin/sh
@@ -655,7 +656,7 @@ diff -urN debian/pollycc.in llvm-toolchain-3.4_3.4~+final/debian/pollycc.in
 -clang -Xclang -load -Xclang /usr/lib/llvm-@LLVM_VERSION@/lib/LLVMPolly.so $@
 +clang-@LLVM_VERSION@ -Xclang -load -Xclang /usr/lib/llvm-@LLVM_VERSION@/lib/LLVMPolly.so $@
 diff -urN debian/python-clang-3.4.install llvm-toolchain-3.4_3.4~+final/debian/python-clang-3.4.install
---- debian/python-clang-3.4.install	2013-11-26 22:45:51.000000000 +0900
+--- debian/python-clang-3.4.install	2014-02-14 00:48:10.000000000 +0900
 +++ llvm-toolchain-3.4_3.4~+final/debian/python-clang-3.4.install	2014-01-12 19:27:23.795904940 +0900
 @@ -1 +1,4 @@
 -tools/clang/bindings/python/clang/ /usr/lib/python2.7/dist-packages/
@@ -664,18 +665,19 @@ diff -urN debian/python-clang-3.4.install llvm-toolchain-3.4_3.4~+final/debian/p
 +clang/bindings/python/examples		/usr/share/doc/python-clang-3.4/
 +clang/bindings/python/tests		/usr/share/doc/python-clang-3.4/
 diff -urN debian/rules llvm-toolchain-3.4_3.4~+final/debian/rules
---- debian/rules	2013-12-24 23:19:08.000000000 +0900
-+++ llvm-toolchain-3.4_3.4~+final/debian/rules	2014-02-09 03:35:05.027900262 +0900
-@@ -2,7 +2,7 @@
+--- debian/rules	2014-02-14 00:48:10.000000000 +0900
++++ llvm-toolchain-3.4_3.4~+final/debian/rules	2014-02-22 00:54:44.115327976 +0900
+@@ -2,8 +2,7 @@
  
  TARGET_BUILD	:= build-llvm
  # Force the version of gcc. Some archs are still using gcc 4.6
--GCC_VERSION     := $(shell dpkg-query -W -f '$${Version}' g++ | sed -rne 's,^([0-9]+:)?([0-9]+\.[0-9]+).*$$,\2,p')
+-GCC_VERSION     := 4.8
+-#GCC_VERSION     := $(shell dpkg-query -W -f '$${Version}' g++ | sed -rne 's,^([0-9]+:)?([0-9]+\.[0-9]+).*$$,\2,p')
 +GCC_VERSION     := 4.6
  LLVM_VERSION	:= 3.4
  SONAME_EXT      := 1
  DEBIAN_REVISION := $(shell dpkg-parsechangelog | sed -rne 's,^Version: .*-(.*),\1,p')
-@@ -10,7 +10,7 @@
+@@ -11,7 +10,7 @@
    NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
  endif
  
@@ -684,7 +686,7 @@ diff -urN debian/rules llvm-toolchain-3.4_3.4~+final/debian/rules
  
  DEB_HOST_MULTIARCH  = $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
  DEB_HOST_GNU_TYPE   = $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-@@ -58,8 +58,8 @@
+@@ -59,8 +58,8 @@
  
  # Enable polly (or not)
  POLLY_ENABLE=no
@@ -695,15 +697,15 @@ diff -urN debian/rules llvm-toolchain-3.4_3.4~+final/debian/rules
  POLLY_ENABLE=yes
  endif
  endif
-@@ -104,6 +104,7 @@
+@@ -105,6 +104,7 @@
  
  LLDB_ENABLE=yes
- LLDB_DISABLE_ARCHS := hurd-i386 mips mipsel ia64
+ LLDB_DISABLE_ARCHS := arm64 hurd-i386 mips mipsel ia64
 +LLDB_DISABLE_ARCHS += i386 amd64
  # hurd has threading issues
  # mips* fails with "undefined references to `__atomic_load_8'"
  ifeq (,$(filter-out $(LLDB_DISABLE_ARCHS), $(DEB_HOST_ARCH)))
-@@ -123,7 +124,9 @@
+@@ -124,7 +124,9 @@
  override_dh_ocamlinit:
  override_dh_ocamlclean:
  
@@ -714,7 +716,7 @@ diff -urN debian/rules llvm-toolchain-3.4_3.4~+final/debian/rules
  	echo "Using gcc: "
  	$(CC) -v
  	mkdir -p $(TARGET_BUILD)
-@@ -227,11 +230,11 @@
+@@ -228,11 +230,11 @@
  		cd $$d && rm -f underscore.js && ln -s /usr/share/javascript/underscore/underscore.js; \
  	done
  
@@ -729,7 +731,7 @@ diff -urN debian/rules llvm-toolchain-3.4_3.4~+final/debian/rules
  	done
  
  	for f in llvm-dwarfdump llvm-mc llvm-mcmarkup llvm-objdump llvm-rtdyld llvm-size llvm-tblgen macho-dump lldb clang-format clang-modernize; do \
-@@ -259,9 +262,6 @@
+@@ -260,9 +262,6 @@
  
  #	cd $(TARGET_BUILD)/tools/clang/runtime/compiler-rt/ && rm -rf $$(find . -iname "SubDir.lib*" -o -iname .dir) && rm -rf $$(find -empty)
  
@@ -739,7 +741,7 @@ diff -urN debian/rules llvm-toolchain-3.4_3.4~+final/debian/rules
  # Create this fake directory to make the install libclang-common-dev happy
  # under the unsupported archs of compiler-rt
  	mkdir -p $(CURDIR)/debian/tmp/usr/lib/clang/$(LLVM_VERSION)/lib
-@@ -279,15 +279,16 @@
+@@ -280,15 +279,16 @@
  # Rename some stuff with the version name
  	# WILL DO when we can install several clang versions together
  	#mv $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang.1 $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang-$(LLVM_VERSION).1
@@ -758,7 +760,7 @@ diff -urN debian/rules llvm-toolchain-3.4_3.4~+final/debian/rules
  # Remove some license files
  	rm -f $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/include/llvm/Support/LICENSE.TXT \
  	$(CURDIR)/debian/llvm-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/build/autoconf/LICENSE.TXT
-@@ -304,8 +305,6 @@
+@@ -304,8 +304,6 @@
  
  .PHONY: override_dh_strip
  override_dh_strip:
@@ -767,9 +769,9 @@ diff -urN debian/rules llvm-toolchain-3.4_3.4~+final/debian/rules
  	dh_strip -a
  
  
-@@ -321,6 +320,11 @@
- 	rm -f $(CURDIR)/debian/clang-$(LLVM_VERSION)-examples/usr/share/doc/clang-$(LLVM_VERSION)-examples/examples/*Make*
- 	rm -f $(CURDIR)//debian/llvm-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/build/autoconf/LICENSE.TXT
+@@ -324,6 +322,11 @@
+ # Remove auto generated python pyc
+ 	find $(CURDIR)/debian/llvm-$(LLVM_VERSION)-tools/usr/lib/llvm-$(LLVM_VERSION)/ -name '*.pyc' | xargs -r rm -f
  
 +	find $(CURDIR)/debian/python-clang-$(LLVM_VERSION)/usr/share/doc/python-clang-$(LLVM_VERSION)/examples -name "*.gz" -exec gzip -d {} \;
 +	find $(CURDIR)/debian/python-clang-$(LLVM_VERSION)/usr/share/doc/python-clang-$(LLVM_VERSION)/tests    -name "*.gz" -exec gzip -d {} \;
@@ -778,8 +780,8 @@ diff -urN debian/rules llvm-toolchain-3.4_3.4~+final/debian/rules
 +	fi
  
  
- ifeq (,$(filter nocheck, $(DEB_BUILD_OPTIONS)))
-@@ -388,5 +392,12 @@
+ 
+@@ -394,5 +397,12 @@
  	rm -f tools/clang tools/polly tools/lldb projects/compiler-rt
  	rm -rf tools/clang/tools/extra clang/tools/extra/
  	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
