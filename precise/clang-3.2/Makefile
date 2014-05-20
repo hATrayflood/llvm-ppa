@@ -1,7 +1,7 @@
 DIR = clang-3.2
 DEL = clang-3.2_3.2-*
 
-include ../build.mk
+include ../../build.mk
 
 PPA = buildtest
 
