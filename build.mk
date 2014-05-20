@@ -1,4 +1,5 @@
 PPA = llvm
+PKGNAME = $(notdir $(PWD))
 
 all: debclean
 	cd $(DIR) && debuild -uc -us
@@ -11,8 +12,8 @@ dput:
 	@echo
 
 diff:
-	if test -d ../../$(DIR)/debian ; then \
-		echo $$(diff -urN ../../$(DIR)/debian $(DIR)/debian > debian.diff) ; \
+	if test -d ../../$(PKGNAME)/debian ; then \
+		echo $$(diff -urN ../../$(PKGNAME)/debian $(DIR)/debian > debian.diff) ; \
 	fi
 
 install:
