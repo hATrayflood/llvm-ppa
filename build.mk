@@ -11,8 +11,8 @@ dput:
 	@echo
 
 diff:
-	if test -d debian ; then \
-		echo $$(diff -urN debian $(DIR)/debian > debian.diff) ; \
+	if test -d ../../$(DIR)/debian ; then \
+		echo $$(diff -urN ../../$(DIR)/debian $(DIR)/debian > debian.diff) ; \
 	fi
 
 install:
