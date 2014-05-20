@@ -1,7 +1,7 @@
 DIR = llvm-3.2.src
 DEL = llvm-3.2_3.2-*
 
-include ../build.mk
+include ../../build.mk
 
 PPA = buildtest
 

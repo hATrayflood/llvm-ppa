@@ -1,6 +1,6 @@
-diff -urN debian/changelog llvm-3.2.src/debian/changelog
---- debian/changelog	2013-09-04 18:21:38.499124975 +0900
-+++ llvm-3.2.src/debian/changelog	2013-10-24 15:37:15.281874421 +0900
+diff -urN ../../llvm-3.2/debian/changelog llvm-3.2.src/debian/changelog
+--- ../../llvm-3.2/debian/changelog	2014-05-09 17:45:31.600387130 +0900
++++ llvm-3.2.src/debian/changelog	2014-05-09 17:45:31.604271854 +0900
 @@ -1,3 +1,9 @@
 +llvm-3.2 (3.2-debian5ppa3) precise; urgency=low
 +
@@ -11,9 +11,9 @@ diff -urN debian/changelog llvm-3.2.src/debian/changelog
  llvm-3.2 (3.2-5) unstable; urgency=low
  
    * Fixes a segfault in the exception table of the JIT code emitter.
-diff -urN debian/control llvm-3.2.src/debian/control
---- debian/control	2013-09-04 18:21:38.499124975 +0900
-+++ llvm-3.2.src/debian/control	2014-02-05 12:49:37.896309964 +0900
+diff -urN ../../llvm-3.2/debian/control llvm-3.2.src/debian/control
+--- ../../llvm-3.2/debian/control	2014-05-09 17:45:31.600387130 +0900
++++ llvm-3.2.src/debian/control	2014-05-09 17:45:31.604271854 +0900
 @@ -1,18 +1,16 @@
  Source: llvm-3.2
  Section: devel
@@ -83,16 +83,16 @@ diff -urN debian/control llvm-3.2.src/debian/control
  Description: Low-Level Virtual Machine (LLVM), libraries and headers
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
-diff -urN debian/libllvm-3.2-ocaml-dev.dirs.in llvm-3.2.src/debian/libllvm-3.2-ocaml-dev.dirs.in
---- debian/libllvm-3.2-ocaml-dev.dirs.in	2013-09-04 18:21:38.499124975 +0900
-+++ llvm-3.2.src/debian/libllvm-3.2-ocaml-dev.dirs.in	2013-09-04 18:21:38.507125007 +0900
+diff -urN ../../llvm-3.2/debian/libllvm-3.2-ocaml-dev.dirs.in llvm-3.2.src/debian/libllvm-3.2-ocaml-dev.dirs.in
+--- ../../llvm-3.2/debian/libllvm-3.2-ocaml-dev.dirs.in	2014-05-09 17:45:31.600387130 +0900
++++ llvm-3.2.src/debian/libllvm-3.2-ocaml-dev.dirs.in	2014-05-09 17:45:31.604271854 +0900
 @@ -1,2 +1,2 @@
 -@OCAML_STDLIB_DIR@/META/
 +@OCAML_STDLIB_DIR@/METAS
  
-diff -urN debian/llvm-3.2-dev.install llvm-3.2.src/debian/llvm-3.2-dev.install
---- debian/llvm-3.2-dev.install	2013-09-04 18:21:38.499124975 +0900
-+++ llvm-3.2.src/debian/llvm-3.2-dev.install	2014-02-05 12:51:41.336922085 +0900
+diff -urN ../../llvm-3.2/debian/llvm-3.2-dev.install llvm-3.2.src/debian/llvm-3.2-dev.install
+--- ../../llvm-3.2/debian/llvm-3.2-dev.install	2014-05-09 17:45:31.600387130 +0900
++++ llvm-3.2.src/debian/llvm-3.2-dev.install	2014-05-09 17:45:31.604271854 +0900
 @@ -9,8 +9,8 @@
  configure			/usr/lib/llvm-3.2/build/
  autoconf/			/usr/lib/llvm-3.2/build/
@@ -104,8 +104,8 @@ diff -urN debian/llvm-3.2-dev.install llvm-3.2.src/debian/llvm-3.2-dev.install
  
  utils/emacs/emacs.el		usr/share/emacs/site-lisp/llvm-3.2/
  utils/emacs/llvm-mode.el	usr/share/emacs/site-lisp/llvm-3.2/
-diff -urN debian/llvm-3.2-runtime.postinst llvm-3.2.src/debian/llvm-3.2-runtime.postinst
---- debian/llvm-3.2-runtime.postinst	2013-09-04 18:21:38.499124975 +0900
+diff -urN ../../llvm-3.2/debian/llvm-3.2-runtime.postinst llvm-3.2.src/debian/llvm-3.2-runtime.postinst
+--- ../../llvm-3.2/debian/llvm-3.2-runtime.postinst	2014-05-09 17:45:31.600387130 +0900
 +++ llvm-3.2.src/debian/llvm-3.2-runtime.postinst	1970-01-01 09:00:00.000000000 +0900
 @@ -1,9 +0,0 @@
 -#!/bin/sh -e
@@ -117,8 +117,8 @@ diff -urN debian/llvm-3.2-runtime.postinst llvm-3.2.src/debian/llvm-3.2-runtime.
 -fi
 -
 -#DEBHELPER#
-diff -urN debian/llvm-3.2-runtime.prerm.in llvm-3.2.src/debian/llvm-3.2-runtime.prerm.in
---- debian/llvm-3.2-runtime.prerm.in	2013-09-04 18:21:38.499124975 +0900
+diff -urN ../../llvm-3.2/debian/llvm-3.2-runtime.prerm.in llvm-3.2.src/debian/llvm-3.2-runtime.prerm.in
+--- ../../llvm-3.2/debian/llvm-3.2-runtime.prerm.in	2014-05-09 17:45:31.600387130 +0900
 +++ llvm-3.2.src/debian/llvm-3.2-runtime.prerm.in	1970-01-01 09:00:00.000000000 +0900
 @@ -1,16 +0,0 @@
 -#!/bin/sh -e
@@ -137,9 +137,9 @@ diff -urN debian/llvm-3.2-runtime.prerm.in llvm-3.2.src/debian/llvm-3.2-runtime.
 -
 -#DEBHELPER#
 -
-diff -urN debian/rules llvm-3.2.src/debian/rules
---- debian/rules	2013-09-04 18:21:38.507125007 +0900
-+++ llvm-3.2.src/debian/rules	2014-02-05 13:39:07.211034004 +0900
+diff -urN ../../llvm-3.2/debian/rules llvm-3.2.src/debian/rules
+--- ../../llvm-3.2/debian/rules	2014-05-09 17:45:31.604271854 +0900
++++ llvm-3.2.src/debian/rules	2014-05-09 17:45:31.608109389 +0900
 @@ -1,11 +1,13 @@
  #!/usr/bin/make -f
  
