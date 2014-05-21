@@ -1,7 +1,7 @@
 DIR = llvm-toolchain-3.4_3.4~+final
 DEL = llvm-toolchain-3.4_3.4-*
 
-include ../build.mk
+include ../../build.mk
 
 extract:
 	tar jxf llvm-toolchain-3.4_3.4.orig.tar.bz2
