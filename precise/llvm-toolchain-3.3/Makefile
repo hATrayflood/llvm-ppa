@@ -1,7 +1,7 @@
 DIR = llvm-toolchain-snapshot_3.3~svn183554
 DEL = llvm-toolchain-3.3_3.3-*
 
-include ../build.mk
+include ../../build.mk
 
 extract:
 	tar jxf llvm-toolchain-3.3_3.3.orig.tar.bz2
