@@ -1,7 +1,7 @@
 DIR = llvm-3.2.src
 DEL = llvm-toolchain-3.2_3.2repack-*
 
-include ../build.mk
+include ../../build.mk
 
 extract:
 	tar jxf llvm-toolchain-3.2_3.2repack.orig.tar.bz2
