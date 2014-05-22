@@ -1,1 +1,7 @@
 docs/_build/html usr/share/doc/llvm-3.4-doc/
+usr/lib/llvm-3.4/docs/llvm/html.tar.gz
+usr/lib/llvm-3.4/docs/llvm/ocamldoc.tar.gz
+usr/lib/llvm-3.4/docs/llvm/html/Dummy.html
+usr/lib/llvm-3.4/docs/llvm/html/doxygen.css
+usr/lib/llvm-3.4/docs/llvm/html/LibASTMatchersReference.html
+

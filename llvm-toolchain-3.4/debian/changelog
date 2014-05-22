@@ -1,3 +1,50 @@
+llvm-toolchain-3.4 (1:3.4.1-3) unstable; urgency=medium
+
+  * Fix path for arch without support of compiler-rt. Should fix most of the
+    FTBFS
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Fri, 16 May 2014 15:27:37 +0200
+
+llvm-toolchain-3.4 (1:3.4.1-2) unstable; urgency=medium
+
+  * Fix the soname. No changes in the ABI, so, no need to update the soname
+    (Closes: #747701)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Sun, 11 May 2014 17:29:22 +0200
+
+llvm-toolchain-3.4 (1:3.4.1-1) unstable; urgency=medium
+
+  * New upstream release. Note that only LLVM & Clang had a new release.
+    I just copied the 3.4 tarballs for clang-extra-tools, polly, lldb and
+    compiler-rt.
+  * Symlink for current build mode missing (Closes upstream #18836)
+  * Add link usr/lib/llvm-3.4/ to usr/lib/llvm-3.4/build/Debug+Asserts
+  * Backport of a r201586 from upstream. scan-build was failing on some project
+    like firefox build system. (Yeh, advantage to be the packager of a software
+    that I use ;) ). See scan-build-fix-clang-detection.diff
+  * Fix the version in the symbol list (libclang1-3.4.symbols)
+  * Update the path regarding upstream changed (3.4 => 3.4.1)
+    (Patch improved also by Martin Nowack)
+  * Remove generated file libllvm3.4.install
+  * Add gnustep & gnustep-devel as suggests of clang-3.4
+  * Add libc6-dev as an explicit dependency of clang-3.4
+  * Build with dh_install --fail-missing
+  * Start to use /usr/bin/foo-X.Y. First step to have several clang versions
+    installed together
+  * Add some missing files:
+    - lli-child-target         - llvm-3.4-runtime
+    - count                    - llvm-3.4-tools
+    - html.tar.gz              - llvm-3.4-doc
+    - ocamldoc.tar.gz          - llvm-3.4-doc
+    - BugpointPasses.so        - llvm-3.4-dev
+    - liblldb*                 - lldb-3.4-dev
+    - lldb-platform-3.4        - lldb-3.4
+    - clang-apply-replacements - clang-3.4
+    - clang-tidy               - clang-3.4
+    - pp-trace                 - clang-3.4
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Fri, 09 May 2014 19:57:33 +0200
+
 llvm-toolchain-3.4 (1:3.4-2) unstable; urgency=medium
 
   * Only explicit the link against atomic when running mips & mipsel

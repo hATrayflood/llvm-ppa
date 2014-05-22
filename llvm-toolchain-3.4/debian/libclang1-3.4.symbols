@@ -7,7 +7,7 @@ libclang.so.1 libclang1-3.4 #MINVER#
  clang_CXCursorSet_insert@Base 3.2
  clang_CXIndex_getGlobalOptions@Base 3.2
  clang_CXIndex_setGlobalOptions@Base 3.2
- clang_CXXMethod_isPureVirtual@Base 1:3.4~+rc1
+ clang_CXXMethod_isPureVirtual@Base 1:3.4
  clang_CXXMethod_isStatic@Base 3.2
  clang_CXXMethod_isVirtual@Base 3.2
  clang_Comment_getChild@Base 3.2
@@ -16,7 +16,7 @@ libclang.so.1 libclang1-3.4 #MINVER#
  clang_Comment_isWhitespace@Base 3.2
  clang_CompilationDatabase_dispose@Base 3.2
  clang_CompilationDatabase_fromDirectory@Base 3.2
- clang_CompilationDatabase_getAllCompileCommands@Base 1:3.4~+rc1
+ clang_CompilationDatabase_getAllCompileCommands@Base 1:3.4
  clang_CompilationDatabase_getCompileCommands@Base 3.2
  clang_CompileCommand_getArg@Base 3.2
  clang_CompileCommand_getDirectory@Base 3.2
@@ -29,19 +29,19 @@ libclang.so.1 libclang1-3.4 #MINVER#
  clang_Cursor_getCommentRange@Base 3.2
  clang_Cursor_getModule@Base 3.2
  clang_Cursor_getNumArguments@Base 3.2
- clang_Cursor_getObjCDeclQualifiers@Base 1:3.4~+rc1
- clang_Cursor_getObjCPropertyAttributes@Base 1:3.4~+rc1
+ clang_Cursor_getObjCDeclQualifiers@Base 1:3.4
+ clang_Cursor_getObjCPropertyAttributes@Base 1:3.4
  clang_Cursor_getObjCSelectorIndex@Base 3.2
  clang_Cursor_getParsedComment@Base 3.2
  clang_Cursor_getRawCommentText@Base 3.2
  clang_Cursor_getReceiverType@Base 3.2
  clang_Cursor_getSpellingNameRange@Base 3.2
  clang_Cursor_getTranslationUnit@Base 3.2
- clang_Cursor_isBitField@Base 1:3.4~+rc1
+ clang_Cursor_isBitField@Base 1:3.4
  clang_Cursor_isDynamicCall@Base 3.2
  clang_Cursor_isNull@Base 3.2
- clang_Cursor_isObjCOptional@Base 1:3.4~+rc1
- clang_Cursor_isVariadic@Base 1:3.4~+rc1
+ clang_Cursor_isObjCOptional@Base 1:3.4
+ clang_Cursor_isVariadic@Base 1:3.4
  clang_FullComment_getAsHTML@Base 3.2
  clang_FullComment_getAsXML@Base 3.2
  clang_HTMLStartTagComment_isSelfClosing@Base 3.2
@@ -57,9 +57,9 @@ libclang.so.1 libclang1-3.4 #MINVER#
  clang_InlineCommandComment_getNumArgs@Base 3.2
  clang_InlineCommandComment_getRenderKind@Base 3.2
  clang_InlineContentComment_hasTrailingNewline@Base 3.2
- clang_Location_isFromMainFile@Base 1:3.4~+rc1
- clang_Location_isInSystemHeader@Base 1:3.4~+rc1
- clang_Module_getASTFile@Base 1:3.4~+rc1
+ clang_Location_isFromMainFile@Base 1:3.4
+ clang_Location_isInSystemHeader@Base 1:3.4
+ clang_Module_getASTFile@Base 1:3.4
  clang_Module_getFullName@Base 3.2
  clang_Module_getName@Base 3.2
  clang_Module_getNumTopLevelHeaders@Base 3.2
@@ -76,11 +76,11 @@ libclang.so.1 libclang1-3.4 #MINVER#
  clang_TParamCommandComment_getParamName@Base 3.2
  clang_TParamCommandComment_isParamPositionValid@Base 3.2
  clang_TextComment_getText@Base 3.2
- clang_Type_getAlignOf@Base 1:3.4~+rc1
- clang_Type_getCXXRefQualifier@Base 1:3.4~+rc1
- clang_Type_getClassType@Base 1:3.4~+rc1
- clang_Type_getOffsetOf@Base 1:3.4~+rc1
- clang_Type_getSizeOf@Base 1:3.4~+rc1
+ clang_Type_getAlignOf@Base 1:3.4
+ clang_Type_getCXXRefQualifier@Base 1:3.4
+ clang_Type_getClassType@Base 1:3.4
+ clang_Type_getOffsetOf@Base 1:3.4
+ clang_Type_getSizeOf@Base 1:3.4
  clang_VerbatimBlockLineComment_getText@Base 3.2
  clang_VerbatimLineComment_getText@Base 3.2
  clang_annotateTokens@Base 3.2
@@ -123,8 +123,8 @@ libclang.so.1 libclang1-3.4 #MINVER#
  clang_equalRanges@Base 3.2
  clang_equalTypes@Base 3.2
  clang_executeOnThread@Base 3.2
- clang_findIncludesInFile@Base 1:3.4~+rc1
- clang_findIncludesInFileWithBlock@Base 1:3.4~+rc1
+ clang_findIncludesInFile@Base 1:3.4
+ clang_findIncludesInFileWithBlock@Base 1:3.4
  clang_findReferencesInFile@Base 3.2
  clang_findReferencesInFileWithBlock@Base 3.2
  clang_formatDiagnostic@Base 3.2
@@ -188,12 +188,12 @@ libclang.so.1 libclang1-3.4 #MINVER#
  clang_getEnumConstantDeclValue@Base 3.2
  clang_getEnumDeclIntegerType@Base 3.2
  clang_getExpansionLocation@Base 3.2
- clang_getFieldDeclBitWidth@Base 1:3.4~+rc1
+ clang_getFieldDeclBitWidth@Base 1:3.4
  clang_getFile@Base 3.2
- clang_getFileLocation@Base 1:3.4~+rc1
+ clang_getFileLocation@Base 1:3.4
  clang_getFileName@Base 3.2
  clang_getFileTime@Base 3.2
- clang_getFileUniqueID@Base 1:3.4~+rc1
+ clang_getFileUniqueID@Base 1:3.4
  clang_getFunctionTypeCallingConv@Base 3.2
  clang_getIBOutletCollectionType@Base 3.2
  clang_getIncludedFile@Base 3.2
@@ -232,7 +232,7 @@ libclang.so.1 libclang1-3.4 #MINVER#
  clang_getTranslationUnitSpelling@Base 3.2
  clang_getTypeDeclaration@Base 3.2
  clang_getTypeKindSpelling@Base 3.2
- clang_getTypeSpelling@Base 1:3.4~+rc1
+ clang_getTypeSpelling@Base 1:3.4
  clang_getTypedefDeclUnderlyingType@Base 3.2
  clang_hashCursor@Base 3.2
  clang_indexLoc_getCXSourceLocation@Base 3.2

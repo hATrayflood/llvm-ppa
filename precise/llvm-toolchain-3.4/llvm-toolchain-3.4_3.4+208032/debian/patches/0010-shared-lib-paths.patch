@@ -1,0 +1,38 @@
+Index: llvm-toolchain-snapshot_3.4~svn188146/clang/lib/Driver/ToolChains.cpp
+===================================================================
+--- llvm-toolchain-snapshot_3.4~svn188146.orig/clang/lib/Driver/ToolChains.cpp	2013-08-11 10:01:30.888734802 +0200
++++ llvm-toolchain-snapshot_3.4~svn188146/clang/lib/Driver/ToolChains.cpp	2013-08-11 10:01:30.884734801 +0200
+@@ -2337,6 +2337,14 @@
+   addPathIfExists(SysRoot + "/usr/lib/" + MultiarchTriple, Paths);
+   addPathIfExists(SysRoot + "/usr/lib/../" + Multilib, Paths);
+ 
++  // In Debian we install LLVM lib with version string
++  // /usr/lib/llvm-X.Y/lib/LLVMGold.so
++  if (IsDebian(Distro)) {
++    addPathIfExists(SysRoot + "/usr/lib/llvm-" + CLANG_VERSION_STRING + "/lib/",
++                    Paths);
++  }
++
++
+   // Try walking via the GCC triple path in case of biarch or multiarch GCC
+   // installations with strange symlinks.
+   if (GCCInstallation.isValid())
+Index: llvm-toolchain-snapshot_3.4~svn188146/clang/lib/Driver/Tools.cpp
+===================================================================
+--- llvm-toolchain-snapshot_3.4~svn188146.orig/clang/lib/Driver/Tools.cpp	2013-08-11 10:01:30.888734802 +0200
++++ llvm-toolchain-snapshot_3.4~svn188146/clang/lib/Driver/Tools.cpp	2013-08-11 10:01:30.888734802 +0200
+@@ -6153,6 +6153,14 @@
+   if (D.IsUsingLTO(Args) || Args.hasArg(options::OPT_use_gold_plugin)) {
+     CmdArgs.push_back("-plugin");
+     std::string Plugin = ToolChain.getDriver().Dir + "/../lib/LLVMgold.so";
++    if ( ! llvm::sys::fs::exists(Plugin)) {
++      // Plugin is not in driver-based relative path, try system libs
++      //  on Debian for instance
++      std::string PluginSystem = ToolChain.GetFilePath("LLVMgold.so");
++      if (llvm::sys::fs::exists(PluginSystem)){
++    	  Plugin = PluginSystem;
++      }
++    }
+     CmdArgs.push_back(Args.MakeArgString(Plugin));
+ 
+     // Try to pass driver level flags relevant to LTO code generation down to

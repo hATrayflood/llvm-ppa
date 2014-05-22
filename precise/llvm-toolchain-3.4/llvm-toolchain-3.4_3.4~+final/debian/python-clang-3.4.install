@@ -1,4 +1,0 @@
-clang/bindings/python/clang/*		/usr/lib/python2.7/dist-packages/clang34/
-clang/bindings/python/README.txt	/usr/share/doc/python-clang-3.4/
-clang/bindings/python/examples		/usr/share/doc/python-clang-3.4/
-clang/bindings/python/tests		/usr/share/doc/python-clang-3.4/

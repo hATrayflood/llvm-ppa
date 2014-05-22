@@ -1,0 +1,4 @@
+# I know but well...
+clang-format-3.4: manpage-has-useless-whatis-entry usr/share/man/man1/clang-format-diff-3.4.1.gz
+clang-format-3.4: manpage-has-useless-whatis-entry usr/share/man/man1/clang-format-3.4.1.gz
+

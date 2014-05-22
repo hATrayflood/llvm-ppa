@@ -1,4 +1,4 @@
 *.deb
-llvm-toolchain-3.4_3.4-*
-llvm-toolchain-3.4_3.4~+final/*
-!llvm-toolchain-3.4_3.4~+final/debian
+llvm-toolchain-3.4_3.4.1-*
+llvm-toolchain-3.4_3.4+208032/*
+!llvm-toolchain-3.4_3.4+208032/debian

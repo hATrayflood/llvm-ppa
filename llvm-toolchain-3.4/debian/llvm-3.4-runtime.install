@@ -1,3 +1,7 @@
-debian/tmp/usr/lib/llvm-3.4/bin/lli		/usr/lib/llvm-3.4/bin/
-debian/tmp/usr/bin/lli-3.4		/usr/bin/
+usr/lib/llvm-3.4/bin/lli
+usr/lib/llvm-3.4/bin/lli-child-target
+
+usr/bin/lli-3.4
+usr/bin/lli-child-target-3.4
+
 debian/llvm-3.4-runtime.binfmt			usr/share/binfmts/

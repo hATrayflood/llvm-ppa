@@ -3,3 +3,12 @@ usr/share/man/man1/clang-3.4.1.gz		usr/share/man/man1/clang++.1.gz
 /usr/share/clang/scan-build/scan-build	/usr/bin/scan-build
 /usr/share/clang/scan-view/scan-view	/usr/bin/scan-view
 /usr/bin/clang				/usr/bin/llvm-clang
+
+usr/bin/clang-3.4 usr/bin/clang
+usr/bin/clang++-3.4 usr/bin/clang++
+usr/bin/clang-check-3.4 usr/bin/clang-check
+usr/bin/clang-tblgen-3.4 usr/bin/clang-tblgen
+usr/bin/c-index-test-3.4 usr/bin/c-index-test
+usr/bin/clang-apply-replacements-3.4 usr/bin/clang-apply-replacements
+usr/bin/clang-tidy-3.4 usr/bin/clang-tidy
+usr/bin/pp-trace-3.4 usr/bin/pp-trace
