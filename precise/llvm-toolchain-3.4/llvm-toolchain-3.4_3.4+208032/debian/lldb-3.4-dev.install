@@ -1,3 +1,4 @@
 /usr/lib/llvm-3.4/include/lldb
-/usr/lib/llvm-3.4/lib/liblldb*
+/usr/lib/llvm-3.4/lib/liblldb*a
+
 

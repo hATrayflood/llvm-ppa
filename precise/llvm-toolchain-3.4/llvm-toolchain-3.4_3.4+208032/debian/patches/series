@@ -38,4 +38,5 @@ lldb-link-atomic.diff
 fix-llvm-config-obj-src-root.patch
 scan-build-fix-clang-detection.diff
 compiler-rt-path.diff
+gcc-4.9-support.diff
 99-python-bindings.patch
