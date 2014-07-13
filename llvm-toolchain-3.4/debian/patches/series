@@ -38,4 +38,8 @@ lldb-link-atomic.diff
 fix-llvm-config-obj-src-root.patch
 scan-build-fix-clang-detection.diff
 compiler-rt-path.diff
-gcc-4.9-support.diff
+lldb-soname.diff
+CVE-2014-2893.diff
+follow-parallel-var.diff
+scan-build-search-path.diff
+

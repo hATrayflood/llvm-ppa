@@ -1,2 +1,1 @@
-usr/lib/llvm-3.4/lib/libLLVM-3.4.1.so.1 /usr/lib/@DEB_HOST_MULTIARCH@/
 usr/lib/llvm-3.4/lib/libLLVM-3.4.so.1 /usr/lib/@DEB_HOST_MULTIARCH@/

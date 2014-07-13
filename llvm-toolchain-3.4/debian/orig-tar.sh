@@ -15,12 +15,12 @@ set -e
 
 SVN_BASE_URL=http://llvm.org/svn/llvm-project/
 MAJOR_VERSION=3.4
+CURRENT_VERSION=3.4.2
 
 if test -n "$1"; then
 # http://llvm.org/svn/llvm-project/{cfe,llvm,compiler-rt,...}/branches/google/stable/
 # For example: sh 3.4/debian/orig-tar.sh release_34
     BRANCH=$1
-    RCRELEASE="true"
 fi
 
 if test -n "$1" -a -n "$2"; then
@@ -75,8 +75,8 @@ if test -n "$RCRELEASE"; then
     VERSION=$MAJOR_VERSION"+"$REVISION # WAS TAG
     FULL_VERSION="llvm-toolchain-"$MAJOR_VERSION"_"$VERSION
 else
-    VERSION=$MAJOR_VERSION"~svn"$REVISION
-    FULL_VERSION="llvm-toolchain-snapshot_"$VERSION
+    VERSION=$CURRENT_VERSION"+svn"$REVISION
+    FULL_VERSION="llvm-toolchain-"$MAJOR_VERSION"_"$VERSION
 fi
 
 # LLVM

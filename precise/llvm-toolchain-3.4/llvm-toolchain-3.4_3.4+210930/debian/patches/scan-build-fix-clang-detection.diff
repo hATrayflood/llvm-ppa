@@ -1,0 +1,26 @@
+Index: llvm-toolchain-3.4-3.4/clang/tools/scan-build/ccc-analyzer
+===================================================================
+--- llvm-toolchain-3.4-3.4.orig/clang/tools/scan-build/ccc-analyzer	2013-10-22 20:55:18.000000000 +0200
++++ llvm-toolchain-3.4-3.4/clang/tools/scan-build/ccc-analyzer	2014-02-18 18:58:07.185575339 +0100
+@@ -40,17 +40,17 @@
+ 
+ if ($FindBin::Script =~ /c\+\+-analyzer/) {
+   $Compiler = $ENV{'CCC_CXX'};
+-  if (!defined $Compiler) { $Compiler = $DefaultCXXCompiler; }
++  if (!defined $Compiler || ! -x $Compiler) { $Compiler = $DefaultCXXCompiler; }
+   
+   $Clang = $ENV{'CLANG_CXX'};
+-  if (!defined $Clang) { $Clang = 'clang++'; }
++  if (!defined $Clang || ! -x $Clang) { $Clang = 'clang++'; }
+ }
+ else {
+   $Compiler = $ENV{'CCC_CC'};
+-  if (!defined $Compiler) { $Compiler = $DefaultCCompiler; }
++  if (!defined $Compiler || ! -x $Compiler) { $Compiler = $DefaultCCompiler; }
+ 
+   $Clang = $ENV{'CLANG'};
+-  if (!defined $Clang) { $Clang = 'clang'; }
++  if (!defined $Clang || ! -x $Clang) { $Clang = 'clang'; }
+ }
+ 
+ ##===----------------------------------------------------------------------===##

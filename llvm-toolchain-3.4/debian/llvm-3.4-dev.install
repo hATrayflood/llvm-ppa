@@ -1,7 +1,6 @@
 usr/lib/llvm-3.4/lib/libLLVM*.a
 usr/lib/llvm-3.4/lib/libllvm*.a
 usr/lib/llvm-3.4/lib/LLVM*.so
-usr/lib/llvm-3.4/lib/libLLVM*so
 usr/lib/llvm-3.4/lib/libLTO.*
 usr/lib/llvm-3.4/lib/BugpointPasses.so
 usr/lib/llvm-3.4/include/llvm/      usr/include/llvm-3.4/

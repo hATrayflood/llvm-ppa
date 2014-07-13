@@ -1,32 +1,13 @@
-Index: llvm-toolchain-3.4-3.4.1/tools/llvm-shlib/Makefile
+Index: llvm-toolchain-3.4_3.4~svn209031/tools/llvm-shlib/Makefile
 ===================================================================
---- llvm-toolchain-3.4-3.4.1.orig/tools/llvm-shlib/Makefile	2014-05-11 20:13:33.000000000 +0200
-+++ llvm-toolchain-3.4-3.4.1/tools/llvm-shlib/Makefile	2014-05-11 20:36:51.662821231 +0200
-@@ -10,6 +10,7 @@
- LEVEL := ../..
- 
- LIBRARYNAME = LLVM-$(LLVMVersion)
-+LIBRARYNAME_SONAME = LLVM-$(LLVM_VERSION_MAJOR).$(LLVM_VERSION_MINOR)
- LIBRARYALIASNAME = LLVM-$(LLVM_VERSION_MAJOR).$(LLVM_VERSION_MINOR)$(LLVM_VERSION_SUFFIX)
- 
- NO_BUILD_ARCHIVE := 1
-@@ -47,6 +48,10 @@
- 	  $(ProjLibsOptions) $(LLVMLibsOptions) $(LIBS)
- 	mv $(LibName.SO) $(LibName.SO).1
- 	ln -s $(notdir $(LibName.SO)).1 $(LibName.SO)
-+	# Crappy workaround. I just need to fix Debian quickly
-+	ln -s $(notdir $(LibName.SO)).1 $(SharedLibDir)/lib$(LIBRARYNAME_SONAME).so.1
-+
-+
- 
- ifeq ($(HOST_OS),Darwin)
-     # set dylib internal version number to llvmCore submission number
-@@ -78,7 +83,7 @@
+--- llvm-toolchain-3.4_3.4~svn209031.orig/tools/llvm-shlib/Makefile
++++ llvm-toolchain-3.4_3.4~svn209031/tools/llvm-shlib/Makefile
+@@ -78,7 +78,7 @@ endif
  
  ifeq ($(HOST_OS), $(filter $(HOST_OS), DragonFly Linux FreeBSD GNU/kFreeBSD GNU))
      # Add soname to the library.
 -    LLVMLibsOptions += -Wl,--soname,lib$(LIBRARYNAME)$(SHLIBEXT) -Wl,-Bsymbolic-functions
-+    LLVMLibsOptions += -Wl,--soname,lib$(LIBRARYNAME_SONAME)$(SHLIBEXT).1 -Wl,-Bsymbolic-functions
++    LLVMLibsOptions += -Wl,--soname,lib$(LIBRARYNAME)$(SHLIBEXT).1 -Wl,-Bsymbolic-functions
  endif
  
  ifeq ($(HOST_OS), $(filter $(HOST_OS), Linux GNU GNU/kFreeBSD))

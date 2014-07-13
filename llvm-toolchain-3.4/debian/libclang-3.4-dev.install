@@ -5,7 +5,7 @@ usr/lib/llvm-3.4/lib/libclang*a
 usr/lib/llvm-3.4/lib/libpolly*
 usr/lib/llvm-3.4/lib/libmodernizeCore.a
 
-
+build-llvm/tools/clang/runtime/compiler-rt/clang_linux/ usr/lib/llvm-3.4/lib/clang/3.4.2/lib/
 
 #usr/include/clang                  /usr/include/
 #usr/include/clang-c                /usr/include/

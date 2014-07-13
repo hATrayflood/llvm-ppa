@@ -1,0 +1,13 @@
+Index: llvm-toolchain-3.4-3.4~+rc1/clang/lib/Driver/ToolChains.cpp
+===================================================================
+--- llvm-toolchain-3.4-3.4~+rc1.orig/clang/lib/Driver/ToolChains.cpp	2013-12-01 16:44:29.334277797 +0000
++++ llvm-toolchain-3.4-3.4~+rc1/clang/lib/Driver/ToolChains.cpp	2013-12-01 16:44:29.294277798 +0000
+@@ -2773,7 +2773,7 @@
+ 
+ #ifdef __i386__
+   // clang does not detect this path: /usr/include/i386-linux-gnu/c++/4.8/ Help him
+-  addLibStdCXXIncludePaths( "/usr/include/", "/c++/" + Version.str(), "i386-linux-gnu", GCCInstallation.getMultiarchSuffix(), DriverArgs, CC1Args);
++  addLibStdCXXIncludePaths( "/usr/include/", "/c++/" + Version.Text, "i386-linux-gnu", BiarchSuffix, MIPSABIDirSuffix, DriverArgs, CC1Args);
+ #endif
+ 
+   if (addLibStdCXXIncludePaths(LibDir.str() + "/../include",

@@ -1,3 +1,0 @@
-#!/bin/sh
-
-clang-@LLVM_VERSION@ -Xclang -load -Xclang /usr/lib/llvm-@LLVM_VERSION@/lib/LLVMPolly.so $@

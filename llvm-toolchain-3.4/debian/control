@@ -9,9 +9,8 @@ Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl, expect,
     lsb-release, patchutils, diffstat, xz-utils, chrpath, python-dev,
     libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev,
     libisl-dev (>= 0.11.1), libjsoncpp-dev,
-    lcov, procps, help2man, dh-ocaml,
-    gcc-4.8, g++-4.8,
-Build-Conflicts: oprofile, ocaml
+    lcov, procps, help2man, dh-ocaml
+Build-Conflicts: oprofile, ocaml, libllvm-3.5-ocaml-dev
 Standards-Version: 3.9.5
 Homepage: http://www.llvm.org/
 Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/llvm-toolchain/branches/3.4/

@@ -1,0 +1,21 @@
+Index: llvm-toolchain-3.4_3.4~svn209031/lldb/lib/Makefile
+===================================================================
+--- llvm-toolchain-3.4_3.4~svn209031.orig/lldb/lib/Makefile
++++ llvm-toolchain-3.4_3.4~svn209031/lldb/lib/Makefile
+@@ -16,6 +16,7 @@ LIBRARYNAME = lldb
+ NO_BUILD_ARCHIVE = 1
+ LINK_LIBS_IN_SHARED = 1
+ SHARED_LIBRARY = 1
++SONAME_EXTENSION = 1
+ 
+ ifeq (,$(findstring -DLLDB_DISABLE_PYTHON,$(CXXFLAGS)))
+ PYTHON_BUILD_FLAGS = $(shell python-config --ldflags)
+@@ -152,7 +153,7 @@ ifeq ($(HOST_OS), $(filter $(HOST_OS), L
+     # Link GCC atomic helper library
+     LLVMLibsOptions += -latomic
+     endif
+-    LLVMLibsOptions += -Wl,--soname,lib$(LIBRARYNAME)$(SHLIBEXT)
++    LLVMLibsOptions += -Wl,--soname,lib$(LIBRARYNAME)$(SHLIBEXT).$(SONAME_EXTENSION)
+ endif
+ 
+ ifeq ($(HOST_OS),FreeBSD)
