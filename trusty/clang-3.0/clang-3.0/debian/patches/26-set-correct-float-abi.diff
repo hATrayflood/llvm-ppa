@@ -1,0 +1,30 @@
+Description: set correct float abi settings for armel and armhf
+ debian armel supports systems that don't have a fpu so should use a "float abi"
+ setting of soft by default.
+ 
+ Debian armhf needs a float abi setting of "hard"
+Author: Peter Michael Green <plugwash@debian.org>
+Last-Update: 2012-11-14
+Reviewed-By: Michael Stapelberg <stapelberg@debian.org>
+Bug-Debian: http://bugs.debian.org/693208
+Forwarded: not-needed
+
+---
+
+Index: clang-3.0/tools/clang/lib/Driver/Tools.cpp
+===================================================================
+--- clang-3.0.orig/tools/clang/lib/Driver/Tools.cpp	2012-11-12 22:03:29.000000000 +0000
++++ clang-3.0/tools/clang/lib/Driver/Tools.cpp	2012-11-13 12:03:33.000000000 +0000
+@@ -583,7 +583,11 @@
+ 
+     case llvm::Triple::Linux: {
+       if (getToolChain().getTriple().getEnvironment() == llvm::Triple::GNUEABI) {
+-        FloatABI = "softfp";
++        FloatABI = "soft";
++        break;
++      }
++      if (getToolChain().getTriple().getEnvironment() == llvm::Triple::GNUEABIHF) {
++        FloatABI = "hard";
+         break;
+       }
+     }

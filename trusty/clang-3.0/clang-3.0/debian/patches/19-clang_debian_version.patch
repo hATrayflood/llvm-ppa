@@ -1,0 +1,21 @@
+Index: clang-3.0/tools/clang/lib/Basic/Version.cpp
+===================================================================
+--- clang-3.0.orig/tools/clang/lib/Basic/Version.cpp	2011-07-23 12:55:15.000000000 +0200
++++ clang-3.0/tools/clang/lib/Basic/Version.cpp	2011-12-05 01:00:04.882978784 +0100
+@@ -15,6 +15,7 @@
+ #include "clang/Basic/LLVM.h"
+ #include "llvm/Support/raw_ostream.h"
+ #include "llvm/Config/config.h"
++#include "clang/Debian/debian_path.h"
+ #include <cstring>
+ #include <cstdlib>
+ 
+@@ -79,7 +80,7 @@
+ #ifdef CLANG_VENDOR
+   OS << CLANG_VENDOR;
+ #endif
+-  OS << "clang version " CLANG_VERSION_STRING " ("
++  OS << "clang version " CLANG_VERSION_STRING << "-" << DEB_PATCHSETVERSION << " ("
+      << getClangFullRepositoryVersion() << ')';
+ 
+   // If vendor supplied, include the base LLVM version as well.

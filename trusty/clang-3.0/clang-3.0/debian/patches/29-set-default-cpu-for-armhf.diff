@@ -1,0 +1,26 @@
+Description: Fix CPU type default for armhf
+  Without this patch clang defaults to a CPU type of "arm7tdmi" which
+  does not work correctly with -mfloat-abi=hard leading to broken
+  code.
+  
+  Use armv6 because as far as I can tell clang 3.0 does not properly 
+  support an armv7 setting without neon or the extra floating point 
+  registers. It may be possible to patch it to add support but I feel 
+  such a Patch would likely be considered unacceptable at this stage in
+  The release process.
+Author: Peter Michael Green <plugwash@debian.org>
+
+Index: clang-3.0/tools/clang/lib/Driver/Tools.cpp
+===================================================================
+--- clang-3.0.orig/tools/clang/lib/Driver/Tools.cpp	2013-03-27 19:50:18.000000000 +0000
++++ clang-3.0/tools/clang/lib/Driver/Tools.cpp	2013-03-27 19:53:28.000000000 +0000
+@@ -442,6 +442,9 @@
+   if (Arg *A = Args.getLastArg(options::OPT_march_EQ)) {
+     // Otherwise, if we have -march= choose the base CPU for that arch.
+     MArch = A->getValue(Args);
++  } else if (Triple.getEnvironment() == llvm::Triple::GNUEABIHF) {
++    // Use armv6 for armhf
++    MArch = "armv6";
+   } else {
+     // Otherwise, use the Arch from the triple.
+     MArch = Triple.getArchName();

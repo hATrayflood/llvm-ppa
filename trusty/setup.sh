@@ -16,7 +16,7 @@ apt-get -y install libtool
 apt-get -y install doxygen
 apt-get -y install chrpath
 apt-get -y install texinfo
-#apt-get -y install quilt
+apt-get -y install quilt
 apt-get -y install sharutils
 apt-get -y install autotools-dev
 apt-get -y install libffi-dev

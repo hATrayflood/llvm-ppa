@@ -1,0 +1,10 @@
+Package: llvm-@UVERSION@-priv-dev
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Low-Level Virtual Machine (LLVM), ccache files
+ This package contains the ccache files from latest upload. It allows the
+ tools to build much faster, and prevents llvm from being uselessly built
+ twice.
+ .
+ Do not install unless you intend to build LLVM from sources!
+

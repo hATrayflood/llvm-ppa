@@ -1,0 +1,234 @@
+diff -urN ../../llvm-3.0/debian/changelog llvm-3.0.src/debian/changelog
+--- ../../llvm-3.0/debian/changelog	2014-05-09 17:45:31.548312843 +0900
++++ llvm-3.0.src/debian/changelog	2014-07-18 18:54:10.217909542 +0900
+@@ -1,3 +1,9 @@
++llvm-3.0 (3.0-debian10trusty0) trusty; urgency=low
++
++  * ppa for trusty
++
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 18 Jul 2014 19:00:00 +0900
++
+ llvm-3.0 (3.0-10) unstable; urgency=low
+ 
+   * Rebuild package to fix symbol issues (Closes: #680326, #681109)
+diff -urN ../../llvm-3.0/debian/control llvm-3.0.src/debian/control
+--- ../../llvm-3.0/debian/control	2014-05-09 17:45:31.548312843 +0900
++++ llvm-3.0.src/debian/control	2014-07-18 19:44:10.044784869 +0900
+@@ -1,18 +1,17 @@
+ Source: llvm-3.0
+ Section: devel
+-Priority: optional
+-Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
+-Uploaders: Arthur Loiret <aloiret@debian.org>, Sylvestre Ledru <sylvestre@debian.org>
++Priority: extra
++Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
+ Build-Depends: debhelper (>= 8.1.3), flex, bison, dejagnu, tcl8.5, expect,
+     autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo, quilt,
+     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
+     lsb-release, xz-utils, 
+     binutils-dev (>= 2.20.51.20100222-1~), ocaml-nox (>= 3.11.2), ocaml-best-compilers | ocaml-nox, dh-ocaml (>= 0.9.1)
++   , gcc-4.6, g++-4.6
+ Build-Conflicts: oprofile
+ Standards-Version: 3.9.3
+-Homepage: http://www.llvm.org/
+-Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/llvm/trunk/
+-Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/llvm/trunk/
++Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
++Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
+ 
+ 
+ Package: libllvm3.0
+@@ -33,8 +32,6 @@
+ Suggests: llvm-3.0-doc
+ Depends: llvm-3.0-runtime (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+ Recommends: llvm-3.0-dev
+-Conflicts: llvm (<< 2.7-1)
+-Replaces: llvm (<< 2.7-1)
+ Description: Low-Level Virtual Machine (LLVM)
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+@@ -63,8 +60,6 @@
+ Package: llvm-3.0-runtime
+ Architecture: any
+ Depends: binfmt-support, ${shlibs:Depends}, ${misc:Depends}
+-Conflicts: llvm (<< 2.7-1)
+-Replaces: llvm (<< 2.7-1)
+ Description: Low-Level Virtual Machine (LLVM), bytecode interpreter
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+@@ -83,7 +78,6 @@
+ Package: llvm-3.0-dev
+ Architecture: any
+ Depends: ${shlibs:Depends}, libffi-dev (>= 3.0.9), ${misc:Depends}, llvm-3.0 (= ${binary:Version})
+-Replaces: llvm (<< 2.2-3)
+ Description: Low-Level Virtual Machine (LLVM), libraries and headers
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+diff -urN ../../llvm-3.0/debian/control.in/llvm llvm-3.0.src/debian/control.in/llvm
+--- ../../llvm-3.0/debian/control.in/llvm	2014-05-09 17:45:31.548312843 +0900
++++ llvm-3.0.src/debian/control.in/llvm	2014-05-09 17:45:31.548312843 +0900
+@@ -3,8 +3,6 @@
+ Suggests: llvm-@UVERSION@-doc
+ Depends: llvm-@UVERSION@-runtime (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+ Recommends: llvm-@UVERSION@-dev
+-Conflicts: llvm (<< 2.7-1)
+-Replaces: llvm (<< 2.7-1)
+ Description: Low-Level Virtual Machine (LLVM)
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+diff -urN ../../llvm-3.0/debian/control.in/llvm-dev llvm-3.0.src/debian/control.in/llvm-dev
+--- ../../llvm-3.0/debian/control.in/llvm-dev	2014-05-09 17:45:31.548312843 +0900
++++ llvm-3.0.src/debian/control.in/llvm-dev	2014-05-09 17:45:31.548312843 +0900
+@@ -1,7 +1,6 @@
+ Package: llvm-@UVERSION@-dev
+ Architecture: any
+ Depends: ${shlibs:Depends}, libffi-dev (>= 3.0.9), ${misc:Depends}, llvm-@UVERSION@ (= ${binary:Version})
+-Replaces: llvm (<< 2.2-3)
+ Description: Low-Level Virtual Machine (LLVM), libraries and headers
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+diff -urN ../../llvm-3.0/debian/control.in/llvm-runtime llvm-3.0.src/debian/control.in/llvm-runtime
+--- ../../llvm-3.0/debian/control.in/llvm-runtime	2014-05-09 17:45:31.548312843 +0900
++++ llvm-3.0.src/debian/control.in/llvm-runtime	2014-05-09 17:45:31.548312843 +0900
+@@ -1,8 +1,6 @@
+ Package: llvm-@UVERSION@-runtime
+ Architecture: any
+ Depends: binfmt-support, ${shlibs:Depends}, ${misc:Depends}
+-Conflicts: llvm (<< 2.7-1)
+-Replaces: llvm (<< 2.7-1)
+ Description: Low-Level Virtual Machine (LLVM), bytecode interpreter
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+diff -urN ../../llvm-3.0/debian/control.in/source llvm-3.0.src/debian/control.in/source
+--- ../../llvm-3.0/debian/control.in/source	2014-05-09 17:45:31.548312843 +0900
++++ llvm-3.0.src/debian/control.in/source	2014-07-18 19:44:00.404737067 +0900
+@@ -1,17 +1,16 @@
+ Source: @PKGSOURCE@
+ Section: devel
+-Priority: optional
+-Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
+-Uploaders: Arthur Loiret <aloiret@debian.org>, Sylvestre Ledru <sylvestre@debian.org>
++Priority: extra
++Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
+ Build-Depends: debhelper (>= 8.1.3), flex, bison, dejagnu, tcl8.5, expect,
+     autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo, quilt,
+     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
+     lsb-release, xz-utils, 
+     binutils-dev (>= 2.20.51.20100222-1~) @BUILDDEPS@
++    , gcc-4.6, g++-4.6
+ Build-Conflicts: oprofile @BUILDCONFLICTS@
+ Standards-Version: 3.9.3
+-Homepage: http://www.llvm.org/
+-Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/llvm/trunk/
+-Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/llvm/trunk/
++Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
++Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
+ 
+ 
+diff -urN ../../llvm-3.0/debian/debhelper.in/llvm-dev.install llvm-3.0.src/debian/debhelper.in/llvm-dev.install
+--- ../../llvm-3.0/debian/debhelper.in/llvm-dev.install	2014-05-09 17:45:31.548312843 +0900
++++ llvm-3.0.src/debian/debhelper.in/llvm-dev.install	2014-05-09 17:45:31.548312843 +0900
+@@ -8,8 +8,8 @@
+ configure			@PF@/build/
+ autoconf/			@PF@/build/
+ 
+-utils/vim/llvm.vim		usr/share/vim/addons/syntax/llvm-@UVERSION@.vim
+-utils/vim/tablegen.vim		usr/share/vim/addons/syntax/tablegen-@UVERSION@.vim
++utils/vim/llvm-@UVERSION@.vim		usr/share/vim/addons/syntax/
++utils/vim/tablegen-@UVERSION@.vim	usr/share/vim/addons/syntax/
+ 
+ utils/emacs/emacs.el		usr/share/emacs/site-lisp/llvm-@UVERSION@/
+ utils/emacs/llvm-mode.el	usr/share/emacs/site-lisp/llvm-@UVERSION@/
+diff -urN ../../llvm-3.0/debian/debhelper.in/llvm-runtime.postinst llvm-3.0.src/debian/debhelper.in/llvm-runtime.postinst
+--- ../../llvm-3.0/debian/debhelper.in/llvm-runtime.postinst	2014-05-09 17:45:31.548312843 +0900
++++ llvm-3.0.src/debian/debhelper.in/llvm-runtime.postinst	1970-01-01 09:00:00.000000000 +0900
+@@ -1,9 +0,0 @@
+-#!/bin/sh -e
+-
+-if test "$1" = "configure"; then
+-    if test -x /usr/sbin/update-binfmts; then
+-        update-binfmts --import llvm-@UVERSION@.binfmt || true
+-    fi
+-fi
+-
+-#DEBHELPER#
+diff -urN ../../llvm-3.0/debian/debhelper.in/llvm-runtime.prerm llvm-3.0.src/debian/debhelper.in/llvm-runtime.prerm
+--- ../../llvm-3.0/debian/debhelper.in/llvm-runtime.prerm	2014-05-09 17:45:31.548312843 +0900
++++ llvm-3.0.src/debian/debhelper.in/llvm-runtime.prerm	1970-01-01 09:00:00.000000000 +0900
+@@ -1,11 +0,0 @@
+-#!/bin/sh -e
+-
+-if test "$1" = "remove"; then
+-    if test -x /usr/sbin/update-binfmts; then
+-        update-binfmts --package llvm \
+-            --remove llvm /usr/bin/lli-@UVERSION@ || true
+-    fi
+-fi
+-
+-#DEBHELPER#
+-
+diff -urN ../../llvm-3.0/debian/packages.d/llvm.mk llvm-3.0.src/debian/packages.d/llvm.mk
+--- ../../llvm-3.0/debian/packages.d/llvm.mk	2014-05-09 17:45:31.548312843 +0900
++++ llvm-3.0.src/debian/packages.d/llvm.mk	2014-05-09 17:45:31.548312843 +0900
+@@ -68,6 +68,8 @@
+ 	mkdir -p $(D)/debian/tmp-llvm/usr/lib/$(DEB_HOST_MULTIARCH)
+ 	mv $(D)/debian/tmp-llvm/$(PF)/lib/$(shlib_name).so \
+ 	  $(D)/debian/tmp-llvm/usr/lib/$(DEB_HOST_MULTIARCH)/$(shlib_name).so.1
++	cp -f $(D)/utils/vim/llvm.vim $(D)/utils/vim/llvm-$(UVERSION).vim
++	cp -f $(D)/utils/vim/tablegen.vim $(D)/utils/vim/tablegen-$(UVERSION).vim
+ endef
+ 
+ define llvm-runtime_extra_binary
+diff -urN ../../llvm-3.0/debian/rules llvm-3.0.src/debian/rules
+--- ../../llvm-3.0/debian/rules	2014-05-09 17:45:31.548312843 +0900
++++ llvm-3.0.src/debian/rules	2014-05-09 17:45:31.552132996 +0900
+@@ -16,7 +16,7 @@
+ 
+ define pkgname
+   $(shell cat $(D)/debian/control.in/$1 | awk '/^Package: / {print $$2}' | \
+-  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(gcc_version)/;s/@PKG_VERSION@/$(pkg_version)/')
++  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(GCC_VERSION)/;s/@PKG_VERSION@/$(pkg_version)/')
+ endef
+ 
+ define buildof
+@@ -35,5 +35,6 @@
+ endif
+ 	$(RM) -r $(D)/debian/ccache
+ 	find utils -name '*.py[co]' | xargs rm -f
++	rm -f $(D)/utils/vim/llvm-$(UVERSION).vim $(D)/utils/vim/tablegen-$(UVERSION).vim
+ 
+ .PHONY: clean
+diff -urN ../../llvm-3.0/debian/rules.d/control.mk llvm-3.0.src/debian/rules.d/control.mk
+--- ../../llvm-3.0/debian/rules.d/control.mk	2014-05-09 17:45:31.548312843 +0900
++++ llvm-3.0.src/debian/rules.d/control.mk	2014-05-09 17:45:31.552132996 +0900
+@@ -10,7 +10,7 @@
+ 	    -e "s/ *@BUILDDEPS@/$(BUILDDEPS)/g"			\
+ 	    -e "s/ *@BUILDCONFLICTS@/$(BUILDCONFLICTS)/g"	\
+ 	    -e "s/@UVERSION@/$(UVERSION)/g"			\
+-	    -e "s/@GCC_VERSION@/$(gcc_version)/g"		\
++	    -e "s/@GCC_VERSION@/$(GCC_VERSION)/g"		\
+ 	    -e "s/@PKG_VERSION@/$(pkg_version)/g"		\
+ 	    -e "s/ , /, /g"					\
+ 	    $@.in/source $(addprefix $@.in/,$(packages)) > $@
+diff -urN ../../llvm-3.0/debian/rules.d/vars.mk llvm-3.0.src/debian/rules.d/vars.mk
+--- ../../llvm-3.0/debian/rules.d/vars.mk	2014-05-09 17:45:31.548312843 +0900
++++ llvm-3.0.src/debian/rules.d/vars.mk	2014-05-09 17:45:31.552132996 +0900
+@@ -7,6 +7,7 @@
+ MINOR_VERSION := 0
+ UVERSION	:= $(MAJOR_VERSION).$(MINOR_VERSION)
+ EXTVERSION  := .src
++GCC_VERSION	:= 4.6
+ OS		:= $(shell lsb_release -is)
+ PF		:= /usr/lib/llvm-$(UVERSION)
+ D		:= $(CURDIR)
+@@ -66,8 +67,8 @@
+ endif
+ 
+ confargs := \
+-	CC=$(DEB_HOST_GNU_TYPE)-gcc CXX=$(DEB_HOST_GNU_TYPE)-g++ \
+-	CPP=$(DEB_HOST_GNU_TYPE)-cpp \
++	CC=$(DEB_HOST_GNU_TYPE)-gcc-$(GCC_VERSION) CXX=$(DEB_HOST_GNU_TYPE)-g++-$(GCC_VERSION) \
++	CPP=$(DEB_HOST_GNU_TYPE)-cpp-$(GCC_VERSION) \
+ 	--host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE)
+ 
+ # build not yet prepared to take variables from the environment
