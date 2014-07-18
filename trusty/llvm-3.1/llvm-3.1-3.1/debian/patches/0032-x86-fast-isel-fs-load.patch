@@ -1,0 +1,35 @@
+---
+ lib/Target/X86/X86FastISel.cpp                   |    5 +++++
+ test/CodeGen/X86/2010-06-14-fast-isel-fs-load.ll |    6 ++++++
+ 2 files changed, 11 insertions(+)
+
+Index: llvm-3.1-3.1~+rc3/test/CodeGen/X86/2010-06-14-fast-isel-fs-load.ll
+===================================================================
+--- llvm-3.1-3.1~+rc3.orig/test/CodeGen/X86/2010-06-14-fast-isel-fs-load.ll	2012-05-20 16:17:39.638257521 +0200
++++ llvm-3.1-3.1~+rc3/test/CodeGen/X86/2010-06-14-fast-isel-fs-load.ll	2012-05-20 16:17:54.854257329 +0200
+@@ -4,3 +4,9 @@
+        %tmp = load i32 addrspace(257)* %arg
+        ret i32 %tmp
+ }
++; RUN: llc -fast-isel -march=x86 < %s | grep %fs:
++
++define i32 @test1(i32 addrspace(257)* %arg) nounwind {
++       %tmp = load i32 addrspace(257)* %arg
++       ret i32 %tmp
++}
+Index: llvm-3.1-3.1~+rc3/lib/Target/X86/X86FastISel.cpp
+===================================================================
+--- llvm-3.1-3.1~+rc3.orig/lib/Target/X86/X86FastISel.cpp	2012-05-20 16:17:39.638257521 +0200
++++ llvm-3.1-3.1~+rc3/lib/Target/X86/X86FastISel.cpp	2012-05-20 16:17:54.854257329 +0200
+@@ -605,6 +605,11 @@
+     U = C;
+   }
+ 
++  if (const PointerType *Ty = dyn_cast<PointerType>(V->getType()))
++    if (Ty->getAddressSpace() > 255)
++      // Fast instruction selection doesn't support pointers through %fs or %gs
++      return false;
++
+   switch (Opcode) {
+   default: break;
+   case Instruction::BitCast:

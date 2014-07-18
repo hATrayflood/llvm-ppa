@@ -1,0 +1,22 @@
+Package: libllvm-@UVERSION@-ocaml-dev
+Section: ocaml
+Architecture: any
+Suggests: llvm-@UVERSION@-doc
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${ocaml:Depends}, llvm-@UVERSION@-dev (= ${binary:Version})
+Replaces: libllvm-ocaml-@UVERSION@-dev
+Conflicts: libllvm-ocaml-@UVERSION@-dev
+Provides: ${ocaml:Provides}
+Description: Low-Level Virtual Machine (LLVM), bindings for OCaml
+ The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+ tools that make it easy to build compilers, optimizers, Just-In-Time
+ code generators, and many other compiler-related programs. LLVM
+ uses a single, language-independent virtual instruction set both
+ as an offline code representation (to communicate code between
+ compiler phases and to run-time systems) and as the compiler internal
+ representation (to analyze and transform programs). This persistent
+ code representation allows a common set of sophisticated compiler
+ techniques to be applied at compile-time, link-time, install-time,
+ run-time, or "idle-time" (between program runs).
+ .
+ This package provides the OCaml bindings to develop applications using llvm.
+
