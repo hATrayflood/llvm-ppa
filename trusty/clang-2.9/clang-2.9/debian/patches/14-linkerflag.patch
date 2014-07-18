@@ -1,0 +1,17 @@
+Index: clang-2.9/tools/clang/lib/Driver/ToolChains.cpp
+===================================================================
+--- clang-2.9.orig/tools/clang/lib/Driver/ToolChains.cpp	2011-10-03 23:40:00.000000000 +0200
++++ clang-2.9/tools/clang/lib/Driver/ToolChains.cpp	2011-10-03 23:40:08.000000000 +0200
+@@ -1514,7 +1514,11 @@
+   if (IsFedora(Distro))
+     ExtraOpts.push_back("--no-add-needed");
+ 
+-  if (Distro == DebianSqueeze || IsOpenSuse(Distro) ||
++  /* See: http://wiki.debian.org/ToolChain/DSOLinking */
++  if (IsDebian(Distro))
++    ExtraOpts.push_back("--no-copy-dt-needed-entries");
++
++  if (Distro == DebianSqueeze || Distro == DebianWheezy || IsOpenSuse(Distro) ||
+       IsFedora(Distro) || Distro == UbuntuLucid || Distro == UbuntuMaverick ||
+       Distro == UbuntuKarmic || Distro == DebianWheezy)
+     ExtraOpts.push_back("--build-id");

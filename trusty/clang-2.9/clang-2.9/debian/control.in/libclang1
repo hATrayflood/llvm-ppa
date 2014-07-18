@@ -1,0 +1,40 @@
+Package: libclang1-2.9
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev
+Description: clang library
+ The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+ tools that make it easy to build compilers, optimizers, Just-In-Time
+ code generators, and many other compiler-related programs. LLVM
+ uses a single, language-independent virtual instruction set both
+ as an offline code representation (to communicate code between
+ compiler phases and to run-time systems) and as the compiler internal
+ representation (to analyze and transform programs). This persistent
+ code representation allows a common set of sophisticated compiler
+ techniques to be applied at compile-time, link-time, install-time,
+ run-time, or "idle-time" (between program runs).
+ .
+ Clang project is a C, C++, Objective C and Objective C++ front-end
+ for the LLVM compiler. Some of its goals include the following:
+ .
+ End-User Features:
+ .
+    * Fast compiles and low memory use
+    * Expressive diagnostics (examples)
+    * GCC compatibility
+ .
+ Utility and Applications:
+ .
+    * Modular library based architecture
+    * Support diverse clients (refactoring, static analysis, code
+      generation, etc)
+    * Allow tight integration with IDEs
+    * Use the LLVM 'BSD' License
+ .
+ Internal Design and Implementation:
+ .
+    * A real-world, production quality compiler
+    * A simple and hackable code base
+    * A single unified parser for C, Objective C, C++, and Objective C++
+    * Conformance with C/C++/ObjC and their variants
+ .
+ This package contains the clang library.

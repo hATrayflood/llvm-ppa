@@ -1,0 +1,693 @@
+diff -urN ../../clang-2.9/debian/changelog clang-2.9/debian/changelog
+--- ../../clang-2.9/debian/changelog	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/changelog	2014-07-16 23:41:20.359068436 +0900
+@@ -1,3 +1,9 @@
++clang-2.9 (2.9-debian16trusty0) trusty; urgency=low
++
++  * ppa for trusty
++
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Wed, 16 Jul 2014 23:45:00 +0900
++
+ clang (2.9-16) unstable; urgency=low
+ 
+   * Fix one more path issues under i386 ... (Closes: #643959)
+diff -urN ../../clang-2.9/debian/control clang-2.9/debian/control
+--- ../../clang-2.9/debian/control	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/control	2014-07-16 23:53:46.354768963 +0900
+@@ -1,22 +1,21 @@
+-Source: clang
++Source: clang-2.9
+ Section: devel
+-Priority: optional
+-Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
+-Uploaders: Arthur Loiret <aloiret@debian.org>,
+- Sylvestre Ledru <sylvestre@debian.org>
++Priority: extra
++Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
+ Build-Depends: debhelper (>= 6.0.0), flex, bison, dejagnu, tcl8.5, expect,
+     autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
+     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
+     lsb-release, patchutils, diffstat, xz-utils, llvm-2.9-dev (>= 2.9), llvm-2.9-source (>= 2.9)
+-Build-Conflicts: oprofile, ocaml, ocaml-nox
+-Standards-Version: 3.9.2
+-Homepage: http://www.llvm.org/
+-Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/clang/trunk/
+-Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/clang/trunk/
++   , gcc-4.6, g++-4.6
++Build-Conflicts: oprofile, ocaml
++Standards-Version: 3.9.3
++Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
++Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
+ 
+-Package: clang
++Package: clang-2.9
+ Architecture: any
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev
++Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
++ libclang-common-2.9-dev (= ${binary:Version})
+ Recommends: llvm-2.9-dev, python
+ Description: Low-Level Virtual Machine (LLVM), C language family frontend
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+@@ -54,7 +53,7 @@
+     * A single unified parser for C, Objective C, C++, and Objective C++
+     * Conformance with C/C++/ObjC and their variants
+ 
+-Package: libclang1
++Package: libclang1-2.9
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev
+ Description: clang library
+@@ -95,11 +94,11 @@
+  .
+  This package contains the clang library.
+ 
+-Package: libclang-dev
++Package: libclang-2.9-dev
+ Architecture: any
+ Section: libdevel
+ Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
+- libclang1 (= ${binary:Version}) 
++ libclang1-2.9 (= ${binary:Version}), libclang-common-2.9-dev (= ${binary:Version})
+ Description: clang library - Development package
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+@@ -137,3 +136,52 @@
+     * Conformance with C/C++/ObjC and their variants
+  .
+  This package contains the clang headers.
++
++Package: libclang-common-2.9-dev
++Architecture: any
++Replaces: libclang-2.9-dev
++Section: libdevel
++Description: clang library - Common development package
++ The Low-Level Virtual Machine (LLVM) is a collection of libraries and
++ tools that make it easy to build compilers, optimizers, Just-In-Time
++ code generators, and many other compiler-related programs. LLVM
++ uses a single, language-independent virtual instruction set both
++ as an offline code representation (to communicate code between
++ compiler phases and to run-time systems) and as the compiler internal
++ representation (to analyze and transform programs). This persistent
++ code representation allows a common set of sophisticated compiler
++ techniques to be applied at compile-time, link-time, install-time,
++ run-time, or "idle-time" (between program runs).
++ .
++ Clang project is a C, C++, Objective C and Objective C++ front-end
++ for the LLVM compiler. Some of its goals include the following:
++ .
++ End-User Features:
++ .
++    * Fast compiles and low memory use
++    * Expressive diagnostics (examples)
++    * GCC compatibility
++ .
++ Utility and Applications:
++ .
++    * Modular library based architecture
++    * Support diverse clients (refactoring, static analysis, code
++      generation, etc)
++    * Allow tight integration with IDEs
++    * Use the LLVM 'BSD' License
++ .
++ Internal Design and Implementation:
++ .
++    * A real-world, production quality compiler
++    * A simple and hackable code base
++    * A single unified parser for C, Objective C, C++, and Objective C++
++    * Conformance with C/C++/ObjC and their variants
++ .
++ This package contains the clang generic headers.
++
++Package: python-clang-2.9
++Architecture: any
++Section: python
++Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-2.9 (= ${binary:Version}), python2.7
++Description: Clang Python Bindings
++ This binding package provides access to the Clang compiler and libraries.
+diff -urN ../../clang-2.9/debian/control.in/clang clang-2.9/debian/control.in/clang
+--- ../../clang-2.9/debian/control.in/clang	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/control.in/clang	2014-05-09 17:45:31.427700510 +0900
+@@ -1,6 +1,7 @@
+-Package: clang
++Package: clang-2.9
+ Architecture: any
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev
++Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
++ libclang-common-2.9-dev (= ${binary:Version})
+ Recommends: llvm-@UVERSION@-dev, python
+ Description: Low-Level Virtual Machine (LLVM), C language family frontend
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+diff -urN ../../clang-2.9/debian/control.in/libclang-common-dev clang-2.9/debian/control.in/libclang-common-dev
+--- ../../clang-2.9/debian/control.in/libclang-common-dev	1970-01-01 09:00:00.000000000 +0900
++++ clang-2.9/debian/control.in/libclang-common-dev	2014-05-09 17:45:31.427700510 +0900
+@@ -0,0 +1,42 @@
++
++Package: libclang-common-2.9-dev
++Architecture: any
++Replaces: libclang-2.9-dev
++Section: libdevel
++Description: clang library - Common development package
++ The Low-Level Virtual Machine (LLVM) is a collection of libraries and
++ tools that make it easy to build compilers, optimizers, Just-In-Time
++ code generators, and many other compiler-related programs. LLVM
++ uses a single, language-independent virtual instruction set both
++ as an offline code representation (to communicate code between
++ compiler phases and to run-time systems) and as the compiler internal
++ representation (to analyze and transform programs). This persistent
++ code representation allows a common set of sophisticated compiler
++ techniques to be applied at compile-time, link-time, install-time,
++ run-time, or "idle-time" (between program runs).
++ .
++ Clang project is a C, C++, Objective C and Objective C++ front-end
++ for the LLVM compiler. Some of its goals include the following:
++ .
++ End-User Features:
++ .
++    * Fast compiles and low memory use
++    * Expressive diagnostics (examples)
++    * GCC compatibility
++ .
++ Utility and Applications:
++ .
++    * Modular library based architecture
++    * Support diverse clients (refactoring, static analysis, code
++      generation, etc)
++    * Allow tight integration with IDEs
++    * Use the LLVM 'BSD' License
++ .
++ Internal Design and Implementation:
++ .
++    * A real-world, production quality compiler
++    * A simple and hackable code base
++    * A single unified parser for C, Objective C, C++, and Objective C++
++    * Conformance with C/C++/ObjC and their variants
++ .
++ This package contains the clang generic headers.
+diff -urN ../../clang-2.9/debian/control.in/libclang-dev clang-2.9/debian/control.in/libclang-dev
+--- ../../clang-2.9/debian/control.in/libclang-dev	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/control.in/libclang-dev	2014-05-09 17:45:31.427700510 +0900
+@@ -1,9 +1,9 @@
+ 
+-Package: libclang-dev
++Package: libclang-2.9-dev
+ Architecture: any
+ Section: libdevel
+ Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
+- libclang1 (= ${binary:Version}) 
++ libclang1-2.9 (= ${binary:Version}), libclang-common-2.9-dev (= ${binary:Version})
+ Description: clang library - Development package
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+diff -urN ../../clang-2.9/debian/control.in/libclang1 clang-2.9/debian/control.in/libclang1
+--- ../../clang-2.9/debian/control.in/libclang1	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/control.in/libclang1	2014-05-09 17:45:31.427700510 +0900
+@@ -1,4 +1,4 @@
+-Package: libclang1
++Package: libclang1-2.9
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev
+ Description: clang library
+diff -urN ../../clang-2.9/debian/control.in/python-clang clang-2.9/debian/control.in/python-clang
+--- ../../clang-2.9/debian/control.in/python-clang	1970-01-01 09:00:00.000000000 +0900
++++ clang-2.9/debian/control.in/python-clang	2014-05-09 17:45:31.427700510 +0900
+@@ -0,0 +1,7 @@
++
++Package: python-clang-2.9
++Architecture: any
++Section: python
++Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-2.9 (= ${binary:Version}), python2.7
++Description: Clang Python Bindings
++ This binding package provides access to the Clang compiler and libraries.
+diff -urN ../../clang-2.9/debian/control.in/source clang-2.9/debian/control.in/source
+--- ../../clang-2.9/debian/control.in/source	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/control.in/source	2014-07-16 23:42:17.159351338 +0900
+@@ -1,16 +1,14 @@
+ Source: @PKGSOURCE@
+ Section: devel
+-Priority: optional
+-Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
+-Uploaders: Arthur Loiret <aloiret@debian.org>,
+- Sylvestre Ledru <sylvestre@debian.org>
++Priority: extra
++Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
+ Build-Depends: debhelper (>= 6.0.0), flex, bison, dejagnu, tcl8.5, expect,
+     autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
+     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
+     lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@
++    , gcc-4.6, g++-4.6
+ Build-Conflicts: oprofile @BUILDCONFLICTS@
+-Standards-Version: 3.9.2
+-Homepage: http://www.llvm.org/
+-Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/clang/trunk/
+-Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/clang/trunk/
++Standards-Version: 3.9.3
++Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
++Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
+ 
+diff -urN ../../clang-2.9/debian/debhelper.in/clang.install clang-2.9/debian/debhelper.in/clang.install
+--- ../../clang-2.9/debian/debhelper.in/clang.install	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/debhelper.in/clang.install	2014-05-09 17:45:31.427700510 +0900
+@@ -1,5 +1,4 @@
+-debian/@TMP@/@PF@/bin/clang			@PF@/bin/
+-debian/@TMP@/@PF@/bin/clang++			@PF@/bin/
+-tools/clang/tools/scan-build			@PF@/share/clang/
+-tools/clang/tools/scan-view			@PF@/share/clang/
+-debian/@TMP@/@PF@/share/man/man1/clang.1	usr/share/man/man1/
++debian/@TMP@/@PF@/bin/clang			@PF@/lib/llvm-2.9/bin/
++debian/@TMP@/@PF@/bin/clang++			@PF@/lib/llvm-2.9/bin/
++tools/clang/tools/scan-build			@PF@/lib/llvm-2.9/share/
++tools/clang/tools/scan-view			@PF@/lib/llvm-2.9/share/
+diff -urN ../../clang-2.9/debian/debhelper.in/clang.links clang-2.9/debian/debhelper.in/clang.links
+--- ../../clang-2.9/debian/debhelper.in/clang.links	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/debhelper.in/clang.links	2014-05-09 17:45:31.427700510 +0900
+@@ -1,5 +1,7 @@
+-usr/share/man/man1/clang.1.gz		usr/share/man/man1/llvm-clang.1.gz
+-usr/share/man/man1/clang.1.gz		usr/share/man/man1/clang++.1.gz
+-@PF@/share/clang/scan-build/scan-build	@PF@/bin/scan-build
+-@PF@/share/clang/scan-view/scan-view	@PF@/bin/scan-view
+-@PF@/bin/clang				@PF@/bin/llvm-clang
++usr/share/man/man1/clang-2.9.1.gz		usr/share/man/man1/llvm-clang-2.9.1.gz
++usr/share/man/man1/clang-2.9.1.gz		usr/share/man/man1/clang++-2.9.1.gz
++usr/lib/llvm-2.9/share/scan-build/scan-build	usr/bin/scan-build-2.9
++usr/lib/llvm-2.9/share/scan-view/scan-view	usr/bin/scan-view-2.9
++usr/lib/llvm-2.9/bin/clang			usr/bin/llvm-clang-2.9
++usr/lib/llvm-2.9/bin/clang			usr/bin/clang-2.9
++usr/lib/llvm-2.9/bin/clang++			usr/bin/clang++-2.9
+diff -urN ../../clang-2.9/debian/debhelper.in/clang.manpages clang-2.9/debian/debhelper.in/clang.manpages
+--- ../../clang-2.9/debian/debhelper.in/clang.manpages	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/debhelper.in/clang.manpages	2014-05-09 17:45:31.427700510 +0900
+@@ -1 +1,3 @@
+-debian/man/scan*.1
++debian/@TMP@/@PF@/share/man/man1/clang.1
++debian/man/scan-build.1
++debian/man/scan-view.1
+diff -urN ../../clang-2.9/debian/debhelper.in/clang.postinst clang-2.9/debian/debhelper.in/clang.postinst
+--- ../../clang-2.9/debian/debhelper.in/clang.postinst	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/debhelper.in/clang.postinst	1970-01-01 09:00:00.000000000 +0900
+@@ -1,19 +0,0 @@
+-#! /bin/sh -e
+-
+-prio=10
+-
+-update-alternatives --quiet \
+-	--install /usr/bin/c++ \
+-		c++ \
+-		/usr/bin/clang++ \
+-		$prio
+-
+-update-alternatives --quiet \
+-	--install /usr/bin/cc \
+-		cc \
+-		/usr/bin/clang \
+-		$prio
+-
+-#DEBHELPER#
+-
+-exit 0
+diff -urN ../../clang-2.9/debian/debhelper.in/clang.prerm clang-2.9/debian/debhelper.in/clang.prerm
+--- ../../clang-2.9/debian/debhelper.in/clang.prerm	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/debhelper.in/clang.prerm	1970-01-01 09:00:00.000000000 +0900
+@@ -1,12 +0,0 @@
+-#!/bin/sh
+-
+-set -e
+-
+-if [ "$1" = "remove" ] || [ "$1" = "deconfigure" ]; then
+-    update-alternatives --quiet --remove cc /usr/bin/clang
+-    update-alternatives --quiet --remove c++ /usr/bin/clang++
+-fi
+-
+-#DEBHELPER#
+-
+-exit 0
+diff -urN ../../clang-2.9/debian/debhelper.in/libclang-common-dev.install clang-2.9/debian/debhelper.in/libclang-common-dev.install
+--- ../../clang-2.9/debian/debhelper.in/libclang-common-dev.install	1970-01-01 09:00:00.000000000 +0900
++++ clang-2.9/debian/debhelper.in/libclang-common-dev.install	2014-05-09 17:45:31.427700510 +0900
+@@ -0,0 +1 @@
++debian/@TMP@/@PF@/lib/clang/@UVERSION@			@PF@/include/clang/
+diff -urN ../../clang-2.9/debian/debhelper.in/libclang-dev.install clang-2.9/debian/debhelper.in/libclang-dev.install
+--- ../../clang-2.9/debian/debhelper.in/libclang-dev.install	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/debhelper.in/libclang-dev.install	2014-05-09 17:45:31.427700510 +0900
+@@ -1,4 +1,2 @@
+-debian/@TMP@/@PF@/lib/clang/@UVERSION@			@PF@/include/clang/
+-debian/@TMP@/@PF@/include/clang                  @PF@/include/
+-debian/@TMP@/@PF@/include/clang-c                  @PF@/include/
+-debian/@TMP@/@PF@/lib/libclang.so                       @PF@/lib/
++debian/@TMP@/@PF@/include/clang				@PF@/lib/llvm-2.9/include/
++debian/@TMP@/@PF@/include/clang-c			@PF@/lib/llvm-2.9/include/
+diff -urN ../../clang-2.9/debian/debhelper.in/libclang-dev.links clang-2.9/debian/debhelper.in/libclang-dev.links
+--- ../../clang-2.9/debian/debhelper.in/libclang-dev.links	1970-01-01 09:00:00.000000000 +0900
++++ clang-2.9/debian/debhelper.in/libclang-dev.links	2014-05-09 17:45:31.431673400 +0900
+@@ -0,0 +1,3 @@
++usr/lib/@DEB_HOST_MULTIARCH@/libclang-2.9.so.1 usr/lib/@DEB_HOST_MULTIARCH@/libclang-2.9.so
++usr/lib/@DEB_HOST_MULTIARCH@/libclang-2.9.so.1 usr/lib/llvm-2.9/lib/libclang-2.9.so
++usr/lib/@DEB_HOST_MULTIARCH@/libclang-2.9.so.1 usr/lib/llvm-2.9/lib/libclang.so
+diff -urN ../../clang-2.9/debian/debhelper.in/libclang1.install clang-2.9/debian/debhelper.in/libclang1.install
+--- ../../clang-2.9/debian/debhelper.in/libclang1.install	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/debhelper.in/libclang1.install	2014-05-09 17:45:31.431673400 +0900
+@@ -1 +1 @@
+-debian/@TMP@/@PF@/lib/libclang.so.1                       @PF@/lib/
++debian/@TMP@/@PF@/lib/libclang-2.9.so.1 /usr/lib/@DEB_HOST_MULTIARCH@/
+diff -urN ../../clang-2.9/debian/debhelper.in/libclang1.links clang-2.9/debian/debhelper.in/libclang1.links
+--- ../../clang-2.9/debian/debhelper.in/libclang1.links	1970-01-01 09:00:00.000000000 +0900
++++ clang-2.9/debian/debhelper.in/libclang1.links	2014-05-09 17:45:31.431673400 +0900
+@@ -0,0 +1 @@
++usr/lib/@DEB_HOST_MULTIARCH@/libclang-2.9.so.1 usr/lib/llvm-2.9/lib/libclang.so.1
+diff -urN ../../clang-2.9/debian/debhelper.in/python-clang.install clang-2.9/debian/debhelper.in/python-clang.install
+--- ../../clang-2.9/debian/debhelper.in/python-clang.install	1970-01-01 09:00:00.000000000 +0900
++++ clang-2.9/debian/debhelper.in/python-clang.install	2014-05-09 17:45:31.431673400 +0900
+@@ -0,0 +1,4 @@
++tools/clang/bindings/python/clang/*	@PF@/lib/python2.7/dist-packages/clang29/
++tools/clang/bindings/python/README.txt	@PF@/share/doc/python-clang-2.9/
++tools/clang/bindings/python/examples	@PF@/share/doc/python-clang-2.9/
++tools/clang/bindings/python/tests	@PF@/share/doc/python-clang-2.9/
+diff -urN ../../clang-2.9/debian/debian_path.h clang-2.9/debian/debian_path.h
+--- ../../clang-2.9/debian/debian_path.h	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/debian_path.h	2014-05-09 17:45:31.431673400 +0900
+@@ -15,6 +15,7 @@
+ 
+ #define DEB_HOST_MULTIARCH_TRIPLET "@DEB_HOST_MULTIARCH@"
+ #define DEB_HOST_GNU_TYPE_TRIPLET "@DEB_HOST_GNU_TYPE@"
++#define GCC_VERSION "@GCC_VERSION@"
+ 
+ // Provides the debian revision
+ #define DEB_PATCHSETVERSION  "@DEB_PATCHSETVERSION@"
+diff -urN ../../clang-2.9/debian/packages.d/tools.mk clang-2.9/debian/packages.d/tools.mk
+--- ../../clang-2.9/debian/packages.d/tools.mk	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/packages.d/tools.mk	2014-05-09 17:45:31.431673400 +0900
+@@ -6,7 +6,7 @@
+ 
+ BUILDDEPS	:= \
+ 	llvm-$(UVERSION)-dev (>= $(dev_version)), llvm-$(UVERSION)-source (>= $(dev_version))
+-BUILDCONFLICTS	:= ocaml, ocaml-nox
++BUILDCONFLICTS	:= ocaml
+ 
+ PF		:= /usr
+ 
+diff -urN ../../clang-2.9/debian/patches/11-searchMultiArchLibDir.patch clang-2.9/debian/patches/11-searchMultiArchLibDir.patch
+--- ../../clang-2.9/debian/patches/11-searchMultiArchLibDir.patch	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/patches/11-searchMultiArchLibDir.patch	2014-05-09 17:45:31.431673400 +0900
+@@ -13,18 +13,15 @@
+ 
+ --- clang-2.9.orig/tools/clang/lib/Driver/ToolChains.cpp
+ +++ clang-2.9/tools/clang/lib/Driver/ToolChains.cpp
+-@@ -1531,6 +1531,14 @@ Linux::Linux(const HostInfo &Host, const
++@@ -1531,6 +1531,11 @@ Linux::Linux(const HostInfo &Host, const
+    Paths.push_back(Base + "/../../..");
+    if (Arch == getArch() && IsUbuntu(Distro))
+      Paths.push_back("/usr/lib/" + GccTriple);
+-+  if (Distro == DebianWheezy && Arch == getArch())
+-+  {
+++
+ +    if (!llvm::sys::fs::exists("/usr/lib/" + GccTriple + "/crt1.o", Exists) && Exists)
+ +      Paths.push_back("/usr/lib/" + GccTriple);
+-+    else if (Is32Bits &&
+-+        !llvm::sys::fs::exists("/usr/lib/i386-linux-gnu/crt1.o", Exists) && Exists)
+++    else if (!llvm::sys::fs::exists("/usr/lib/i386-linux-gnu/crt1.o", Exists) && Exists)
+ +      Paths.push_back("/usr/lib/i386-linux-gnu");
+-+  }
+  }
+  
+  bool Linux::HasNativeLLVMSupport() const {
+diff -urN ../../clang-2.9/debian/patches/15-searchPaths.patch clang-2.9/debian/patches/15-searchPaths.patch
+--- ../../clang-2.9/debian/patches/15-searchPaths.patch	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/patches/15-searchPaths.patch	2014-05-09 17:45:31.431673400 +0900
+@@ -1,19 +1,23 @@
+ --- plop/clang-2.9/tools/clang/lib/Frontend/InitHeaderSearch.cpp	2011-10-13 13:35:01.000000000 +0200
+ +++ clang-2.9/tools/clang/lib/Frontend/InitHeaderSearch.cpp	2011-10-13 13:27:04.000000000 +0200
+-@@ -451,8 +451,14 @@
++@@ -451,8 +451,18 @@
+      break;
+    }
+  
+ -  std::string pathInclude = "/usr/include/" + std::string(DEB_HOST_MULTIARCH_TRIPLET) + "/";
+ -  AddPath(pathInclude, System, true, false, false);
+++  AddPath("/usr/include", System, false, false, false);
+++
+ +  AddPath("/usr/include/" + std::string(DEB_HOST_GNU_TYPE_TRIPLET) + "/", System, true, false, false);
+ +
+ +  AddPath("/usr/include/" + std::string(DEB_HOST_MULTIARCH_TRIPLET) + "/", System, true, false, false);
+ +
+++  AddPath("/usr/include/clang/2.9/include", System, false, false, false);
+++
+ +// For objc
+-+  AddPath("/usr/lib/gcc/" + std::string(DEB_HOST_GNU_TYPE_TRIPLET) + "/4.6/include/", System, true, false, false);
+++  AddPath("/usr/lib/gcc/" + std::string(DEB_HOST_GNU_TYPE_TRIPLET) + "/"GCC_VERSION"/include/", System, true, false, false);
+ +
+-+  AddPath("/usr/lib/gcc/" + std::string(DEB_HOST_GNU_TYPE_TRIPLET) + "/4.6/include-fixed/", System, true, false, false);
+++  AddPath("/usr/lib/gcc/" + std::string(DEB_HOST_GNU_TYPE_TRIPLET) + "/"GCC_VERSION"/include-fixed/", System, true, false, false);
+  
+  
+    // Builtin includes use #include_next directives and should be positioned
+@@ -21,8 +25,8 @@
+  AddDefaultCPlusPlusIncludePaths(const llvm::Triple &triple) {
+    llvm::Triple::OSType os = triple.getOS();
+    llvm::StringRef CxxIncludeRoot(CXX_INCLUDE_ROOT);
+-+  AddGnuCPlusPlusIncludePaths("/usr/include/c++/4.6/", DEB_HOST_GNU_TYPE_TRIPLET, "", "64", triple);
+-+  AddGnuCPlusPlusIncludePaths("/usr/include/c++/4.6/", DEB_HOST_GNU_TYPE_TRIPLET, "32", "", triple);
+++  AddGnuCPlusPlusIncludePaths("/usr/include/c++/"GCC_VERSION"/", DEB_HOST_GNU_TYPE_TRIPLET, "", "64", triple);
+++  AddGnuCPlusPlusIncludePaths("/usr/include/c++/"GCC_VERSION"/", DEB_HOST_GNU_TYPE_TRIPLET, "32", "", triple);
+ +
+    if (CxxIncludeRoot != "") {
+      llvm::StringRef CxxIncludeArch(CXX_INCLUDE_ARCH);
+@@ -32,8 +36,8 @@
+      break;
+    case llvm::Triple::Linux:
+ +
+-+      AddGnuCPlusPlusIncludePaths("/usr/include/c++/4.6/", DEB_HOST_GNU_TYPE_TRIPLET, "", "64", triple);
+-+      AddGnuCPlusPlusIncludePaths("/usr/include/c++/4.6/", DEB_HOST_GNU_TYPE_TRIPLET, "32", "", triple);
+++      AddGnuCPlusPlusIncludePaths("/usr/include/c++/"GCC_VERSION"/", DEB_HOST_GNU_TYPE_TRIPLET, "", "64", triple);
+++      AddGnuCPlusPlusIncludePaths("/usr/include/c++/"GCC_VERSION"/", DEB_HOST_GNU_TYPE_TRIPLET, "32", "", triple);
+ + 
+ +
+      //===------------------------------------------------------------------===//
+diff -urN ../../clang-2.9/debian/patches/99-python-bindings.patch clang-2.9/debian/patches/99-python-bindings.patch
+--- ../../clang-2.9/debian/patches/99-python-bindings.patch	1970-01-01 09:00:00.000000000 +0900
++++ clang-2.9/debian/patches/99-python-bindings.patch	2014-05-09 17:45:31.431673400 +0900
+@@ -0,0 +1,87 @@
++diff -urN clang-2.9.orig/tools/clang/bindings/python/README.txt clang-2.9/tools/clang/bindings/python/README.txt
++--- clang-2.9.orig/tools/clang/bindings/python/README.txt	2010-05-01 06:51:10.000000000 +0900
+++++ clang-2.9/tools/clang/bindings/python/README.txt	2013-06-23 03:01:45.287654760 +0900
++@@ -4,12 +4,9 @@
++ 
++ This directory implements Python bindings for Clang.
++ 
++-You may need to alter LD_LIBRARY_PATH so that the Clang library can be
++-found. The unit tests are designed to be run with 'nosetests'. For example:
+++The unit tests are designed to be run with 'nosetests'. For example:
++ --
++-$ env PYTHONPATH=$(echo ~/llvm/tools/clang/bindings/python/) \
++-      LD_LIBRARY_PATH=$(llvm-config --libdir) \
++-  nosetests -v
+++$ nosetests -v
++ tests.cindex.test_index.test_create ... ok
++ ...
++ 
++diff -urN clang-2.9.orig/tools/clang/bindings/python/examples/cindex/cindex-dump.py clang-2.9/tools/clang/bindings/python/examples/cindex/cindex-dump.py
++--- clang-2.9.orig/tools/clang/bindings/python/examples/cindex/cindex-dump.py	2010-02-14 03:33:28.000000000 +0900
+++++ clang-2.9/tools/clang/bindings/python/examples/cindex/cindex-dump.py	2013-06-23 02:11:19.975599560 +0900
++@@ -54,7 +54,7 @@
++              'children' : children }
++ 
++ def main():
++-    from clang.cindex import Index
+++    from clang29.cindex import Index
++     from pprint import pprint
++ 
++     from optparse import OptionParser, OptionGroup
++diff -urN clang-2.9.orig/tools/clang/bindings/python/examples/cindex/cindex-includes.py clang-2.9/tools/clang/bindings/python/examples/cindex/cindex-includes.py
++--- clang-2.9.orig/tools/clang/bindings/python/examples/cindex/cindex-includes.py	2010-02-14 03:33:28.000000000 +0900
+++++ clang-2.9/tools/clang/bindings/python/examples/cindex/cindex-includes.py	2013-06-23 02:11:33.111664694 +0900
++@@ -16,7 +16,7 @@
++ 
++ def main():
++     import sys
++-    from clang.cindex import Index
+++    from clang29.cindex import Index
++ 
++     from optparse import OptionParser, OptionGroup
++ 
++diff -urN clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_cursor.py clang-2.9/tools/clang/bindings/python/tests/cindex/test_cursor.py
++--- clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_cursor.py	2010-01-31 08:58:39.000000000 +0900
+++++ clang-2.9/tools/clang/bindings/python/tests/cindex/test_cursor.py	2013-06-23 02:13:45.028318843 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import Index, CursorKind
+++from clang29.cindex import Index, CursorKind
++ 
++ kInput = """\
++ // FIXME: Find nicer way to drop builtins and other cruft.
++diff -urN clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py clang-2.9/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py
++--- clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py	2010-01-25 06:20:39.000000000 +0900
+++++ clang-2.9/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py	2013-06-23 02:13:19.692193191 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import CursorKind
+++from clang29.cindex import CursorKind
++ 
++ def test_name():
++     assert CursorKind.UNEXPOSED_DECL.name is 'UNEXPOSED_DECL'
++diff -urN clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_diagnostics.py clang-2.9/tools/clang/bindings/python/tests/cindex/test_diagnostics.py
++--- clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_diagnostics.py	2011-02-06 02:53:53.000000000 +0900
+++++ clang-2.9/tools/clang/bindings/python/tests/cindex/test_diagnostics.py	2013-06-23 02:13:36.044274289 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import *
+++from clang29.cindex import *
++ 
++ def tu_from_source(source):
++     index = Index.create()
++diff -urN clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_index.py clang-2.9/tools/clang/bindings/python/tests/cindex/test_index.py
++--- clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_index.py	2010-01-24 11:02:07.000000000 +0900
+++++ clang-2.9/tools/clang/bindings/python/tests/cindex/test_index.py	2013-06-23 02:13:28.396236334 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import *
+++from clang29.cindex import *
++ import os
++ 
++ kInputsDir = os.path.join(os.path.dirname(__file__), 'INPUTS')
++diff -urN clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_translation_unit.py clang-2.9/tools/clang/bindings/python/tests/cindex/test_translation_unit.py
++--- clang-2.9.orig/tools/clang/bindings/python/tests/cindex/test_translation_unit.py	2011-02-06 02:54:00.000000000 +0900
+++++ clang-2.9/tools/clang/bindings/python/tests/cindex/test_translation_unit.py	2013-06-23 02:13:52.964358189 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import *
+++from clang29.cindex import *
++ import os
++ 
++ kInputsDir = os.path.join(os.path.dirname(__file__), 'INPUTS')
+diff -urN ../../clang-2.9/debian/patches/python-clangpath.diff clang-2.9/debian/patches/python-clangpath.diff
+--- ../../clang-2.9/debian/patches/python-clangpath.diff	1970-01-01 09:00:00.000000000 +0900
++++ clang-2.9/debian/patches/python-clangpath.diff	2014-05-09 17:45:31.431673400 +0900
+@@ -0,0 +1,12 @@
++diff -urN clang-2.9.orig/tools/clang/bindings/python/clang/cindex.py clang-2.9/tools/clang/bindings/python/clang/cindex.py
++--- clang-2.9.orig/tools/clang/bindings/python/clang/cindex.py	2011-02-06 02:54:10.000000000 +0900
+++++ clang-2.9/tools/clang/bindings/python/clang/cindex.py	2013-06-23 02:19:21.757988613 +0900
++@@ -75,7 +75,7 @@
++     elif name == 'Windows':
++         return cdll.LoadLibrary('libclang.dll')
++     else:
++-        return cdll.LoadLibrary('libclang.so')
+++        return cdll.LoadLibrary('libclang-2.9.so.1')
++ 
++ # ctypes doesn't implicitly convert c_void_p to the appropriate wrapper
++ # object. This is a problem, because it means that from_parameter will see an
+diff -urN ../../clang-2.9/debian/patches/series clang-2.9/debian/patches/series
+--- ../../clang-2.9/debian/patches/series	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/patches/series	2014-05-09 17:45:31.431673400 +0900
+@@ -9,3 +9,5 @@
+ 18-soname.patch
+ 19-clang_debian_version.patch
+ 20-vendor.patch
++python-clangpath.diff
++99-python-bindings.patch
+diff -urN ../../clang-2.9/debian/rules clang-2.9/debian/rules
+--- ../../clang-2.9/debian/rules	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/rules	2014-05-09 17:45:31.431673400 +0900
+@@ -17,7 +17,7 @@
+ 
+ define pkgname
+   $(shell cat $(D)/debian/control.in/$1 | awk '/^Package: / {print $$2}' | \
+-  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(gcc_version)/;s/@PKG_VERSION@/$(pkg_version)/')
++  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(GCC_VERSION)/;s/@PKG_VERSION@/$(pkg_version)/')
+ endef
+ 
+ define buildof
+@@ -36,5 +36,6 @@
+ endif
+ 	$(RM) -r $(D)/debian/ccache
+ 	find utils -name '*.py[co]' | xargs rm -f
++	$(RM) tools/clang/include/clang/Debian/debian_path.h
+ 
+ .PHONY: clean
+diff -urN ../../clang-2.9/debian/rules.d/binary.mk clang-2.9/debian/rules.d/binary.mk
+--- ../../clang-2.9/debian/rules.d/binary.mk	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/rules.d/binary.mk	2014-05-09 17:45:31.431673400 +0900
+@@ -17,6 +17,7 @@
+ 		-e "s/@PKG_VERSION@/$(pkg_version)/g" \
+ 		-e "s/@SHLIB_NAME@/$(shlib_name)/g" \
+ 		-e "s;@OCAML_STDLIB_DIR@;$(OCAML_STDLIB_DIR);g" \
++		-e "s;@DEB_HOST_MULTIARCH@;$(DEB_HOST_MULTIARCH);g" \
+ 		$(D)/debian/debhelper.in/$f > \
+ 		$(D)/debian/$(strip $(call pkgname,$*))$(strip $(suffix $(f))) \
+ 	&&) :
+@@ -73,6 +74,10 @@
+ 	dh_fixperms -p$(call pkgname,$*)
+ 	DH_VERBOSE=1 dh_makeshlibs -p$(call pkgname,$*)
+ 	DH_VERBOSE=1 dh_shlibdeps -p$(call pkgname,$*)
++	if test $(call pkgname,$*) = python-clang-$(UVERSION) ; then \
++		find $(D)/debian/python-clang-$(UVERSION)/usr/share/doc/python-clang-$(UVERSION)/examples -name "*.gz" -exec gzip -d {} \; ; \
++		find $(D)/debian/python-clang-$(UVERSION)/usr/share/doc/python-clang-$(UVERSION)/tests    -name "*.gz" -exec gzip -d {} \; ; \
++	fi
+ 	dh_installdeb -p$(call pkgname,$*)
+ 	dh_gencontrol -p$(call pkgname,$*)
+ 	dh_md5sums -p$(call pkgname,$*)
+diff -urN ../../clang-2.9/debian/rules.d/build.mk clang-2.9/debian/rules.d/build.mk
+--- ../../clang-2.9/debian/rules.d/build.mk	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/rules.d/build.mk	2014-05-09 17:45:31.431673400 +0900
+@@ -34,6 +34,7 @@
+ 	sed -e "s|@DEB_HOST_MULTIARCH@|$$(dpkg-architecture -qDEB_HOST_MULTIARCH)|" \
+ 		-e "s|@DEB_HOST_GNU_TYPE@|$$(dpkg-architecture -qDEB_HOST_GNU_TYPE)|" \
+ 		-e "s|@DEB_PATCHSETVERSION@|$(PATCHSETVERSION)|" \
++		-e "s|@GCC_VERSION@|$(GCC_VERSION)|" \
+ 		debian/debian_path.h > tools/clang/include/clang/Debian/debian_path.h
+ 	# Make sure that the built libs have the extension into the name
+ 	sed -i -e "s|^LLVMLibsPaths +=\(.*SHLIBEXT)$$\)|LLVMLibsPaths +=\1.$(SONAME_EXT)|g" \
+@@ -74,10 +75,11 @@
+ 	    L=$${L##$(D)/debian/tmp-$*} ; \
+ 	    ln -sf $$L $$i ; \
+ 	  done
+-	(cd $(D)/debian/tmp-clang/usr/lib/; \
+-		if test ! -h libclang.so.$(SONAME_EXT); then \
+-			ln -s libclang.so.$(SONAME_EXT) libclang.so; \
+-	fi)
++	cd $(D)/debian/tmp-clang/usr/lib/ && \
++	if test ! -f libclang-$(UVERSION).so.$(SONAME_EXT); then \
++		mv libclang.so.$(SONAME_EXT) libclang-$(UVERSION).so.$(SONAME_EXT) && \
++		ln -s libclang-$(UVERSION).so.$(SONAME_EXT) libclang.so.$(SONAME_EXT); \
++	fi
+ 	chrpath -d $(D)/debian/tmp-clang/usr/bin/clang
+ 	$(call $*_extra_install)
+ 	touch $@
+diff -urN ../../clang-2.9/debian/rules.d/control.mk clang-2.9/debian/rules.d/control.mk
+--- ../../clang-2.9/debian/rules.d/control.mk	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/rules.d/control.mk	2014-05-09 17:45:31.431673400 +0900
+@@ -1,7 +1,7 @@
+ $(foreach var,BUILDDEPS BUILDCONFLICTS,$(eval \
+   $(if $(strip $($(var))),$(eval $(var) :=, $($(var))),$(eval $(var) :=))))
+ 
+-extra_packages:=libclang1 libclang-dev
++extra_packages:=libclang1 libclang-dev libclang-common-dev python-clang
+ packages := $(foreach build,$(builds),$($(build)_packages))
+ packages += $(extra_packages) 
+ 
+@@ -11,7 +11,7 @@
+ 	    -e "s/ *@BUILDDEPS@/$(BUILDDEPS)/g"			\
+ 	    -e "s/ *@BUILDCONFLICTS@/$(BUILDCONFLICTS)/g"	\
+ 	    -e "s/@UVERSION@/$(UVERSION)/g"			\
+-	    -e "s/@GCC_VERSION@/$(gcc_version)/g"		\
++	    -e "s/@GCC_VERSION@/$(GCC_VERSION)/g"		\
+ 	    -e "s/@PKG_VERSION@/$(pkg_version)/g"		\
+ 	    -e "s/ , /, /g"					\
+ 	    $@.in/source $(addprefix $@.in/,$(packages)) > $@
+diff -urN ../../clang-2.9/debian/rules.d/vars.mk clang-2.9/debian/rules.d/vars.mk
+--- ../../clang-2.9/debian/rules.d/vars.mk	2014-05-09 17:45:31.456192953 +0900
++++ clang-2.9/debian/rules.d/vars.mk	2014-05-09 17:45:31.431673400 +0900
+@@ -5,6 +5,7 @@
+ PATCHSETVERSION	:= $(shell echo $(VERSION) | cut -d'-' -f2)
+ UVERSION	:= 2.9
+ SONAME_EXT      := 1
++GCC_VERSION	:= 4.6
+ OS		:= $(shell lsb_release -is)
+ PF		:= /usr/lib/llvm-$(UVERSION)
+ D		:= $(CURDIR)
+@@ -58,10 +59,10 @@
+ endif
+ 
+ confargs := \
+-	CC=$(DEB_HOST_GNU_TYPE)-gcc CXX=$(DEB_HOST_GNU_TYPE)-g++ \
+-	CPP=$(DEB_HOST_GNU_TYPE)-cpp \
++	CC=$(DEB_HOST_GNU_TYPE)-gcc-$(GCC_VERSION) CXX=$(DEB_HOST_GNU_TYPE)-g++-$(GCC_VERSION) \
++	CPP=$(DEB_HOST_GNU_TYPE)-cpp-$(GCC_VERSION) \
+ 	--with-c-include-dirs=/usr/include/$(DEB_HOST_GNU_TYPE):/usr/include \
+-    --with-cxx-include-root=/usr/include/c++/4.6 \
++    --with-cxx-include-root=/usr/include/c++/$(GCC_VERSION) \
+     --with-cxx-include-arch=$(DEB_HOST_GNU_TYPE) \
+     --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE)
+ 

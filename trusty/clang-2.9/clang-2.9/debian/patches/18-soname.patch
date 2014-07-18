@@ -1,0 +1,13 @@
+Index: clang-2.9/tools/clang/tools/libclang/Makefile
+===================================================================
+--- clang-2.9.orig/tools/clang/tools/libclang/Makefile	2011-09-25 22:47:51.000000000 +0200
++++ clang-2.9/tools/clang/tools/libclang/Makefile	2011-09-25 22:47:57.000000000 +0200
+@@ -15,6 +15,8 @@
+ LINK_LIBS_IN_SHARED = 1
+ SHARED_LIBRARY = 1
+ 
++LDFLAGS+= -Wl,-soname,libclang.so.1
++
+ LINK_COMPONENTS := support mc
+ USEDLIBS = clangFrontend.a clangDriver.a clangSerialization.a clangParse.a \
+ 	   clangSema.a clangAnalysis.a clangAST.a clangLex.a clangBasic.a

@@ -1,0 +1,7 @@
+
+Package: python-clang-2.9
+Architecture: any
+Section: python
+Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-2.9 (= ${binary:Version}), python2.7
+Description: Clang Python Bindings
+ This binding package provides access to the Clang compiler and libraries.
