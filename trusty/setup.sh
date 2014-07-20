@@ -6,6 +6,7 @@ apt-get -y install python-nose
 apt-get -y install devscripts
 #apt-get -y install dh-make
 apt-get -y install g++-4.6
+apt-get -y install g++-4.7
 apt-get -y install flex
 apt-get -y install bison
 apt-get -y install dejagnu
@@ -22,7 +23,7 @@ apt-get -y install autotools-dev
 apt-get -y install libffi-dev
 apt-get -y install binutils-dev
 apt-get -y install dh-ocaml
-#apt-get -y install python-sphinx
+apt-get -y install python-sphinx
 #apt-get -y install dh-autoreconf
 #apt-get -y install libpipeline-dev
 apt-get -y install binfmt-support

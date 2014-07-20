@@ -1,0 +1,6 @@
+usr/bin/clang			/usr/lib/llvm-3.2/bin/
+usr/bin/clang++			/usr/lib/llvm-3.2/bin/
+usr/bin/clang-check		/usr/lib/llvm-3.2/bin/
+usr/bin/clang-tblgen		/usr/lib/llvm-3.2/bin/
+tools/clang/tools/scan-build	/usr/lib/llvm-3.2/share/
+tools/clang/tools/scan-view	/usr/lib/llvm-3.2/share/

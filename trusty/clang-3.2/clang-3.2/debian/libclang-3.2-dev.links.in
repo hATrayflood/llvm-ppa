@@ -1,0 +1,5 @@
+usr/include/clang-3.2/clang	usr/lib/llvm-3.2/include/clang
+usr/include/clang-c-3.2/clang-c	usr/lib/llvm-3.2/include/clang-c
+usr/lib/@DEB_HOST_MULTIARCH@/libclang-3.2.so.1 usr/lib/@DEB_HOST_MULTIARCH@/libclang-3.2.so
+usr/lib/@DEB_HOST_MULTIARCH@/libclang-3.2.so.1 usr/lib/llvm-3.2/lib/libclang-3.2.so
+usr/lib/@DEB_HOST_MULTIARCH@/libclang-3.2.so.1 usr/lib/llvm-3.2/lib/libclang.so
