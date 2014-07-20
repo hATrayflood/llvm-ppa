@@ -1,0 +1,26 @@
+Index: lldb-3.2/lldb/scripts/Python/python-wrapper.swig
+===================================================================
+--- lldb-3.2.orig/lldb/scripts/Python/python-wrapper.swig	(revision 168900)
++++ lldb-3.2/lldb/scripts/Python/python-wrapper.swig	(revision 168901)
+@@ -964,6 +964,10 @@
+ #include "lldb/API/SBInputReader.h"
+ #include "lldb/API/SBDebugger.h"
+ 
++#ifdef __cplusplus
++extern "C" {
++#endif
++
+ size_t
+ LLDBSwigPythonCallSBInputReaderCallback(void *baton,
+                                         lldb::SBInputReader *reader,
+@@ -972,6 +976,10 @@
+                                         size_t bytes_len);
+ 
+ void LLDBSwigPythonCallPythonLogOutputCallback(const char *str, void *baton);
++
++#ifdef __cplusplus
++}
++#endif
+ %}
+ 
+ %wrapper %{

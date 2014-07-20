@@ -1,0 +1,29 @@
+Index: llvm-toolchain-3.2-3.2repack/clang/lib/Driver/ToolChains.cpp
+===================================================================
+--- llvm-toolchain-3.2-3.2repack.orig/clang/lib/Driver/ToolChains.cpp	2013-06-13 14:11:08.000000000 +0200
++++ llvm-toolchain-3.2-3.2repack/clang/lib/Driver/ToolChains.cpp	2013-06-13 14:11:16.000000000 +0200
+@@ -1868,6 +1868,7 @@
+   UbuntuPrecise,
+   UbuntuQuantal,
+   UbuntuRaring,
++  UbuntuSaucy,
+   UnknownDistro
+ };
+ 
+@@ -1885,7 +1886,7 @@
+ }
+ 
+ static bool IsUbuntu(enum LinuxDistro Distro) {
+-  return Distro >= UbuntuHardy && Distro <= UbuntuRaring;
++  return Distro >= UbuntuHardy && Distro <= UbuntuSaucy;
+ }
+ 
+ static LinuxDistro DetectLinuxDistro(llvm::Triple::ArchType Arch) {
+@@ -1909,6 +1910,7 @@
+           .Case("precise", UbuntuPrecise)
+           .Case("quantal", UbuntuQuantal)
+           .Case("raring", UbuntuRaring)
++          .Case("saucy", UbuntuSaucy)
+           .Default(UnknownDistro);
+     return Version;
+   }

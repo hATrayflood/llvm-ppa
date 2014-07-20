@@ -1,0 +1,16 @@
+Index: llvm-toolchain-3.2-3.2repack/lldb/include/lldb/Host/Config.h
+===================================================================
+--- llvm-toolchain-3.2-3.2repack.orig/lldb/include/lldb/Host/Config.h	2013-01-10 17:50:19.000000000 +0100
++++ llvm-toolchain-3.2-3.2repack/lldb/include/lldb/Host/Config.h	2013-05-13 15:00:21.705215291 +0200
+@@ -14,8 +14,9 @@
+ 
+ #include "lldb/Host/macosx/Config.h"
+ 
+-#elif defined(__linux__)
+-
++#elif defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
++/* The FreeBSD kernel is listed here. It is using of the GNU/Linux stack
++ *__GNU__ is hurd */
+ #include "lldb/Host/linux/Config.h"
+ 
+ #elif defined(__FreeBSD__) || defined(__OpenBSD__)

@@ -27,11 +27,11 @@ apt-get -y install python-sphinx
 #apt-get -y install dh-autoreconf
 #apt-get -y install libpipeline-dev
 apt-get -y install binfmt-support
-#apt-get -y install swig
-#apt-get -y install libedit-dev
-#apt-get -y install libcloog-isl-dev-lts
-#apt-get -y install libisl-dev-lts
+apt-get -y install swig
+apt-get -y install libedit-dev
+apt-get -y install libcloog-isl-dev
+apt-get -y install libisl-dev
 #apt-get -y install lcov
 #apt-get -y install help2man
-#apt-get -y install libjsoncpp-dev
+apt-get -y install libjsoncpp-dev
 EOC

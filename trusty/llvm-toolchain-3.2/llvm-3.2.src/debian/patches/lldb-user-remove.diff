@@ -1,0 +1,20 @@
+Index: llvm-toolchain-3.2-3.2repack/lldb/source/Plugins/Process/Linux/ProcessMonitor.cpp
+===================================================================
+--- llvm-toolchain-3.2-3.2repack.orig/lldb/source/Plugins/Process/Linux/ProcessMonitor.cpp	2013-05-15 10:35:46.817066211 +0200
++++ llvm-toolchain-3.2-3.2repack/lldb/source/Plugins/Process/Linux/ProcessMonitor.cpp	2013-05-15 10:36:50.693066151 +0200
+@@ -89,6 +89,7 @@
+                 verbose_log->Printf("PTRACE_POKEUSER %s", buf.GetData());
+                 break;
+             }
++#if defined (__x86_64__) || defined (__i386__)
+         case PTRACE_SETREGS:
+             {
+                 DisplayBytes(buf, data, sizeof(user_regs_struct));
+@@ -101,6 +102,7 @@
+                 verbose_log->Printf("PTRACE_SETFPREGS %s", buf.GetData());
+                 break;
+             }
++#endif
+         case PTRACE_SETSIGINFO:
+             {
+                 DisplayBytes(buf, data, sizeof(siginfo_t));

@@ -1,0 +1,52 @@
+Index: llvm-3.2.src/lldb/source/Plugins/LanguageRuntime/ObjC/AppleObjCRuntime/AppleObjCTypeVendor.cpp
+===================================================================
+--- llvm-3.2.src.orig/lldb/source/Plugins/LanguageRuntime/ObjC/AppleObjCRuntime/AppleObjCTypeVendor.cpp	2013-01-12 15:49:01.575044001 +0100
++++ llvm-3.2.src/lldb/source/Plugins/LanguageRuntime/ObjC/AppleObjCRuntime/AppleObjCTypeVendor.cpp	2013-01-12 15:49:03.095043967 +0100
+@@ -344,7 +344,7 @@
+         
+         while (*name_cursor != '\0')
+         {
+-            char *colon_loc = strchr(name_cursor, ':');
++            const char *colon_loc = strchr(name_cursor, ':');
+             if (!colon_loc)
+             {
+                 selector_components.push_back(&ast_ctx.Idents.get(llvm::StringRef(name_cursor)));
+Index: llvm-3.2.src/lldb/source/Plugins/LanguageRuntime/ObjC/AppleObjCRuntime/AppleObjCRuntimeV2.cpp
+===================================================================
+--- llvm-3.2.src.orig/lldb/source/Plugins/LanguageRuntime/ObjC/AppleObjCRuntime/AppleObjCRuntimeV2.cpp	2013-01-12 15:49:01.575044001 +0100
++++ llvm-3.2.src/lldb/source/Plugins/LanguageRuntime/ObjC/AppleObjCRuntime/AppleObjCRuntimeV2.cpp	2013-01-12 15:49:03.095043967 +0100
+@@ -727,7 +727,8 @@
+                    lldb::addr_t load_addr) :
+         m_process(process),
+         m_end_iterator(*this, -1ll),
+-        m_load_addr(load_addr)
++        m_load_addr(load_addr),
++        m_classheader_size(sizeof(int32_t) * 2)
+     {
+         lldb::addr_t cursor = load_addr;
+         
+@@ -946,7 +947,7 @@
+     lldb_private::Process *m_process;
+     const_iterator m_end_iterator;
+     lldb::addr_t m_load_addr;
+-    const size_t m_classheader_size = (sizeof(int32_t) * 2);
++    const size_t m_classheader_size;
+ };
+ 
+ class ClassDescriptorV2 : public ObjCLanguageRuntime::ClassDescriptor
+Index: llvm-3.2.src/lldb/source/Interpreter/CommandObject.cpp
+===================================================================
+--- llvm-3.2.src.orig/lldb/source/Interpreter/CommandObject.cpp	2013-01-12 15:49:01.575044001 +0100
++++ llvm-3.2.src/lldb/source/Interpreter/CommandObject.cpp	2013-01-12 15:49:03.095043967 +0100
+@@ -752,9 +752,9 @@
+     StreamString sstr;
+     sstr << "One of the following languages:\n";
+     
+-    for (LanguageType l = eLanguageTypeUnknown; l < eNumLanguageTypes; ++l)
++    for (unsigned int l = eLanguageTypeUnknown; l < eNumLanguageTypes; ++l)
+     {
+-        sstr << "  " << LanguageRuntime::GetNameForLanguageType(l) << "\n";
++        sstr << "  " << LanguageRuntime::GetNameForLanguageType(static_cast<LanguageType>(l)) << "\n";
+     }
+     
+     sstr.Flush();

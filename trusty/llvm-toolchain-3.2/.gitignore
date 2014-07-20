@@ -1,0 +1,4 @@
+*.deb
+llvm-toolchain-3.2_3.2repack-*
+llvm-3.2.src/*
+!llvm-3.2.src/debian

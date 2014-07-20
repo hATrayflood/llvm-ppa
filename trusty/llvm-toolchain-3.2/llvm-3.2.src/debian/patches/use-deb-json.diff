@@ -1,0 +1,23 @@
+Index: llvm-toolchain-3.3-3.3/polly/lib/Makefile
+===================================================================
+--- llvm-toolchain-3.3-3.3.orig/polly/lib/Makefile	2012-12-29 16:09:03.000000000 +0100
++++ llvm-toolchain-3.3-3.3/polly/lib/Makefile	2013-08-01 18:23:46.121975042 +0200
+@@ -27,9 +27,6 @@
+ DIRS += Support
+ USEDLIBS += pollysupport.a
+ 
+-DIRS += JSON
+-USEDLIBS += pollyjson.a
+-
+ # TODO: Export symbols for RTTI or EH?
+ 
+ #
+@@ -37,7 +34,7 @@
+ #
+ include $(LEVEL)/Makefile.common
+ 
+-LIBS += $(POLLY_LD) $(POLLY_LIB)
++LIBS += $(POLLY_LD) $(POLLY_LIB) -ljsoncpp
+ 
+ $(LibDir)/libpollyanalysis.a : $(LibDir)/.dir $(PROJ_OBJ_DIR)/Analysis/$(BuildMode)/.dir \
+                                $(PROJ_SRC_DIR)/Analysis/*

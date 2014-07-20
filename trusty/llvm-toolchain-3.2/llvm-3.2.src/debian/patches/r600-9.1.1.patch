@@ -1,0 +1,2454 @@
+diff --git a/lib/Target/R600/AMDGPUInstructions.td b/lib/Target/R600/AMDGPUInstructions.td
+index 0559a5a..960f108 100644
+--- a/lib/Target/R600/AMDGPUInstructions.td
++++ b/lib/Target/R600/AMDGPUInstructions.td
+@@ -77,6 +77,11 @@ def COND_LE : PatLeaf <
+                      case ISD::SETLE: return true;}}}]
+ >;
+ 
++def COND_NULL : PatLeaf <
++  (cond),
++  [{return false;}]
++>;
++
+ //===----------------------------------------------------------------------===//
+ // Load/Store Pattern Fragments
+ //===----------------------------------------------------------------------===//
+diff --git a/lib/Target/R600/InstPrinter/AMDGPUInstPrinter.cpp b/lib/Target/R600/InstPrinter/AMDGPUInstPrinter.cpp
+index d6450a0..10547a5 100644
+--- a/lib/Target/R600/InstPrinter/AMDGPUInstPrinter.cpp
++++ b/lib/Target/R600/InstPrinter/AMDGPUInstPrinter.cpp
+@@ -11,6 +11,7 @@
+ #include "AMDGPUInstPrinter.h"
+ #include "MCTargetDesc/AMDGPUMCTargetDesc.h"
+ #include "llvm/MC/MCInst.h"
++#include "llvm/MC/MCExpr.h"
+ 
+ using namespace llvm;
+ 
+@@ -35,6 +36,9 @@ void AMDGPUInstPrinter::printOperand(const MCInst *MI, unsigned OpNo,
+     O << Op.getImm();
+   } else if (Op.isFPImm()) {
+     O << Op.getFPImm();
++  } else if (Op.isExpr()) {
++    const MCExpr *Exp = Op.getExpr();
++    Exp->print(O);
+   } else {
+     assert(!"unknown operand type in printOperand");
+   }
+diff --git a/lib/Target/R600/MCTargetDesc/SIMCCodeEmitter.cpp b/lib/Target/R600/MCTargetDesc/SIMCCodeEmitter.cpp
+index 6dfbbe8..8dea3ce 100644
+--- a/lib/Target/R600/MCTargetDesc/SIMCCodeEmitter.cpp
++++ b/lib/Target/R600/MCTargetDesc/SIMCCodeEmitter.cpp
+@@ -131,7 +131,7 @@ uint32_t SIMCCodeEmitter::getLitEncoding(const MCOperand &MO) const {
+   if (Imm.F == 4.0f)
+     return 246;
+ 
+-  if (Imm.F == 4.0f)
++  if (Imm.F == -4.0f)
+     return 247;
+ 
+   return 255;
+diff --git a/lib/Target/R600/R600ISelLowering.cpp b/lib/Target/R600/R600ISelLowering.cpp
+index 9c38522..23b3fae 100644
+--- a/lib/Target/R600/R600ISelLowering.cpp
++++ b/lib/Target/R600/R600ISelLowering.cpp
+@@ -58,7 +58,6 @@ R600TargetLowering::R600TargetLowering(TargetMachine &TM) :
+   setOperationAction(ISD::INTRINSIC_VOID, MVT::Other, Custom);
+   setOperationAction(ISD::INTRINSIC_WO_CHAIN, MVT::Other, Custom);
+   setOperationAction(ISD::INTRINSIC_WO_CHAIN, MVT::i1, Custom);
+-  setOperationAction(ISD::FPOW, MVT::f32, Custom);
+ 
+   setOperationAction(ISD::ROTL, MVT::i32, Custom);
+ 
+@@ -355,7 +354,6 @@ SDValue R600TargetLowering::LowerOperation(SDValue Op, SelectionDAG &DAG) const
+   case ISD::SETCC: return LowerSETCC(Op, DAG);
+   case ISD::STORE: return LowerSTORE(Op, DAG);
+   case ISD::LOAD: return LowerLOAD(Op, DAG);
+-  case ISD::FPOW: return LowerFPOW(Op, DAG);
+   case ISD::FrameIndex: return LowerFrameIndex(Op, DAG);
+   case ISD::INTRINSIC_VOID: {
+     SDValue Chain = Op.getOperand(0);
+@@ -959,7 +957,8 @@ SDValue R600TargetLowering::LowerLOAD(SDValue Op, SelectionDAG &DAG) const
+   if (ConstantBlock > -1) {
+     SDValue Result;
+     if (dyn_cast<ConstantExpr>(LoadNode->getSrcValue()) ||
+-        dyn_cast<Constant>(LoadNode->getSrcValue())) {
++        dyn_cast<Constant>(LoadNode->getSrcValue()) ||
++        dyn_cast<ConstantSDNode>(Ptr)) {
+       SDValue Slots[4];
+       for (unsigned i = 0; i < 4; i++) {
+         // We want Const position encoded with the following formula :
+@@ -975,7 +974,8 @@ SDValue R600TargetLowering::LowerLOAD(SDValue Op, SelectionDAG &DAG) const
+     } else {
+       // non constant ptr cant be folded, keeps it as a v4f32 load
+       Result = DAG.getNode(AMDGPUISD::CONST_ADDRESS, DL, MVT::v4i32,
+-          DAG.getNode(ISD::SRL, DL, MVT::i32, Ptr, DAG.getConstant(4, MVT::i32))
++          DAG.getNode(ISD::SRL, DL, MVT::i32, Ptr, DAG.getConstant(4, MVT::i32)),
++          DAG.getConstant(LoadNode->getAddressSpace() - 9, MVT::i32)
+           );
+     }
+ 
+@@ -1040,15 +1040,6 @@ SDValue R600TargetLowering::LowerLOAD(SDValue Op, SelectionDAG &DAG) const
+   return DAG.getMergeValues(Ops, 2, DL);
+ }
+ 
+-SDValue R600TargetLowering::LowerFPOW(SDValue Op,
+-    SelectionDAG &DAG) const {
+-  DebugLoc DL = Op.getDebugLoc();
+-  EVT VT = Op.getValueType();
+-  SDValue LogBase = DAG.getNode(ISD::FLOG2, DL, VT, Op.getOperand(0));
+-  SDValue MulLogBase = DAG.getNode(ISD::FMUL, DL, VT, Op.getOperand(1), LogBase);
+-  return DAG.getNode(ISD::FEXP2, DL, VT, MulLogBase);
+-}
+-
+ /// XXX Only kernel functions are supported, so we can assume for now that
+ /// every function is a kernel function, but in the future we should use
+ /// separate calling conventions for kernel and non-kernel functions.
+diff --git a/lib/Target/R600/R600ISelLowering.h b/lib/Target/R600/R600ISelLowering.h
+index afa3897..ed6dbe4 100644
+--- a/lib/Target/R600/R600ISelLowering.h
++++ b/lib/Target/R600/R600ISelLowering.h
+@@ -62,7 +62,6 @@ private:
+   SDValue LowerSETCC(SDValue Op, SelectionDAG &DAG) const;
+   SDValue LowerSTORE(SDValue Op, SelectionDAG &DAG) const;
+   SDValue LowerFPTOUINT(SDValue Op, SelectionDAG &DAG) const;
+-  SDValue LowerFPOW(SDValue Op, SelectionDAG &DAG) const;
+   SDValue LowerLOAD(SDValue Op, SelectionDAG &DAG) const;
+   SDValue LowerFrameIndex(SDValue Op, SelectionDAG &DAG) const;
+ 
+diff --git a/lib/Target/R600/R600Instructions.td b/lib/Target/R600/R600Instructions.td
+index 409da07..b89ea39 100644
+--- a/lib/Target/R600/R600Instructions.td
++++ b/lib/Target/R600/R600Instructions.td
+@@ -512,8 +512,8 @@ def INTERP_PAIR_ZW :  AMDGPUShaderInst <
+   []>;
+ 
+ def CONST_ADDRESS: SDNode<"AMDGPUISD::CONST_ADDRESS",
+-  SDTypeProfile<1, 1, [SDTCisInt<0>, SDTCisPtrTy<1>]>,
+-  [SDNPMayLoad]
++  SDTypeProfile<1, -1, [SDTCisInt<0>, SDTCisPtrTy<1>]>,
++  [SDNPMayLoad, SDNPVariadic]
+ >;
+ 
+ //===----------------------------------------------------------------------===//
+@@ -1145,6 +1145,7 @@ let Predicates = [isR600] in {
+   def RECIP_UINT_r600 : RECIP_UINT_Common <0x78>;
+ 
+   defm DIV_r600 : DIV_Common<RECIP_IEEE_r600>;
++  def : POW_Common <LOG_IEEE_r600, EXP_IEEE_r600, MUL, R600_Reg32>;
+   def TGSI_LIT_Z_r600 : TGSI_LIT_Z_Common<MUL_LIT_r600, LOG_CLAMPED_r600, EXP_IEEE_r600>;
+ 
+   def : Pat<(fsqrt R600_Reg32:$src),
+@@ -1216,6 +1217,7 @@ def RECIPSQRT_IEEE_eg : RECIPSQRT_IEEE_Common<0x89>;
+ def SIN_eg : SIN_Common<0x8D>;
+ def COS_eg : COS_Common<0x8E>;
+ 
++def : POW_Common <LOG_IEEE_eg, EXP_IEEE_eg, MUL, R600_Reg32>;
+ def : SIN_PAT <SIN_eg>;
+ def : COS_PAT <COS_eg>;
+ def : Pat<(fsqrt R600_Reg32:$src),
+@@ -1543,13 +1545,14 @@ def MULLO_UINT_cm : MULLO_UINT_Common<0x91>;
+ def MULHI_UINT_cm : MULHI_UINT_Common<0x92>;
+ def RECIPSQRT_CLAMPED_cm : RECIPSQRT_CLAMPED_Common<0x87>;
+ def EXP_IEEE_cm : EXP_IEEE_Common<0x81>;
+-def LOG_IEEE_ : LOG_IEEE_Common<0x83>;
++def LOG_IEEE_cm : LOG_IEEE_Common<0x83>;
+ def RECIP_CLAMPED_cm : RECIP_CLAMPED_Common<0x84>;
+ def RECIPSQRT_IEEE_cm : RECIPSQRT_IEEE_Common<0x89>;
+ def SIN_cm : SIN_Common<0x8D>;
+ def COS_cm : COS_Common<0x8E>;
+ } // End isVector = 1
+ 
++def : POW_Common <LOG_IEEE_cm, EXP_IEEE_cm, MUL, R600_Reg32>;
+ def : SIN_PAT <SIN_cm>;
+ def : COS_PAT <COS_cm>;
+ 
+@@ -1665,14 +1668,13 @@ def CONST_COPY : Instruction {
+ } // end isCodeGenOnly = 1, isPseudo = 1, Namespace = "AMDGPU"
+ 
+ def TEX_VTX_CONSTBUF :
+-  InstR600ISA <(outs R600_Reg128:$dst), (ins MEMxi:$ptr), "VTX_READ_eg $dst, $ptr",
+-      [(set R600_Reg128:$dst, (CONST_ADDRESS ADDRGA_VAR_OFFSET:$ptr))]>,
++  InstR600ISA <(outs R600_Reg128:$dst), (ins MEMxi:$ptr, i32imm:$BUFFER_ID), "VTX_READ_eg $dst, $ptr",
++      [(set R600_Reg128:$dst, (CONST_ADDRESS ADDRGA_VAR_OFFSET:$ptr, (i32 imm:$BUFFER_ID)))]>,
+   VTX_WORD1_GPR, VTX_WORD0 {
+ 
+   let VC_INST = 0;
+   let FETCH_TYPE = 2;
+   let FETCH_WHOLE_QUAD = 0;
+-  let BUFFER_ID = 0;
+   let SRC_REL = 0;
+   let SRC_SEL_X = 0;
+   let DST_REL = 0;
+diff --git a/lib/Target/R600/SIISelLowering.cpp b/lib/Target/R600/SIISelLowering.cpp
+index 694c045..cf5db06 100644
+--- a/lib/Target/R600/SIISelLowering.cpp
++++ b/lib/Target/R600/SIISelLowering.cpp
+@@ -58,6 +58,8 @@ SITargetLowering::SITargetLowering(TargetMachine &TM) :
+   setTargetDAGCombine(ISD::SELECT_CC);
+ 
+   setTargetDAGCombine(ISD::SETCC);
++
++  setSchedulingPreference(Sched::Source);
+ }
+ 
+ MachineBasicBlock * SITargetLowering::EmitInstrWithCustomInserter(
+@@ -75,7 +77,6 @@ MachineBasicBlock * SITargetLowering::EmitInstrWithCustomInserter(
+            .addOperand(MI->getOperand(0))
+            .addOperand(MI->getOperand(1))
+            .addImm(0x80) // SRC1
+-           .addImm(0x80) // SRC2
+            .addImm(0) // ABS
+            .addImm(1) // CLAMP
+            .addImm(0) // OMOD
+@@ -88,7 +89,6 @@ MachineBasicBlock * SITargetLowering::EmitInstrWithCustomInserter(
+                  .addOperand(MI->getOperand(0))
+                  .addOperand(MI->getOperand(1))
+                  .addImm(0x80) // SRC1
+-                 .addImm(0x80) // SRC2
+                  .addImm(1) // ABS
+                  .addImm(0) // CLAMP
+                  .addImm(0) // OMOD
+@@ -101,7 +101,6 @@ MachineBasicBlock * SITargetLowering::EmitInstrWithCustomInserter(
+                  .addOperand(MI->getOperand(0))
+                  .addOperand(MI->getOperand(1))
+                  .addImm(0x80) // SRC1
+-                 .addImm(0x80) // SRC2
+                  .addImm(0) // ABS
+                  .addImm(0) // CLAMP
+                  .addImm(0) // OMOD
+diff --git a/lib/Target/R600/SIInstrFormats.td b/lib/Target/R600/SIInstrFormats.td
+index 40e37aa..fe417d6 100644
+--- a/lib/Target/R600/SIInstrFormats.td
++++ b/lib/Target/R600/SIInstrFormats.td
+@@ -1,4 +1,4 @@
+-//===-- SIInstrFormats.td - SI Instruction Formats ------------------------===//
++//===-- SIInstrFormats.td - SI Instruction Encodings ----------------------===//
+ //
+ //                     The LLVM Compiler Infrastructure
+ //
+@@ -9,180 +9,418 @@
+ //
+ // SI Instruction format definitions.
+ //
+-// Instructions with _32 take 32-bit operands.
+-// Instructions with _64 take 64-bit operands.
+-//
+-// VOP_* instructions can use either a 32-bit or 64-bit encoding.  The 32-bit
+-// encoding is the standard encoding, but instruction that make use of
+-// any of the instruction modifiers must use the 64-bit encoding.
+-//
+-// Instructions with _e32 use the 32-bit encoding.
+-// Instructions with _e64 use the 64-bit encoding.
+-//
+ //===----------------------------------------------------------------------===//
+ 
+-class VOP3_32 <bits<9> op, string opName, list<dag> pattern>
+-  : VOP3 <op, (outs VReg_32:$dst), (ins VSrc_32:$src0, VReg_32:$src1, VReg_32:$src2, i32imm:$src3, i32imm:$src4, i32imm:$src5, i32imm:$src6), opName, pattern>;
++class InstSI <dag outs, dag ins, string asm, list<dag> pattern> :
++    AMDGPUInst<outs, ins, asm, pattern> {
++
++  field bits<1> VM_CNT = 0;
++  field bits<1> EXP_CNT = 0;
++  field bits<1> LGKM_CNT = 0;
++
++  let TSFlags{0} = VM_CNT;
++  let TSFlags{1} = EXP_CNT;
++  let TSFlags{2} = LGKM_CNT;
++}
++
++class Enc32 <dag outs, dag ins, string asm, list<dag> pattern> :
++    InstSI <outs, ins, asm, pattern> {
++
++  field bits<32> Inst;
++  let Size = 4;
++}
+ 
+-class VOP3_64 <bits<9> op, string opName, list<dag> pattern>
+-  : VOP3 <op, (outs VReg_64:$dst), (ins VSrc_64:$src0, VReg_64:$src1, VReg_64:$src2, i32imm:$src3, i32imm:$src4, i32imm:$src5, i32imm:$src6), opName, pattern>;
++class Enc64 <dag outs, dag ins, string asm, list<dag> pattern> :
++    InstSI <outs, ins, asm, pattern> {
+ 
+-class SOP1_32 <bits<8> op, string opName, list<dag> pattern>
+-  : SOP1 <op, (outs SReg_32:$dst), (ins SSrc_32:$src0), opName, pattern>;
++  field bits<64> Inst;
++  let Size = 8;
++}
+ 
+-class SOP1_64 <bits<8> op, string opName, list<dag> pattern>
+-  : SOP1 <op, (outs SReg_64:$dst), (ins SSrc_64:$src0), opName, pattern>;
++//===----------------------------------------------------------------------===//
++// Scalar operations
++//===----------------------------------------------------------------------===//
+ 
+-class SOP2_32 <bits<7> op, string opName, list<dag> pattern>
+-  : SOP2 <op, (outs SReg_32:$dst), (ins SSrc_32:$src0, SSrc_32:$src1), opName, pattern>;
++class SOP1 <bits<8> op, dag outs, dag ins, string asm, list<dag> pattern> :
++    Enc32<outs, ins, asm, pattern> {
+ 
+-class SOP2_64 <bits<7> op, string opName, list<dag> pattern>
+-  : SOP2 <op, (outs SReg_64:$dst), (ins SSrc_64:$src0, SSrc_64:$src1), opName, pattern>;
++  bits<7> SDST;
++  bits<8> SSRC0;
+ 
+-class VOP1_Helper <bits<8> op, RegisterClass vrc, RegisterClass arc,
+-                   string opName, list<dag> pattern> : 
+-  VOP1 <
+-    op, (outs vrc:$dst), (ins arc:$src0), opName, pattern
+-  >;
++  let Inst{7-0} = SSRC0;
++  let Inst{15-8} = op;
++  let Inst{22-16} = SDST;
++  let Inst{31-23} = 0x17d; //encoding;
+ 
+-multiclass VOP1_32 <bits<8> op, string opName, list<dag> pattern> {
+-  def _e32: VOP1_Helper <op, VReg_32, VSrc_32, opName, pattern>;
+-  def _e64 : VOP3_32 <{1, 1, op{6}, op{5}, op{4}, op{3}, op{2}, op{1}, op{0}},
+-                      opName, []
+-  >;
++  let mayLoad = 0;
++  let mayStore = 0;
++  let hasSideEffects = 0;
+ }
+ 
+-multiclass VOP1_64 <bits<8> op, string opName, list<dag> pattern> {
++class SOP2 <bits<7> op, dag outs, dag ins, string asm, list<dag> pattern> :
++    Enc32 <outs, ins, asm, pattern> {
++  
++  bits<7> SDST;
++  bits<8> SSRC0;
++  bits<8> SSRC1;
+ 
+-  def _e32 : VOP1_Helper <op, VReg_64, VSrc_64, opName, pattern>;
++  let Inst{7-0} = SSRC0;
++  let Inst{15-8} = SSRC1;
++  let Inst{22-16} = SDST;
++  let Inst{29-23} = op;
++  let Inst{31-30} = 0x2; // encoding
+ 
+-  def _e64 : VOP3_64 <
+-    {1, 1, op{6}, op{5}, op{4}, op{3}, op{2}, op{1}, op{0}},
+-    opName, []
+-  >;
++  let mayLoad = 0;
++  let mayStore = 0;
++  let hasSideEffects = 0;
+ }
+ 
+-class VOP2_Helper <bits<6> op, RegisterClass vrc, RegisterClass arc,
+-                   string opName, list<dag> pattern> :
+-  VOP2 <
+-    op, (outs vrc:$dst), (ins arc:$src0, vrc:$src1), opName, pattern
+-  >;
++class SOPC <bits<7> op, dag outs, dag ins, string asm, list<dag> pattern> :
++  Enc32<outs, ins, asm, pattern> {
+ 
+-multiclass VOP2_32 <bits<6> op, string opName, list<dag> pattern> {
++  bits<8> SSRC0;
++  bits<8> SSRC1;
+ 
+-  def _e32 : VOP2_Helper <op, VReg_32, VSrc_32, opName, pattern>;
++  let Inst{7-0} = SSRC0;
++  let Inst{15-8} = SSRC1;
++  let Inst{22-16} = op;
++  let Inst{31-23} = 0x17e;
+ 
+-  def _e64 : VOP3_32 <{1, 0, 0, op{5}, op{4}, op{3}, op{2}, op{1}, op{0}},
+-                      opName, []
+-  >;
++  let DisableEncoding = "$dst";
++  let mayLoad = 0;
++  let mayStore = 0;
++  let hasSideEffects = 0;
+ }
+ 
+-multiclass VOP2_64 <bits<6> op, string opName, list<dag> pattern> {
+-  def _e32: VOP2_Helper <op, VReg_64, VSrc_64, opName, pattern>;
++class SOPK <bits<5> op, dag outs, dag ins, string asm, list<dag> pattern> :
++   Enc32 <outs, ins , asm, pattern> {
+ 
+-  def _e64 : VOP3_64 <
+-    {1, 0, 0, op{5}, op{4}, op{3}, op{2}, op{1}, op{0}},
+-    opName, []
+-  >;
++  bits <7> SDST;
++  bits <16> SIMM16;
++  
++  let Inst{15-0} = SIMM16;
++  let Inst{22-16} = SDST;
++  let Inst{27-23} = op;
++  let Inst{31-28} = 0xb; //encoding
++
++  let mayLoad = 0;
++  let mayStore = 0;
++  let hasSideEffects = 0;
+ }
+ 
+-class SOPK_32 <bits<5> op, string opName, list<dag> pattern>
+-  : SOPK <op, (outs SReg_32:$dst), (ins i16imm:$src0), opName, pattern>;
++class SOPP <bits<7> op, dag ins, string asm, list<dag> pattern> : Enc32 <
++  (outs),
++  ins,
++  asm,
++  pattern > {
+ 
+-class SOPK_64 <bits<5> op, string opName, list<dag> pattern>
+-  : SOPK <op, (outs SReg_64:$dst), (ins i16imm:$src0), opName, pattern>;
++  bits <16> SIMM16;
+ 
+-multiclass VOPC_Helper <bits<8> op, RegisterClass vrc, RegisterClass arc,
+-                        string opName, list<dag> pattern> {
++  let Inst{15-0} = SIMM16;
++  let Inst{22-16} = op;
++  let Inst{31-23} = 0x17f; // encoding
+ 
+-  def _e32 : VOPC <op, (ins arc:$src0, vrc:$src1), opName, pattern>;
+-  def _e64 : VOP3 <
+-    {0, op{7}, op{6}, op{5}, op{4}, op{3}, op{2}, op{1}, op{0}},
+-    (outs SReg_64:$dst),
+-    (ins arc:$src0, vrc:$src1,
+-         InstFlag:$abs, InstFlag:$clamp,
+-         InstFlag:$omod, InstFlag:$neg),
+-    opName, pattern
+-  > {
+-    let SRC2 = 0x80;
+-  }
++  let mayLoad = 0;
++  let mayStore = 0;
++  let hasSideEffects = 0;
+ }
+ 
+-multiclass VOPC_32 <bits<8> op, string opName, list<dag> pattern>
+-  : VOPC_Helper <op, VReg_32, VSrc_32, opName, pattern>;
+-
+-multiclass VOPC_64 <bits<8> op, string opName, list<dag> pattern>
+-  : VOPC_Helper <op, VReg_64, VSrc_64, opName, pattern>;
++class SMRD <bits<5> op, bits<1> imm, dag outs, dag ins, string asm,
++            list<dag> pattern> : Enc32<outs, ins, asm, pattern> {
++
++  bits<7> SDST;
++  bits<6> SBASE;
++  bits<8> OFFSET;
++  
++  let Inst{7-0} = OFFSET;
++  let Inst{8} = imm;
++  let Inst{14-9} = SBASE;
++  let Inst{21-15} = SDST;
++  let Inst{26-22} = op;
++  let Inst{31-27} = 0x18; //encoding
++
++  let LGKM_CNT = 1;
++}
+ 
+-class SOPC_32 <bits<7> op, string opName, list<dag> pattern>
+-  : SOPC <op, (outs SCCReg:$dst), (ins SSrc_32:$src0, SSrc_32:$src1), opName, pattern>;
++//===----------------------------------------------------------------------===//
++// Vector ALU operations
++//===----------------------------------------------------------------------===//
++    
++let Uses = [EXEC] in {
++
++class VOP1 <bits<8> op, dag outs, dag ins, string asm, list<dag> pattern> :
++    Enc32 <outs, ins, asm, pattern> {
++
++  bits<8> VDST;
++  bits<9> SRC0;
++  
++  let Inst{8-0} = SRC0;
++  let Inst{16-9} = op;
++  let Inst{24-17} = VDST;
++  let Inst{31-25} = 0x3f; //encoding
++  
++  let mayLoad = 0;
++  let mayStore = 0;
++  let hasSideEffects = 0;
++}
+ 
+-class SOPC_64 <bits<7> op, string opName, list<dag> pattern>
+-  : SOPC <op, (outs SCCReg:$dst), (ins SSrc_64:$src0, SSrc_64:$src1), opName, pattern>;
++class VOP2 <bits<6> op, dag outs, dag ins, string asm, list<dag> pattern> :
++    Enc32 <outs, ins, asm, pattern> {
++
++  bits<8> VDST;
++  bits<9> SRC0;
++  bits<8> VSRC1;
++  
++  let Inst{8-0} = SRC0;
++  let Inst{16-9} = VSRC1;
++  let Inst{24-17} = VDST;
++  let Inst{30-25} = op;
++  let Inst{31} = 0x0; //encoding
++  
++  let mayLoad = 0;
++  let mayStore = 0;
++  let hasSideEffects = 0;
++}
+ 
+-class MIMG_Load_Helper <bits<7> op, string asm> : MIMG <
+-  op,
+-  (outs VReg_128:$vdata),
+-  (ins i32imm:$dmask, i1imm:$unorm, i1imm:$glc, i1imm:$da, i1imm:$r128,
+-       i1imm:$tfe, i1imm:$lwe, i1imm:$slc, VReg_32:$vaddr,
+-       GPR4Align<SReg_256>:$srsrc, GPR4Align<SReg_128>:$ssamp),
+-  asm,
+-  []> {
+-  let mayLoad = 1;
++class VOP3 <bits<9> op, dag outs, dag ins, string asm, list<dag> pattern> :
++    Enc64 <outs, ins, asm, pattern> {
++
++  bits<8> VDST;
++  bits<9> SRC0;
++  bits<9> SRC1;
++  bits<9> SRC2;
++  bits<3> ABS; 
++  bits<1> CLAMP;
++  bits<2> OMOD;
++  bits<3> NEG;
++
++  let Inst{7-0} = VDST;
++  let Inst{10-8} = ABS;
++  let Inst{11} = CLAMP;
++  let Inst{25-17} = op;
++  let Inst{31-26} = 0x34; //encoding
++  let Inst{40-32} = SRC0;
++  let Inst{49-41} = SRC1;
++  let Inst{58-50} = SRC2;
++  let Inst{60-59} = OMOD;
++  let Inst{63-61} = NEG;
++  
++  let mayLoad = 0;
+   let mayStore = 0;
++  let hasSideEffects = 0;
+ }
+ 
+-class MTBUF_Store_Helper <bits<3> op, string asm, RegisterClass regClass> : MTBUF <
+-  op,
+-  (outs),
+-  (ins regClass:$vdata, i16imm:$offset, i1imm:$offen, i1imm:$idxen, i1imm:$glc,
+-   i1imm:$addr64, i8imm:$dfmt, i8imm:$nfmt, VReg_32:$vaddr,
+-   GPR4Align<SReg_128>:$srsrc, i1imm:$slc, i1imm:$tfe, SSrc_32:$soffset),
+-  asm,
+-  []> {
+-  let mayStore = 1;
++class VOP3b <bits<9> op, dag outs, dag ins, string asm, list<dag> pattern> :
++    Enc64 <outs, ins, asm, pattern> {
++
++  bits<8> VDST;
++  bits<9> SRC0;
++  bits<9> SRC1;
++  bits<9> SRC2;
++  bits<7> SDST;
++  bits<2> OMOD;
++  bits<3> NEG;
++
++  let Inst{7-0} = VDST;
++  let Inst{14-8} = SDST;
++  let Inst{25-17} = op;
++  let Inst{31-26} = 0x34; //encoding
++  let Inst{40-32} = SRC0;
++  let Inst{49-41} = SRC1;
++  let Inst{58-50} = SRC2;
++  let Inst{60-59} = OMOD;
++  let Inst{63-61} = NEG;
++
+   let mayLoad = 0;
++  let mayStore = 0;
++  let hasSideEffects = 0;
+ }
+ 
+-class MUBUF_Load_Helper <bits<7> op, string asm, RegisterClass regClass> : MUBUF <
+-  op,
+-  (outs regClass:$dst),
+-  (ins i16imm:$offset, i1imm:$offen, i1imm:$idxen, i1imm:$glc, i1imm:$addr64,
+-       i1imm:$lds, VReg_32:$vaddr, GPR4Align<SReg_128>:$srsrc, i1imm:$slc,
+-       i1imm:$tfe, SSrc_32:$soffset),
+-  asm,
+-  []> {
+-  let mayLoad = 1;
++class VOPC <bits<8> op, dag ins, string asm, list<dag> pattern> :
++    Enc32 <(outs VCCReg:$dst), ins, asm, pattern> {
++
++  bits<9> SRC0;
++  bits<8> VSRC1;
++
++  let Inst{8-0} = SRC0;
++  let Inst{16-9} = VSRC1;
++  let Inst{24-17} = op;
++  let Inst{31-25} = 0x3e;
++ 
++  let DisableEncoding = "$dst";
++  let mayLoad = 0;
+   let mayStore = 0;
++  let hasSideEffects = 0;
+ }
+ 
+-class MTBUF_Load_Helper <bits<3> op, string asm, RegisterClass regClass> : MTBUF <
+-  op,
+-  (outs regClass:$dst),
+-  (ins i16imm:$offset, i1imm:$offen, i1imm:$idxen, i1imm:$glc, i1imm:$addr64,
+-       i8imm:$dfmt, i8imm:$nfmt, VReg_32:$vaddr, GPR4Align<SReg_128>:$srsrc,
+-       i1imm:$slc, i1imm:$tfe, SSrc_32:$soffset),
+-  asm,
+-  []> {
++class VINTRP <bits <2> op, dag outs, dag ins, string asm, list<dag> pattern> :
++    Enc32 <outs, ins, asm, pattern> {
++
++  bits<8> VDST;
++  bits<8> VSRC;
++  bits<2> ATTRCHAN;
++  bits<6> ATTR;
++
++  let Inst{7-0} = VSRC;
++  let Inst{9-8} = ATTRCHAN;
++  let Inst{15-10} = ATTR;
++  let Inst{17-16} = op;
++  let Inst{25-18} = VDST;
++  let Inst{31-26} = 0x32; // encoding
++
++  let neverHasSideEffects = 1;
+   let mayLoad = 1;
+   let mayStore = 0;
+ }
+ 
+-multiclass SMRD_Helper <bits<5> op, string asm, RegisterClass dstClass> {
+-  def _IMM : SMRD <
+-             op, 1,
+-             (outs dstClass:$dst),
+-             (ins GPR2Align<SReg_64>:$sbase, i32imm:$offset),
+-             asm,
+-             []
+-  >;
++} // End Uses = [EXEC]
++
++//===----------------------------------------------------------------------===//
++// Vector I/O operations
++//===----------------------------------------------------------------------===//
+ 
+-  def _SGPR : SMRD <
+-              op, 0,
+-              (outs dstClass:$dst),
+-              (ins GPR2Align<SReg_64>:$sbase, SReg_32:$soff),
+-              asm,
+-              []
+-  >;
++let Uses = [EXEC] in {
++
++class MUBUF <bits<7> op, dag outs, dag ins, string asm, list<dag> pattern> :
++    Enc64<outs, ins, asm, pattern> {
++
++  bits<8> VDATA;
++  bits<12> OFFSET;
++  bits<1> OFFEN;
++  bits<1> IDXEN;
++  bits<1> GLC;
++  bits<1> ADDR64;
++  bits<1> LDS;
++  bits<8> VADDR;
++  bits<5> SRSRC;
++  bits<1> SLC;
++  bits<1> TFE;
++  bits<8> SOFFSET;
++
++  let Inst{11-0} = OFFSET;
++  let Inst{12} = OFFEN;
++  let Inst{13} = IDXEN;
++  let Inst{14} = GLC;
++  let Inst{15} = ADDR64;
++  let Inst{16} = LDS;
++  let Inst{24-18} = op;
++  let Inst{31-26} = 0x38; //encoding
++  let Inst{39-32} = VADDR;
++  let Inst{47-40} = VDATA;
++  let Inst{52-48} = SRSRC;
++  let Inst{54} = SLC;
++  let Inst{55} = TFE;
++  let Inst{63-56} = SOFFSET;
++
++  let VM_CNT = 1;
++  let EXP_CNT = 1;
++
++  let neverHasSideEffects = 1;
++}
++
++class MTBUF <bits<3> op, dag outs, dag ins, string asm, list<dag> pattern> :
++    Enc64<outs, ins, asm, pattern> {
++
++  bits<8> VDATA;
++  bits<12> OFFSET;
++  bits<1> OFFEN;
++  bits<1> IDXEN;
++  bits<1> GLC;
++  bits<1> ADDR64;
++  bits<4> DFMT;
++  bits<3> NFMT;
++  bits<8> VADDR;
++  bits<5> SRSRC;
++  bits<1> SLC;
++  bits<1> TFE;
++  bits<8> SOFFSET;
++
++  let Inst{11-0} = OFFSET;
++  let Inst{12} = OFFEN;
++  let Inst{13} = IDXEN;
++  let Inst{14} = GLC;
++  let Inst{15} = ADDR64;
++  let Inst{18-16} = op;
++  let Inst{22-19} = DFMT;
++  let Inst{25-23} = NFMT;
++  let Inst{31-26} = 0x3a; //encoding
++  let Inst{39-32} = VADDR;
++  let Inst{47-40} = VDATA;
++  let Inst{52-48} = SRSRC;
++  let Inst{54} = SLC;
++  let Inst{55} = TFE;
++  let Inst{63-56} = SOFFSET;
++
++  let VM_CNT = 1;
++  let EXP_CNT = 1;
++
++  let neverHasSideEffects = 1;
++}
++
++class MIMG <bits<7> op, dag outs, dag ins, string asm, list<dag> pattern> :
++    Enc64 <outs, ins, asm, pattern> {
++
++  bits<8> VDATA;
++  bits<4> DMASK;
++  bits<1> UNORM;
++  bits<1> GLC;
++  bits<1> DA;
++  bits<1> R128;
++  bits<1> TFE;
++  bits<1> LWE;
++  bits<1> SLC;
++  bits<8> VADDR;
++  bits<5> SRSRC;
++  bits<5> SSAMP; 
++
++  let Inst{11-8} = DMASK;
++  let Inst{12} = UNORM;
++  let Inst{13} = GLC;
++  let Inst{14} = DA;
++  let Inst{15} = R128;
++  let Inst{16} = TFE;
++  let Inst{17} = LWE;
++  let Inst{24-18} = op;
++  let Inst{25} = SLC;
++  let Inst{31-26} = 0x3c;
++  let Inst{39-32} = VADDR;
++  let Inst{47-40} = VDATA;
++  let Inst{52-48} = SRSRC;
++  let Inst{57-53} = SSAMP;
++
++  let VM_CNT = 1;
++  let EXP_CNT = 1;
++}
++
++def EXP : Enc64<
++  (outs),
++  (ins i32imm:$en, i32imm:$tgt, i32imm:$compr, i32imm:$done, i32imm:$vm,
++       VReg_32:$src0, VReg_32:$src1, VReg_32:$src2, VReg_32:$src3),
++  "EXP $en, $tgt, $compr, $done, $vm, $src0, $src1, $src2, $src3",
++  [] > {
++
++  bits<4> EN;
++  bits<6> TGT;
++  bits<1> COMPR;
++  bits<1> DONE;
++  bits<1> VM;
++  bits<8> VSRC0;
++  bits<8> VSRC1;
++  bits<8> VSRC2;
++  bits<8> VSRC3;
++
++  let Inst{3-0} = EN;
++  let Inst{9-4} = TGT;
++  let Inst{10} = COMPR;
++  let Inst{11} = DONE;
++  let Inst{12} = VM;
++  let Inst{31-26} = 0x3e;
++  let Inst{39-32} = VSRC0;
++  let Inst{47-40} = VSRC1;
++  let Inst{55-48} = VSRC2;
++  let Inst{63-56} = VSRC3;
++
++  let EXP_CNT = 1;
+ }
+ 
++} // End Uses = [EXEC]
+diff --git a/lib/Target/R600/SIInstrInfo.td b/lib/Target/R600/SIInstrInfo.td
+index 8c4e5af..d68fbff 100644
+--- a/lib/Target/R600/SIInstrInfo.td
++++ b/lib/Target/R600/SIInstrInfo.td
+@@ -1,4 +1,4 @@
+-//===-- SIInstrInfo.td - SI Instruction Encodings ---------*- tablegen -*--===//
++//===-- SIInstrInfo.td - SI Instruction Infos -------------*- tablegen -*--===//
+ //
+ //                     The LLVM Compiler Infrastructure
+ //
+@@ -44,35 +44,14 @@ class InlineImm <ValueType vt> : ImmLeaf <vt, [{
+   return -16 <= Imm && Imm <= 64;
+ }]>;
+ 
+-class InstSI <dag outs, dag ins, string asm, list<dag> pattern> :
+-    AMDGPUInst<outs, ins, asm, pattern> {
+ 
+-  field bits<1> VM_CNT = 0;
+-  field bits<1> EXP_CNT = 0;
+-  field bits<1> LGKM_CNT = 0;
+-
+-  let TSFlags{0} = VM_CNT;
+-  let TSFlags{1} = EXP_CNT;
+-  let TSFlags{2} = LGKM_CNT;
+-}
+-
+-class Enc32 <dag outs, dag ins, string asm, list<dag> pattern> :
+-    InstSI <outs, ins, asm, pattern> {
+-
+-  field bits<32> Inst;
+-  let Size = 4;
+-}
+-
+-class Enc64 <dag outs, dag ins, string asm, list<dag> pattern> :
+-    InstSI <outs, ins, asm, pattern> {
+-
+-  field bits<64> Inst;
+-  let Size = 8;
+-}
++//===----------------------------------------------------------------------===//
++// SI assembler operands
++//===----------------------------------------------------------------------===//
+ 
+-class SIOperand <ValueType vt, dag opInfo>: Operand <vt> {
+-  let EncoderMethod = "encodeOperand";
+-  let MIOperandInfo = opInfo;
++def SIOperand {
++  int ZERO = 0x80;
++  int VCC = 0x6A;
+ }
+ 
+ class GPR4Align <RegisterClass rc> : Operand <vAny> {
+@@ -85,381 +64,260 @@ class GPR2Align <RegisterClass rc> : Operand <iPTR> {
+   let MIOperandInfo = (ops rc:$reg);
+ }
+ 
+-let Uses = [EXEC] in {
+-
+-def EXP : Enc64<
+-  (outs),
+-  (ins i32imm:$en, i32imm:$tgt, i32imm:$compr, i32imm:$done, i32imm:$vm,
+-       VReg_32:$src0, VReg_32:$src1, VReg_32:$src2, VReg_32:$src3),
+-  "EXP $en, $tgt, $compr, $done, $vm, $src0, $src1, $src2, $src3",
+-  [] > {
+-
+-  bits<4> EN;
+-  bits<6> TGT;
+-  bits<1> COMPR;
+-  bits<1> DONE;
+-  bits<1> VM;
+-  bits<8> VSRC0;
+-  bits<8> VSRC1;
+-  bits<8> VSRC2;
+-  bits<8> VSRC3;
+-
+-  let Inst{3-0} = EN;
+-  let Inst{9-4} = TGT;
+-  let Inst{10} = COMPR;
+-  let Inst{11} = DONE;
+-  let Inst{12} = VM;
+-  let Inst{31-26} = 0x3e;
+-  let Inst{39-32} = VSRC0;
+-  let Inst{47-40} = VSRC1;
+-  let Inst{55-48} = VSRC2;
+-  let Inst{63-56} = VSRC3;
+-
+-  let EXP_CNT = 1;
+-}
++include "SIInstrFormats.td"
+ 
+-class MIMG <bits<7> op, dag outs, dag ins, string asm, list<dag> pattern> :
+-    Enc64 <outs, ins, asm, pattern> {
+-
+-  bits<8> VDATA;
+-  bits<4> DMASK;
+-  bits<1> UNORM;
+-  bits<1> GLC;
+-  bits<1> DA;
+-  bits<1> R128;
+-  bits<1> TFE;
+-  bits<1> LWE;
+-  bits<1> SLC;
+-  bits<8> VADDR;
+-  bits<5> SRSRC;
+-  bits<5> SSAMP; 
+-
+-  let Inst{11-8} = DMASK;
+-  let Inst{12} = UNORM;
+-  let Inst{13} = GLC;
+-  let Inst{14} = DA;
+-  let Inst{15} = R128;
+-  let Inst{16} = TFE;
+-  let Inst{17} = LWE;
+-  let Inst{24-18} = op;
+-  let Inst{25} = SLC;
+-  let Inst{31-26} = 0x3c;
+-  let Inst{39-32} = VADDR;
+-  let Inst{47-40} = VDATA;
+-  let Inst{52-48} = SRSRC;
+-  let Inst{57-53} = SSAMP;
+-
+-  let VM_CNT = 1;
+-  let EXP_CNT = 1;
+-}
++//===----------------------------------------------------------------------===//
++//
++// SI Instruction multiclass helpers.
++//
++// Instructions with _32 take 32-bit operands.
++// Instructions with _64 take 64-bit operands.
++//
++// VOP_* instructions can use either a 32-bit or 64-bit encoding.  The 32-bit
++// encoding is the standard encoding, but instruction that make use of
++// any of the instruction modifiers must use the 64-bit encoding.
++//
++// Instructions with _e32 use the 32-bit encoding.
++// Instructions with _e64 use the 64-bit encoding.
++//
++//===----------------------------------------------------------------------===//
+ 
+-class MTBUF <bits<3> op, dag outs, dag ins, string asm, list<dag> pattern> :
+-    Enc64<outs, ins, asm, pattern> {
+-
+-  bits<8> VDATA;
+-  bits<12> OFFSET;
+-  bits<1> OFFEN;
+-  bits<1> IDXEN;
+-  bits<1> GLC;
+-  bits<1> ADDR64;
+-  bits<4> DFMT;
+-  bits<3> NFMT;
+-  bits<8> VADDR;
+-  bits<5> SRSRC;
+-  bits<1> SLC;
+-  bits<1> TFE;
+-  bits<8> SOFFSET;
+-
+-  let Inst{11-0} = OFFSET;
+-  let Inst{12} = OFFEN;
+-  let Inst{13} = IDXEN;
+-  let Inst{14} = GLC;
+-  let Inst{15} = ADDR64;
+-  let Inst{18-16} = op;
+-  let Inst{22-19} = DFMT;
+-  let Inst{25-23} = NFMT;
+-  let Inst{31-26} = 0x3a; //encoding
+-  let Inst{39-32} = VADDR;
+-  let Inst{47-40} = VDATA;
+-  let Inst{52-48} = SRSRC;
+-  let Inst{54} = SLC;
+-  let Inst{55} = TFE;
+-  let Inst{63-56} = SOFFSET;
+-
+-  let VM_CNT = 1;
+-  let EXP_CNT = 1;
+-
+-  let neverHasSideEffects = 1;
+-}
++//===----------------------------------------------------------------------===//
++// Scalar classes
++//===----------------------------------------------------------------------===//
+ 
+-class MUBUF <bits<7> op, dag outs, dag ins, string asm, list<dag> pattern> :
+-    Enc64<outs, ins, asm, pattern> {
+-
+-  bits<8> VDATA;
+-  bits<12> OFFSET;
+-  bits<1> OFFEN;
+-  bits<1> IDXEN;
+-  bits<1> GLC;
+-  bits<1> ADDR64;
+-  bits<1> LDS;
+-  bits<8> VADDR;
+-  bits<5> SRSRC;
+-  bits<1> SLC;
+-  bits<1> TFE;
+-  bits<8> SOFFSET;
+-
+-  let Inst{11-0} = OFFSET;
+-  let Inst{12} = OFFEN;
+-  let Inst{13} = IDXEN;
+-  let Inst{14} = GLC;
+-  let Inst{15} = ADDR64;
+-  let Inst{16} = LDS;
+-  let Inst{24-18} = op;
+-  let Inst{31-26} = 0x38; //encoding
+-  let Inst{39-32} = VADDR;
+-  let Inst{47-40} = VDATA;
+-  let Inst{52-48} = SRSRC;
+-  let Inst{54} = SLC;
+-  let Inst{55} = TFE;
+-  let Inst{63-56} = SOFFSET;
+-
+-  let VM_CNT = 1;
+-  let EXP_CNT = 1;
+-
+-  let neverHasSideEffects = 1;
+-}
++class SOP1_32 <bits<8> op, string opName, list<dag> pattern> : SOP1 <
++  op, (outs SReg_32:$dst), (ins SSrc_32:$src0),
++  opName#" $dst, $src0", pattern
++>;
+ 
+-} // End Uses = [EXEC]
++class SOP1_64 <bits<8> op, string opName, list<dag> pattern> : SOP1 <
++  op, (outs SReg_64:$dst), (ins SSrc_64:$src0),
++  opName#" $dst, $src0", pattern
++>;
+ 
+-class SMRD <bits<5> op, bits<1> imm, dag outs, dag ins, string asm,
+-            list<dag> pattern> : Enc32<outs, ins, asm, pattern> {
++class SOP2_32 <bits<7> op, string opName, list<dag> pattern> : SOP2 <
++  op, (outs SReg_32:$dst), (ins SSrc_32:$src0, SSrc_32:$src1),
++  opName#" $dst, $src0, $src1", pattern
++>;
+ 
+-  bits<7> SDST;
+-  bits<6> SBASE;
+-  bits<8> OFFSET;
+-  
+-  let Inst{7-0} = OFFSET;
+-  let Inst{8} = imm;
+-  let Inst{14-9} = SBASE;
+-  let Inst{21-15} = SDST;
+-  let Inst{26-22} = op;
+-  let Inst{31-27} = 0x18; //encoding
++class SOP2_64 <bits<7> op, string opName, list<dag> pattern> : SOP2 <
++  op, (outs SReg_64:$dst), (ins SSrc_64:$src0, SSrc_64:$src1),
++  opName#" $dst, $src0, $src1", pattern
++>;
+ 
+-  let LGKM_CNT = 1;
+-}
++class SOPC_32 <bits<7> op, string opName, list<dag> pattern> : SOPC <
++  op, (outs SCCReg:$dst), (ins SSrc_32:$src0, SSrc_32:$src1),
++  opName#" $dst, $src0, $src1", pattern
++>;
+ 
+-class SOP1 <bits<8> op, dag outs, dag ins, string asm, list<dag> pattern> :
+-    Enc32<outs, ins, asm, pattern> {
++class SOPC_64 <bits<7> op, string opName, list<dag> pattern> : SOPC <
++  op, (outs SCCReg:$dst), (ins SSrc_64:$src0, SSrc_64:$src1),
++  opName#" $dst, $src0, $src1", pattern
++>;
+ 
+-  bits<7> SDST;
+-  bits<8> SSRC0;
++class SOPK_32 <bits<5> op, string opName, list<dag> pattern> : SOPK <
++  op, (outs SReg_32:$dst), (ins i16imm:$src0),
++  opName#" $dst, $src0", pattern
++>;
+ 
+-  let Inst{7-0} = SSRC0;
+-  let Inst{15-8} = op;
+-  let Inst{22-16} = SDST;
+-  let Inst{31-23} = 0x17d; //encoding;
++class SOPK_64 <bits<5> op, string opName, list<dag> pattern> : SOPK <
++  op, (outs SReg_64:$dst), (ins i16imm:$src0),
++  opName#" $dst, $src0", pattern
++>;
+ 
+-  let mayLoad = 0;
+-  let mayStore = 0;
+-  let hasSideEffects = 0;
++multiclass SMRD_Helper <bits<5> op, string asm, RegisterClass dstClass> {
++  def _IMM : SMRD <
++    op, 1, (outs dstClass:$dst),
++    (ins GPR2Align<SReg_64>:$sbase, i32imm:$offset),
++    asm#" $dst, $sbase, $offset", []
++  >;
++
++  def _SGPR : SMRD <
++    op, 0, (outs dstClass:$dst),
++    (ins GPR2Align<SReg_64>:$sbase, SReg_32:$soff),
++    asm#" $dst, $sbase, $soff", []
++  >;
+ }
+ 
+-class SOP2 <bits<7> op, dag outs, dag ins, string asm, list<dag> pattern> :
+-    Enc32 <outs, ins, asm, pattern> {
+-  
+-  bits<7> SDST;
+-  bits<8> SSRC0;
+-  bits<8> SSRC1;
+-
+-  let Inst{7-0} = SSRC0;
+-  let Inst{15-8} = SSRC1;
+-  let Inst{22-16} = SDST;
+-  let Inst{29-23} = op;
+-  let Inst{31-30} = 0x2; // encoding
++//===----------------------------------------------------------------------===//
++// Vector ALU classes
++//===----------------------------------------------------------------------===//
+ 
+-  let mayLoad = 0;
+-  let mayStore = 0;
+-  let hasSideEffects = 0;
++multiclass VOP1_Helper <bits<8> op, RegisterClass drc, RegisterClass src,
++                        string opName, list<dag> pattern> {
++
++  def _e32: VOP1 <
++    op, (outs drc:$dst), (ins src:$src0),
++    opName#"_e32 $dst, $src0", pattern
++  >;
++
++  def _e64 : VOP3 <
++    {1, 1, op{6}, op{5}, op{4}, op{3}, op{2}, op{1}, op{0}},
++    (outs drc:$dst),
++    (ins src:$src0,
++         i32imm:$abs, i32imm:$clamp,
++         i32imm:$omod, i32imm:$neg),
++    opName#"_e64 $dst, $src0, $abs, $clamp, $omod, $neg", []
++  > {
++    let SRC1 = SIOperand.ZERO;
++    let SRC2 = SIOperand.ZERO;
++  }
+ }
+ 
+-class SOPC <bits<7> op, dag outs, dag ins, string asm, list<dag> pattern> :
+-  Enc32<outs, ins, asm, pattern> {
+-
+-  bits<8> SSRC0;
+-  bits<8> SSRC1;
+-
+-  let Inst{7-0} = SSRC0;
+-  let Inst{15-8} = SSRC1;
+-  let Inst{22-16} = op;
+-  let Inst{31-23} = 0x17e;
+-
+-  let DisableEncoding = "$dst";
+-  let mayLoad = 0;
+-  let mayStore = 0;
+-  let hasSideEffects = 0;
++multiclass VOP1_32 <bits<8> op, string opName, list<dag> pattern>
++  : VOP1_Helper <op, VReg_32, VSrc_32, opName, pattern>;
++
++multiclass VOP1_64 <bits<8> op, string opName, list<dag> pattern>
++  : VOP1_Helper <op, VReg_64, VSrc_64, opName, pattern>;
++
++multiclass VOP2_Helper <bits<6> op, RegisterClass vrc, RegisterClass arc,
++                        string opName, list<dag> pattern> {
++  def _e32 : VOP2 <
++    op, (outs vrc:$dst), (ins arc:$src0, vrc:$src1),
++    opName#"_e32 $dst, $src0, $src1", pattern
++  >;
++
++  def _e64 : VOP3 <
++    {1, 0, 0, op{5}, op{4}, op{3}, op{2}, op{1}, op{0}},
++    (outs vrc:$dst),
++    (ins arc:$src0, vrc:$src1,
++         i32imm:$abs, i32imm:$clamp,
++         i32imm:$omod, i32imm:$neg),
++    opName#"_e64 $dst, $src0, $src1, $abs, $clamp, $omod, $neg", []
++  > {
++    let SRC2 = SIOperand.ZERO;
++  }
+ }
+ 
+-class SOPK <bits<5> op, dag outs, dag ins, string asm, list<dag> pattern> :
+-   Enc32 <outs, ins , asm, pattern> {
+-
+-  bits <7> SDST;
+-  bits <16> SIMM16;
+-  
+-  let Inst{15-0} = SIMM16;
+-  let Inst{22-16} = SDST;
+-  let Inst{27-23} = op;
+-  let Inst{31-28} = 0xb; //encoding
+-
+-  let mayLoad = 0;
+-  let mayStore = 0;
+-  let hasSideEffects = 0;
++multiclass VOP2_32 <bits<6> op, string opName, list<dag> pattern>
++  : VOP2_Helper <op, VReg_32, VSrc_32, opName, pattern>;
++
++multiclass VOP2_64 <bits<6> op, string opName, list<dag> pattern>
++  : VOP2_Helper <op, VReg_64, VSrc_64, opName, pattern>;
++
++multiclass VOP2b_32 <bits<6> op, string opName, list<dag> pattern> {
++
++  def _e32 : VOP2 <
++    op, (outs VReg_32:$dst), (ins VSrc_32:$src0, VReg_32:$src1),
++    opName#"_e32 $dst, $src0, $src1", pattern
++  >;
++
++  def _e64 : VOP3b <
++    {1, 0, 0, op{5}, op{4}, op{3}, op{2}, op{1}, op{0}},
++    (outs VReg_32:$dst),
++    (ins VSrc_32:$src0, VReg_32:$src1,
++         i32imm:$abs, i32imm:$clamp,
++         i32imm:$omod, i32imm:$neg),
++    opName#"_e64 $dst, $src0, $src1, $abs, $clamp, $omod, $neg", []
++  > {
++    let SRC2 = SIOperand.ZERO;
++    /* the VOP2 variant puts the carry out into VCC, the VOP3 variant
++       can write it into any SGPR. We currently don't use the carry out,
++       so for now hardcode it to VCC as well */
++    let SDST = SIOperand.VCC;
++  }
+ }
+ 
+-class SOPP <bits<7> op, dag ins, string asm, list<dag> pattern> : Enc32 <
+-  (outs),
+-  ins,
+-  asm,
+-  pattern > {
+-
+-  bits <16> SIMM16;
+-
+-  let Inst{15-0} = SIMM16;
+-  let Inst{22-16} = op;
+-  let Inst{31-23} = 0x17f; // encoding
+-
+-  let mayLoad = 0;
+-  let mayStore = 0;
+-  let hasSideEffects = 0;
++multiclass VOPC_Helper <bits<8> op, RegisterClass vrc, RegisterClass arc,
++                        string opName, ValueType vt, PatLeaf cond> {
++
++  def _e32 : VOPC <
++    op, (ins arc:$src0, vrc:$src1),
++    opName#"_e32 $dst, $src0, $src1", []
++  >;
++
++  def _e64 : VOP3 <
++    {0, op{7}, op{6}, op{5}, op{4}, op{3}, op{2}, op{1}, op{0}},
++    (outs SReg_64:$dst),
++    (ins arc:$src0, vrc:$src1,
++         InstFlag:$abs, InstFlag:$clamp,
++         InstFlag:$omod, InstFlag:$neg),
++    opName#"_e64 $dst, $src0, $src1, $abs, $clamp, $omod, $neg",
++    !if(!eq(!cast<string>(cond), "COND_NULL"), []<dag>,
++      [(set SReg_64:$dst, (i1 (setcc (vt arc:$src0), vrc:$src1, cond)))]
++    )
++  > {
++    let SRC2 = SIOperand.ZERO;
++  }
+ }
+-    
+-let Uses = [EXEC] in {
+ 
+-class VINTRP <bits <2> op, dag outs, dag ins, string asm, list<dag> pattern> :
+-    Enc32 <outs, ins, asm, pattern> {
++multiclass VOPC_32 <bits<8> op, string opName,
++  ValueType vt = untyped, PatLeaf cond = COND_NULL>
++  : VOPC_Helper <op, VReg_32, VSrc_32, opName, vt, cond>;
+ 
+-  bits<8> VDST;
+-  bits<8> VSRC;
+-  bits<2> ATTRCHAN;
+-  bits<6> ATTR;
++multiclass VOPC_64 <bits<8> op, string opName,
++  ValueType vt = untyped, PatLeaf cond = COND_NULL>
++  : VOPC_Helper <op, VReg_64, VSrc_64, opName, vt, cond>;
+ 
+-  let Inst{7-0} = VSRC;
+-  let Inst{9-8} = ATTRCHAN;
+-  let Inst{15-10} = ATTR;
+-  let Inst{17-16} = op;
+-  let Inst{25-18} = VDST;
+-  let Inst{31-26} = 0x32; // encoding
++class VOP3_32 <bits<9> op, string opName, list<dag> pattern> : VOP3 <
++  op, (outs VReg_32:$dst),
++  (ins VSrc_32:$src0, VReg_32:$src1, VReg_32:$src2,
++   i32imm:$abs, i32imm:$clamp, i32imm:$omod, i32imm:$neg),
++  opName#" $dst, $src0, $src1, $src2, $abs, $clamp, $omod, $neg", pattern
++>;
+ 
+-  let neverHasSideEffects = 1;
+-  let mayLoad = 1;
+-  let mayStore = 0;
+-}
++class VOP3_64 <bits<9> op, string opName, list<dag> pattern> : VOP3 <
++  op, (outs VReg_64:$dst),
++  (ins VSrc_64:$src0, VReg_64:$src1, VReg_64:$src2,
++   i32imm:$abs, i32imm:$clamp, i32imm:$omod, i32imm:$neg),
++  opName#" $dst, $src0, $src1, $src2, $abs, $clamp, $omod, $neg", pattern
++>;
+ 
+-class VOP1 <bits<8> op, dag outs, dag ins, string asm, list<dag> pattern> :
+-    Enc32 <outs, ins, asm, pattern> {
+-
+-  bits<8> VDST;
+-  bits<9> SRC0;
+-  
+-  let Inst{8-0} = SRC0;
+-  let Inst{16-9} = op;
+-  let Inst{24-17} = VDST;
+-  let Inst{31-25} = 0x3f; //encoding
+-  
+-  let mayLoad = 0;
+-  let mayStore = 0;
+-  let hasSideEffects = 0;
+-}
++//===----------------------------------------------------------------------===//
++// Vector I/O classes
++//===----------------------------------------------------------------------===//
+ 
+-class VOP2 <bits<6> op, dag outs, dag ins, string asm, list<dag> pattern> :
+-    Enc32 <outs, ins, asm, pattern> {
+-
+-  bits<8> VDST;
+-  bits<9> SRC0;
+-  bits<8> VSRC1;
+-  
+-  let Inst{8-0} = SRC0;
+-  let Inst{16-9} = VSRC1;
+-  let Inst{24-17} = VDST;
+-  let Inst{30-25} = op;
+-  let Inst{31} = 0x0; //encoding
+-  
++class MTBUF_Store_Helper <bits<3> op, string asm, RegisterClass regClass> : MTBUF <
++  op,
++  (outs),
++  (ins regClass:$vdata, i16imm:$offset, i1imm:$offen, i1imm:$idxen, i1imm:$glc,
++   i1imm:$addr64, i8imm:$dfmt, i8imm:$nfmt, VReg_32:$vaddr,
++   GPR4Align<SReg_128>:$srsrc, i1imm:$slc, i1imm:$tfe, SSrc_32:$soffset),
++  asm#" $vdata, $offset, $offen, $idxen, $glc, $addr64, $dfmt,"
++     #" $nfmt, $vaddr, $srsrc, $slc, $tfe, $soffset",
++  []> {
++  let mayStore = 1;
+   let mayLoad = 0;
+-  let mayStore = 0;
+-  let hasSideEffects = 0;
+ }
+ 
+-class VOP3 <bits<9> op, dag outs, dag ins, string asm, list<dag> pattern> :
+-    Enc64 <outs, ins, asm, pattern> {
+-
+-  bits<8> VDST;
+-  bits<9> SRC0;
+-  bits<9> SRC1;
+-  bits<9> SRC2;
+-  bits<3> ABS; 
+-  bits<1> CLAMP;
+-  bits<2> OMOD;
+-  bits<3> NEG;
+-
+-  let Inst{7-0} = VDST;
+-  let Inst{10-8} = ABS;
+-  let Inst{11} = CLAMP;
+-  let Inst{25-17} = op;
+-  let Inst{31-26} = 0x34; //encoding
+-  let Inst{40-32} = SRC0;
+-  let Inst{49-41} = SRC1;
+-  let Inst{58-50} = SRC2;
+-  let Inst{60-59} = OMOD;
+-  let Inst{63-61} = NEG;
+-  
+-  let mayLoad = 0;
++class MUBUF_Load_Helper <bits<7> op, string asm, RegisterClass regClass> : MUBUF <
++  op,
++  (outs regClass:$dst),
++  (ins i16imm:$offset, i1imm:$offen, i1imm:$idxen, i1imm:$glc, i1imm:$addr64,
++       i1imm:$lds, VReg_32:$vaddr, GPR4Align<SReg_128>:$srsrc, i1imm:$slc,
++       i1imm:$tfe, SSrc_32:$soffset),
++  asm#" $dst, $offset, $offen, $idxen, $glc, $addr64, "
++     #"$lds, $vaddr, $srsrc, $slc, $tfe, $soffset",
++  []> {
++  let mayLoad = 1;
+   let mayStore = 0;
+-  let hasSideEffects = 0;
+ }
+ 
+-class VOP3b <bits<9> op, dag outs, dag ins, string asm, list<dag> pattern> :
+-    Enc64 <outs, ins, asm, pattern> {
+-
+-  bits<8> VDST;
+-  bits<9> SRC0;
+-  bits<9> SRC1;
+-  bits<9> SRC2;
+-  bits<7> SDST;
+-  bits<2> OMOD;
+-  bits<3> NEG;
+-
+-  let Inst{7-0} = VDST;
+-  let Inst{14-8} = SDST;
+-  let Inst{25-17} = op;
+-  let Inst{31-26} = 0x34; //encoding
+-  let Inst{40-32} = SRC0;
+-  let Inst{49-41} = SRC1;
+-  let Inst{58-50} = SRC2;
+-  let Inst{60-59} = OMOD;
+-  let Inst{63-61} = NEG;
+-
+-  let mayLoad = 0;
++class MTBUF_Load_Helper <bits<3> op, string asm, RegisterClass regClass> : MTBUF <
++  op,
++  (outs regClass:$dst),
++  (ins i16imm:$offset, i1imm:$offen, i1imm:$idxen, i1imm:$glc, i1imm:$addr64,
++       i8imm:$dfmt, i8imm:$nfmt, VReg_32:$vaddr, GPR4Align<SReg_128>:$srsrc,
++       i1imm:$slc, i1imm:$tfe, SSrc_32:$soffset),
++  asm#" $dst, $offset, $offen, $idxen, $glc, $addr64, $dfmt,"
++     #" $nfmt, $vaddr, $srsrc, $slc, $tfe, $soffset",
++  []> {
++  let mayLoad = 1;
+   let mayStore = 0;
+-  let hasSideEffects = 0;
+ }
+ 
+-class VOPC <bits<8> op, dag ins, string asm, list<dag> pattern> :
+-    Enc32 <(outs VCCReg:$dst), ins, asm, pattern> {
+-
+-  bits<9> SRC0;
+-  bits<8> VSRC1;
+-
+-  let Inst{8-0} = SRC0;
+-  let Inst{16-9} = VSRC1;
+-  let Inst{24-17} = op;
+-  let Inst{31-25} = 0x3e;
+- 
+-  let DisableEncoding = "$dst";
+-  let mayLoad = 0;
++class MIMG_Load_Helper <bits<7> op, string asm> : MIMG <
++  op,
++  (outs VReg_128:$vdata),
++  (ins i32imm:$dmask, i1imm:$unorm, i1imm:$glc, i1imm:$da, i1imm:$r128,
++       i1imm:$tfe, i1imm:$lwe, i1imm:$slc, VReg_32:$vaddr,
++       GPR4Align<SReg_256>:$srsrc, GPR4Align<SReg_128>:$ssamp),
++  asm#" $vdata, $dmask, $unorm, $glc, $da, $r128,"
++     #" $tfe, $lwe, $slc, $vaddr, $srsrc, $ssamp",
++  []> {
++  let mayLoad = 1;
+   let mayStore = 0;
+-  let hasSideEffects = 0;
+ }
+ 
+-} // End Uses = [EXEC]
+-
+-include "SIInstrFormats.td"
+ include "SIInstructions.td"
+diff --git a/lib/Target/R600/SIInstructions.td b/lib/Target/R600/SIInstructions.td
+index 3a9822a..21d0010 100644
+--- a/lib/Target/R600/SIInstructions.td
++++ b/lib/Target/R600/SIInstructions.td
+@@ -127,286 +127,234 @@ def S_GETREG_REGRD_B32 : SOPK_32 <0x00000014, "S_GETREG_REGRD_B32", []>;
+ //def S_SETREG_IMM32_B32 : SOPK_32 <0x00000015, "S_SETREG_IMM32_B32", []>;
+ //def EXP : EXP_ <0x00000000, "EXP", []>;
+ 
+-defm V_CMP_F_F32 : VOPC_32 <0x00000000, "V_CMP_F_F32", []>;
+-defm V_CMP_LT_F32 : VOPC_32 <0x00000001, "V_CMP_LT_F32", []>;
+-def : Pat <
+-  (i1 (setcc (f32 VSrc_32:$src0), VReg_32:$src1, COND_LT)),
+-  (V_CMP_LT_F32_e64 VSrc_32:$src0, VReg_32:$src1)
+->;
+-defm V_CMP_EQ_F32 : VOPC_32 <0x00000002, "V_CMP_EQ_F32", []>;
+-def : Pat <
+-  (i1 (setcc (f32 VSrc_32:$src0), VReg_32:$src1, COND_EQ)),
+-  (V_CMP_EQ_F32_e64 VSrc_32:$src0, VReg_32:$src1)
+->;
+-defm V_CMP_LE_F32 : VOPC_32 <0x00000003, "V_CMP_LE_F32", []>;
+-def : Pat <
+-  (i1 (setcc (f32 VSrc_32:$src0), VReg_32:$src1, COND_LE)),
+-  (V_CMP_LE_F32_e64 VSrc_32:$src0, VReg_32:$src1)
+->;
+-defm V_CMP_GT_F32 : VOPC_32 <0x00000004, "V_CMP_GT_F32", []>;
+-def : Pat <
+-  (i1 (setcc (f32 VSrc_32:$src0), VReg_32:$src1, COND_GT)),
+-  (V_CMP_GT_F32_e64 VSrc_32:$src0, VReg_32:$src1)
+->;
+-defm V_CMP_LG_F32 : VOPC_32 <0x00000005, "V_CMP_LG_F32", []>;
+-def : Pat <
+-  (i1 (setcc (f32 VSrc_32:$src0), VReg_32:$src1, COND_NE)),
+-  (V_CMP_LG_F32_e64 VSrc_32:$src0, VReg_32:$src1)
+->;
+-defm V_CMP_GE_F32 : VOPC_32 <0x00000006, "V_CMP_GE_F32", []>;
+-def : Pat <
+-  (i1 (setcc (f32 VSrc_32:$src0), VReg_32:$src1, COND_GE)),
+-  (V_CMP_GE_F32_e64 VSrc_32:$src0, VReg_32:$src1)
+->;
+-defm V_CMP_O_F32 : VOPC_32 <0x00000007, "V_CMP_O_F32", []>;
+-defm V_CMP_U_F32 : VOPC_32 <0x00000008, "V_CMP_U_F32", []>;
+-defm V_CMP_NGE_F32 : VOPC_32 <0x00000009, "V_CMP_NGE_F32", []>;
+-defm V_CMP_NLG_F32 : VOPC_32 <0x0000000a, "V_CMP_NLG_F32", []>;
+-defm V_CMP_NGT_F32 : VOPC_32 <0x0000000b, "V_CMP_NGT_F32", []>;
+-defm V_CMP_NLE_F32 : VOPC_32 <0x0000000c, "V_CMP_NLE_F32", []>;
+-defm V_CMP_NEQ_F32 : VOPC_32 <0x0000000d, "V_CMP_NEQ_F32", []>;
+-def : Pat <
+-  (i1 (setcc (f32 VSrc_32:$src0), VReg_32:$src1, COND_NE)),
+-  (V_CMP_NEQ_F32_e64 VSrc_32:$src0, VReg_32:$src1)
+->;
+-defm V_CMP_NLT_F32 : VOPC_32 <0x0000000e, "V_CMP_NLT_F32", []>;
+-defm V_CMP_TRU_F32 : VOPC_32 <0x0000000f, "V_CMP_TRU_F32", []>;
++defm V_CMP_F_F32 : VOPC_32 <0x00000000, "V_CMP_F_F32">;
++defm V_CMP_LT_F32 : VOPC_32 <0x00000001, "V_CMP_LT_F32", f32, COND_LT>;
++defm V_CMP_EQ_F32 : VOPC_32 <0x00000002, "V_CMP_EQ_F32", f32, COND_EQ>;
++defm V_CMP_LE_F32 : VOPC_32 <0x00000003, "V_CMP_LE_F32", f32, COND_LE>;
++defm V_CMP_GT_F32 : VOPC_32 <0x00000004, "V_CMP_GT_F32", f32, COND_GT>;
++defm V_CMP_LG_F32 : VOPC_32 <0x00000005, "V_CMP_LG_F32", f32, COND_NE>;
++defm V_CMP_GE_F32 : VOPC_32 <0x00000006, "V_CMP_GE_F32", f32, COND_GE>;
++defm V_CMP_O_F32 : VOPC_32 <0x00000007, "V_CMP_O_F32">;
++defm V_CMP_U_F32 : VOPC_32 <0x00000008, "V_CMP_U_F32">;
++defm V_CMP_NGE_F32 : VOPC_32 <0x00000009, "V_CMP_NGE_F32">;
++defm V_CMP_NLG_F32 : VOPC_32 <0x0000000a, "V_CMP_NLG_F32">;
++defm V_CMP_NGT_F32 : VOPC_32 <0x0000000b, "V_CMP_NGT_F32">;
++defm V_CMP_NLE_F32 : VOPC_32 <0x0000000c, "V_CMP_NLE_F32">;
++defm V_CMP_NEQ_F32 : VOPC_32 <0x0000000d, "V_CMP_NEQ_F32", f32, COND_NE>;
++defm V_CMP_NLT_F32 : VOPC_32 <0x0000000e, "V_CMP_NLT_F32">;
++defm V_CMP_TRU_F32 : VOPC_32 <0x0000000f, "V_CMP_TRU_F32">;
+ 
+ //Side effect is writing to EXEC
+ let hasSideEffects = 1 in {
+ 
+-defm V_CMPX_F_F32 : VOPC_32 <0x00000010, "V_CMPX_F_F32", []>;
+-defm V_CMPX_LT_F32 : VOPC_32 <0x00000011, "V_CMPX_LT_F32", []>;
+-defm V_CMPX_EQ_F32 : VOPC_32 <0x00000012, "V_CMPX_EQ_F32", []>;
+-defm V_CMPX_LE_F32 : VOPC_32 <0x00000013, "V_CMPX_LE_F32", []>;
+-defm V_CMPX_GT_F32 : VOPC_32 <0x00000014, "V_CMPX_GT_F32", []>;
+-defm V_CMPX_LG_F32 : VOPC_32 <0x00000015, "V_CMPX_LG_F32", []>;
+-defm V_CMPX_GE_F32 : VOPC_32 <0x00000016, "V_CMPX_GE_F32", []>;
+-defm V_CMPX_O_F32 : VOPC_32 <0x00000017, "V_CMPX_O_F32", []>;
+-defm V_CMPX_U_F32 : VOPC_32 <0x00000018, "V_CMPX_U_F32", []>;
+-defm V_CMPX_NGE_F32 : VOPC_32 <0x00000019, "V_CMPX_NGE_F32", []>;
+-defm V_CMPX_NLG_F32 : VOPC_32 <0x0000001a, "V_CMPX_NLG_F32", []>;
+-defm V_CMPX_NGT_F32 : VOPC_32 <0x0000001b, "V_CMPX_NGT_F32", []>;
+-defm V_CMPX_NLE_F32 : VOPC_32 <0x0000001c, "V_CMPX_NLE_F32", []>;
+-defm V_CMPX_NEQ_F32 : VOPC_32 <0x0000001d, "V_CMPX_NEQ_F32", []>;
+-defm V_CMPX_NLT_F32 : VOPC_32 <0x0000001e, "V_CMPX_NLT_F32", []>;
+-defm V_CMPX_TRU_F32 : VOPC_32 <0x0000001f, "V_CMPX_TRU_F32", []>;
++defm V_CMPX_F_F32 : VOPC_32 <0x00000010, "V_CMPX_F_F32">;
++defm V_CMPX_LT_F32 : VOPC_32 <0x00000011, "V_CMPX_LT_F32">;
++defm V_CMPX_EQ_F32 : VOPC_32 <0x00000012, "V_CMPX_EQ_F32">;
++defm V_CMPX_LE_F32 : VOPC_32 <0x00000013, "V_CMPX_LE_F32">;
++defm V_CMPX_GT_F32 : VOPC_32 <0x00000014, "V_CMPX_GT_F32">;
++defm V_CMPX_LG_F32 : VOPC_32 <0x00000015, "V_CMPX_LG_F32">;
++defm V_CMPX_GE_F32 : VOPC_32 <0x00000016, "V_CMPX_GE_F32">;
++defm V_CMPX_O_F32 : VOPC_32 <0x00000017, "V_CMPX_O_F32">;
++defm V_CMPX_U_F32 : VOPC_32 <0x00000018, "V_CMPX_U_F32">;
++defm V_CMPX_NGE_F32 : VOPC_32 <0x00000019, "V_CMPX_NGE_F32">;
++defm V_CMPX_NLG_F32 : VOPC_32 <0x0000001a, "V_CMPX_NLG_F32">;
++defm V_CMPX_NGT_F32 : VOPC_32 <0x0000001b, "V_CMPX_NGT_F32">;
++defm V_CMPX_NLE_F32 : VOPC_32 <0x0000001c, "V_CMPX_NLE_F32">;
++defm V_CMPX_NEQ_F32 : VOPC_32 <0x0000001d, "V_CMPX_NEQ_F32">;
++defm V_CMPX_NLT_F32 : VOPC_32 <0x0000001e, "V_CMPX_NLT_F32">;
++defm V_CMPX_TRU_F32 : VOPC_32 <0x0000001f, "V_CMPX_TRU_F32">;
+ 
+ } // End hasSideEffects = 1
+ 
+-defm V_CMP_F_F64 : VOPC_64 <0x00000020, "V_CMP_F_F64", []>;
+-defm V_CMP_LT_F64 : VOPC_64 <0x00000021, "V_CMP_LT_F64", []>;
+-defm V_CMP_EQ_F64 : VOPC_64 <0x00000022, "V_CMP_EQ_F64", []>;
+-defm V_CMP_LE_F64 : VOPC_64 <0x00000023, "V_CMP_LE_F64", []>;
+-defm V_CMP_GT_F64 : VOPC_64 <0x00000024, "V_CMP_GT_F64", []>;
+-defm V_CMP_LG_F64 : VOPC_64 <0x00000025, "V_CMP_LG_F64", []>;
+-defm V_CMP_GE_F64 : VOPC_64 <0x00000026, "V_CMP_GE_F64", []>;
+-defm V_CMP_O_F64 : VOPC_64 <0x00000027, "V_CMP_O_F64", []>;
+-defm V_CMP_U_F64 : VOPC_64 <0x00000028, "V_CMP_U_F64", []>;
+-defm V_CMP_NGE_F64 : VOPC_64 <0x00000029, "V_CMP_NGE_F64", []>;
+-defm V_CMP_NLG_F64 : VOPC_64 <0x0000002a, "V_CMP_NLG_F64", []>;
+-defm V_CMP_NGT_F64 : VOPC_64 <0x0000002b, "V_CMP_NGT_F64", []>;
+-defm V_CMP_NLE_F64 : VOPC_64 <0x0000002c, "V_CMP_NLE_F64", []>;
+-defm V_CMP_NEQ_F64 : VOPC_64 <0x0000002d, "V_CMP_NEQ_F64", []>;
+-defm V_CMP_NLT_F64 : VOPC_64 <0x0000002e, "V_CMP_NLT_F64", []>;
+-defm V_CMP_TRU_F64 : VOPC_64 <0x0000002f, "V_CMP_TRU_F64", []>;
++defm V_CMP_F_F64 : VOPC_64 <0x00000020, "V_CMP_F_F64">;
++defm V_CMP_LT_F64 : VOPC_64 <0x00000021, "V_CMP_LT_F64">;
++defm V_CMP_EQ_F64 : VOPC_64 <0x00000022, "V_CMP_EQ_F64">;
++defm V_CMP_LE_F64 : VOPC_64 <0x00000023, "V_CMP_LE_F64">;
++defm V_CMP_GT_F64 : VOPC_64 <0x00000024, "V_CMP_GT_F64">;
++defm V_CMP_LG_F64 : VOPC_64 <0x00000025, "V_CMP_LG_F64">;
++defm V_CMP_GE_F64 : VOPC_64 <0x00000026, "V_CMP_GE_F64">;
++defm V_CMP_O_F64 : VOPC_64 <0x00000027, "V_CMP_O_F64">;
++defm V_CMP_U_F64 : VOPC_64 <0x00000028, "V_CMP_U_F64">;
++defm V_CMP_NGE_F64 : VOPC_64 <0x00000029, "V_CMP_NGE_F64">;
++defm V_CMP_NLG_F64 : VOPC_64 <0x0000002a, "V_CMP_NLG_F64">;
++defm V_CMP_NGT_F64 : VOPC_64 <0x0000002b, "V_CMP_NGT_F64">;
++defm V_CMP_NLE_F64 : VOPC_64 <0x0000002c, "V_CMP_NLE_F64">;
++defm V_CMP_NEQ_F64 : VOPC_64 <0x0000002d, "V_CMP_NEQ_F64">;
++defm V_CMP_NLT_F64 : VOPC_64 <0x0000002e, "V_CMP_NLT_F64">;
++defm V_CMP_TRU_F64 : VOPC_64 <0x0000002f, "V_CMP_TRU_F64">;
+ 
+ //Side effect is writing to EXEC
+ let hasSideEffects = 1 in {
+ 
+-defm V_CMPX_F_F64 : VOPC_64 <0x00000030, "V_CMPX_F_F64", []>;
+-defm V_CMPX_LT_F64 : VOPC_64 <0x00000031, "V_CMPX_LT_F64", []>;
+-defm V_CMPX_EQ_F64 : VOPC_64 <0x00000032, "V_CMPX_EQ_F64", []>;
+-defm V_CMPX_LE_F64 : VOPC_64 <0x00000033, "V_CMPX_LE_F64", []>;
+-defm V_CMPX_GT_F64 : VOPC_64 <0x00000034, "V_CMPX_GT_F64", []>;
+-defm V_CMPX_LG_F64 : VOPC_64 <0x00000035, "V_CMPX_LG_F64", []>;
+-defm V_CMPX_GE_F64 : VOPC_64 <0x00000036, "V_CMPX_GE_F64", []>;
+-defm V_CMPX_O_F64 : VOPC_64 <0x00000037, "V_CMPX_O_F64", []>;
+-defm V_CMPX_U_F64 : VOPC_64 <0x00000038, "V_CMPX_U_F64", []>;
+-defm V_CMPX_NGE_F64 : VOPC_64 <0x00000039, "V_CMPX_NGE_F64", []>;
+-defm V_CMPX_NLG_F64 : VOPC_64 <0x0000003a, "V_CMPX_NLG_F64", []>;
+-defm V_CMPX_NGT_F64 : VOPC_64 <0x0000003b, "V_CMPX_NGT_F64", []>;
+-defm V_CMPX_NLE_F64 : VOPC_64 <0x0000003c, "V_CMPX_NLE_F64", []>;
+-defm V_CMPX_NEQ_F64 : VOPC_64 <0x0000003d, "V_CMPX_NEQ_F64", []>;
+-defm V_CMPX_NLT_F64 : VOPC_64 <0x0000003e, "V_CMPX_NLT_F64", []>;
+-defm V_CMPX_TRU_F64 : VOPC_64 <0x0000003f, "V_CMPX_TRU_F64", []>;
++defm V_CMPX_F_F64 : VOPC_64 <0x00000030, "V_CMPX_F_F64">;
++defm V_CMPX_LT_F64 : VOPC_64 <0x00000031, "V_CMPX_LT_F64">;
++defm V_CMPX_EQ_F64 : VOPC_64 <0x00000032, "V_CMPX_EQ_F64">;
++defm V_CMPX_LE_F64 : VOPC_64 <0x00000033, "V_CMPX_LE_F64">;
++defm V_CMPX_GT_F64 : VOPC_64 <0x00000034, "V_CMPX_GT_F64">;
++defm V_CMPX_LG_F64 : VOPC_64 <0x00000035, "V_CMPX_LG_F64">;
++defm V_CMPX_GE_F64 : VOPC_64 <0x00000036, "V_CMPX_GE_F64">;
++defm V_CMPX_O_F64 : VOPC_64 <0x00000037, "V_CMPX_O_F64">;
++defm V_CMPX_U_F64 : VOPC_64 <0x00000038, "V_CMPX_U_F64">;
++defm V_CMPX_NGE_F64 : VOPC_64 <0x00000039, "V_CMPX_NGE_F64">;
++defm V_CMPX_NLG_F64 : VOPC_64 <0x0000003a, "V_CMPX_NLG_F64">;
++defm V_CMPX_NGT_F64 : VOPC_64 <0x0000003b, "V_CMPX_NGT_F64">;
++defm V_CMPX_NLE_F64 : VOPC_64 <0x0000003c, "V_CMPX_NLE_F64">;
++defm V_CMPX_NEQ_F64 : VOPC_64 <0x0000003d, "V_CMPX_NEQ_F64">;
++defm V_CMPX_NLT_F64 : VOPC_64 <0x0000003e, "V_CMPX_NLT_F64">;
++defm V_CMPX_TRU_F64 : VOPC_64 <0x0000003f, "V_CMPX_TRU_F64">;
+ 
+ } // End hasSideEffects = 1
+ 
+-defm V_CMPS_F_F32 : VOPC_32 <0x00000040, "V_CMPS_F_F32", []>;
+-defm V_CMPS_LT_F32 : VOPC_32 <0x00000041, "V_CMPS_LT_F32", []>;
+-defm V_CMPS_EQ_F32 : VOPC_32 <0x00000042, "V_CMPS_EQ_F32", []>;
+-defm V_CMPS_LE_F32 : VOPC_32 <0x00000043, "V_CMPS_LE_F32", []>;
+-defm V_CMPS_GT_F32 : VOPC_32 <0x00000044, "V_CMPS_GT_F32", []>;
+-defm V_CMPS_LG_F32 : VOPC_32 <0x00000045, "V_CMPS_LG_F32", []>;
+-defm V_CMPS_GE_F32 : VOPC_32 <0x00000046, "V_CMPS_GE_F32", []>;
+-defm V_CMPS_O_F32 : VOPC_32 <0x00000047, "V_CMPS_O_F32", []>;
+-defm V_CMPS_U_F32 : VOPC_32 <0x00000048, "V_CMPS_U_F32", []>;
+-defm V_CMPS_NGE_F32 : VOPC_32 <0x00000049, "V_CMPS_NGE_F32", []>;
+-defm V_CMPS_NLG_F32 : VOPC_32 <0x0000004a, "V_CMPS_NLG_F32", []>;
+-defm V_CMPS_NGT_F32 : VOPC_32 <0x0000004b, "V_CMPS_NGT_F32", []>;
+-defm V_CMPS_NLE_F32 : VOPC_32 <0x0000004c, "V_CMPS_NLE_F32", []>;
+-defm V_CMPS_NEQ_F32 : VOPC_32 <0x0000004d, "V_CMPS_NEQ_F32", []>;
+-defm V_CMPS_NLT_F32 : VOPC_32 <0x0000004e, "V_CMPS_NLT_F32", []>;
+-defm V_CMPS_TRU_F32 : VOPC_32 <0x0000004f, "V_CMPS_TRU_F32", []>;
+-defm V_CMPSX_F_F32 : VOPC_32 <0x00000050, "V_CMPSX_F_F32", []>;
+-defm V_CMPSX_LT_F32 : VOPC_32 <0x00000051, "V_CMPSX_LT_F32", []>;
+-defm V_CMPSX_EQ_F32 : VOPC_32 <0x00000052, "V_CMPSX_EQ_F32", []>;
+-defm V_CMPSX_LE_F32 : VOPC_32 <0x00000053, "V_CMPSX_LE_F32", []>;
+-defm V_CMPSX_GT_F32 : VOPC_32 <0x00000054, "V_CMPSX_GT_F32", []>;
+-defm V_CMPSX_LG_F32 : VOPC_32 <0x00000055, "V_CMPSX_LG_F32", []>;
+-defm V_CMPSX_GE_F32 : VOPC_32 <0x00000056, "V_CMPSX_GE_F32", []>;
+-defm V_CMPSX_O_F32 : VOPC_32 <0x00000057, "V_CMPSX_O_F32", []>;
+-defm V_CMPSX_U_F32 : VOPC_32 <0x00000058, "V_CMPSX_U_F32", []>;
+-defm V_CMPSX_NGE_F32 : VOPC_32 <0x00000059, "V_CMPSX_NGE_F32", []>;
+-defm V_CMPSX_NLG_F32 : VOPC_32 <0x0000005a, "V_CMPSX_NLG_F32", []>;
+-defm V_CMPSX_NGT_F32 : VOPC_32 <0x0000005b, "V_CMPSX_NGT_F32", []>;
+-defm V_CMPSX_NLE_F32 : VOPC_32 <0x0000005c, "V_CMPSX_NLE_F32", []>;
+-defm V_CMPSX_NEQ_F32 : VOPC_32 <0x0000005d, "V_CMPSX_NEQ_F32", []>;
+-defm V_CMPSX_NLT_F32 : VOPC_32 <0x0000005e, "V_CMPSX_NLT_F32", []>;
+-defm V_CMPSX_TRU_F32 : VOPC_32 <0x0000005f, "V_CMPSX_TRU_F32", []>;
+-defm V_CMPS_F_F64 : VOPC_64 <0x00000060, "V_CMPS_F_F64", []>;
+-defm V_CMPS_LT_F64 : VOPC_64 <0x00000061, "V_CMPS_LT_F64", []>;
+-defm V_CMPS_EQ_F64 : VOPC_64 <0x00000062, "V_CMPS_EQ_F64", []>;
+-defm V_CMPS_LE_F64 : VOPC_64 <0x00000063, "V_CMPS_LE_F64", []>;
+-defm V_CMPS_GT_F64 : VOPC_64 <0x00000064, "V_CMPS_GT_F64", []>;
+-defm V_CMPS_LG_F64 : VOPC_64 <0x00000065, "V_CMPS_LG_F64", []>;
+-defm V_CMPS_GE_F64 : VOPC_64 <0x00000066, "V_CMPS_GE_F64", []>;
+-defm V_CMPS_O_F64 : VOPC_64 <0x00000067, "V_CMPS_O_F64", []>;
+-defm V_CMPS_U_F64 : VOPC_64 <0x00000068, "V_CMPS_U_F64", []>;
+-defm V_CMPS_NGE_F64 : VOPC_64 <0x00000069, "V_CMPS_NGE_F64", []>;
+-defm V_CMPS_NLG_F64 : VOPC_64 <0x0000006a, "V_CMPS_NLG_F64", []>;
+-defm V_CMPS_NGT_F64 : VOPC_64 <0x0000006b, "V_CMPS_NGT_F64", []>;
+-defm V_CMPS_NLE_F64 : VOPC_64 <0x0000006c, "V_CMPS_NLE_F64", []>;
+-defm V_CMPS_NEQ_F64 : VOPC_64 <0x0000006d, "V_CMPS_NEQ_F64", []>;
+-defm V_CMPS_NLT_F64 : VOPC_64 <0x0000006e, "V_CMPS_NLT_F64", []>;
+-defm V_CMPS_TRU_F64 : VOPC_64 <0x0000006f, "V_CMPS_TRU_F64", []>;
+-defm V_CMPSX_F_F64 : VOPC_64 <0x00000070, "V_CMPSX_F_F64", []>;
+-defm V_CMPSX_LT_F64 : VOPC_64 <0x00000071, "V_CMPSX_LT_F64", []>;
+-defm V_CMPSX_EQ_F64 : VOPC_64 <0x00000072, "V_CMPSX_EQ_F64", []>;
+-defm V_CMPSX_LE_F64 : VOPC_64 <0x00000073, "V_CMPSX_LE_F64", []>;
+-defm V_CMPSX_GT_F64 : VOPC_64 <0x00000074, "V_CMPSX_GT_F64", []>;
+-defm V_CMPSX_LG_F64 : VOPC_64 <0x00000075, "V_CMPSX_LG_F64", []>;
+-defm V_CMPSX_GE_F64 : VOPC_64 <0x00000076, "V_CMPSX_GE_F64", []>;
+-defm V_CMPSX_O_F64 : VOPC_64 <0x00000077, "V_CMPSX_O_F64", []>;
+-defm V_CMPSX_U_F64 : VOPC_64 <0x00000078, "V_CMPSX_U_F64", []>;
+-defm V_CMPSX_NGE_F64 : VOPC_64 <0x00000079, "V_CMPSX_NGE_F64", []>;
+-defm V_CMPSX_NLG_F64 : VOPC_64 <0x0000007a, "V_CMPSX_NLG_F64", []>;
+-defm V_CMPSX_NGT_F64 : VOPC_64 <0x0000007b, "V_CMPSX_NGT_F64", []>;
+-defm V_CMPSX_NLE_F64 : VOPC_64 <0x0000007c, "V_CMPSX_NLE_F64", []>;
+-defm V_CMPSX_NEQ_F64 : VOPC_64 <0x0000007d, "V_CMPSX_NEQ_F64", []>;
+-defm V_CMPSX_NLT_F64 : VOPC_64 <0x0000007e, "V_CMPSX_NLT_F64", []>;
+-defm V_CMPSX_TRU_F64 : VOPC_64 <0x0000007f, "V_CMPSX_TRU_F64", []>;
+-defm V_CMP_F_I32 : VOPC_32 <0x00000080, "V_CMP_F_I32", []>;
+-defm V_CMP_LT_I32 : VOPC_32 <0x00000081, "V_CMP_LT_I32", []>;
+-def : Pat <
+-  (i1 (setcc (i32 VSrc_32:$src0), VReg_32:$src1, COND_LT)),
+-  (V_CMP_LT_I32_e64 VSrc_32:$src0, VReg_32:$src1)
+->;
+-defm V_CMP_EQ_I32 : VOPC_32 <0x00000082, "V_CMP_EQ_I32", []>;
+-def : Pat <
+-  (i1 (setcc (i32 VSrc_32:$src0), VReg_32:$src1, COND_EQ)),
+-  (V_CMP_EQ_I32_e64 VSrc_32:$src0, VReg_32:$src1)
+->;
+-defm V_CMP_LE_I32 : VOPC_32 <0x00000083, "V_CMP_LE_I32", []>;
+-def : Pat <
+-  (i1 (setcc (i32 VSrc_32:$src0), VReg_32:$src1, COND_LE)),
+-  (V_CMP_LE_I32_e64 VSrc_32:$src0, VReg_32:$src1)
+->;
+-defm V_CMP_GT_I32 : VOPC_32 <0x00000084, "V_CMP_GT_I32", []>;
+-def : Pat <
+-  (i1 (setcc (i32 VSrc_32:$src0), VReg_32:$src1, COND_GT)),
+-  (V_CMP_GT_I32_e64 VSrc_32:$src0, VReg_32:$src1)
+->;
+-defm V_CMP_NE_I32 : VOPC_32 <0x00000085, "V_CMP_NE_I32", []>;
+-def : Pat <
+-  (i1 (setcc (i32 VSrc_32:$src0), VReg_32:$src1, COND_NE)),
+-  (V_CMP_NE_I32_e64 VSrc_32:$src0, VReg_32:$src1)
+->;
+-defm V_CMP_GE_I32 : VOPC_32 <0x00000086, "V_CMP_GE_I32", []>;
+-def : Pat <
+-  (i1 (setcc (i32 VSrc_32:$src0), VReg_32:$src1, COND_GE)),
+-  (V_CMP_GE_I32_e64 VSrc_32:$src0, VReg_32:$src1)
+->;
+-defm V_CMP_T_I32 : VOPC_32 <0x00000087, "V_CMP_T_I32", []>;
++defm V_CMPS_F_F32 : VOPC_32 <0x00000040, "V_CMPS_F_F32">;
++defm V_CMPS_LT_F32 : VOPC_32 <0x00000041, "V_CMPS_LT_F32">;
++defm V_CMPS_EQ_F32 : VOPC_32 <0x00000042, "V_CMPS_EQ_F32">;
++defm V_CMPS_LE_F32 : VOPC_32 <0x00000043, "V_CMPS_LE_F32">;
++defm V_CMPS_GT_F32 : VOPC_32 <0x00000044, "V_CMPS_GT_F32">;
++defm V_CMPS_LG_F32 : VOPC_32 <0x00000045, "V_CMPS_LG_F32">;
++defm V_CMPS_GE_F32 : VOPC_32 <0x00000046, "V_CMPS_GE_F32">;
++defm V_CMPS_O_F32 : VOPC_32 <0x00000047, "V_CMPS_O_F32">;
++defm V_CMPS_U_F32 : VOPC_32 <0x00000048, "V_CMPS_U_F32">;
++defm V_CMPS_NGE_F32 : VOPC_32 <0x00000049, "V_CMPS_NGE_F32">;
++defm V_CMPS_NLG_F32 : VOPC_32 <0x0000004a, "V_CMPS_NLG_F32">;
++defm V_CMPS_NGT_F32 : VOPC_32 <0x0000004b, "V_CMPS_NGT_F32">;
++defm V_CMPS_NLE_F32 : VOPC_32 <0x0000004c, "V_CMPS_NLE_F32">;
++defm V_CMPS_NEQ_F32 : VOPC_32 <0x0000004d, "V_CMPS_NEQ_F32">;
++defm V_CMPS_NLT_F32 : VOPC_32 <0x0000004e, "V_CMPS_NLT_F32">;
++defm V_CMPS_TRU_F32 : VOPC_32 <0x0000004f, "V_CMPS_TRU_F32">;
++defm V_CMPSX_F_F32 : VOPC_32 <0x00000050, "V_CMPSX_F_F32">;
++defm V_CMPSX_LT_F32 : VOPC_32 <0x00000051, "V_CMPSX_LT_F32">;
++defm V_CMPSX_EQ_F32 : VOPC_32 <0x00000052, "V_CMPSX_EQ_F32">;
++defm V_CMPSX_LE_F32 : VOPC_32 <0x00000053, "V_CMPSX_LE_F32">;
++defm V_CMPSX_GT_F32 : VOPC_32 <0x00000054, "V_CMPSX_GT_F32">;
++defm V_CMPSX_LG_F32 : VOPC_32 <0x00000055, "V_CMPSX_LG_F32">;
++defm V_CMPSX_GE_F32 : VOPC_32 <0x00000056, "V_CMPSX_GE_F32">;
++defm V_CMPSX_O_F32 : VOPC_32 <0x00000057, "V_CMPSX_O_F32">;
++defm V_CMPSX_U_F32 : VOPC_32 <0x00000058, "V_CMPSX_U_F32">;
++defm V_CMPSX_NGE_F32 : VOPC_32 <0x00000059, "V_CMPSX_NGE_F32">;
++defm V_CMPSX_NLG_F32 : VOPC_32 <0x0000005a, "V_CMPSX_NLG_F32">;
++defm V_CMPSX_NGT_F32 : VOPC_32 <0x0000005b, "V_CMPSX_NGT_F32">;
++defm V_CMPSX_NLE_F32 : VOPC_32 <0x0000005c, "V_CMPSX_NLE_F32">;
++defm V_CMPSX_NEQ_F32 : VOPC_32 <0x0000005d, "V_CMPSX_NEQ_F32">;
++defm V_CMPSX_NLT_F32 : VOPC_32 <0x0000005e, "V_CMPSX_NLT_F32">;
++defm V_CMPSX_TRU_F32 : VOPC_32 <0x0000005f, "V_CMPSX_TRU_F32">;
++defm V_CMPS_F_F64 : VOPC_64 <0x00000060, "V_CMPS_F_F64">;
++defm V_CMPS_LT_F64 : VOPC_64 <0x00000061, "V_CMPS_LT_F64">;
++defm V_CMPS_EQ_F64 : VOPC_64 <0x00000062, "V_CMPS_EQ_F64">;
++defm V_CMPS_LE_F64 : VOPC_64 <0x00000063, "V_CMPS_LE_F64">;
++defm V_CMPS_GT_F64 : VOPC_64 <0x00000064, "V_CMPS_GT_F64">;
++defm V_CMPS_LG_F64 : VOPC_64 <0x00000065, "V_CMPS_LG_F64">;
++defm V_CMPS_GE_F64 : VOPC_64 <0x00000066, "V_CMPS_GE_F64">;
++defm V_CMPS_O_F64 : VOPC_64 <0x00000067, "V_CMPS_O_F64">;
++defm V_CMPS_U_F64 : VOPC_64 <0x00000068, "V_CMPS_U_F64">;
++defm V_CMPS_NGE_F64 : VOPC_64 <0x00000069, "V_CMPS_NGE_F64">;
++defm V_CMPS_NLG_F64 : VOPC_64 <0x0000006a, "V_CMPS_NLG_F64">;
++defm V_CMPS_NGT_F64 : VOPC_64 <0x0000006b, "V_CMPS_NGT_F64">;
++defm V_CMPS_NLE_F64 : VOPC_64 <0x0000006c, "V_CMPS_NLE_F64">;
++defm V_CMPS_NEQ_F64 : VOPC_64 <0x0000006d, "V_CMPS_NEQ_F64">;
++defm V_CMPS_NLT_F64 : VOPC_64 <0x0000006e, "V_CMPS_NLT_F64">;
++defm V_CMPS_TRU_F64 : VOPC_64 <0x0000006f, "V_CMPS_TRU_F64">;
++defm V_CMPSX_F_F64 : VOPC_64 <0x00000070, "V_CMPSX_F_F64">;
++defm V_CMPSX_LT_F64 : VOPC_64 <0x00000071, "V_CMPSX_LT_F64">;
++defm V_CMPSX_EQ_F64 : VOPC_64 <0x00000072, "V_CMPSX_EQ_F64">;
++defm V_CMPSX_LE_F64 : VOPC_64 <0x00000073, "V_CMPSX_LE_F64">;
++defm V_CMPSX_GT_F64 : VOPC_64 <0x00000074, "V_CMPSX_GT_F64">;
++defm V_CMPSX_LG_F64 : VOPC_64 <0x00000075, "V_CMPSX_LG_F64">;
++defm V_CMPSX_GE_F64 : VOPC_64 <0x00000076, "V_CMPSX_GE_F64">;
++defm V_CMPSX_O_F64 : VOPC_64 <0x00000077, "V_CMPSX_O_F64">;
++defm V_CMPSX_U_F64 : VOPC_64 <0x00000078, "V_CMPSX_U_F64">;
++defm V_CMPSX_NGE_F64 : VOPC_64 <0x00000079, "V_CMPSX_NGE_F64">;
++defm V_CMPSX_NLG_F64 : VOPC_64 <0x0000007a, "V_CMPSX_NLG_F64">;
++defm V_CMPSX_NGT_F64 : VOPC_64 <0x0000007b, "V_CMPSX_NGT_F64">;
++defm V_CMPSX_NLE_F64 : VOPC_64 <0x0000007c, "V_CMPSX_NLE_F64">;
++defm V_CMPSX_NEQ_F64 : VOPC_64 <0x0000007d, "V_CMPSX_NEQ_F64">;
++defm V_CMPSX_NLT_F64 : VOPC_64 <0x0000007e, "V_CMPSX_NLT_F64">;
++defm V_CMPSX_TRU_F64 : VOPC_64 <0x0000007f, "V_CMPSX_TRU_F64">;
++defm V_CMP_F_I32 : VOPC_32 <0x00000080, "V_CMP_F_I32">;
++defm V_CMP_LT_I32 : VOPC_32 <0x00000081, "V_CMP_LT_I32", i32, COND_LT>;
++defm V_CMP_EQ_I32 : VOPC_32 <0x00000082, "V_CMP_EQ_I32", i32, COND_EQ>;
++defm V_CMP_LE_I32 : VOPC_32 <0x00000083, "V_CMP_LE_I32", i32, COND_LE>;
++defm V_CMP_GT_I32 : VOPC_32 <0x00000084, "V_CMP_GT_I32", i32, COND_GT>;
++defm V_CMP_NE_I32 : VOPC_32 <0x00000085, "V_CMP_NE_I32", i32, COND_NE>;
++defm V_CMP_GE_I32 : VOPC_32 <0x00000086, "V_CMP_GE_I32", i32, COND_GE>;
++defm V_CMP_T_I32 : VOPC_32 <0x00000087, "V_CMP_T_I32">;
+ 
+ let hasSideEffects = 1 in {
+ 
+-defm V_CMPX_F_I32 : VOPC_32 <0x00000090, "V_CMPX_F_I32", []>;
+-defm V_CMPX_LT_I32 : VOPC_32 <0x00000091, "V_CMPX_LT_I32", []>;
+-defm V_CMPX_EQ_I32 : VOPC_32 <0x00000092, "V_CMPX_EQ_I32", []>;
+-defm V_CMPX_LE_I32 : VOPC_32 <0x00000093, "V_CMPX_LE_I32", []>;
+-defm V_CMPX_GT_I32 : VOPC_32 <0x00000094, "V_CMPX_GT_I32", []>;
+-defm V_CMPX_NE_I32 : VOPC_32 <0x00000095, "V_CMPX_NE_I32", []>;
+-defm V_CMPX_GE_I32 : VOPC_32 <0x00000096, "V_CMPX_GE_I32", []>;
+-defm V_CMPX_T_I32 : VOPC_32 <0x00000097, "V_CMPX_T_I32", []>;
++defm V_CMPX_F_I32 : VOPC_32 <0x00000090, "V_CMPX_F_I32">;
++defm V_CMPX_LT_I32 : VOPC_32 <0x00000091, "V_CMPX_LT_I32">;
++defm V_CMPX_EQ_I32 : VOPC_32 <0x00000092, "V_CMPX_EQ_I32">;
++defm V_CMPX_LE_I32 : VOPC_32 <0x00000093, "V_CMPX_LE_I32">;
++defm V_CMPX_GT_I32 : VOPC_32 <0x00000094, "V_CMPX_GT_I32">;
++defm V_CMPX_NE_I32 : VOPC_32 <0x00000095, "V_CMPX_NE_I32">;
++defm V_CMPX_GE_I32 : VOPC_32 <0x00000096, "V_CMPX_GE_I32">;
++defm V_CMPX_T_I32 : VOPC_32 <0x00000097, "V_CMPX_T_I32">;
+ 
+ } // End hasSideEffects
+ 
+-defm V_CMP_F_I64 : VOPC_64 <0x000000a0, "V_CMP_F_I64", []>;
+-defm V_CMP_LT_I64 : VOPC_64 <0x000000a1, "V_CMP_LT_I64", []>;
+-defm V_CMP_EQ_I64 : VOPC_64 <0x000000a2, "V_CMP_EQ_I64", []>;
+-defm V_CMP_LE_I64 : VOPC_64 <0x000000a3, "V_CMP_LE_I64", []>;
+-defm V_CMP_GT_I64 : VOPC_64 <0x000000a4, "V_CMP_GT_I64", []>;
+-defm V_CMP_NE_I64 : VOPC_64 <0x000000a5, "V_CMP_NE_I64", []>;
+-defm V_CMP_GE_I64 : VOPC_64 <0x000000a6, "V_CMP_GE_I64", []>;
+-defm V_CMP_T_I64 : VOPC_64 <0x000000a7, "V_CMP_T_I64", []>;
++defm V_CMP_F_I64 : VOPC_64 <0x000000a0, "V_CMP_F_I64">;
++defm V_CMP_LT_I64 : VOPC_64 <0x000000a1, "V_CMP_LT_I64">;
++defm V_CMP_EQ_I64 : VOPC_64 <0x000000a2, "V_CMP_EQ_I64">;
++defm V_CMP_LE_I64 : VOPC_64 <0x000000a3, "V_CMP_LE_I64">;
++defm V_CMP_GT_I64 : VOPC_64 <0x000000a4, "V_CMP_GT_I64">;
++defm V_CMP_NE_I64 : VOPC_64 <0x000000a5, "V_CMP_NE_I64">;
++defm V_CMP_GE_I64 : VOPC_64 <0x000000a6, "V_CMP_GE_I64">;
++defm V_CMP_T_I64 : VOPC_64 <0x000000a7, "V_CMP_T_I64">;
+ 
+ let hasSideEffects = 1 in {
+ 
+-defm V_CMPX_F_I64 : VOPC_64 <0x000000b0, "V_CMPX_F_I64", []>;
+-defm V_CMPX_LT_I64 : VOPC_64 <0x000000b1, "V_CMPX_LT_I64", []>;
+-defm V_CMPX_EQ_I64 : VOPC_64 <0x000000b2, "V_CMPX_EQ_I64", []>;
+-defm V_CMPX_LE_I64 : VOPC_64 <0x000000b3, "V_CMPX_LE_I64", []>;
+-defm V_CMPX_GT_I64 : VOPC_64 <0x000000b4, "V_CMPX_GT_I64", []>;
+-defm V_CMPX_NE_I64 : VOPC_64 <0x000000b5, "V_CMPX_NE_I64", []>;
+-defm V_CMPX_GE_I64 : VOPC_64 <0x000000b6, "V_CMPX_GE_I64", []>;
+-defm V_CMPX_T_I64 : VOPC_64 <0x000000b7, "V_CMPX_T_I64", []>;
++defm V_CMPX_F_I64 : VOPC_64 <0x000000b0, "V_CMPX_F_I64">;
++defm V_CMPX_LT_I64 : VOPC_64 <0x000000b1, "V_CMPX_LT_I64">;
++defm V_CMPX_EQ_I64 : VOPC_64 <0x000000b2, "V_CMPX_EQ_I64">;
++defm V_CMPX_LE_I64 : VOPC_64 <0x000000b3, "V_CMPX_LE_I64">;
++defm V_CMPX_GT_I64 : VOPC_64 <0x000000b4, "V_CMPX_GT_I64">;
++defm V_CMPX_NE_I64 : VOPC_64 <0x000000b5, "V_CMPX_NE_I64">;
++defm V_CMPX_GE_I64 : VOPC_64 <0x000000b6, "V_CMPX_GE_I64">;
++defm V_CMPX_T_I64 : VOPC_64 <0x000000b7, "V_CMPX_T_I64">;
+ 
+ } // End hasSideEffects
+ 
+-defm V_CMP_F_U32 : VOPC_32 <0x000000c0, "V_CMP_F_U32", []>;
+-defm V_CMP_LT_U32 : VOPC_32 <0x000000c1, "V_CMP_LT_U32", []>;
+-defm V_CMP_EQ_U32 : VOPC_32 <0x000000c2, "V_CMP_EQ_U32", []>;
+-defm V_CMP_LE_U32 : VOPC_32 <0x000000c3, "V_CMP_LE_U32", []>;
+-defm V_CMP_GT_U32 : VOPC_32 <0x000000c4, "V_CMP_GT_U32", []>;
+-defm V_CMP_NE_U32 : VOPC_32 <0x000000c5, "V_CMP_NE_U32", []>;
+-defm V_CMP_GE_U32 : VOPC_32 <0x000000c6, "V_CMP_GE_U32", []>;
+-defm V_CMP_T_U32 : VOPC_32 <0x000000c7, "V_CMP_T_U32", []>;
++defm V_CMP_F_U32 : VOPC_32 <0x000000c0, "V_CMP_F_U32">;
++defm V_CMP_LT_U32 : VOPC_32 <0x000000c1, "V_CMP_LT_U32">;
++defm V_CMP_EQ_U32 : VOPC_32 <0x000000c2, "V_CMP_EQ_U32">;
++defm V_CMP_LE_U32 : VOPC_32 <0x000000c3, "V_CMP_LE_U32">;
++defm V_CMP_GT_U32 : VOPC_32 <0x000000c4, "V_CMP_GT_U32">;
++defm V_CMP_NE_U32 : VOPC_32 <0x000000c5, "V_CMP_NE_U32">;
++defm V_CMP_GE_U32 : VOPC_32 <0x000000c6, "V_CMP_GE_U32">;
++defm V_CMP_T_U32 : VOPC_32 <0x000000c7, "V_CMP_T_U32">;
+ 
+ let hasSideEffects = 1 in {
+ 
+-defm V_CMPX_F_U32 : VOPC_32 <0x000000d0, "V_CMPX_F_U32", []>;
+-defm V_CMPX_LT_U32 : VOPC_32 <0x000000d1, "V_CMPX_LT_U32", []>;
+-defm V_CMPX_EQ_U32 : VOPC_32 <0x000000d2, "V_CMPX_EQ_U32", []>;
+-defm V_CMPX_LE_U32 : VOPC_32 <0x000000d3, "V_CMPX_LE_U32", []>;
+-defm V_CMPX_GT_U32 : VOPC_32 <0x000000d4, "V_CMPX_GT_U32", []>;
+-defm V_CMPX_NE_U32 : VOPC_32 <0x000000d5, "V_CMPX_NE_U32", []>;
+-defm V_CMPX_GE_U32 : VOPC_32 <0x000000d6, "V_CMPX_GE_U32", []>;
+-defm V_CMPX_T_U32 : VOPC_32 <0x000000d7, "V_CMPX_T_U32", []>;
++defm V_CMPX_F_U32 : VOPC_32 <0x000000d0, "V_CMPX_F_U32">;
++defm V_CMPX_LT_U32 : VOPC_32 <0x000000d1, "V_CMPX_LT_U32">;
++defm V_CMPX_EQ_U32 : VOPC_32 <0x000000d2, "V_CMPX_EQ_U32">;
++defm V_CMPX_LE_U32 : VOPC_32 <0x000000d3, "V_CMPX_LE_U32">;
++defm V_CMPX_GT_U32 : VOPC_32 <0x000000d4, "V_CMPX_GT_U32">;
++defm V_CMPX_NE_U32 : VOPC_32 <0x000000d5, "V_CMPX_NE_U32">;
++defm V_CMPX_GE_U32 : VOPC_32 <0x000000d6, "V_CMPX_GE_U32">;
++defm V_CMPX_T_U32 : VOPC_32 <0x000000d7, "V_CMPX_T_U32">;
+ 
+ } // End hasSideEffects
+ 
+-defm V_CMP_F_U64 : VOPC_64 <0x000000e0, "V_CMP_F_U64", []>;
+-defm V_CMP_LT_U64 : VOPC_64 <0x000000e1, "V_CMP_LT_U64", []>;
+-defm V_CMP_EQ_U64 : VOPC_64 <0x000000e2, "V_CMP_EQ_U64", []>;
+-defm V_CMP_LE_U64 : VOPC_64 <0x000000e3, "V_CMP_LE_U64", []>;
+-defm V_CMP_GT_U64 : VOPC_64 <0x000000e4, "V_CMP_GT_U64", []>;
+-defm V_CMP_NE_U64 : VOPC_64 <0x000000e5, "V_CMP_NE_U64", []>;
+-defm V_CMP_GE_U64 : VOPC_64 <0x000000e6, "V_CMP_GE_U64", []>;
+-defm V_CMP_T_U64 : VOPC_64 <0x000000e7, "V_CMP_T_U64", []>;
+-defm V_CMPX_F_U64 : VOPC_64 <0x000000f0, "V_CMPX_F_U64", []>;
+-defm V_CMPX_LT_U64 : VOPC_64 <0x000000f1, "V_CMPX_LT_U64", []>;
+-defm V_CMPX_EQ_U64 : VOPC_64 <0x000000f2, "V_CMPX_EQ_U64", []>;
+-defm V_CMPX_LE_U64 : VOPC_64 <0x000000f3, "V_CMPX_LE_U64", []>;
+-defm V_CMPX_GT_U64 : VOPC_64 <0x000000f4, "V_CMPX_GT_U64", []>;
+-defm V_CMPX_NE_U64 : VOPC_64 <0x000000f5, "V_CMPX_NE_U64", []>;
+-defm V_CMPX_GE_U64 : VOPC_64 <0x000000f6, "V_CMPX_GE_U64", []>;
+-defm V_CMPX_T_U64 : VOPC_64 <0x000000f7, "V_CMPX_T_U64", []>;
+-defm V_CMP_CLASS_F32 : VOPC_32 <0x00000088, "V_CMP_CLASS_F32", []>;
+-defm V_CMPX_CLASS_F32 : VOPC_32 <0x00000098, "V_CMPX_CLASS_F32", []>;
+-defm V_CMP_CLASS_F64 : VOPC_64 <0x000000a8, "V_CMP_CLASS_F64", []>;
+-defm V_CMPX_CLASS_F64 : VOPC_64 <0x000000b8, "V_CMPX_CLASS_F64", []>;
++defm V_CMP_F_U64 : VOPC_64 <0x000000e0, "V_CMP_F_U64">;
++defm V_CMP_LT_U64 : VOPC_64 <0x000000e1, "V_CMP_LT_U64">;
++defm V_CMP_EQ_U64 : VOPC_64 <0x000000e2, "V_CMP_EQ_U64">;
++defm V_CMP_LE_U64 : VOPC_64 <0x000000e3, "V_CMP_LE_U64">;
++defm V_CMP_GT_U64 : VOPC_64 <0x000000e4, "V_CMP_GT_U64">;
++defm V_CMP_NE_U64 : VOPC_64 <0x000000e5, "V_CMP_NE_U64">;
++defm V_CMP_GE_U64 : VOPC_64 <0x000000e6, "V_CMP_GE_U64">;
++defm V_CMP_T_U64 : VOPC_64 <0x000000e7, "V_CMP_T_U64">;
++defm V_CMPX_F_U64 : VOPC_64 <0x000000f0, "V_CMPX_F_U64">;
++defm V_CMPX_LT_U64 : VOPC_64 <0x000000f1, "V_CMPX_LT_U64">;
++defm V_CMPX_EQ_U64 : VOPC_64 <0x000000f2, "V_CMPX_EQ_U64">;
++defm V_CMPX_LE_U64 : VOPC_64 <0x000000f3, "V_CMPX_LE_U64">;
++defm V_CMPX_GT_U64 : VOPC_64 <0x000000f4, "V_CMPX_GT_U64">;
++defm V_CMPX_NE_U64 : VOPC_64 <0x000000f5, "V_CMPX_NE_U64">;
++defm V_CMPX_GE_U64 : VOPC_64 <0x000000f6, "V_CMPX_GE_U64">;
++defm V_CMPX_T_U64 : VOPC_64 <0x000000f7, "V_CMPX_T_U64">;
++defm V_CMP_CLASS_F32 : VOPC_32 <0x00000088, "V_CMP_CLASS_F32">;
++defm V_CMPX_CLASS_F32 : VOPC_32 <0x00000098, "V_CMPX_CLASS_F32">;
++defm V_CMP_CLASS_F64 : VOPC_64 <0x000000a8, "V_CMP_CLASS_F64">;
++defm V_CMPX_CLASS_F64 : VOPC_64 <0x000000b8, "V_CMPX_CLASS_F64">;
+ //def BUFFER_LOAD_FORMAT_X : MUBUF_ <0x00000000, "BUFFER_LOAD_FORMAT_X", []>;
+ //def BUFFER_LOAD_FORMAT_XY : MUBUF_ <0x00000001, "BUFFER_LOAD_FORMAT_XY", []>;
+ //def BUFFER_LOAD_FORMAT_XYZ : MUBUF_ <0x00000002, "BUFFER_LOAD_FORMAT_XYZ", []>;
+@@ -674,7 +622,7 @@ def V_INTERP_P1_F32 : VINTRP <
+   0x00000000,
+   (outs VReg_32:$dst),
+   (ins VReg_32:$i, i32imm:$attr_chan, i32imm:$attr, M0Reg:$m0),
+-  "V_INTERP_P1_F32",
++  "V_INTERP_P1_F32 $dst, $i, $attr_chan, $attr, [$m0]",
+   []> {
+   let DisableEncoding = "$m0";
+ }
+@@ -683,7 +631,7 @@ def V_INTERP_P2_F32 : VINTRP <
+   0x00000001,
+   (outs VReg_32:$dst),
+   (ins VReg_32:$src0, VReg_32:$j, i32imm:$attr_chan, i32imm:$attr, M0Reg:$m0),
+-  "V_INTERP_P2_F32",
++  "V_INTERP_P2_F32 $dst, [$src0], $j, $attr_chan, $attr, [$m0]",
+   []> {
+ 
+   let Constraints = "$src0 = $dst";
+@@ -695,7 +643,7 @@ def V_INTERP_MOV_F32 : VINTRP <
+   0x00000002,
+   (outs VReg_32:$dst),
+   (ins InterpSlot:$src0, i32imm:$attr_chan, i32imm:$attr, M0Reg:$m0),
+-  "V_INTERP_MOV_F32 $dst, $src0, $attr_chan, $attr",
++  "V_INTERP_MOV_F32 $dst, $src0, $attr_chan, $attr, [$m0]",
+   []> {
+   let DisableEncoding = "$m0";
+ }
+@@ -713,7 +661,7 @@ def S_ENDPGM : SOPP <0x00000001, (ins), "S_ENDPGM",
+ 
+ let isBranch = 1 in {
+ def S_BRANCH : SOPP <
+-  0x00000002, (ins brtarget:$target), "S_BRANCH",
++  0x00000002, (ins brtarget:$target), "S_BRANCH $target",
+   [(br bb:$target)]> {
+   let isBarrier = 1;
+ }
+@@ -721,35 +669,35 @@ def S_BRANCH : SOPP <
+ let DisableEncoding = "$scc" in {
+ def S_CBRANCH_SCC0 : SOPP <
+   0x00000004, (ins brtarget:$target, SCCReg:$scc),
+-  "S_CBRANCH_SCC0", []
++  "S_CBRANCH_SCC0 $target", []
+ >;
+ def S_CBRANCH_SCC1 : SOPP <
+   0x00000005, (ins brtarget:$target, SCCReg:$scc),
+-  "S_CBRANCH_SCC1",
++  "S_CBRANCH_SCC1 $target",
+   []
+ >;
+ } // End DisableEncoding = "$scc"
+ 
+ def S_CBRANCH_VCCZ : SOPP <
+   0x00000006, (ins brtarget:$target, VCCReg:$vcc),
+-  "S_CBRANCH_VCCZ",
++  "S_CBRANCH_VCCZ $target",
+   []
+ >;
+ def S_CBRANCH_VCCNZ : SOPP <
+   0x00000007, (ins brtarget:$target, VCCReg:$vcc),
+-  "S_CBRANCH_VCCNZ",
++  "S_CBRANCH_VCCNZ $target",
+   []
+ >;
+ 
+ let DisableEncoding = "$exec" in {
+ def S_CBRANCH_EXECZ : SOPP <
+   0x00000008, (ins brtarget:$target, EXECReg:$exec),
+-  "S_CBRANCH_EXECZ",
++  "S_CBRANCH_EXECZ $target",
+   []
+ >;
+ def S_CBRANCH_EXECNZ : SOPP <
+   0x00000009, (ins brtarget:$target, EXECReg:$exec),
+-  "S_CBRANCH_EXECNZ",
++  "S_CBRANCH_EXECNZ $target",
+   []
+ >;
+ } // End DisableEncoding = "$exec"
+@@ -776,16 +724,19 @@ def S_WAITCNT : SOPP <0x0000000c, (ins i32imm:$simm16), "S_WAITCNT $simm16",
+ //def S_TTRACEDATA : SOPP_ <0x00000016, "S_TTRACEDATA", []>;
+ 
+ def V_CNDMASK_B32_e32 : VOP2 <0x00000000, (outs VReg_32:$dst),
+-  (ins VSrc_32:$src0, VReg_32:$src1, VCCReg:$vcc), "V_CNDMASK_B32_e32",
++  (ins VSrc_32:$src0, VReg_32:$src1, VCCReg:$vcc),
++  "V_CNDMASK_B32_e32 $dst, $src0, $src1, [$vcc]",
+   []
+ >{
+   let DisableEncoding = "$vcc";
+ }
+ 
+ def V_CNDMASK_B32_e64 : VOP3 <0x00000100, (outs VReg_32:$dst),
+-  (ins VReg_32:$src0, VReg_32:$src1, SReg_64:$src2, InstFlag:$abs, InstFlag:$clamp, InstFlag:$omod, InstFlag:$neg),
+-  "V_CNDMASK_B32_e64",
+-  [(set (i32 VReg_32:$dst), (select (i1 SReg_64:$src2), VReg_32:$src1, VReg_32:$src0))]
++  (ins VReg_32:$src0, VReg_32:$src1, SReg_64:$src2,
++   InstFlag:$abs, InstFlag:$clamp, InstFlag:$omod, InstFlag:$neg),
++  "V_CNDMASK_B32_e64 $dst, $src0, $src1, $src2, $abs, $clamp, $omod, $neg",
++  [(set (i32 VReg_32:$dst), (select (i1 SReg_64:$src2),
++   VReg_32:$src1, VReg_32:$src0))]
+ >;
+ 
+ //f32 pattern for V_CNDMASK_B32_e64
+@@ -858,17 +809,19 @@ defm V_MADAK_F32 : VOP2_32 <0x00000021, "V_MADAK_F32", []>;
+ //defm V_MBCNT_LO_U32_B32 : VOP2_32 <0x00000023, "V_MBCNT_LO_U32_B32", []>;
+ //defm V_MBCNT_HI_U32_B32 : VOP2_32 <0x00000024, "V_MBCNT_HI_U32_B32", []>;
+ let Defs = [VCC] in { // Carry-out goes to VCC
+-defm V_ADD_I32 : VOP2_32 <0x00000025, "V_ADD_I32",
++defm V_ADD_I32 : VOP2b_32 <0x00000025, "V_ADD_I32",
+   [(set VReg_32:$dst, (add (i32 VSrc_32:$src0), (i32 VReg_32:$src1)))]
+ >;
+-defm V_SUB_I32 : VOP2_32 <0x00000026, "V_SUB_I32",
++defm V_SUB_I32 : VOP2b_32 <0x00000026, "V_SUB_I32",
+   [(set VReg_32:$dst, (sub (i32 VSrc_32:$src0), (i32 VReg_32:$src1)))]
+ >;
++defm V_SUBREV_I32 : VOP2b_32 <0x00000027, "V_SUBREV_I32", []>;
++let Uses = [VCC] in { // Carry-out comes from VCC
++defm V_ADDC_U32 : VOP2b_32 <0x00000028, "V_ADDC_U32", []>;
++defm V_SUBB_U32 : VOP2b_32 <0x00000029, "V_SUBB_U32", []>;
++defm V_SUBBREV_U32 : VOP2b_32 <0x0000002a, "V_SUBBREV_U32", []>;
++} // End Uses = [VCC]
+ } // End Defs = [VCC]
+-defm V_SUBREV_I32 : VOP2_32 <0x00000027, "V_SUBREV_I32", []>;
+-defm V_ADDC_U32 : VOP2_32 <0x00000028, "V_ADDC_U32", []>;
+-defm V_SUBB_U32 : VOP2_32 <0x00000029, "V_SUBB_U32", []>;
+-defm V_SUBBREV_U32 : VOP2_32 <0x0000002a, "V_SUBBREV_U32", []>;
+ defm V_LDEXP_F32 : VOP2_32 <0x0000002b, "V_LDEXP_F32", []>;
+ ////def V_CVT_PKACCUM_U8_F32 : VOP2_U8 <0x0000002c, "V_CVT_PKACCUM_U8_F32", []>;
+ ////def V_CVT_PKNORM_I16_F32 : VOP2_I16 <0x0000002d, "V_CVT_PKNORM_I16_F32", []>;
+@@ -971,14 +924,15 @@ def S_MAX_U32 : SOP2_32 <0x00000009, "S_MAX_U32", []>;
+ def S_CSELECT_B32 : SOP2 <
+   0x0000000a, (outs SReg_32:$dst),
+   (ins SReg_32:$src0, SReg_32:$src1, SCCReg:$scc), "S_CSELECT_B32",
+-  [(set (i32 SReg_32:$dst), (select SCCReg:$scc, SReg_32:$src0, SReg_32:$src1))]
++  [(set (i32 SReg_32:$dst), (select (i1 SCCReg:$scc),
++                                     SReg_32:$src0, SReg_32:$src1))]
+ >;
+ 
+ def S_CSELECT_B64 : SOP2_64 <0x0000000b, "S_CSELECT_B64", []>;
+ 
+ // f32 pattern for S_CSELECT_B32
+ def : Pat <
+-  (f32 (select SCCReg:$scc, SReg_32:$src0, SReg_32:$src1)),
++  (f32 (select (i1 SCCReg:$scc), SReg_32:$src0, SReg_32:$src1)),
+   (S_CSELECT_B32 SReg_32:$src0, SReg_32:$src1, SCCReg:$scc)
+ >;
+ 
+@@ -1032,7 +986,7 @@ let isCodeGenOnly = 1, isPseudo = 1 in {
+ def SET_M0 : InstSI <
+   (outs SReg_32:$dst),
+   (ins i32imm:$src0),
+-  "SET_M0",
++  "SET_M0 $dst, $src0",
+   [(set SReg_32:$dst, (int_SI_set_M0 imm:$src0))]
+ >;
+ 
+@@ -1072,14 +1026,14 @@ let isBranch = 1, isTerminator = 1 in {
+ def SI_IF : InstSI <
+   (outs SReg_64:$dst),
+   (ins SReg_64:$vcc, brtarget:$target),
+-  "SI_IF",
++  "SI_IF $dst, $vcc, $target",
+   [(set SReg_64:$dst, (int_SI_if SReg_64:$vcc, bb:$target))]
+ >;
+ 
+ def SI_ELSE : InstSI <
+   (outs SReg_64:$dst),
+   (ins SReg_64:$src, brtarget:$target),
+-  "SI_ELSE",
++  "SI_ELSE $dst, $src, $target",
+   [(set SReg_64:$dst, (int_SI_else SReg_64:$src, bb:$target))]> {
+ 
+   let Constraints = "$src = $dst";
+@@ -1088,7 +1042,7 @@ def SI_ELSE : InstSI <
+ def SI_LOOP : InstSI <
+   (outs),
+   (ins SReg_64:$saved, brtarget:$target),
+-  "SI_LOOP",
++  "SI_LOOP $saved, $target",
+   [(int_SI_loop SReg_64:$saved, bb:$target)]
+ >;
+ 
+@@ -1097,28 +1051,28 @@ def SI_LOOP : InstSI <
+ def SI_BREAK : InstSI <
+   (outs SReg_64:$dst),
+   (ins SReg_64:$src),
+-  "SI_ELSE",
++  "SI_ELSE $dst, $src",
+   [(set SReg_64:$dst, (int_SI_break SReg_64:$src))]
+ >;
+ 
+ def SI_IF_BREAK : InstSI <
+   (outs SReg_64:$dst),
+   (ins SReg_64:$vcc, SReg_64:$src),
+-  "SI_IF_BREAK",
++  "SI_IF_BREAK $dst, $vcc, $src",
+   [(set SReg_64:$dst, (int_SI_if_break SReg_64:$vcc, SReg_64:$src))]
+ >;
+ 
+ def SI_ELSE_BREAK : InstSI <
+   (outs SReg_64:$dst),
+   (ins SReg_64:$src0, SReg_64:$src1),
+-  "SI_ELSE_BREAK",
++  "SI_ELSE_BREAK $dst, $src0, $src1",
+   [(set SReg_64:$dst, (int_SI_else_break SReg_64:$src0, SReg_64:$src1))]
+ >;
+ 
+ def SI_END_CF : InstSI <
+   (outs),
+   (ins SReg_64:$saved),
+-  "SI_END_CF",
++  "SI_END_CF $saved",
+   [(int_SI_end_cf SReg_64:$saved)]
+ >;
+ 
+@@ -1373,8 +1327,7 @@ def : Pat <
+ /********** ================== **********/
+ 
+ /* llvm.AMDGPU.pow */
+-/* XXX: We are using IEEE MUL, not the 0 * anything = 0 MUL, is this correct? */
+-def : POW_Common <V_LOG_F32_e32, V_EXP_F32_e32, V_MUL_F32_e32, VReg_32>;
++def : POW_Common <V_LOG_F32_e32, V_EXP_F32_e32, V_MUL_LEGACY_F32_e32, VReg_32>;
+ 
+ def : Pat <
+   (int_AMDGPU_div VSrc_32:$src0, VSrc_32:$src1),
+diff --git a/lib/Target/R600/SIRegisterInfo.td b/lib/Target/R600/SIRegisterInfo.td
+index ab36b87..9e04e24 100644
+--- a/lib/Target/R600/SIRegisterInfo.td
++++ b/lib/Target/R600/SIRegisterInfo.td
+@@ -1,30 +1,40 @@
++//===-- SIRegisterInfo.td - SI Register defs ---------------*- tablegen -*-===//
++//
++//                     The LLVM Compiler Infrastructure
++//
++// This file is distributed under the University of Illinois Open Source
++// License. See LICENSE.TXT for details.
++//
++//===----------------------------------------------------------------------===//
++
++//===----------------------------------------------------------------------===//
++//  Declarations that describe the SI registers
++//===----------------------------------------------------------------------===//
+ 
+ class SIReg <string n, bits<16> encoding = 0> : Register<n> {
+   let Namespace = "AMDGPU";
+   let HWEncoding = encoding;
+ }
+ 
+-class SI_64 <string n, list<Register> subregs, bits<16> encoding> : RegisterWithSubRegs<n, subregs> {
+-  let Namespace = "AMDGPU";
+-  let SubRegIndices = [sub0, sub1];
+-  let HWEncoding = encoding;
+-}
+-
+-class SGPR_32 <bits<16> num, string name> : SIReg<name, num>;
+-
+-class VGPR_32 <bits<16> num, string name> : SIReg<name, num> {
+-  let HWEncoding{8} = 1;
+-}
+-
+ // Special Registers
+ def VCC : SIReg<"VCC", 106>;
+-def EXEC_LO : SIReg <"EXEC LO", 126>;
+-def EXEC_HI : SIReg <"EXEC HI", 127>;
+-def EXEC : SI_64<"EXEC", [EXEC_LO, EXEC_HI], 126>;
++def EXEC : SIReg<"EXEC", 126>;
+ def SCC : SIReg<"SCC", 253>;
+ def M0 : SIReg <"M0", 124>;
+ 
+-//Interpolation registers
++// SGPR registers
++foreach Index = 0-101 in {
++  def SGPR#Index : SIReg <"SGPR"#Index, Index>;
++}
++
++// VGPR registers
++foreach Index = 0-255 in {
++  def VGPR#Index : SIReg <"VGPR"#Index, Index> {
++    let HWEncoding{8} = 1;
++  }
++}
++
++// virtual Interpolation registers
+ def PERSP_SAMPLE_I : SIReg <"PERSP_SAMPLE_I">;
+ def PERSP_SAMPLE_J : SIReg <"PERSP_SAMPLE_J">;
+ def PERSP_CENTER_I : SIReg <"PERSP_CENTER_I">;
+@@ -50,102 +60,150 @@ def ANCILLARY : SIReg <"ANCILLARY">;
+ def SAMPLE_COVERAGE : SIReg <"SAMPLE_COVERAGE">;
+ def POS_FIXED_PT : SIReg <"POS_FIXED_PT">;
+ 
+-// SGPR 32-bit registers
+-foreach Index = 0-101 in {
+-  def SGPR#Index : SGPR_32 <Index, "SGPR"#Index>;
+-}
++//===----------------------------------------------------------------------===//
++//  Groupings using register classes and tuples
++//===----------------------------------------------------------------------===//
+ 
++// SGPR 32-bit registers
+ def SGPR_32 : RegisterClass<"AMDGPU", [f32, i32], 32,
+                             (add (sequence "SGPR%u", 0, 101))>;
+ 
+ // SGPR 64-bit registers
+ def SGPR_64 : RegisterTuples<[sub0, sub1],
+-                             [(add (decimate SGPR_32, 2)),
+-                              (add(decimate (rotl SGPR_32, 1), 2))]>;
++                             [(add (decimate (trunc SGPR_32, 101), 2)),
++                              (add (decimate (shl SGPR_32, 1), 2))]>;
+ 
+ // SGPR 128-bit registers
+ def SGPR_128 : RegisterTuples<[sub0, sub1, sub2, sub3],
+-                              [(add (decimate SGPR_32, 4)),
+-                               (add (decimate (rotl SGPR_32, 1), 4)),
+-                               (add (decimate (rotl SGPR_32, 2), 4)),
+-                               (add (decimate (rotl SGPR_32, 3), 4))]>;
++                              [(add (decimate (trunc SGPR_32, 99), 4)),
++                               (add (decimate (shl SGPR_32, 1), 4)),
++                               (add (decimate (shl SGPR_32, 2), 4)),
++                               (add (decimate (shl SGPR_32, 3), 4))]>;
+ 
+ // SGPR 256-bit registers
+ def SGPR_256 : RegisterTuples<[sub0, sub1, sub2, sub3, sub4, sub5, sub6, sub7],
+-                              [(add (decimate SGPR_32, 8)),
+-                               (add (decimate (rotl SGPR_32, 1), 8)),
+-                               (add (decimate (rotl SGPR_32, 2), 8)),
+-                               (add (decimate (rotl SGPR_32, 3), 8)),
+-                               (add (decimate (rotl SGPR_32, 4), 8)),
+-                               (add (decimate (rotl SGPR_32, 5), 8)),
+-                               (add (decimate (rotl SGPR_32, 6), 8)),
+-                               (add (decimate (rotl SGPR_32, 7), 8))]>;
++                              [(add (decimate (trunc SGPR_32, 95), 4)),
++                               (add (decimate (shl SGPR_32, 1), 4)),
++                               (add (decimate (shl SGPR_32, 2), 4)),
++                               (add (decimate (shl SGPR_32, 3), 4)),
++                               (add (decimate (shl SGPR_32, 4), 4)),
++                               (add (decimate (shl SGPR_32, 5), 4)),
++                               (add (decimate (shl SGPR_32, 6), 4)),
++                               (add (decimate (shl SGPR_32, 7), 4))]>;
++
++// SGPR 512-bit registers
++def SGPR_512 : RegisterTuples<[sub0, sub1, sub2, sub3, sub4, sub5, sub6, sub7,
++                               sub8, sub9, sub10, sub11, sub12, sub13, sub14, sub15],
++                              [(add (decimate (trunc SGPR_32, 87), 4)),
++                               (add (decimate (shl SGPR_32, 1), 4)),
++                               (add (decimate (shl SGPR_32, 2), 4)),
++                               (add (decimate (shl SGPR_32, 3), 4)),
++                               (add (decimate (shl SGPR_32, 4), 4)),
++                               (add (decimate (shl SGPR_32, 5), 4)),
++                               (add (decimate (shl SGPR_32, 6), 4)),
++                               (add (decimate (shl SGPR_32, 7), 4)),
++                               (add (decimate (shl SGPR_32, 8), 4)),
++                               (add (decimate (shl SGPR_32, 9), 4)),
++                               (add (decimate (shl SGPR_32, 10), 4)),
++                               (add (decimate (shl SGPR_32, 11), 4)),
++                               (add (decimate (shl SGPR_32, 12), 4)),
++                               (add (decimate (shl SGPR_32, 13), 4)),
++                               (add (decimate (shl SGPR_32, 14), 4)),
++                               (add (decimate (shl SGPR_32, 15), 4))]>;
+ 
+ // VGPR 32-bit registers
+-foreach Index = 0-255 in {
+-  def VGPR#Index : VGPR_32 <Index, "VGPR"#Index>;
+-}
+-
+ def VGPR_32 : RegisterClass<"AMDGPU", [f32, i32], 32,
+                             (add (sequence "VGPR%u", 0, 255))>;
+ 
+ // VGPR 64-bit registers
+ def VGPR_64 : RegisterTuples<[sub0, sub1],
+-                             [(add VGPR_32),
+-                              (add (rotl VGPR_32, 1))]>;
++                             [(add (trunc VGPR_32, 255)),
++                              (add (shl VGPR_32, 1))]>;
+ 
+ // VGPR 128-bit registers
+ def VGPR_128 : RegisterTuples<[sub0, sub1, sub2, sub3],
+-                              [(add VGPR_32),
+-                               (add (rotl VGPR_32, 1)),
+-                               (add (rotl VGPR_32, 2)),
+-                               (add (rotl VGPR_32, 3))]>;
++                              [(add (trunc VGPR_32, 253)),
++                               (add (shl VGPR_32, 1)),
++                               (add (shl VGPR_32, 2)),
++                               (add (shl VGPR_32, 3))]>;
+ 
+ // VGPR 256-bit registers
+ def VGPR_256 : RegisterTuples<[sub0, sub1, sub2, sub3, sub4, sub5, sub6, sub7],
+-                              [(add VGPR_32),
+-                               (add (rotl VGPR_32, 1)),
+-                               (add (rotl VGPR_32, 2)),
+-                               (add (rotl VGPR_32, 3)),
+-                               (add (rotl VGPR_32, 4)),
+-                               (add (rotl VGPR_32, 5)),
+-                               (add (rotl VGPR_32, 6)),
+-                               (add (rotl VGPR_32, 7))]>;
++                              [(add (trunc VGPR_32, 249)),
++                               (add (shl VGPR_32, 1)),
++                               (add (shl VGPR_32, 2)),
++                               (add (shl VGPR_32, 3)),
++                               (add (shl VGPR_32, 4)),
++                               (add (shl VGPR_32, 5)),
++                               (add (shl VGPR_32, 6)),
++                               (add (shl VGPR_32, 7))]>;
+ 
+ // VGPR 512-bit registers
+ def VGPR_512 : RegisterTuples<[sub0, sub1, sub2, sub3, sub4, sub5, sub6, sub7,
+                                sub8, sub9, sub10, sub11, sub12, sub13, sub14, sub15],
+-                              [(add VGPR_32),
+-                               (add (rotl VGPR_32, 1)),
+-                               (add (rotl VGPR_32, 2)),
+-                               (add (rotl VGPR_32, 3)),
+-                               (add (rotl VGPR_32, 4)),
+-                               (add (rotl VGPR_32, 5)),
+-                               (add (rotl VGPR_32, 6)),
+-                               (add (rotl VGPR_32, 7)),
+-                               (add (rotl VGPR_32, 8)),
+-                               (add (rotl VGPR_32, 9)),
+-                               (add (rotl VGPR_32, 10)),
+-                               (add (rotl VGPR_32, 11)),
+-                               (add (rotl VGPR_32, 12)),
+-                               (add (rotl VGPR_32, 13)),
+-                               (add (rotl VGPR_32, 14)),
+-                               (add (rotl VGPR_32, 15))]>;
++                              [(add (trunc VGPR_32, 241)),
++                               (add (shl VGPR_32, 1)),
++                               (add (shl VGPR_32, 2)),
++                               (add (shl VGPR_32, 3)),
++                               (add (shl VGPR_32, 4)),
++                               (add (shl VGPR_32, 5)),
++                               (add (shl VGPR_32, 6)),
++                               (add (shl VGPR_32, 7)),
++                               (add (shl VGPR_32, 8)),
++                               (add (shl VGPR_32, 9)),
++                               (add (shl VGPR_32, 10)),
++                               (add (shl VGPR_32, 11)),
++                               (add (shl VGPR_32, 12)),
++                               (add (shl VGPR_32, 13)),
++                               (add (shl VGPR_32, 14)),
++                               (add (shl VGPR_32, 15))]>;
++
++//===----------------------------------------------------------------------===//
++//  Register classes used as source and destination
++//===----------------------------------------------------------------------===//
++
++// Special register classes for predicates and the M0 register
++def SCCReg : RegisterClass<"AMDGPU", [i32, i1], 32, (add SCC)>;
++def VCCReg : RegisterClass<"AMDGPU", [i64, i1], 64, (add VCC)>;
++def EXECReg : RegisterClass<"AMDGPU", [i64, i1], 64, (add EXEC)>;
++def M0Reg : RegisterClass<"AMDGPU", [i32], 32, (add M0)>;
+ 
+ // Register class for all scalar registers (SGPRs + Special Registers)
+ def SReg_32 : RegisterClass<"AMDGPU", [f32, i32], 32,
+-    (add SGPR_32, M0, EXEC_LO, EXEC_HI)
++  (add SGPR_32, M0Reg)
+ >;
+ 
+-def SReg_64 : RegisterClass<"AMDGPU", [i1, i64], 64, (add SGPR_64, VCC, EXEC)>;
++def SReg_64 : RegisterClass<"AMDGPU", [i64, i1], 64,
++  (add SGPR_64, VCCReg, EXECReg)
++>;
+ 
+ def SReg_128 : RegisterClass<"AMDGPU", [v4f32, v4i32], 128, (add SGPR_128)>;
+ 
+ def SReg_256 : RegisterClass<"AMDGPU", [v8i32], 256, (add SGPR_256)>;
+ 
++def SReg_512 : RegisterClass<"AMDGPU", [v16i32], 512, (add SGPR_512)>;
++
+ // Register class for all vector registers (VGPRs + Interploation Registers)
+-def VReg_32 : RegisterClass<"AMDGPU", [f32, i32, v1i32], 32,
+-    (add VGPR_32,
++def VReg_32 : RegisterClass<"AMDGPU", [f32, i32, v1i32], 32, (add VGPR_32)>;
++
++def VReg_64 : RegisterClass<"AMDGPU", [i64, v2i32], 64, (add VGPR_64)>;
++
++def VReg_128 : RegisterClass<"AMDGPU", [v4f32, v4i32], 128, (add VGPR_128)>;
++
++def VReg_256 : RegisterClass<"AMDGPU", [v8i32], 256, (add VGPR_256)>;
++
++def VReg_512 : RegisterClass<"AMDGPU", [v16i32], 512, (add VGPR_512)>;
++
++//===----------------------------------------------------------------------===//
++//  [SV]Src_* register classes, can have either an immediate or an register
++//===----------------------------------------------------------------------===//
++
++def SSrc_32 : RegisterClass<"AMDGPU", [i32, f32], 32, (add SReg_32)>;
++
++def SSrc_64 : RegisterClass<"AMDGPU", [i64, i1], 64, (add SReg_64)>;
++
++def VSrc_32 : RegisterClass<"AMDGPU", [i32, f32], 32,
++  (add VReg_32, SReg_32,
+     PERSP_SAMPLE_I, PERSP_SAMPLE_J,
+     PERSP_CENTER_I, PERSP_CENTER_J,
+     PERSP_CENTROID_I, PERSP_CENTROID_J,
+@@ -162,29 +220,8 @@ def VReg_32 : RegisterClass<"AMDGPU", [f32, i32, v1i32], 32,
+     ANCILLARY,
+     SAMPLE_COVERAGE,
+     POS_FIXED_PT
+-    )
++  )
+ >;
+ 
+-def VReg_64 : RegisterClass<"AMDGPU", [i64, v2i32], 64, (add VGPR_64)>;
+-
+-def VReg_128 : RegisterClass<"AMDGPU", [v4f32, v4i32], 128, (add VGPR_128)>;
+-
+-def VReg_256 : RegisterClass<"AMDGPU", [v8i32], 256, (add VGPR_256)>;
+-
+-def VReg_512 : RegisterClass<"AMDGPU", [v16i32], 512, (add VGPR_512)>;
+-
+-// [SV]Src_* operands can have either an immediate or an register
+-def SSrc_32 : RegisterClass<"AMDGPU", [i32, f32], 32, (add SReg_32)>;
+-
+-def SSrc_64 : RegisterClass<"AMDGPU", [i1, i64], 64, (add SReg_64)>;
+-
+-def VSrc_32 : RegisterClass<"AMDGPU", [i32, f32], 32, (add VReg_32, SReg_32)>;
+-
+-def VSrc_64 : RegisterClass<"AMDGPU", [i64], 64, (add SReg_64, VReg_64)>;
+-
+-// Special register classes for predicates and the M0 register
+-def SCCReg : RegisterClass<"AMDGPU", [i1], 1, (add SCC)>;
+-def VCCReg : RegisterClass<"AMDGPU", [i1], 1, (add VCC)>;
+-def EXECReg : RegisterClass<"AMDGPU", [i1], 1, (add EXEC)>;
+-def M0Reg : RegisterClass<"AMDGPU", [i32], 32, (add M0)>;
++def VSrc_64 : RegisterClass<"AMDGPU", [i64], 64, (add VReg_64, SReg_64)>;
+ 
+diff --git a/test/CodeGen/R600/llvm.pow.ll b/test/CodeGen/R600/llvm.pow.ll
+index 0ae9172..b4ce9f4 100644
+--- a/test/CodeGen/R600/llvm.pow.ll
++++ b/test/CodeGen/R600/llvm.pow.ll
+@@ -1,7 +1,7 @@
+ ;RUN: llc < %s -march=r600 -mcpu=redwood | FileCheck %s
+ 
+ ;CHECK: LOG_IEEE T{{[0-9]+\.[XYZW], T[0-9]+\.[XYZW]}}
+-;CHECK-NEXT: MUL_IEEE T{{[0-9]+\.[XYZW], T[0-9]+\.[XYZW], T[0-9]+\.[XYZW]}}
++;CHECK-NEXT: MUL NON-IEEE T{{[0-9]+\.[XYZW], T[0-9]+\.[XYZW], T[0-9]+\.[XYZW]}}
+ ;CHECK-NEXT: EXP_IEEE T{{[0-9]+\.[XYZW], T[0-9]+\.[XYZW]}}
+ 
+ define void @test() {

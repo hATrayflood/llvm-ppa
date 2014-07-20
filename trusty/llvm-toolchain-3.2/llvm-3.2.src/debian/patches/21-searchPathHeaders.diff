@@ -1,0 +1,16 @@
+Index: llvm-3.2.src/clang/lib/Driver/ToolChains.cpp
+===================================================================
+--- llvm-3.2.src.orig/clang/lib/Driver/ToolChains.cpp	2012-12-16 16:59:27.000000000 +0100
++++ llvm-3.2.src/clang/lib/Driver/ToolChains.cpp	2013-01-12 15:33:39.427064577 +0100
+@@ -2237,6 +2237,11 @@
+     addSystemInclude(DriverArgs, CC1Args, P.str());
+   }
+ 
++  // Under Debian, clang headers are installed into
++  // '/usr/include/clang/VERSION/include/'
++  addSystemInclude(DriverArgs, CC1Args, "/usr/include/clang/" + std::string(CLANG_VERSION_STRING) + "/include/");
++  
++
+   if (DriverArgs.hasArg(options::OPT_nostdlibinc))
+     return;
+ 

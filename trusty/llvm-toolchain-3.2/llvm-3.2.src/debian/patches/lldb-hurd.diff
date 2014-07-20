@@ -1,0 +1,17 @@
+Index: llvm-toolchain-3.2-3.2repack/lldb/include/lldb/Target/Process.h
+===================================================================
+--- llvm-toolchain-3.2-3.2repack.orig/lldb/include/lldb/Target/Process.h	2013-01-10 17:49:46.000000000 +0100
++++ llvm-toolchain-3.2-3.2repack/lldb/include/lldb/Target/Process.h	2013-05-15 09:53:34.761068616 +0200
+@@ -46,6 +46,12 @@
+ #include "lldb/Target/UnixSignals.h"
+ #include "lldb/Utility/PseudoTerminal.h"
+ 
++// For GNU Hurd
++#if defined(__GNU__) && !defined(PATH_MAX)
++# define PATH_MAX 4096
++#endif
++
++
+ namespace lldb_private {
+ 
+ //----------------------------------------------------------------------

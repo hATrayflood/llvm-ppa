@@ -1,0 +1,1040 @@
+diff -urN ../../llvm-toolchain-3.2/debian/changelog llvm-3.2.src/debian/changelog
+--- ../../llvm-toolchain-3.2/debian/changelog	2014-05-09 17:45:31.640600409 +0900
++++ llvm-3.2.src/debian/changelog	2014-07-21 00:06:00.205657892 +0900
+@@ -1,3 +1,9 @@
++llvm-toolchain-3.2 (1:3.2repack-debian11trusty0) trusty; urgency=low
++
++  * ppa for trusty
++
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Mon, 21 Jul 2014 00:05:00 +0900
++
+ llvm-toolchain-3.2 (1:3.2repack-11) unstable; urgency=low
+ 
+   * dh_auto_clean removed, just like in the 3.3
+diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2-relaxng.install llvm-3.2.src/debian/clang-3.2-relaxng.install
+--- ../../llvm-toolchain-3.2/debian/clang-3.2-relaxng.install	1970-01-01 09:00:00.000000000 +0900
++++ llvm-3.2.src/debian/clang-3.2-relaxng.install	2014-05-09 17:45:31.648103894 +0900
+@@ -0,0 +1 @@
++clang/bindings/xml/comment-xml-schema.rng	/usr/share/xml/clang-3.2-relaxng/
+diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.install llvm-3.2.src/debian/clang-3.2.install
+--- ../../llvm-toolchain-3.2/debian/clang-3.2.install	2014-05-09 17:45:31.640600409 +0900
++++ llvm-3.2.src/debian/clang-3.2.install	2014-05-09 17:45:31.648103894 +0900
+@@ -1,9 +1,14 @@
+-usr/lib/llvm-3.2/bin/clang			/usr/bin/
+-usr/lib/llvm-3.2/bin/clang++			/usr/bin/
+-usr/lib/llvm-3.2/bin/clang-check			/usr/bin/
+-usr/lib/llvm-3.2/bin/clang-tblgen			/usr/bin/
+-tools/clang/tools/scan-build			/usr/share/clang/
+-tools/clang/tools/scan-view			/usr/share/clang/
++usr/lib/llvm-3.2/bin/clang		/usr/lib/llvm-3.2/bin/
++usr/lib/llvm-3.2/bin/clang++		/usr/lib/llvm-3.2/bin/
++usr/lib/llvm-3.2/bin/clang-check	/usr/lib/llvm-3.2/bin/
++usr/lib/llvm-3.2/bin/clang-tblgen	/usr/lib/llvm-3.2/bin/
++usr/bin/clang-3.2
++usr/bin/clang++-3.2
++usr/bin/clang-check-3.2
++usr/bin/clang-tblgen-3.2
++clang/tools/scan-build			/usr/lib/llvm-3.2/share/
++clang/tools/scan-view			/usr/lib/llvm-3.2/share/
+ #usr/share/man/man1/clang.1	usr/share/man/man1/
+-debian/pollycc		/usr/bin/
++debian/pollycc				/usr/lib/llvm-3.2/bin/
++compiler-rt/lib/asan/scripts/asan_symbolize.py	/usr/lib/llvm-3.2/bin/
+ 
+diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.links llvm-3.2.src/debian/clang-3.2.links
+--- ../../llvm-toolchain-3.2/debian/clang-3.2.links	2014-05-09 17:45:31.640600409 +0900
++++ llvm-3.2.src/debian/clang-3.2.links	2014-05-09 17:45:31.648103894 +0900
+@@ -1,5 +1,7 @@
+-usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/llvm-clang.1.gz
+-usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/clang++.1.gz
+-/usr/share/clang/scan-build/scan-build	/usr/bin/scan-build
+-/usr/share/clang/scan-view/scan-view	/usr/bin/scan-view
+-/usr/bin/clang				/usr/bin/llvm-clang
++usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/llvm-clang-3.2.1.gz
++usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/clang++-3.2.1.gz
++usr/lib/llvm-3.2/share/scan-build/scan-build	usr/bin/scan-build-3.2
++usr/lib/llvm-3.2/share/scan-view/scan-view	usr/bin/scan-view-3.2
++usr/lib/llvm-3.2/bin/clang			usr/bin/llvm-clang-3.2
++usr/lib/llvm-3.2/bin/pollycc			usr/bin/pollycc-3.2
++usr/lib/llvm-3.2/bin/asan_symbolize.py		usr/bin/asan_symbolize-3.2
+diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.manpages llvm-3.2.src/debian/clang-3.2.manpages
+--- ../../llvm-toolchain-3.2/debian/clang-3.2.manpages	2014-05-09 17:45:31.640600409 +0900
++++ llvm-3.2.src/debian/clang-3.2.manpages	2014-05-09 17:45:31.648103894 +0900
+@@ -1,2 +1,3 @@
+ build-llvm/tools/clang/docs/tools/clang-3.2.1
+-clang/tools/scan-build/scan-build.1
++debian/man/scan-build-3.2.1
++debian/man/scan-view-3.2.1
+diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.postinst llvm-3.2.src/debian/clang-3.2.postinst
+--- ../../llvm-toolchain-3.2/debian/clang-3.2.postinst	2014-05-09 17:45:31.640600409 +0900
++++ llvm-3.2.src/debian/clang-3.2.postinst	1970-01-01 09:00:00.000000000 +0900
+@@ -1,31 +0,0 @@
+-#! /bin/sh -e
+-
+-prio=10
+-
+-update-alternatives --quiet \
+-	--install /usr/bin/c++ \
+-		c++ \
+-		/usr/bin/clang++ \
+-		$prio
+-
+-update-alternatives --quiet \
+-	--install /usr/bin/cc \
+-		cc \
+-		/usr/bin/clang \
+-		$prio
+-
+-update-alternatives --quiet \
+-	--install /usr/bin/c89 \
+-		c89 \
+-		/usr/bin/clang \
+-		$prio
+-
+-update-alternatives --quiet \
+-	--install /usr/bin/c99 \
+-		c99 \
+-		/usr/bin/clang \
+-		$prio
+-
+-#DEBHELPER#
+-
+-exit 0
+diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.prerm llvm-3.2.src/debian/clang-3.2.prerm
+--- ../../llvm-toolchain-3.2/debian/clang-3.2.prerm	2014-05-09 17:45:31.640600409 +0900
++++ llvm-3.2.src/debian/clang-3.2.prerm	1970-01-01 09:00:00.000000000 +0900
+@@ -1,14 +0,0 @@
+-#!/bin/sh
+-
+-set -e
+-
+-if [ "$1" = "remove" ] || [ "$1" = "deconfigure" ]; then
+-    update-alternatives --quiet --remove cc /usr/bin/clang
+-    update-alternatives --quiet --remove c89 /usr/bin/clang
+-    update-alternatives --quiet --remove c99 /usr/bin/clang
+-    update-alternatives --quiet --remove c++ /usr/bin/clang++
+-fi
+-
+-#DEBHELPER#
+-
+-exit 0
+diff -urN ../../llvm-toolchain-3.2/debian/control llvm-3.2.src/debian/control
+--- ../../llvm-toolchain-3.2/debian/control	2014-05-09 17:45:31.640600409 +0900
++++ llvm-3.2.src/debian/control	2014-07-21 00:11:11.927266865 +0900
+@@ -1,30 +1,24 @@
+ Source: llvm-toolchain-3.2
+ Section: devel
+-Priority: optional
+-Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
+-Uploaders: Sylvestre Ledru <sylvestre@debian.org>
++Priority: extra
++Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
+ Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl8.5, expect,
+     autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
+     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
+     lsb-release, patchutils, diffstat, xz-utils, chrpath, python-dev,
+     libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev,
+-    libisl-dev (>= 0.11.1), binutils-gold [amd64 armhf i386 x32],
+-    gcc-4.7, g++-4.7, libjsoncpp-dev
++    libisl-dev (>= 0.11.1), libjsoncpp-dev,
++    dh-ocaml
+ Build-Conflicts: oprofile, ocaml
+ Standards-Version: 3.9.4
+-Homepage: http://www.llvm.org/
+-Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/llvm-toolchain/trunk/
+-Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/llvm-toolchain/trunk/
++Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
++Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
+ 
+ Package: clang-3.2
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++-4.8-dev,
+- libclang-common-dev (= ${binary:Version}),
+- libobjc-4.8-dev, libgcc-4.8-dev
+-Provides: c-compiler, objc-compiler, c++-compiler
++ libclang-common-3.2-dev (= ${binary:Version})
+ Recommends: llvm-3.2-dev, python
+-Replaces: clang (<< 1:3.1), clang-3.1, compiler-rt
+-Breaks: clang (<< 1:3.1), clang-3.1, compiler-rt
+ Description: C, C++ and Objective-C compiler (LLVM based)
+  Clang project is a C, C++, Objective C and Objective C++ front-end
+  for the LLVM compiler. Some of its goals include the following:
+@@ -81,7 +75,7 @@
+  .
+  This package contains the documentation.
+ 
+-Package: libclang1
++Package: libclang1-3.2
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++-4.8-dev,
+ Description: clang library
+@@ -111,12 +105,10 @@
+  .
+  This package contains the clang library.
+ 
+-Package: libclang1-dbg
+-Architecture: any
+-Section: debug
+-Priority: extra
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++-4.8-dev, libclang1
+-Description: clang library
++Package: clang-3.2-relaxng
++Architecture: all
++Section: misc
++Description: clang Relax NG schema for the XML
+  Clang project is a C, C++, Objective C and Objective C++ front-end
+  for the LLVM compiler. Some of its goals include the following:
+  .
+@@ -141,13 +133,13 @@
+     * A single unified parser for C, Objective C, C++, and Objective C++
+     * Conformance with C/C++/ObjC and their variants
+  .
+- This package contains the debugging symbols.
++ This package contains the clang Relax NG schema for the XML.
+ 
+-Package: libclang-dev
++Package: libclang-3.2-dev
+ Architecture: any
+ Section: libdevel
+ Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++-4.8-dev,
+- libclang1 (= ${binary:Version}), libclang-common-dev (= ${binary:Version})
++ libclang1-3.2 (= ${binary:Version}), libclang-common-3.2-dev (= ${binary:Version})
+ Description: clang library - Development package
+  Clang project is a C, C++, Objective C and Objective C++ front-end
+  for the LLVM compiler. Some of its goals include the following:
+@@ -175,12 +167,11 @@
+  .
+  This package contains the clang headers to develop extensions over libclang.
+ 
+-Package: libclang-common-dev
++Package: libclang-common-3.2-dev
+ Architecture: any
+ Section: libdevel
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+-Replaces: llvm-3.2-dev (<< 1:3.2repack), libclang-dev
+-Breaks: llvm-3.2-dev (<< 1:3.2repack)
++Replaces: libclang-3.2-dev
+ Description: clang library - Common development package
+  Clang project is a C, C++, Objective C and Objective C++ front-end
+  for the LLVM compiler. Some of its goals include the following:
+@@ -231,6 +222,13 @@
+ #       libgcc implementations.
+ #  .
+ 
++Package: python-clang-3.2
++Architecture: any
++Section: python
++Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-3.2 (= ${binary:Version}), python2.7
++Description: Clang Python Bindings
++ This binding package provides access to the Clang compiler and libraries.
++
+ Package: libllvm3.2
+ Architecture: any
+ Section: libs
+@@ -244,27 +242,11 @@
+  .
+  This package contains the LLVM runtime library.
+ 
+-Package: libllvm3.2-dbg
+-Architecture: any
+-Section: debug
+-Priority: extra
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.2
+-Pre-Depends: ${misc:Pre-Depends}
+-Multi-Arch: same
+-Description: Low-Level Virtual Machine (LLVM), debugging symbols library
+- The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+- tools that make it easy to build compilers, optimizers, Just-In-Time
+- code generators, and many other compiler-related programs.
+- .
+- This package contains the LLVM runtime library debug symbols.
+-
+ Package: llvm-3.2
+ Architecture: any
+ Suggests: llvm-3.2-doc
+-Depends: llvm-3.2-runtime (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, libjs-jquery
++Depends: llvm-3.2-runtime (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+ Recommends: llvm-3.2-dev
+-Conflicts: llvm (<< 2.7-1)
+-Replaces: llvm (<< 2.7-1)
+ Description: Low-Level Virtual Machine (LLVM)
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+@@ -293,8 +275,6 @@
+ Package: llvm-3.2-runtime
+ Architecture: any
+ Depends: binfmt-support, ${shlibs:Depends}, ${misc:Depends}
+-Conflicts: llvm (<< 2.7-1)
+-Replaces: llvm (<< 2.7-1)
+ Description: Low-Level Virtual Machine (LLVM), bytecode interpreter
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+@@ -313,7 +293,6 @@
+ Package: llvm-3.2-dev
+ Architecture: any
+ Depends: ${shlibs:Depends}, libffi-dev (>= 3.0.9), ${misc:Depends}, llvm-3.2 (= ${binary:Version})
+-Replaces: llvm (<< 2.2-3)
+ Description: Low-Level Virtual Machine (LLVM), libraries and headers
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+@@ -354,7 +333,7 @@
+ Package: llvm-3.2-doc
+ Section: doc
+ Architecture: all
+-Depends: ${misc:Depends}
++Depends: ${misc:Depends}, libjs-jquery
+ Description: Low-Level Virtual Machine (LLVM), documentation
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+diff -urN ../../llvm-toolchain-3.2/debian/libclang-3.2-dev.install llvm-3.2.src/debian/libclang-3.2-dev.install
+--- ../../llvm-toolchain-3.2/debian/libclang-3.2-dev.install	1970-01-01 09:00:00.000000000 +0900
++++ llvm-3.2.src/debian/libclang-3.2-dev.install	2014-05-09 17:45:31.648103894 +0900
+@@ -0,0 +1,7 @@
++usr/lib/llvm-3.2/include/clang
++usr/lib/llvm-3.2/include/clang-c
++#usr/include/clang                  /usr/include/
++#usr/include/clang-c                /usr/include/
++#usr/lib/libclang.so                /usr/lib/
++usr/lib/llvm-3.2/lib/libclang*a
++#usr/lib/libclang*a                 /usr/lib/
+diff -urN ../../llvm-toolchain-3.2/debian/libclang-3.2-dev.links.in llvm-3.2.src/debian/libclang-3.2-dev.links.in
+--- ../../llvm-toolchain-3.2/debian/libclang-3.2-dev.links.in	1970-01-01 09:00:00.000000000 +0900
++++ llvm-3.2.src/debian/libclang-3.2-dev.links.in	2014-05-09 17:45:31.648103894 +0900
+@@ -0,0 +1,3 @@
++usr/lib/@DEB_HOST_MULTIARCH@/libclang-3.2.so.1 usr/lib/@DEB_HOST_MULTIARCH@/libclang-3.2.so
++usr/lib/@DEB_HOST_MULTIARCH@/libclang-3.2.so.1 usr/lib/llvm-3.2/lib/libclang-3.2.so
++usr/lib/@DEB_HOST_MULTIARCH@/libclang-3.2.so.1 usr/lib/llvm-3.2/lib/libclang.so
+diff -urN ../../llvm-toolchain-3.2/debian/libclang-common-3.2-dev.install llvm-3.2.src/debian/libclang-common-3.2-dev.install
+--- ../../llvm-toolchain-3.2/debian/libclang-common-3.2-dev.install	1970-01-01 09:00:00.000000000 +0900
++++ llvm-3.2.src/debian/libclang-common-3.2-dev.install	2014-05-09 17:45:31.648103894 +0900
+@@ -0,0 +1,6 @@
++usr/lib/llvm-3.2/lib/clang/3.2/include
++#usr/lib/clang/3.2/include/         /usr/include/clang/3.2/
++usr/lib/llvm-3.2/lib/clang/3.2/lib
++#usr/lib/clang/3.2/lib             /usr/lib/clang/3.2/
++usr/lib/llvm-3.2/lib/libprofile_rt.so
++usr/lib/llvm-3.2/lib/libprofile_rt.a
+diff -urN ../../llvm-toolchain-3.2/debian/libclang-common-3.2-dev.links llvm-3.2.src/debian/libclang-common-3.2-dev.links
+--- ../../llvm-toolchain-3.2/debian/libclang-common-3.2-dev.links	1970-01-01 09:00:00.000000000 +0900
++++ llvm-3.2.src/debian/libclang-common-3.2-dev.links	2014-05-09 17:45:31.648103894 +0900
+@@ -0,0 +1,2 @@
++usr/lib/llvm-3.2/lib/clang/3.2/include usr/include/clang/3.2/include
++usr/lib/llvm-3.2/lib/clang/3.2/lib /usr/lib/clang/3.2/lib
+diff -urN ../../llvm-toolchain-3.2/debian/libclang1-3.2.install.in llvm-3.2.src/debian/libclang1-3.2.install.in
+--- ../../llvm-toolchain-3.2/debian/libclang1-3.2.install.in	1970-01-01 09:00:00.000000000 +0900
++++ llvm-3.2.src/debian/libclang1-3.2.install.in	2014-05-09 17:45:31.648103894 +0900
+@@ -0,0 +1 @@
++usr/lib/llvm-3.2/lib/libclang-3.2.so.1 /usr/lib/@DEB_HOST_MULTIARCH@/
+diff -urN ../../llvm-toolchain-3.2/debian/libclang1-3.2.links.in llvm-3.2.src/debian/libclang1-3.2.links.in
+--- ../../llvm-toolchain-3.2/debian/libclang1-3.2.links.in	1970-01-01 09:00:00.000000000 +0900
++++ llvm-3.2.src/debian/libclang1-3.2.links.in	2014-05-09 17:45:31.648103894 +0900
+@@ -0,0 +1 @@
++usr/lib/@DEB_HOST_MULTIARCH@/libclang-3.2.so.1 usr/lib/llvm-3.2/lib/libclang.so.1
+diff -urN ../../llvm-toolchain-3.2/debian/libclang1-3.2.symbols llvm-3.2.src/debian/libclang1-3.2.symbols
+--- ../../llvm-toolchain-3.2/debian/libclang1-3.2.symbols	1970-01-01 09:00:00.000000000 +0900
++++ llvm-3.2.src/debian/libclang1-3.2.symbols	2014-05-09 17:45:31.648103894 +0900
+@@ -0,0 +1,261 @@
++libclang.so.1 libclang1-3.2 #MINVER#
++ clang_BlockCommandComment_getArgText@Base 1:3.2
++ clang_BlockCommandComment_getCommandName@Base 1:3.2
++ clang_BlockCommandComment_getNumArgs@Base 1:3.2
++ clang_BlockCommandComment_getParagraph@Base 1:3.2
++ clang_CXCursorSet_contains@Base 1:3.2
++ clang_CXCursorSet_insert@Base 1:3.2
++ clang_CXIndex_getGlobalOptions@Base 1:3.2
++ clang_CXIndex_setGlobalOptions@Base 1:3.2
++ clang_CXXMethod_isStatic@Base 1:3.2
++ clang_CXXMethod_isVirtual@Base 1:3.2
++ clang_Comment_getChild@Base 1:3.2
++ clang_Comment_getKind@Base 1:3.2
++ clang_Comment_getNumChildren@Base 1:3.2
++ clang_Comment_isWhitespace@Base 1:3.2
++ clang_CompilationDatabase_dispose@Base 1:3.2
++ clang_CompilationDatabase_fromDirectory@Base 1:3.2
++ clang_CompilationDatabase_getCompileCommands@Base 1:3.2
++ clang_CompileCommand_getArg@Base 1:3.2
++ clang_CompileCommand_getDirectory@Base 1:3.2
++ clang_CompileCommand_getNumArgs@Base 1:3.2
++ clang_CompileCommands_dispose@Base 1:3.2
++ clang_CompileCommands_getCommand@Base 1:3.2
++ clang_CompileCommands_getSize@Base 1:3.2
++ clang_Cursor_getArgument@Base 1:3.2
++ clang_Cursor_getBriefCommentText@Base 1:3.2
++ clang_Cursor_getCommentRange@Base 1:3.2
++ clang_Cursor_getModule@Base 1:3.2
++ clang_Cursor_getNumArguments@Base 1:3.2
++ clang_Cursor_getObjCSelectorIndex@Base 1:3.2
++ clang_Cursor_getParsedComment@Base 1:3.2
++ clang_Cursor_getRawCommentText@Base 1:3.2
++ clang_Cursor_getReceiverType@Base 1:3.2
++ clang_Cursor_getSpellingNameRange@Base 1:3.2
++ clang_Cursor_getTranslationUnit@Base 1:3.2
++ clang_Cursor_isDynamicCall@Base 1:3.2
++ clang_Cursor_isNull@Base 1:3.2
++ clang_FullComment_getAsHTML@Base 1:3.2
++ clang_FullComment_getAsXML@Base 1:3.2
++ clang_HTMLStartTagComment_isSelfClosing@Base 1:3.2
++ clang_HTMLStartTag_getAttrName@Base 1:3.2
++ clang_HTMLStartTag_getAttrValue@Base 1:3.2
++ clang_HTMLStartTag_getNumAttrs@Base 1:3.2
++ clang_HTMLTagComment_getAsString@Base 1:3.2
++ clang_HTMLTagComment_getTagName@Base 1:3.2
++ clang_IndexAction_create@Base 1:3.2
++ clang_IndexAction_dispose@Base 1:3.2
++ clang_InlineCommandComment_getArgText@Base 1:3.2
++ clang_InlineCommandComment_getCommandName@Base 1:3.2
++ clang_InlineCommandComment_getNumArgs@Base 1:3.2
++ clang_InlineCommandComment_getRenderKind@Base 1:3.2
++ clang_InlineContentComment_hasTrailingNewline@Base 1:3.2
++ clang_Module_getFullName@Base 1:3.2
++ clang_Module_getName@Base 1:3.2
++ clang_Module_getNumTopLevelHeaders@Base 1:3.2
++ clang_Module_getParent@Base 1:3.2
++ clang_Module_getTopLevelHeader@Base 1:3.2
++ clang_ParamCommandComment_getDirection@Base 1:3.2
++ clang_ParamCommandComment_getParamIndex@Base 1:3.2
++ clang_ParamCommandComment_getParamName@Base 1:3.2
++ clang_ParamCommandComment_isDirectionExplicit@Base 1:3.2
++ clang_ParamCommandComment_isParamIndexValid@Base 1:3.2
++ clang_Range_isNull@Base 1:3.2
++ clang_TParamCommandComment_getDepth@Base 1:3.2
++ clang_TParamCommandComment_getIndex@Base 1:3.2
++ clang_TParamCommandComment_getParamName@Base 1:3.2
++ clang_TParamCommandComment_isParamPositionValid@Base 1:3.2
++ clang_TextComment_getText@Base 1:3.2
++ clang_VerbatimBlockLineComment_getText@Base 1:3.2
++ clang_VerbatimLineComment_getText@Base 1:3.2
++ clang_annotateTokens@Base 1:3.2
++ clang_codeCompleteAt@Base 1:3.2
++ clang_codeCompleteGetContainerKind@Base 1:3.2
++ clang_codeCompleteGetContainerUSR@Base 1:3.2
++ clang_codeCompleteGetContexts@Base 1:3.2
++ clang_codeCompleteGetDiagnostic@Base 1:3.2
++ clang_codeCompleteGetNumDiagnostics@Base 1:3.2
++ clang_codeCompleteGetObjCSelector@Base 1:3.2
++ clang_constructUSR_ObjCCategory@Base 1:3.2
++ clang_constructUSR_ObjCClass@Base 1:3.2
++ clang_constructUSR_ObjCIvar@Base 1:3.2
++ clang_constructUSR_ObjCMethod@Base 1:3.2
++ clang_constructUSR_ObjCProperty@Base 1:3.2
++ clang_constructUSR_ObjCProtocol@Base 1:3.2
++ clang_createCXCursorSet@Base 1:3.2
++ clang_createIndex@Base 1:3.2
++ clang_createTranslationUnit@Base 1:3.2
++ clang_createTranslationUnitFromSourceFile@Base 1:3.2
++ clang_defaultCodeCompleteOptions@Base 1:3.2
++ clang_defaultDiagnosticDisplayOptions@Base 1:3.2
++ clang_defaultEditingTranslationUnitOptions@Base 1:3.2
++ clang_defaultReparseOptions@Base 1:3.2
++ clang_defaultSaveOptions@Base 1:3.2
++ clang_disposeCXCursorSet@Base 1:3.2
++ clang_disposeCXPlatformAvailability@Base 1:3.2
++ clang_disposeCXTUResourceUsage@Base 1:3.2
++ clang_disposeCodeCompleteResults@Base 1:3.2
++ clang_disposeDiagnostic@Base 1:3.2
++ clang_disposeDiagnosticSet@Base 1:3.2
++ clang_disposeIndex@Base 1:3.2
++ clang_disposeOverriddenCursors@Base 1:3.2
++ clang_disposeString@Base 1:3.2
++ clang_disposeTokens@Base 1:3.2
++ clang_disposeTranslationUnit@Base 1:3.2
++ clang_enableStackTraces@Base 1:3.2
++ clang_equalCursors@Base 1:3.2
++ clang_equalLocations@Base 1:3.2
++ clang_equalRanges@Base 1:3.2
++ clang_equalTypes@Base 1:3.2
++ clang_executeOnThread@Base 1:3.2
++ clang_findReferencesInFile@Base 1:3.2
++ clang_findReferencesInFileWithBlock@Base 1:3.2
++ clang_formatDiagnostic@Base 1:3.2
++ clang_getArgType@Base 1:3.2
++ clang_getArrayElementType@Base 1:3.2
++ clang_getArraySize@Base 1:3.2
++ clang_getCString@Base 1:3.2
++ clang_getCXTUResourceUsage@Base 1:3.2
++ clang_getCXXAccessSpecifier@Base 1:3.2
++ clang_getCanonicalCursor@Base 1:3.2
++ clang_getCanonicalType@Base 1:3.2
++ clang_getChildDiagnostics@Base 1:3.2
++ clang_getClangVersion@Base 1:3.2
++ clang_getCompletionAnnotation@Base 1:3.2
++ clang_getCompletionAvailability@Base 1:3.2
++ clang_getCompletionBriefComment@Base 1:3.2
++ clang_getCompletionChunkCompletionString@Base 1:3.2
++ clang_getCompletionChunkKind@Base 1:3.2
++ clang_getCompletionChunkText@Base 1:3.2
++ clang_getCompletionNumAnnotations@Base 1:3.2
++ clang_getCompletionParent@Base 1:3.2
++ clang_getCompletionPriority@Base 1:3.2
++ clang_getCursor@Base 1:3.2
++ clang_getCursorAvailability@Base 1:3.2
++ clang_getCursorCompletionString@Base 1:3.2
++ clang_getCursorDefinition@Base 1:3.2
++ clang_getCursorDisplayName@Base 1:3.2
++ clang_getCursorExtent@Base 1:3.2
++ clang_getCursorKind@Base 1:3.2
++ clang_getCursorKindSpelling@Base 1:3.2
++ clang_getCursorLanguage@Base 1:3.2
++ clang_getCursorLexicalParent@Base 1:3.2
++ clang_getCursorLinkage@Base 1:3.2
++ clang_getCursorLocation@Base 1:3.2
++ clang_getCursorPlatformAvailability@Base 1:3.2
++ clang_getCursorReferenceNameRange@Base 1:3.2
++ clang_getCursorReferenced@Base 1:3.2
++ clang_getCursorResultType@Base 1:3.2
++ clang_getCursorSemanticParent@Base 1:3.2
++ clang_getCursorSpelling@Base 1:3.2
++ clang_getCursorType@Base 1:3.2
++ clang_getCursorUSR@Base 1:3.2
++ clang_getDeclObjCTypeEncoding@Base 1:3.2
++ clang_getDefinitionSpellingAndExtent@Base 1:3.2
++ clang_getDiagnostic@Base 1:3.2
++ clang_getDiagnosticCategory@Base 1:3.2
++ clang_getDiagnosticCategoryName@Base 1:3.2
++ clang_getDiagnosticCategoryText@Base 1:3.2
++ clang_getDiagnosticFixIt@Base 1:3.2
++ clang_getDiagnosticInSet@Base 1:3.2
++ clang_getDiagnosticLocation@Base 1:3.2
++ clang_getDiagnosticNumFixIts@Base 1:3.2
++ clang_getDiagnosticNumRanges@Base 1:3.2
++ clang_getDiagnosticOption@Base 1:3.2
++ clang_getDiagnosticRange@Base 1:3.2
++ clang_getDiagnosticSetFromTU@Base 1:3.2
++ clang_getDiagnosticSeverity@Base 1:3.2
++ clang_getDiagnosticSpelling@Base 1:3.2
++ clang_getElementType@Base 1:3.2
++ clang_getEnumConstantDeclUnsignedValue@Base 1:3.2
++ clang_getEnumConstantDeclValue@Base 1:3.2
++ clang_getEnumDeclIntegerType@Base 1:3.2
++ clang_getExpansionLocation@Base 1:3.2
++ clang_getFile@Base 1:3.2
++ clang_getFileName@Base 1:3.2
++ clang_getFileTime@Base 1:3.2
++ clang_getFunctionTypeCallingConv@Base 1:3.2
++ clang_getIBOutletCollectionType@Base 1:3.2
++ clang_getIncludedFile@Base 1:3.2
++ clang_getInclusions@Base 1:3.2
++ clang_getInstantiationLocation@Base 1:3.2
++ clang_getLocation@Base 1:3.2
++ clang_getLocationForOffset@Base 1:3.2
++ clang_getNullCursor@Base 1:3.2
++ clang_getNullLocation@Base 1:3.2
++ clang_getNullRange@Base 1:3.2
++ clang_getNumArgTypes@Base 1:3.2
++ clang_getNumCompletionChunks@Base 1:3.2
++ clang_getNumDiagnostics@Base 1:3.2
++ clang_getNumDiagnosticsInSet@Base 1:3.2
++ clang_getNumElements@Base 1:3.2
++ clang_getNumOverloadedDecls@Base 1:3.2
++ clang_getOverloadedDecl@Base 1:3.2
++ clang_getOverriddenCursors@Base 1:3.2
++ clang_getPointeeType@Base 1:3.2
++ clang_getPresumedLocation@Base 1:3.2
++ clang_getRange@Base 1:3.2
++ clang_getRangeEnd@Base 1:3.2
++ clang_getRangeStart@Base 1:3.2
++ clang_getRemappings@Base 1:3.2
++ clang_getRemappingsFromFileList@Base 1:3.2
++ clang_getResultType@Base 1:3.2
++ clang_getSpecializedCursorTemplate@Base 1:3.2
++ clang_getSpellingLocation@Base 1:3.2
++ clang_getTUResourceUsageName@Base 1:3.2
++ clang_getTemplateCursorKind@Base 1:3.2
++ clang_getTokenExtent@Base 1:3.2
++ clang_getTokenKind@Base 1:3.2
++ clang_getTokenLocation@Base 1:3.2
++ clang_getTokenSpelling@Base 1:3.2
++ clang_getTranslationUnitCursor@Base 1:3.2
++ clang_getTranslationUnitSpelling@Base 1:3.2
++ clang_getTypeDeclaration@Base 1:3.2
++ clang_getTypeKindSpelling@Base 1:3.2
++ clang_getTypedefDeclUnderlyingType@Base 1:3.2
++ clang_hashCursor@Base 1:3.2
++ clang_indexLoc_getCXSourceLocation@Base 1:3.2
++ clang_indexLoc_getFileLocation@Base 1:3.2
++ clang_indexSourceFile@Base 1:3.2
++ clang_indexTranslationUnit@Base 1:3.2
++ clang_index_getCXXClassDeclInfo@Base 1:3.2
++ clang_index_getClientContainer@Base 1:3.2
++ clang_index_getClientEntity@Base 1:3.2
++ clang_index_getIBOutletCollectionAttrInfo@Base 1:3.2
++ clang_index_getObjCCategoryDeclInfo@Base 1:3.2
++ clang_index_getObjCContainerDeclInfo@Base 1:3.2
++ clang_index_getObjCInterfaceDeclInfo@Base 1:3.2
++ clang_index_getObjCPropertyDeclInfo@Base 1:3.2
++ clang_index_getObjCProtocolRefListInfo@Base 1:3.2
++ clang_index_isEntityObjCContainerKind@Base 1:3.2
++ clang_index_setClientContainer@Base 1:3.2
++ clang_index_setClientEntity@Base 1:3.2
++ clang_isAttribute@Base 1:3.2
++ clang_isConstQualifiedType@Base 1:3.2
++ clang_isCursorDefinition@Base 1:3.2
++ clang_isDeclaration@Base 1:3.2
++ clang_isExpression@Base 1:3.2
++ clang_isFileMultipleIncludeGuarded@Base 1:3.2
++ clang_isFunctionTypeVariadic@Base 1:3.2
++ clang_isInvalid@Base 1:3.2
++ clang_isPODType@Base 1:3.2
++ clang_isPreprocessing@Base 1:3.2
++ clang_isReference@Base 1:3.2
++ clang_isRestrictQualifiedType@Base 1:3.2
++ clang_isStatement@Base 1:3.2
++ clang_isTranslationUnit@Base 1:3.2
++ clang_isUnexposed@Base 1:3.2
++ clang_isVirtualBase@Base 1:3.2
++ clang_isVolatileQualifiedType@Base 1:3.2
++ clang_loadDiagnostics@Base 1:3.2
++ clang_parseTranslationUnit@Base 1:3.2
++ clang_remap_dispose@Base 1:3.2
++ clang_remap_getFilenames@Base 1:3.2
++ clang_remap_getNumFiles@Base 1:3.2
++ clang_reparseTranslationUnit@Base 1:3.2
++ clang_saveTranslationUnit@Base 1:3.2
++ clang_sortCodeCompletionResults@Base 1:3.2
++ clang_toggleCrashRecovery@Base 1:3.2
++ clang_tokenize@Base 1:3.2
++ clang_visitChildren@Base 1:3.2
++ clang_visitChildrenWithBlock@Base 1:3.2
+diff -urN ../../llvm-toolchain-3.2/debian/libllvm-3.2-ocaml-dev.dirs.in llvm-3.2.src/debian/libllvm-3.2-ocaml-dev.dirs.in
+--- ../../llvm-toolchain-3.2/debian/libllvm-3.2-ocaml-dev.dirs.in	2014-05-09 17:45:31.640600409 +0900
++++ llvm-3.2.src/debian/libllvm-3.2-ocaml-dev.dirs.in	2014-05-09 17:45:31.648103894 +0900
+@@ -1,2 +1,2 @@
+-@OCAML_STDLIB_DIR@/META/
++@OCAML_STDLIB_DIR@/METAS
+ 
+diff -urN ../../llvm-toolchain-3.2/debian/llvm-3.2-dev.install llvm-3.2.src/debian/llvm-3.2-dev.install
+--- ../../llvm-toolchain-3.2/debian/llvm-3.2-dev.install	2014-05-09 17:45:31.640600409 +0900
++++ llvm-3.2.src/debian/llvm-3.2-dev.install	2014-05-09 17:45:31.648103894 +0900
+@@ -13,8 +13,8 @@
+ configure			            /usr/lib/llvm-3.2/build/
+ autoconf/			            /usr/lib/llvm-3.2/build/
+ 
+-utils/vim/llvm.vim		        usr/share/vim/addons/syntax/llvm-3.2.vim
+-utils/vim/tablegen.vim		    usr/share/vim/addons/syntax/tablegen-3.2.vim
++utils/vim/llvm-3.2.vim		        usr/share/vim/addons/syntax/
++utils/vim/tablegen-3.2.vim		    usr/share/vim/addons/syntax/
+ 
+ utils/emacs/emacs.el		    usr/share/emacs/site-lisp/llvm-3.2/
+ utils/emacs/llvm-mode.el	    usr/share/emacs/site-lisp/llvm-3.2/
+diff -urN ../../llvm-toolchain-3.2/debian/llvm-3.2-runtime.postinst llvm-3.2.src/debian/llvm-3.2-runtime.postinst
+--- ../../llvm-toolchain-3.2/debian/llvm-3.2-runtime.postinst	2014-05-09 17:45:31.640600409 +0900
++++ llvm-3.2.src/debian/llvm-3.2-runtime.postinst	1970-01-01 09:00:00.000000000 +0900
+@@ -1,9 +0,0 @@
+-#!/bin/sh -e
+-
+-if test "$1" = "configure"; then
+-    if test -x /usr/sbin/update-binfmts; then
+-        update-binfmts --import llvm-3.2-runtime.binfmt || true
+-    fi
+-fi
+-
+-#DEBHELPER#
+diff -urN ../../llvm-toolchain-3.2/debian/llvm-3.2-runtime.prerm.in llvm-3.2.src/debian/llvm-3.2-runtime.prerm.in
+--- ../../llvm-toolchain-3.2/debian/llvm-3.2-runtime.prerm.in	2014-05-09 17:45:31.640600409 +0900
++++ llvm-3.2.src/debian/llvm-3.2-runtime.prerm.in	1970-01-01 09:00:00.000000000 +0900
+@@ -1,16 +0,0 @@
+-#!/bin/sh -e
+-
+-if test "$1" = "remove"; then
+-    if test -x /usr/sbin/update-binfmts; then
+-        update-binfmts --package llvm-@LLVM_VERSION@-runtime \
+-            --remove llvm-@LLVM_VERSION@-runtime.binfmt /usr/bin/lli-@LLVM_VERSION@ || true
+-        if test -f /var/lib/binfmts/llvm-@LLVM_VERSION@.binfmt; then
+-            # Purge old file
+-            update-binfmts --package llvm-@LLVM_VERSION@-runtime \
+-                --remove llvm-@LLVM_VERSION@.binfmt /usr/bin/lli-@LLVM_VERSION@ || true
+-        fi
+-    fi
+-fi
+-
+-#DEBHELPER#
+-
+diff -urN ../../llvm-toolchain-3.2/debian/patches/99-python-bindings.patch llvm-3.2.src/debian/patches/99-python-bindings.patch
+--- ../../llvm-toolchain-3.2/debian/patches/99-python-bindings.patch	1970-01-01 09:00:00.000000000 +0900
++++ llvm-3.2.src/debian/patches/99-python-bindings.patch	2014-05-09 17:45:31.648103894 +0900
+@@ -0,0 +1,233 @@
++diff -urN llvm-3.2.src.orig/clang/bindings/python/README.txt llvm-3.2.src/clang/bindings/python/README.txt
++--- llvm-3.2.src.orig/clang/bindings/python/README.txt	2010-05-01 06:51:10.000000000 +0900
+++++ llvm-3.2.src/clang/bindings/python/README.txt	2013-06-26 22:59:24.690204577 +0900
++@@ -4,12 +4,9 @@
++ 
++ This directory implements Python bindings for Clang.
++ 
++-You may need to alter LD_LIBRARY_PATH so that the Clang library can be
++-found. The unit tests are designed to be run with 'nosetests'. For example:
+++The unit tests are designed to be run with 'nosetests'. For example:
++ --
++-$ env PYTHONPATH=$(echo ~/llvm/tools/clang/bindings/python/) \
++-      LD_LIBRARY_PATH=$(llvm-config --libdir) \
++-  nosetests -v
+++$ nosetests -v
++ tests.cindex.test_index.test_create ... ok
++ ...
++ 
++diff -urN llvm-3.2.src.orig/clang/bindings/python/clang/cindex.py llvm-3.2.src/clang/bindings/python/clang/cindex.py
++--- llvm-3.2.src.orig/clang/bindings/python/clang/cindex.py	2012-11-01 14:46:30.000000000 +0900
+++++ llvm-3.2.src/clang/bindings/python/clang/cindex.py	2013-06-26 23:07:13.592529725 +0900
++@@ -65,7 +65,7 @@
++ from ctypes import *
++ import collections
++ 
++-import clang.enumerations
+++import clang32.enumerations
++ 
++ # ctypes doesn't implicitly convert c_void_p to the appropriate wrapper
++ # object. This is a problem, because it means that from_parameter will see an
++@@ -3124,7 +3124,7 @@
++         return True
++ 
++ def register_enumerations():
++-    for name, value in clang.enumerations.TokenKinds:
+++    for name, value in clang32.enumerations.TokenKinds:
++         TokenKind.register(value, name)
++ 
++ conf = Config()
++diff -urN llvm-3.2.src.orig/clang/bindings/python/examples/cindex/cindex-dump.py llvm-3.2.src/clang/bindings/python/examples/cindex/cindex-dump.py
++--- llvm-3.2.src.orig/clang/bindings/python/examples/cindex/cindex-dump.py	2010-02-14 03:33:28.000000000 +0900
+++++ llvm-3.2.src/clang/bindings/python/examples/cindex/cindex-dump.py	2013-06-26 23:03:02.995287095 +0900
++@@ -54,7 +54,7 @@
++              'children' : children }
++ 
++ def main():
++-    from clang.cindex import Index
+++    from clang32.cindex import Index
++     from pprint import pprint
++ 
++     from optparse import OptionParser, OptionGroup
++diff -urN llvm-3.2.src.orig/clang/bindings/python/examples/cindex/cindex-includes.py llvm-3.2.src/clang/bindings/python/examples/cindex/cindex-includes.py
++--- llvm-3.2.src.orig/clang/bindings/python/examples/cindex/cindex-includes.py	2010-02-14 03:33:28.000000000 +0900
+++++ llvm-3.2.src/clang/bindings/python/examples/cindex/cindex-includes.py	2013-06-26 23:03:15.743350310 +0900
++@@ -16,7 +16,7 @@
++ 
++ def main():
++     import sys
++-    from clang.cindex import Index
+++    from clang32.cindex import Index
++ 
++     from optparse import OptionParser, OptionGroup
++ 
++diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_cdb.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_cdb.py
++--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_cdb.py	2012-07-10 09:00:05.000000000 +0900
+++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_cdb.py	2013-06-26 23:04:06.271600860 +0900
++@@ -1,7 +1,7 @@
++-from clang.cindex import CompilationDatabase
++-from clang.cindex import CompilationDatabaseError
++-from clang.cindex import CompileCommands
++-from clang.cindex import CompileCommand
+++from clang32.cindex import CompilationDatabase
+++from clang32.cindex import CompilationDatabaseError
+++from clang32.cindex import CompileCommands
+++from clang32.cindex import CompileCommand
++ import os
++ import gc
++ 
++diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_code_completion.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_code_completion.py
++--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_code_completion.py	2012-10-07 20:46:37.000000000 +0900
+++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_code_completion.py	2013-06-26 23:04:15.943648827 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import TranslationUnit
+++from clang32.cindex import TranslationUnit
++ 
++ def check_completion_results(cr, expected):
++     assert cr is not None
++diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_cursor.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_cursor.py
++--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_cursor.py	2012-11-01 14:46:30.000000000 +0900
+++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_cursor.py	2013-06-26 23:03:53.247536273 +0900
++@@ -1,8 +1,8 @@
++ import gc
++ 
++-from clang.cindex import CursorKind
++-from clang.cindex import TranslationUnit
++-from clang.cindex import TypeKind
+++from clang32.cindex import CursorKind
+++from clang32.cindex import TranslationUnit
+++from clang32.cindex import TypeKind
++ from .util import get_cursor
++ from .util import get_cursors
++ from .util import get_tu
++diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_cursor_kind.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_cursor_kind.py
++--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_cursor_kind.py	2012-02-05 20:42:09.000000000 +0900
+++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_cursor_kind.py	2013-06-26 23:05:16.583949519 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import CursorKind
+++from clang32.cindex import CursorKind
++ 
++ def test_name():
++     assert CursorKind.UNEXPOSED_DECL.name is 'UNEXPOSED_DECL'
++diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_diagnostics.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_diagnostics.py
++--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_diagnostics.py	2012-03-11 07:19:05.000000000 +0900
+++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_diagnostics.py	2013-06-26 23:05:06.775900866 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import *
+++from clang32.cindex import *
++ from .util import get_tu
++ 
++ # FIXME: We need support for invalid translation units to test better.
++diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_file.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_file.py
++--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_file.py	2011-10-31 09:07:19.000000000 +0900
+++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_file.py	2013-06-26 23:05:55.624143111 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import Index, File
+++from clang32.cindex import Index, File
++ 
++ def test_file():
++   index = Index.create()
++diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_index.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_index.py
++--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_index.py	2010-01-24 11:02:07.000000000 +0900
+++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_index.py	2013-06-26 23:04:56.383849345 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import *
+++from clang32.cindex import *
++ import os
++ 
++ kInputsDir = os.path.join(os.path.dirname(__file__), 'INPUTS')
++diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_location.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_location.py
++--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_location.py	2012-06-11 20:11:48.000000000 +0900
+++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_location.py	2013-06-26 23:05:27.000001209 +0900
++@@ -1,7 +1,7 @@
++-from clang.cindex import Cursor
++-from clang.cindex import File
++-from clang.cindex import SourceLocation
++-from clang.cindex import SourceRange
+++from clang32.cindex import Cursor
+++from clang32.cindex import File
+++from clang32.cindex import SourceLocation
+++from clang32.cindex import SourceRange
++ from .util import get_cursor
++ from .util import get_tu
++ 
++diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_token_kind.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_token_kind.py
++--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_token_kind.py	2012-07-12 16:21:12.000000000 +0900
+++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_token_kind.py	2013-06-26 23:03:38.159461449 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import TokenKind
+++from clang32.cindex import TokenKind
++ from nose.tools import eq_
++ from nose.tools import ok_
++ from nose.tools import raises
++diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_tokens.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_tokens.py
++--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_tokens.py	2012-07-12 16:21:12.000000000 +0900
+++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_tokens.py	2013-06-26 23:07:42.440672813 +0900
++@@ -1,8 +1,8 @@
++-from clang.cindex import CursorKind
++-from clang.cindex import Index
++-from clang.cindex import SourceLocation
++-from clang.cindex import SourceRange
++-from clang.cindex import TokenKind
+++from clang32.cindex import CursorKind
+++from clang32.cindex import Index
+++from clang32.cindex import SourceLocation
+++from clang32.cindex import SourceRange
+++from clang32.cindex import TokenKind
++ from nose.tools import eq_
++ from nose.tools import ok_
++ 
++diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_translation_unit.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_translation_unit.py
++--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_translation_unit.py	2012-07-12 16:21:12.000000000 +0900
+++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_translation_unit.py	2013-06-26 23:04:47.375804676 +0900
++@@ -1,14 +1,14 @@
++ import gc
++ import os
++ 
++-from clang.cindex import CursorKind
++-from clang.cindex import Cursor
++-from clang.cindex import File
++-from clang.cindex import Index
++-from clang.cindex import SourceLocation
++-from clang.cindex import SourceRange
++-from clang.cindex import TranslationUnitSaveError
++-from clang.cindex import TranslationUnit
+++from clang32.cindex import CursorKind
+++from clang32.cindex import Cursor
+++from clang32.cindex import File
+++from clang32.cindex import Index
+++from clang32.cindex import SourceLocation
+++from clang32.cindex import SourceRange
+++from clang32.cindex import TranslationUnitSaveError
+++from clang32.cindex import TranslationUnit
++ from .util import get_cursor
++ from .util import get_tu
++ 
++diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_type.py llvm-3.2.src/clang/bindings/python/tests/cindex/test_type.py
++--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/test_type.py	2012-05-16 04:51:02.000000000 +0900
+++++ llvm-3.2.src/clang/bindings/python/tests/cindex/test_type.py	2013-06-26 23:04:33.023733499 +0900
++@@ -1,8 +1,8 @@
++ import gc
++ 
++-from clang.cindex import CursorKind
++-from clang.cindex import TranslationUnit
++-from clang.cindex import TypeKind
+++from clang32.cindex import CursorKind
+++from clang32.cindex import TranslationUnit
+++from clang32.cindex import TypeKind
++ from nose.tools import raises
++ from .util import get_cursor
++ from .util import get_tu
++diff -urN llvm-3.2.src.orig/clang/bindings/python/tests/cindex/util.py llvm-3.2.src/clang/bindings/python/tests/cindex/util.py
++--- llvm-3.2.src.orig/clang/bindings/python/tests/cindex/util.py	2012-05-08 14:56:38.000000000 +0900
+++++ llvm-3.2.src/clang/bindings/python/tests/cindex/util.py	2013-06-26 23:05:44.728089110 +0900
++@@ -1,7 +1,7 @@
++ # This file provides common utility functions for the test suite.
++ 
++-from clang.cindex import Cursor
++-from clang.cindex import TranslationUnit
+++from clang32.cindex import Cursor
+++from clang32.cindex import TranslationUnit
++ 
++ def get_tu(source, lang='c', all_warnings=False):
++     """Obtain a translation unit from source and language.
+diff -urN ../../llvm-toolchain-3.2/debian/patches/python-clangpath.diff llvm-3.2.src/debian/patches/python-clangpath.diff
+--- ../../llvm-toolchain-3.2/debian/patches/python-clangpath.diff	1970-01-01 09:00:00.000000000 +0900
++++ llvm-3.2.src/debian/patches/python-clangpath.diff	2014-05-09 17:45:31.648103894 +0900
+@@ -0,0 +1,12 @@
++diff -urN llvm-3.2.src.orig/clang/bindings/python/clang/cindex.py llvm-3.2.src/clang/bindings/python/clang/cindex.py
++--- llvm-3.2.src.orig/clang/bindings/python/clang/cindex.py	2012-11-01 14:46:30.000000000 +0900
+++++ llvm-3.2.src/clang/bindings/python/clang/cindex.py	2013-06-26 23:07:13.592529725 +0900
++@@ -3097,7 +3097,7 @@
++         elif name == 'Windows':
++             file = 'libclang.dll'
++         else:
++-            file = 'libclang.so'
+++            file = 'libclang-3.2.so.1'
++ 
++         if Config.library_path:
++             file = Config.library_path + '/' + file
+diff -urN ../../llvm-toolchain-3.2/debian/patches/series llvm-3.2.src/debian/patches/series
+--- ../../llvm-toolchain-3.2/debian/patches/series	2014-05-09 17:45:31.648103894 +0900
++++ llvm-3.2.src/debian/patches/series	2014-05-09 17:45:31.652568220 +0900
+@@ -49,3 +49,5 @@
+ ia64-fix.diff
+ libprofile_rt_sparc.patch
+ use-deb-json.diff
++python-clangpath.diff
++99-python-bindings.patch
+diff -urN ../../llvm-toolchain-3.2/debian/pollycc llvm-3.2.src/debian/pollycc
+--- ../../llvm-toolchain-3.2/debian/pollycc	2014-05-09 17:45:31.648103894 +0900
++++ llvm-3.2.src/debian/pollycc	2014-05-09 17:45:31.652568220 +0900
+@@ -1,3 +1,3 @@
+ #!/bin/sh
+ 
+-clang -Xclang -load -Xclang /usr/lib/llvm-3.2/lib/LLVMPolly.so $@
++clang-3.2 -Xclang -load -Xclang /usr/lib/llvm-3.2/lib/LLVMPolly.so $@
+diff -urN ../../llvm-toolchain-3.2/debian/python-clang-3.2.install llvm-3.2.src/debian/python-clang-3.2.install
+--- ../../llvm-toolchain-3.2/debian/python-clang-3.2.install	1970-01-01 09:00:00.000000000 +0900
++++ llvm-3.2.src/debian/python-clang-3.2.install	2014-05-09 17:45:31.652568220 +0900
+@@ -0,0 +1,4 @@
++clang/bindings/python/clang/*		/usr/lib/python2.7/dist-packages/clang32/
++clang/bindings/python/README.txt	/usr/share/doc/python-clang-3.2/
++clang/bindings/python/examples		/usr/share/doc/python-clang-3.2/
++clang/bindings/python/tests		/usr/share/doc/python-clang-3.2/
+diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
+--- ../../llvm-toolchain-3.2/debian/rules	2014-05-09 17:45:31.648103894 +0900
++++ llvm-3.2.src/debian/rules	2014-07-21 00:06:53.651188821 +0900
+@@ -1,15 +1,19 @@
+ #!/usr/bin/make -f
+ 
+ TARGET_BUILD	:= build-llvm
+-GCC_VERSION     := 4.7
++GCC_VERSION     := 4.8
+ LLVM_VERSION	:= 3.2
+ SONAME_EXT      := 1
+ DEBIAN_REVISION := $(shell dpkg-parsechangelog | sed -rne 's,^Version: .*-(.*),\1,p')
+ ifneq (,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
+   NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
++else
++    NCPUS := $(shell getconf _NPROCESSORS_ONLN 2>/dev/null || echo 1)
++    NJOBS := -j $(shell if test $(NCPUS) -gt 1; then echo `expr $(NCPUS) + 1`; \
++               else echo $(NCPUS); fi)
+ endif
+ 
+-VENDOR=$(shell lsb_release -is)
++VENDOR=Debian
+ 
+ DEB_HOST_MULTIARCH  = $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+ DEB_HOST_GNU_TYPE   = $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+@@ -41,13 +45,20 @@
+ 	LLDB_ENABLE=yes
+ endif
+ 
++
+ %:
+-	dh $@
+-# --buildsystem=cmake --builddirectory=$(TARGET_BUILD)
++	dh $@ --with ocaml
++
++
+ debian/%: debian/%.in
+ 	sed -e 's|@DEB_HOST_MULTIARCH@|$(DEB_HOST_MULTIARCH)|g' -e "s|@OCAML_STDLIB_DIR@|$(OCAML_STDLIB_DIR)|g" -e "s|@LLVM_VERSION@|$(LLVM_VERSION)|g" $< > $@
+ 
+-override_dh_auto_configure: debian/lldb-$(LLVM_VERSION).install debian/lldb-$(LLVM_VERSION).links debian/libllvm$(LLVM_VERSION).install debian/llvm-$(LLVM_VERSION)-dev.links debian/libllvm-$(LLVM_VERSION)-ocaml-dev.install debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs debian/llvm-$(LLVM_VERSION)-runtime.binfmt debian/llvm-$(LLVM_VERSION)-runtime.prerm
++
++override_dh_ocamlinit:
++override_dh_ocamlclean:
++
++
++override_dh_auto_configure: debian/lldb-$(LLVM_VERSION).install debian/lldb-$(LLVM_VERSION).links debian/libllvm$(LLVM_VERSION).install debian/llvm-$(LLVM_VERSION)-dev.links debian/libllvm-$(LLVM_VERSION)-ocaml-dev.install debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs debian/llvm-$(LLVM_VERSION)-runtime.binfmt debian/libclang1-$(LLVM_VERSION).links debian/libclang-$(LLVM_VERSION)-dev.links debian/libclang1-$(LLVM_VERSION).install
+ 	echo "Using gcc: "
+ 	$(CC) -v
+ 	mkdir -p $(TARGET_BUILD)
+@@ -126,12 +137,13 @@
+ 		mv $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/liblldb.so $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/liblldb.so.$(SONAME_EXT); \
+ 	fi
+ 
+-	cd debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/ && mv libclang.so libclang.so.$(SONAME_EXT) && ln -s libclang.so.$(SONAME_EXT) libclang.so
++	cd debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/ && \
++	if test ! -f libclang-$(LLVM_VERSION).so.$(SONAME_EXT); then \
++		mv libclang.so libclang-$(LLVM_VERSION).so.$(SONAME_EXT) && \
++		ln -s libclang-$(LLVM_VERSION).so.$(SONAME_EXT) libclang.so.$(SONAME_EXT); \
++	fi
+ #	cd $(TARGET_BUILD)/tools/clang/runtime/compiler-rt/ && rm -rf $$(find . -iname "SubDir.lib*" -o -iname .dir) && rm -rf $$(find -empty)
+ 
+-	mkdir -p $(CURDIR)/debian/clang-$(LLVM_VERSION)/usr/bin/
+-	cp compiler-rt/lib/asan/scripts/asan_symbolize.py $(CURDIR)/debian/clang-$(LLVM_VERSION)/usr/bin/asan_symbolize
+-
+ # Create this fake directory to make the install libclang-common-dev happy
+ # under the unsupported archs of compiler-rt
+ 	mkdir -p $(CURDIR)/debian/tmp/usr/lib/clang/$(LLVM_VERSION)/lib
+@@ -153,6 +165,14 @@
+ 	done
+ 
+ 	mv $(CURDIR)/build-llvm/tools/clang/docs/tools/clang.1 $(CURDIR)/build-llvm/tools/clang/docs/tools/clang-$(LLVM_VERSION).1
++	cp $(CURDIR)/debian/man/scan-build.1 $(CURDIR)/debian/man/scan-build-$(LLVM_VERSION).1
++	cp $(CURDIR)/debian/man/scan-view.1 $(CURDIR)/debian/man/scan-view-$(LLVM_VERSION).1
++
++	cp -f $(CURDIR)/utils/vim/llvm.vim $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim
++
++	cp -f $(CURDIR)/utils/vim/tablegen.vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
++
++	cp -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
+ 
+ # Remove some license files
+ 	rm $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/include/llvm/Support/LICENSE.TXT
+@@ -172,13 +192,18 @@
+ 
+ .PHONY: override_dh_strip
+ override_dh_strip:
+-	dh_strip -p libclang$(SONAME_EXT) --dbg-package=libclang$(SONAME_EXT)-dbg
+-	dh_strip -p libllvm$(LLVM_VERSION) --dbg-package=libllvm$(LLVM_VERSION)-dbg
+ 	dh_strip -a
+ 
+ override_dh_shlibdeps:
+ 	LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/ dh_shlibdeps
+ 
++override_dh_installdeb:
++	find $(CURDIR)/debian/python-clang-$(LLVM_VERSION)/usr/share/doc/python-clang-$(LLVM_VERSION)/examples -name "*.gz" -exec gzip -d {} \;
++	find $(CURDIR)/debian/python-clang-$(LLVM_VERSION)/usr/share/doc/python-clang-$(LLVM_VERSION)/tests    -name "*.gz" -exec gzip -d {} \;
++	if test -d $(CURDIR)/debian/clang-$(LLVM_VERSION)-relaxng/usr/share/xml/clang-$(LLVM_VERSION)-relaxng ; then \
++		find $(CURDIR)/debian/clang-$(LLVM_VERSION)-relaxng/usr/share/xml/clang-$(LLVM_VERSION)-relaxng -name "*.gz" -exec gzip -d {} \; ; \
++	fi
++
+ override_dh_auto_test:
+ 	$(MAKE) -C $(TARGET_BUILD) check || true
+ 
+@@ -188,4 +213,7 @@
+ 	find utils -name '*.pyc' | xargs -r rm -f
+ 	find test -name '*.pyc' -o -name '*.o' -o -name '*.cm[ix]' | xargs -r rm -f
+ 	rm -f tools/clang tools/polly tools/lldb projects/compiler-rt
++	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
++	rm -f debian/man/scan-build-$(LLVM_VERSION).1
++	rm -f debian/man/scan-view-$(LLVM_VERSION).1
+ 
