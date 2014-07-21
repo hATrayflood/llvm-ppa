@@ -31,7 +31,7 @@ apt-get -y install swig
 apt-get -y install libedit-dev
 apt-get -y install libcloog-isl-dev
 apt-get -y install libisl-dev
-#apt-get -y install lcov
-#apt-get -y install help2man
+apt-get -y install lcov
+apt-get -y install help2man
 apt-get -y install libjsoncpp-dev
 EOC

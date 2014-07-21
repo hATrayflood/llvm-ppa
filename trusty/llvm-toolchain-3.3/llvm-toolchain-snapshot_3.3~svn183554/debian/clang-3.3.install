@@ -1,0 +1,15 @@
+usr/lib/llvm-3.3/bin/clang		/usr/lib/llvm-3.3/bin/
+usr/lib/llvm-3.3/bin/clang++		/usr/lib/llvm-3.3/bin/
+usr/lib/llvm-3.3/bin/clang-check	/usr/lib/llvm-3.3/bin/
+usr/lib/llvm-3.3/bin/clang-tblgen	/usr/lib/llvm-3.3/bin/
+usr/bin/clang-3.3
+usr/bin/clang++-3.3
+usr/bin/clang-check-3.3
+usr/bin/clang-tblgen-3.3
+usr/lib/llvm-3.3/bin/c-index-test*
+usr/bin/c-index-test*
+clang/tools/scan-build			/usr/lib/llvm-3.3/share/
+clang/tools/scan-view			/usr/lib/llvm-3.3/share/
+#usr/share/man/man1/clang.1	usr/share/man/man1/
+debian/pollycc				/usr/lib/llvm-3.3/bin/
+compiler-rt/lib/asan/scripts/asan_symbolize.py	/usr/lib/llvm-3.3/bin/

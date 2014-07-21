@@ -1,0 +1,15 @@
+Index: llvm-toolchain-3.3-3.3/clang/lib/Driver/ToolChains.cpp
+===================================================================
+--- llvm-toolchain-3.3-3.3.orig/clang/lib/Driver/ToolChains.cpp	2013-09-03 14:04:41.000000000 +0000
++++ llvm-toolchain-3.3-3.3/clang/lib/Driver/ToolChains.cpp	2013-09-04 14:09:12.000000000 +0000
+@@ -2588,6 +2588,10 @@
+   StringRef Version = GCCInstallation.getVersion().Text;
+   StringRef TripleStr = GCCInstallation.getTriple().str();
+ 
++  #ifdef __i386__
++  // clang does not detect this path: /usr/include/i386-linux-gnu/c++/4.8/ Help him
++  addLibStdCXXIncludePaths( "/usr/include/", "/c++/" + Version.str(), "i386-linux-gnu", GCCInstallation.getMultiarchSuffix(), DriverArgs, CC1Args);
++  #endif
+   if (addLibStdCXXIncludePaths(LibDir.str() + "/../include", 
+                                "/c++/" + Version.str(),
+                                TripleStr,

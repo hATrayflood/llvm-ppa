@@ -1,0 +1,16 @@
+Description: Link lldb with -latomic to get GCC atomic helpers
+Author: Adam Conrad <adconrad@ubuntu.com>
+Forwarded: no
+Last-Update: 2013-08-21
+
+--- llvm-toolchain-3.3-3.3.orig/lldb/lib/Makefile
++++ llvm-toolchain-3.3-3.3/lldb/lib/Makefile
+@@ -140,6 +140,8 @@ ifeq ($(HOST_OS), $(filter $(HOST_OS), L
+     LLVMLibsOptions += -Wl,--no-undefined
+     # Link in python
+     LLVMLibsOptions += $(PYTHON_BUILD_FLAGS) -lrt
++    # Link GCC atomic helper library
++    LLVMLibsOptions += -latomic
+     LLVMLibsOptions += -Wl,--soname,lib$(LIBRARYNAME)$(SHLIBEXT)
+ endif
+ 

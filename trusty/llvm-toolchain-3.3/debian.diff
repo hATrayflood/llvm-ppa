@@ -1,0 +1,855 @@
+diff -urN ../../llvm-toolchain-3.3/debian/changelog llvm-toolchain-snapshot_3.3~svn183554/debian/changelog
+--- ../../llvm-toolchain-3.3/debian/changelog	2014-05-09 17:45:31.699078801 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/changelog	2014-07-21 10:10:36.136609172 +0900
+@@ -1,3 +1,9 @@
++llvm-toolchain-3.3 (1:3.3-debian16trusty0) trusty; urgency=low
++
++  * ppa for trusty
++
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Mon, 21 Jul 2014 10:15:00 +0900
++
+ llvm-toolchain-3.3 (1:3.3-16) unstable; urgency=low
+ 
+   * Make lldb-3.3-dev dependencies matches lldb-3.3.
+diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3-relaxng.install llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3-relaxng.install
+--- ../../llvm-toolchain-3.3/debian/clang-3.3-relaxng.install	1970-01-01 09:00:00.000000000 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3-relaxng.install	2014-05-09 17:45:31.784076558 +0900
+@@ -0,0 +1 @@
++clang/bindings/xml/comment-xml-schema.rng	/usr/share/xml/clang-3.3-relaxng/
+diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.install llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.install
+--- ../../llvm-toolchain-3.3/debian/clang-3.3.install	2014-05-09 17:45:31.699078801 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.install	2014-05-09 17:45:31.784076558 +0900
+@@ -1,10 +1,15 @@
+-usr/lib/llvm-3.3/bin/clang			/usr/bin/
+-usr/lib/llvm-3.3/bin/clang++			/usr/bin/
+-usr/lib/llvm-3.3/bin/clang-check			/usr/bin/
+-usr/lib/llvm-3.3/bin/clang-tblgen			/usr/bin/
++usr/lib/llvm-3.3/bin/clang		/usr/lib/llvm-3.3/bin/
++usr/lib/llvm-3.3/bin/clang++		/usr/lib/llvm-3.3/bin/
++usr/lib/llvm-3.3/bin/clang-check	/usr/lib/llvm-3.3/bin/
++usr/lib/llvm-3.3/bin/clang-tblgen	/usr/lib/llvm-3.3/bin/
++usr/bin/clang-3.3
++usr/bin/clang++-3.3
++usr/bin/clang-check-3.3
++usr/bin/clang-tblgen-3.3
+ usr/lib/llvm-3.3/bin/c-index-test*
+ usr/bin/c-index-test*
+-tools/clang/tools/scan-build			/usr/share/clang/
+-tools/clang/tools/scan-view			/usr/share/clang/
++clang/tools/scan-build			/usr/lib/llvm-3.3/share/
++clang/tools/scan-view			/usr/lib/llvm-3.3/share/
+ #usr/share/man/man1/clang.1	usr/share/man/man1/
+-debian/pollycc		/usr/bin/
++debian/pollycc				/usr/lib/llvm-3.3/bin/
++compiler-rt/lib/asan/scripts/asan_symbolize.py	/usr/lib/llvm-3.3/bin/
+diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.links llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.links
+--- ../../llvm-toolchain-3.3/debian/clang-3.3.links	2014-05-09 17:45:31.699078801 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.links	2014-05-09 17:45:31.784076558 +0900
+@@ -1,5 +1,7 @@
+-usr/share/man/man1/clang-3.3.1.gz		usr/share/man/man1/llvm-clang.1.gz
+-usr/share/man/man1/clang-3.3.1.gz		usr/share/man/man1/clang++.1.gz
+-/usr/share/clang/scan-build/scan-build	/usr/bin/scan-build
+-/usr/share/clang/scan-view/scan-view	/usr/bin/scan-view
+-/usr/bin/clang				/usr/bin/llvm-clang
++usr/share/man/man1/clang-3.3.1.gz		usr/share/man/man1/llvm-clang-3.3.1.gz
++usr/share/man/man1/clang-3.3.1.gz		usr/share/man/man1/clang++-3.3.1.gz
++usr/lib/llvm-3.3/share/scan-build/scan-build	usr/bin/scan-build-3.3
++usr/lib/llvm-3.3/share/scan-view/scan-view	usr/bin/scan-view-3.3
++usr/lib/llvm-3.3/bin/clang			usr/bin/llvm-clang-3.3
++usr/lib/llvm-3.3/bin/pollycc			usr/bin/pollycc-3.3
++usr/lib/llvm-3.3/bin/asan_symbolize.py		usr/bin/asan_symbolize-3.3
+diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.manpages llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.manpages
+--- ../../llvm-toolchain-3.3/debian/clang-3.3.manpages	2014-05-09 17:45:31.699078801 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.manpages	2014-05-09 17:45:31.784076558 +0900
+@@ -1,5 +1,5 @@
+ build-llvm/tools/clang/docs/tools/clang-3.3.1
+-clang/tools/scan-build/scan-build.1
+-debian/man/clang-check.1
+-debian/man/clang-tblgen.1
+-debian/man/scan-view.1
++debian/man/scan-build-3.3.1
++debian/man/clang-check-3.3.1
++debian/man/clang-tblgen-3.3.1
++debian/man/scan-view-3.3.1
+diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.postinst llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.postinst
+--- ../../llvm-toolchain-3.3/debian/clang-3.3.postinst	2014-05-09 17:45:31.699078801 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.postinst	1970-01-01 09:00:00.000000000 +0900
+@@ -1,31 +0,0 @@
+-#! /bin/sh -e
+-
+-prio=10
+-
+-update-alternatives --quiet \
+-	--install /usr/bin/c++ \
+-		c++ \
+-		/usr/bin/clang++ \
+-		$prio
+-
+-update-alternatives --quiet \
+-	--install /usr/bin/cc \
+-		cc \
+-		/usr/bin/clang \
+-		$prio
+-
+-update-alternatives --quiet \
+-	--install /usr/bin/c89 \
+-		c89 \
+-		/usr/bin/clang \
+-		$prio
+-
+-update-alternatives --quiet \
+-	--install /usr/bin/c99 \
+-		c99 \
+-		/usr/bin/clang \
+-		$prio
+-
+-#DEBHELPER#
+-
+-exit 0
+diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.prerm llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.prerm
+--- ../../llvm-toolchain-3.3/debian/clang-3.3.prerm	2014-05-09 17:45:31.699078801 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.prerm	1970-01-01 09:00:00.000000000 +0900
+@@ -1,14 +0,0 @@
+-#!/bin/sh
+-
+-set -e
+-
+-if [ "$1" = "remove" ] || [ "$1" = "deconfigure" ]; then
+-    update-alternatives --quiet --remove cc /usr/bin/clang
+-    update-alternatives --quiet --remove c89 /usr/bin/clang
+-    update-alternatives --quiet --remove c99 /usr/bin/clang
+-    update-alternatives --quiet --remove c++ /usr/bin/clang++
+-fi
+-
+-#DEBHELPER#
+-
+-exit 0
+diff -urN ../../llvm-toolchain-3.3/debian/clang-format-3.3.install llvm-toolchain-snapshot_3.3~svn183554/debian/clang-format-3.3.install
+--- ../../llvm-toolchain-3.3/debian/clang-format-3.3.install	2014-05-09 17:45:31.699078801 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-format-3.3.install	2014-05-09 17:45:31.784076558 +0900
+@@ -1,5 +1,5 @@
+ clang/tools/clang-format/clang-format-3.3.py usr/share/vim/addons/syntax/
+-clang/tools/clang-format/clang-format-diff-3.3 /usr/bin/
++clang/tools/clang-format/clang-format-diff.py	/usr/lib/llvm-3.3/bin/
+ clang/tools/clang-format/clang-format.el usr/share/emacs/site-lisp/clang-format-3.3/
+ usr/bin/clang-format-3.3
+ usr/lib/llvm-3.3/bin/clang-format
+diff -urN ../../llvm-toolchain-3.3/debian/clang-format-3.3.links llvm-toolchain-snapshot_3.3~svn183554/debian/clang-format-3.3.links
+--- ../../llvm-toolchain-3.3/debian/clang-format-3.3.links	1970-01-01 09:00:00.000000000 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-format-3.3.links	2014-05-09 17:45:31.784076558 +0900
+@@ -0,0 +1 @@
++usr/lib/llvm-3.3/bin/clang-format-diff.py	usr/bin/clang-format-diff-3.3
+diff -urN ../../llvm-toolchain-3.3/debian/control llvm-toolchain-snapshot_3.3~svn183554/debian/control
+--- ../../llvm-toolchain-3.3/debian/control	2014-05-09 17:45:31.699078801 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/control	2014-07-21 10:08:41.400046405 +0900
+@@ -1,8 +1,7 @@
+ Source: llvm-toolchain-3.3
+ Section: devel
+-Priority: optional
+-Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
+-Uploaders: Sylvestre Ledru <sylvestre@debian.org>
++Priority: extra
++Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
+ Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl, expect,
+     autoconf, automake, perl, libtool, doxygen, chrpath, texinfo,
+     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
+@@ -12,9 +11,8 @@
+     lcov, procps, help2man, dh-ocaml
+ Build-Conflicts: oprofile, ocaml
+ Standards-Version: 3.9.5
+-Homepage: http://www.llvm.org/
+-Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/llvm-toolchain/branches/3.3/
+-Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/llvm-toolchain/branches/3.3/
++Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
++Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
+ 
+ # ------------- clang -------------
+ 
+@@ -23,12 +21,7 @@
+ Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs},
+  libclang-common-3.3-dev (= ${binary:Version}),
+  libclang1-3.3 (= ${binary:Version})
+-Provides: c-compiler, objc-compiler, c++-compiler
+ Recommends: llvm-3.3-dev, python
+-Replaces: clang (<< 1:3.3), clang-3.1, clang-3.2, clang-3.4, compiler-rt,
+- llvm-3.3 (<< 1:3.3-13)
+-Breaks: clang (<< 1:3.3), clang-3.1, clang-3.2, clang-3.4, compiler-rt,
+- llvm-3.3 (<< 1:3.3-13)
+ Description: C, C++ and Objective-C compiler (LLVM based)
+  Clang project is a C, C++, Objective C and Objective C++ front-end
+  for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+@@ -40,8 +33,6 @@
+ Package: clang-format-3.3
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, python
+-Replaces: clang-format-3.4
+-Breaks: clang-format-3.4
+ Description: Tool to format C/C++/Obj-C code
+  Clang-format is both a library and a stand-alone tool with the goal of
+  automatically reformatting C++ sources files according to configurable
+@@ -57,8 +48,6 @@
+ Package: cpp11-migrate-3.3
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+-Replaces: cpp11-migrate-3.4
+-Breaks: cpp11-migrate-3.4
+ Description: Tool to convert C++98 and C++03 code to C++11
+  The purpose of the C++11 Migrator is to do source-to-source translation to
+  migrate existing C++ code to use C++11 features to enhance
+@@ -103,12 +92,10 @@
+  Clang-based development tools.
+ 
+ 
+-Package: libclang1-3.3-dbg
+-Architecture: any
+-Section: debug
+-Priority: extra
+-Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs}, libclang1-3.3
+-Description: clang library
++Package: clang-3.3-relaxng
++Architecture: all
++Section: misc
++Description: clang Relax NG schema for the XML
+  Clang project is a C, C++, Objective C and Objective C++ front-end
+  for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+  Collection (GCC).
+@@ -116,7 +103,7 @@
+  Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
+  a partial support of C++1y.
+  .
+- This package contains the debugging symbols.
++ This package contains the clang Relax NG schema for the XML.
+ 
+ Package: libclang-3.3-dev
+ Architecture: any
+@@ -137,9 +124,8 @@
+ Package: libclang-common-3.3-dev
+ Architecture: any
+ Section: libdevel
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.3 (= ${binary:Version})
+-Replaces: llvm-3.3-dev (<< 1:3.2repack), libclang-3.3-dev
+-Breaks: llvm-3.3-dev (<< 1:3.2repack)
++Depends: ${shlibs:Depends}, ${misc:Depends}
++Replaces: libclang-3.3-dev
+ Description: clang library - Common development package
+  Clang project is a C, C++, Objective C and Objective C++ front-end
+  for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+@@ -156,9 +142,7 @@
+ Package: python-clang-3.3
+ Section: python
+ Architecture: any
+-Depends: ${shlibs:Depends}, ${misc:Depends}, python
+-Replaces: python-clang-3.4
+-Breaks: python-clang-3.4
++Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-3.3 (= ${binary:Version}), python2.7
+ Description: Clang Python Bindings
+  This binding package provides access to the Clang compiler and libraries.
+ 
+@@ -193,27 +177,11 @@
+  This package contains the LLVM runtime library.
+ 
+ 
+-Package: libllvm3.3-dbg
+-Architecture: any
+-Section: debug
+-Priority: extra
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.3
+-Pre-Depends: ${misc:Pre-Depends}
+-Multi-Arch: same
+-Description: Modular compiler and toolchain technologies, debugging libraries
+- LLVM is a collection of libraries and tools that make it easy to build
+- compilers, optimizers, just-in-time code generators, and many other
+- compiler-related programs.
+- .
+- This package contains the LLVM runtime library debug symbols.
+-
+ Package: llvm-3.3
+ Architecture: any
+ Suggests: llvm-3.3-doc
+ Depends: llvm-3.3-runtime (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+ Recommends: llvm-3.3-dev
+-Conflicts: llvm (<< 2.7-1)
+-Replaces: llvm (<< 2.7-1)
+ Description: Modular compiler and toolchain technologies
+  LLVM is a collection of libraries and tools that make it easy to build
+  compilers, optimizers, just-in-time code generators, and many other
+@@ -243,8 +211,6 @@
+ Package: llvm-3.3-runtime
+ Architecture: any
+ Depends: binfmt-support, ${shlibs:Depends}, ${misc:Depends}
+-Conflicts: llvm (<< 2.7-1)
+-Replaces: llvm (<< 2.7-1)
+ Description: Modular compiler and toolchain technologies, IR interpreter
+  LLVM is a collection of libraries and tools that make it easy to build
+  compilers, optimizers, just-in-time code generators, and many other
+@@ -264,7 +230,6 @@
+ Package: llvm-3.3-dev
+ Architecture: any
+ Depends: ${shlibs:Depends}, libffi-dev (>= 3.0.9), ${misc:Depends}, llvm-3.3 (= ${binary:Version})
+-Replaces: llvm (<< 2.2-3)
+ Description: Modular compiler and toolchain technologies, libraries and headers
+  LLVM is a collection of libraries and tools that make it easy to build
+  compilers, optimizers, just-in-time code generators, and many other
+@@ -342,29 +307,3 @@
+  .
+  This package contains examples for using LLVM, both in developing
+  extensions to LLVM and in using it to compile code.
+-
+-# ------------- lldb -------------
+-
+-Package: lldb-3.3
+-Architecture: amd64 armel armhf i386  kfreebsd-amd64 kfreebsd-i386 s390 s390x sparc alpha arm64 hppa m68k powerpcspe ppc64 sh4 sparc64 x32 powerpc
+-# ia64 mips mipsel hurd have been removed
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.3 (= ${binary:Version}), python, llvm-3.3-dev
+-Pre-Depends: ${misc:Pre-Depends}
+-Replaces: lldb-3.2
+-Breaks: lldb-3.2
+-Description: Next generation, high-performance debugger
+- LLDB is a next generation, high-performance debugger. It is built as a set of
+- reusable components which highly leverage existing libraries in the larger LLVM
+- Project, such as the Clang expression parser and LLVM disassembler.
+-
+-Package: lldb-3.3-dev
+-Architecture: amd64 armel armhf i386  kfreebsd-amd64 kfreebsd-i386 s390 s390x sparc alpha arm64 hppa m68k powerpcspe ppc64 sh4 sparc64 x32 powerpc
+-# ia64 mips mipsel hurd have been removed
+-Depends: ${shlibs:Depends}, ${misc:Depends}, lldb-3.3 (= ${binary:Version})
+-Pre-Depends: ${misc:Pre-Depends}
+-Description: Next generation, high-performance debugger - Header files
+- LLDB is a next generation, high-performance debugger. It is built as a set of
+- reusable components which highly leverage existing libraries in the larger LLVM
+- Project, such as the Clang expression parser and LLVM disassembler.
+- .
+- This package provides the header files to build extension over lldb.
+diff -urN ../../llvm-toolchain-3.3/debian/libllvm-3.3-ocaml-dev.dirs.in llvm-toolchain-snapshot_3.3~svn183554/debian/libllvm-3.3-ocaml-dev.dirs.in
+--- ../../llvm-toolchain-3.3/debian/libllvm-3.3-ocaml-dev.dirs.in	2014-05-09 17:45:31.699078801 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/libllvm-3.3-ocaml-dev.dirs.in	2014-05-09 17:45:31.784076558 +0900
+@@ -1,2 +1,2 @@
+-@OCAML_STDLIB_DIR@/META/
++@OCAML_STDLIB_DIR@/METAS
+ 
+diff -urN ../../llvm-toolchain-3.3/debian/llvm-3.3-runtime.postinst llvm-toolchain-snapshot_3.3~svn183554/debian/llvm-3.3-runtime.postinst
+--- ../../llvm-toolchain-3.3/debian/llvm-3.3-runtime.postinst	2014-05-09 17:45:31.704189115 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/llvm-3.3-runtime.postinst	1970-01-01 09:00:00.000000000 +0900
+@@ -1,9 +0,0 @@
+-#!/bin/sh -e
+-
+-if test "$1" = "configure"; then
+-    if test -x /usr/sbin/update-binfmts; then
+-        update-binfmts --import llvm-3.3-runtime.binfmt || true
+-    fi
+-fi
+-
+-#DEBHELPER#
+diff -urN ../../llvm-toolchain-3.3/debian/llvm-3.3-runtime.prerm.in llvm-toolchain-snapshot_3.3~svn183554/debian/llvm-3.3-runtime.prerm.in
+--- ../../llvm-toolchain-3.3/debian/llvm-3.3-runtime.prerm.in	2014-05-09 17:45:31.704189115 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/llvm-3.3-runtime.prerm.in	1970-01-01 09:00:00.000000000 +0900
+@@ -1,16 +0,0 @@
+-#!/bin/sh -e
+-
+-if test "$1" = "remove"; then
+-    if test -x /usr/sbin/update-binfmts; then
+-        update-binfmts --package llvm-@LLVM_VERSION@-runtime \
+-            --remove llvm-@LLVM_VERSION@-runtime.binfmt /usr/bin/lli-@LLVM_VERSION@ || true
+-        if test -f /var/lib/binfmts/llvm-@LLVM_VERSION@.binfmt; then
+-            # Purge old file
+-            update-binfmts --package llvm-@LLVM_VERSION@-runtime \
+-                --remove llvm-@LLVM_VERSION@.binfmt /usr/bin/lli-@LLVM_VERSION@ || true
+-        fi
+-    fi
+-fi
+-
+-#DEBHELPER#
+-
+diff -urN ../../llvm-toolchain-3.3/debian/patches/28-gcc-4.7-paths.diff llvm-toolchain-snapshot_3.3~svn183554/debian/patches/28-gcc-4.7-paths.diff
+--- ../../llvm-toolchain-3.3/debian/patches/28-gcc-4.7-paths.diff	1970-01-01 09:00:00.000000000 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/patches/28-gcc-4.7-paths.diff	2014-05-09 17:45:31.784076558 +0900
+@@ -0,0 +1,48 @@
++diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/lib/Driver/ToolChains.cpp llvm-toolchain-snapshot_3.3~svn183554/clang/lib/Driver/ToolChains.cpp
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/lib/Driver/ToolChains.cpp	2013-07-03 00:06:02.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/lib/Driver/ToolChains.cpp	2013-07-08 13:56:39.057345859 +0900
++@@ -36,6 +36,10 @@
++ 
++ #include <cstdlib> // ::getenv
++ 
+++#include "clang/Debian/debian_path.h"
+++
+++#include <iostream>
+++
++ using namespace clang::driver;
++ using namespace clang::driver::toolchains;
++ using namespace clang;
++@@ -2574,14 +2578,12 @@
++   StringRef Version = GCCInstallation.getVersion().Text;
++   StringRef TripleStr = GCCInstallation.getTriple().str();
++ 
++-  if (addLibStdCXXIncludePaths(LibDir.str() + "/../include", 
++-                               "/c++/" + Version.str(),
++-                               TripleStr,
++-                               GCCInstallation.getMultiarchSuffix(),
++-                               DriverArgs, CC1Args))
++-    return;
++-
++   const std::string IncludePathCandidates[] = {
+++    LibDir.str() + "/../include/c++/" + Version.str(),
+++    // Once more, Debian headers locations changed (since gcc version 4.7.2-5)
+++    // See Debian bug tracker #693240
+++    LibDir.str() + "/../include/"+ TripleStr.str() +"/c++/" + Version.str(),
+++    LibDir.str() + "/../include/" + DEB_HOST_MULTIARCH_TRIPLET + "/c++/" + Version.str(),
++     // Gentoo is weird and places its headers inside the GCC install, so if the
++     // first attempt to find the headers fails, try this pattern.
++     InstallDir.str() + "/include/g++-v4",
++@@ -2593,10 +2595,10 @@
++   };
++ 
++   for (unsigned i = 0; i < llvm::array_lengthof(IncludePathCandidates); ++i) {
++-    if (addLibStdCXXIncludePaths(IncludePathCandidates[i], (TripleStr +
+++      addLibStdCXXIncludePaths(IncludePathCandidates[i], (TripleStr +
++                 GCCInstallation.getMultiarchSuffix()),
++-            DriverArgs, CC1Args))
++-      break;
+++                               DriverArgs, CC1Args);
+++
++   }
++ }
++ 
+diff -urN ../../llvm-toolchain-3.3/debian/patches/98-unwind.h.patch llvm-toolchain-snapshot_3.3~svn183554/debian/patches/98-unwind.h.patch
+--- ../../llvm-toolchain-3.3/debian/patches/98-unwind.h.patch	1970-01-01 09:00:00.000000000 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/patches/98-unwind.h.patch	2014-05-09 17:45:31.784076558 +0900
+@@ -0,0 +1,22 @@
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/lib/Headers/unwind.h	2013-01-17 08:08:36.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/lib/Headers/unwind.h	2013-07-02 01:55:23.756641885 +0900
++@@ -24,7 +24,6 @@
++ /* See "Data Definitions for libgcc_s" in the Linux Standard Base.*/
++ 
++ #ifndef __CLANG_UNWIND_H
++-#define __CLANG_UNWIND_H
++ 
++ #if __has_include_next(<unwind.h>)
++ /* Darwin and libunwind provide an unwind.h. If that's available, use
++@@ -51,8 +50,11 @@
++ #  undef _GNU_SOURCE
++ #  undef _SHOULD_UNDEFINE_GNU_SOURCE
++ # endif
+++#define __CLANG_UNWIND_H
++ #else
++ 
+++#define __CLANG_UNWIND_H
+++
++ #include <stdint.h>
++ 
++ #ifdef __cplusplus
+diff -urN ../../llvm-toolchain-3.3/debian/patches/99-python-bindings.patch llvm-toolchain-snapshot_3.3~svn183554/debian/patches/99-python-bindings.patch
+--- ../../llvm-toolchain-3.3/debian/patches/99-python-bindings.patch	1970-01-01 09:00:00.000000000 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/patches/99-python-bindings.patch	2014-05-09 17:45:31.784076558 +0900
+@@ -0,0 +1,235 @@
++diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/README.txt llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/README.txt
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/README.txt	2010-05-01 06:51:10.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/README.txt	2013-10-18 23:21:31.714083758 +0900
++@@ -4,12 +4,9 @@
++ 
++ This directory implements Python bindings for Clang.
++ 
++-You may need to alter LD_LIBRARY_PATH so that the Clang library can be
++-found. The unit tests are designed to be run with 'nosetests'. For example:
+++The unit tests are designed to be run with 'nosetests'. For example:
++ --
++-$ env PYTHONPATH=$(echo ~/llvm/tools/clang/bindings/python/) \
++-      LD_LIBRARY_PATH=$(llvm-config --libdir) \
++-  nosetests -v
+++$ nosetests -v
++ tests.cindex.test_index.test_create ... ok
++ ...
++ 
++diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/clang/cindex.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/clang/cindex.py
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/clang/cindex.py	2013-04-22 03:35:51.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/clang/cindex.py	2013-10-18 23:23:49.494766979 +0900
++@@ -65,7 +65,7 @@
++ from ctypes import *
++ import collections
++ 
++-import clang.enumerations
+++import clang33.enumerations
++ 
++ # ctypes doesn't implicitly convert c_void_p to the appropriate wrapper
++ # object. This is a problem, because it means that from_parameter will see an
++@@ -3224,7 +3224,7 @@
++         return True
++ 
++ def register_enumerations():
++-    for name, value in clang.enumerations.TokenKinds:
+++    for name, value in clang33.enumerations.TokenKinds:
++         TokenKind.register(value, name)
++ 
++ conf = Config()
++diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/examples/cindex/cindex-dump.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/examples/cindex/cindex-dump.py
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/examples/cindex/cindex-dump.py	2010-02-14 03:33:28.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/examples/cindex/cindex-dump.py	2013-10-18 23:21:31.714083758 +0900
++@@ -54,7 +54,7 @@
++              'children' : children }
++ 
++ def main():
++-    from clang.cindex import Index
+++    from clang33.cindex import Index
++     from pprint import pprint
++ 
++     from optparse import OptionParser, OptionGroup
++diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/examples/cindex/cindex-includes.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/examples/cindex/cindex-includes.py
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/examples/cindex/cindex-includes.py	2010-02-14 03:33:28.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/examples/cindex/cindex-includes.py	2013-10-18 23:21:31.718083762 +0900
++@@ -16,7 +16,7 @@
++ 
++ def main():
++     import sys
++-    from clang.cindex import Index
+++    from clang33.cindex import Index
++ 
++     from optparse import OptionParser, OptionGroup
++ 
++diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_cdb.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_cdb.py
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_cdb.py	2012-07-10 09:00:05.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_cdb.py	2013-10-18 23:21:31.718083762 +0900
++@@ -1,7 +1,7 @@
++-from clang.cindex import CompilationDatabase
++-from clang.cindex import CompilationDatabaseError
++-from clang.cindex import CompileCommands
++-from clang.cindex import CompileCommand
+++from clang33.cindex import CompilationDatabase
+++from clang33.cindex import CompilationDatabaseError
+++from clang33.cindex import CompileCommands
+++from clang33.cindex import CompileCommand
++ import os
++ import gc
++ 
++diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_code_completion.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_code_completion.py
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_code_completion.py	2012-10-07 20:46:37.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_code_completion.py	2013-10-18 23:21:31.718083762 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import TranslationUnit
+++from clang33.cindex import TranslationUnit
++ 
++ def check_completion_results(cr, expected):
++     assert cr is not None
++diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_cursor.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_cursor.py
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_cursor.py	2013-01-03 07:31:57.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_cursor.py	2013-10-18 23:21:31.718083762 +0900
++@@ -1,8 +1,8 @@
++ import gc
++ 
++-from clang.cindex import CursorKind
++-from clang.cindex import TranslationUnit
++-from clang.cindex import TypeKind
+++from clang33.cindex import CursorKind
+++from clang33.cindex import TranslationUnit
+++from clang33.cindex import TypeKind
++ from .util import get_cursor
++ from .util import get_cursors
++ from .util import get_tu
++diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_cursor_kind.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_cursor_kind.py
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_cursor_kind.py	2012-02-05 20:42:09.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_cursor_kind.py	2013-10-18 23:21:31.718083762 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import CursorKind
+++from clang33.cindex import CursorKind
++ 
++ def test_name():
++     assert CursorKind.UNEXPOSED_DECL.name is 'UNEXPOSED_DECL'
++diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_diagnostics.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_diagnostics.py
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_diagnostics.py	2012-03-11 07:19:05.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_diagnostics.py	2013-10-18 23:21:31.718083762 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import *
+++from clang33.cindex import *
++ from .util import get_tu
++ 
++ # FIXME: We need support for invalid translation units to test better.
++diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_file.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_file.py
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_file.py	2011-10-31 09:07:19.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_file.py	2013-10-18 23:21:31.718083762 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import Index, File
+++from clang33.cindex import Index, File
++ 
++ def test_file():
++   index = Index.create()
++diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_index.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_index.py
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_index.py	2010-01-24 11:02:07.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_index.py	2013-10-18 23:21:31.718083762 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import *
+++from clang33.cindex import *
++ import os
++ 
++ kInputsDir = os.path.join(os.path.dirname(__file__), 'INPUTS')
++diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_location.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_location.py
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_location.py	2012-06-11 20:11:48.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_location.py	2013-10-18 23:21:31.718083762 +0900
++@@ -1,7 +1,7 @@
++-from clang.cindex import Cursor
++-from clang.cindex import File
++-from clang.cindex import SourceLocation
++-from clang.cindex import SourceRange
+++from clang33.cindex import Cursor
+++from clang33.cindex import File
+++from clang33.cindex import SourceLocation
+++from clang33.cindex import SourceRange
++ from .util import get_cursor
++ from .util import get_tu
++ 
++diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_token_kind.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_token_kind.py
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_token_kind.py	2012-07-12 16:21:12.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_token_kind.py	2013-10-18 23:21:31.718083762 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import TokenKind
+++from clang33.cindex import TokenKind
++ from nose.tools import eq_
++ from nose.tools import ok_
++ from nose.tools import raises
++diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_tokens.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_tokens.py
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_tokens.py	2012-07-12 16:21:12.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_tokens.py	2013-10-18 23:21:31.718083762 +0900
++@@ -1,8 +1,8 @@
++-from clang.cindex import CursorKind
++-from clang.cindex import Index
++-from clang.cindex import SourceLocation
++-from clang.cindex import SourceRange
++-from clang.cindex import TokenKind
+++from clang33.cindex import CursorKind
+++from clang33.cindex import Index
+++from clang33.cindex import SourceLocation
+++from clang33.cindex import SourceRange
+++from clang33.cindex import TokenKind
++ from nose.tools import eq_
++ from nose.tools import ok_
++ 
++diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_translation_unit.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_translation_unit.py
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_translation_unit.py	2013-03-20 00:30:48.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_translation_unit.py	2013-10-18 23:21:31.722083767 +0900
++@@ -1,15 +1,15 @@
++ import gc
++ import os
++ 
++-from clang.cindex import CursorKind
++-from clang.cindex import Cursor
++-from clang.cindex import File
++-from clang.cindex import Index
++-from clang.cindex import SourceLocation
++-from clang.cindex import SourceRange
++-from clang.cindex import TranslationUnitSaveError
++-from clang.cindex import TranslationUnitLoadError
++-from clang.cindex import TranslationUnit
+++from clang33.cindex import CursorKind
+++from clang33.cindex import Cursor
+++from clang33.cindex import File
+++from clang33.cindex import Index
+++from clang33.cindex import SourceLocation
+++from clang33.cindex import SourceRange
+++from clang33.cindex import TranslationUnitSaveError
+++from clang33.cindex import TranslationUnitLoadError
+++from clang33.cindex import TranslationUnit
++ from .util import get_cursor
++ from .util import get_tu
++ 
++diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_type.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_type.py
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/test_type.py	2013-04-11 10:20:11.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/test_type.py	2013-10-18 23:21:31.722083767 +0900
++@@ -1,8 +1,8 @@
++ import gc
++ 
++-from clang.cindex import CursorKind
++-from clang.cindex import TranslationUnit
++-from clang.cindex import TypeKind
+++from clang33.cindex import CursorKind
+++from clang33.cindex import TranslationUnit
+++from clang33.cindex import TypeKind
++ from nose.tools import raises
++ from .util import get_cursor
++ from .util import get_tu
++diff -urN llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/util.py llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/util.py
++--- llvm-toolchain-snapshot_3.3~svn183554.orig/clang/bindings/python/tests/cindex/util.py	2013-04-11 10:20:11.000000000 +0900
+++++ llvm-toolchain-snapshot_3.3~svn183554/clang/bindings/python/tests/cindex/util.py	2013-10-18 23:21:31.722083767 +0900
++@@ -1,7 +1,7 @@
++ # This file provides common utility functions for the test suite.
++ 
++-from clang.cindex import Cursor
++-from clang.cindex import TranslationUnit
+++from clang33.cindex import Cursor
+++from clang33.cindex import TranslationUnit
++ 
++ def get_tu(source, lang='c', all_warnings=False, flags=[]):
++     """Obtain a translation unit from source and language.
+diff -urN ../../llvm-toolchain-3.3/debian/patches/python-clangpath.diff llvm-toolchain-snapshot_3.3~svn183554/debian/patches/python-clangpath.diff
+--- ../../llvm-toolchain-3.3/debian/patches/python-clangpath.diff	2014-05-09 17:45:31.704189115 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/patches/python-clangpath.diff	2014-05-09 17:45:31.788891940 +0900
+@@ -7,7 +7,7 @@
+              file = 'libclang.dll'
+          else:
+ -            file = 'libclang.so'
+-+            file = 'libclang-3.3.so'
+++            file = 'libclang-3.3.so.1'
+  
+          if Config.library_path:
+              file = Config.library_path + '/' + file
+diff -urN ../../llvm-toolchain-3.3/debian/patches/series llvm-toolchain-snapshot_3.3~svn183554/debian/patches/series
+--- ../../llvm-toolchain-3.3/debian/patches/series	2014-05-09 17:45:31.704189115 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/patches/series	2014-05-09 17:45:31.788891940 +0900
+@@ -6,6 +6,7 @@
+ 27-fix_clang_stdint.diff
+ 26-set-correct-float-abi.diff
+ profile_rt.diff
++#28-gcc-4.7-paths.diff
+ 30-kfreebsd.diff
+ 0003-Debian-version-info-and-bugreport.patch
+ 0021-shared-lib-debian.patch
+@@ -41,3 +42,5 @@
+ removeduplicatedeclaration.diff
+ python-clangpath.diff
+ debian-mips64-n32-multiarch.diff
++#98-unwind.h.patch
++99-python-bindings.patch
+diff -urN ../../llvm-toolchain-3.3/debian/pollycc.in llvm-toolchain-snapshot_3.3~svn183554/debian/pollycc.in
+--- ../../llvm-toolchain-3.3/debian/pollycc.in	2014-05-09 17:45:31.704189115 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/pollycc.in	2014-05-09 17:45:31.788891940 +0900
+@@ -1,3 +1,3 @@
+ #!/bin/sh
+ 
+-clang -Xclang -load -Xclang /usr/lib/llvm-@LLVM_VERSION@/lib/LLVMPolly.so $@
++clang-@LLVM_VERSION@ -Xclang -load -Xclang /usr/lib/llvm-@LLVM_VERSION@/lib/LLVMPolly.so $@
+diff -urN ../../llvm-toolchain-3.3/debian/python-clang-3.3.install llvm-toolchain-snapshot_3.3~svn183554/debian/python-clang-3.3.install
+--- ../../llvm-toolchain-3.3/debian/python-clang-3.3.install	2014-05-09 17:45:31.704189115 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/python-clang-3.3.install	2014-05-09 17:45:31.788891940 +0900
+@@ -1 +1,4 @@
+-tools/clang/bindings/python/clang/ /usr/lib/python2.7/dist-packages/
++clang/bindings/python/clang/*		/usr/lib/python2.7/dist-packages/clang33/
++clang/bindings/python/README.txt	/usr/share/doc/python-clang-3.3/
++clang/bindings/python/examples		/usr/share/doc/python-clang-3.3/
++clang/bindings/python/tests		/usr/share/doc/python-clang-3.3/
+diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn183554/debian/rules
+--- ../../llvm-toolchain-3.3/debian/rules	2014-05-09 17:45:31.704189115 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/rules	2014-07-21 10:44:31.110699978 +0900
+@@ -1,15 +1,19 @@
+ #!/usr/bin/make -f
+ 
+ TARGET_BUILD	:= build-llvm
+-GCC_VERSION     := $(shell dpkg-query -W -f '$${Version}' g++ | sed -rne 's,^([0-9]+:)?([0-9]+\.[0-9]+).*$$,\2,p')
++GCC_VERSION     := 4.8
+ LLVM_VERSION	:= 3.3
+ SONAME_EXT      := 1
+ DEBIAN_REVISION := $(shell dpkg-parsechangelog | sed -rne 's,^Version: .*-(.*),\1,p')
+ ifneq (,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
+   NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
++else
++    NCPUS := $(shell getconf _NPROCESSORS_ONLN 2>/dev/null || echo 1)
++    NJOBS := -j $(shell if test $(NCPUS) -gt 1; then echo `expr $(NCPUS) + 1`; \
++               else echo $(NCPUS); fi)
+ endif
+ 
+-VENDOR=$(shell lsb_release -is)
++VENDOR=Debian
+ 
+ DEB_HOST_MULTIARCH  = $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+ DEB_HOST_GNU_TYPE   = $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+@@ -42,9 +46,9 @@
+ endif
+ 
+ ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' g++-$(GCC_VERSION)) ge 4.8-20121128-1~ ; echo $$?),0)
+-	control_vars = '-Vdep:devlibs=libstdc++-$(GCC_VERSION)-dev, libgcc-$(GCC_VERSION)-dev, libobjc-$(GCC_VERSION)-dev'
++	control_vars = '-Vdep:devlibs=libstdc++-$(GCC_VERSION)-dev, libgcc-$(GCC_VERSION)-dev'
+ else ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' g++-$(GCC_VERSION)) ge 4.7.2-10~ ; echo $$?),0)
+-	control_vars = '-Vdep:devlibs=libstdc++6-$(GCC_VERSION)-dev, libgcc-$(GCC_VERSION)-dev, libobjc-$(GCC_VERSION)-dev'
++	control_vars = '-Vdep:devlibs=libstdc++6-$(GCC_VERSION)-dev, libgcc-$(GCC_VERSION)-dev'
+ else
+ 	control_vars = '-Vdep:devlibs=libstdc++6-$(GCC_VERSION)-dev'
+ endif
+@@ -72,6 +76,7 @@
+ 
+ LLDB_ENABLE=yes
+ LLDB_DISABLE_ARCHS := hurd-i386 mips mipsel
++LLDB_DISABLE_ARCHS += i386 amd64
+ # hurd has threading issues
+ # mips* fails with "undefined references to `__atomic_load_8'"
+ ifeq (,$(filter-out $(LLDB_DISABLE_ARCHS), $(DEB_HOST_ARCH)))
+@@ -92,7 +97,9 @@
+ override_dh_ocamlclean:
+ 
+ 
+-override_dh_auto_configure: debian/lldb-$(LLVM_VERSION).install debian/lldb-$(LLVM_VERSION).links debian/libllvm$(LLVM_VERSION).install debian/llvm-$(LLVM_VERSION)-dev.links debian/libllvm-$(LLVM_VERSION)-ocaml-dev.install debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs debian/llvm-$(LLVM_VERSION)-runtime.binfmt debian/llvm-$(LLVM_VERSION)-runtime.prerm debian/libclang1-$(LLVM_VERSION).links debian/libclang-$(LLVM_VERSION)-dev.links debian/libclang1-$(LLVM_VERSION).install debian/pollycc
++override_dh_auto_configure: debian/lldb-$(LLVM_VERSION).install debian/lldb-$(LLVM_VERSION).links debian/libllvm$(LLVM_VERSION).install debian/llvm-$(LLVM_VERSION)-dev.links debian/libllvm-$(LLVM_VERSION)-ocaml-dev.install debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs debian/llvm-$(LLVM_VERSION)-runtime.binfmt debian/libclang1-$(LLVM_VERSION).links debian/libclang-$(LLVM_VERSION)-dev.links debian/libclang1-$(LLVM_VERSION).install debian/pollycc
++	chmod +x debian/pollycc
++	chmod +x compiler-rt/lib/asan/scripts/asan_symbolize.py
+ 	echo "Using gcc: "
+ 	$(CC) -v
+ 	mkdir -p $(TARGET_BUILD)
+@@ -176,11 +183,11 @@
+ 		cd $$d && rm -f underscore.js && ln -s /usr/share/javascript/underscore/underscore.js; \
+ 	done
+ 
+-	help2man --version-string=$(LLVM_VERSION) clang/tools/scan-view/scan-view > debian/man/scan-view.1
+-	help2man --version-string=$(LLVM_VERSION) clang/tools/clang-format/clang-format-diff.py > debian/man/clang-format-diff-$(LLVM_VERSION).1
++	cp clang/tools/scan-build/scan-build.1 debian/man/scan-build-$(LLVM_VERSION).1
++	help2man --version-string=$(LLVM_VERSION) clang/tools/scan-view/scan-view > debian/man/scan-view-$(LLVM_VERSION).1
+ 
+ 	for f in clang clang-tblgen clang-check; do \
+-		help2man --version-string=$(LLVM_VERSION) $(TARGET_BUILD)/Release/bin/$$f > debian/man/$$f.1; \
++		help2man --version-string=$(LLVM_VERSION) $(TARGET_BUILD)/Release/bin/$$f > debian/man/$$f-$(LLVM_VERSION).1; \
+ 	done
+ 
+ 	for f in llvm-dwarfdump llvm-mc llvm-mcmarkup llvm-objdump llvm-rtdyld llvm-size llvm-tblgen macho-dump lldb clang-format cpp11-migrate; do \
+@@ -207,9 +214,6 @@
+ 
+ #	cd $(TARGET_BUILD)/tools/clang/runtime/compiler-rt/ && rm -rf $$(find . -iname "SubDir.lib*" -o -iname .dir) && rm -rf $$(find -empty)
+ 
+-	mkdir -p $(CURDIR)/debian/clang-$(LLVM_VERSION)/usr/bin/
+-	cp compiler-rt/lib/asan/scripts/asan_symbolize.py $(CURDIR)/debian/clang-$(LLVM_VERSION)/usr/bin/asan_symbolize
+-
+ # Create this fake directory to make the install libclang-common-dev happy
+ # under the unsupported archs of compiler-rt
+ 	mkdir -p $(CURDIR)/debian/tmp/usr/lib/clang/$(LLVM_VERSION)/lib
+@@ -231,10 +235,10 @@
+ 
+ 	cp -f $(CURDIR)/utils/vim/tablegen.vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
+ 
+-	cp -f $(CURDIR)/clang/tools/clang-format/clang-format-diff.py $(CURDIR)/clang/tools/clang-format/clang-format-diff-$(LLVM_VERSION)
+-
+ 	cp -f $(CURDIR)/clang/tools/clang-format/clang-format.py clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
+ 
++	cp -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
++
+ # Remove some license files
+ 	rm -f $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/include/llvm/Support/LICENSE.TXT \
+ 	$(CURDIR)/debian/llvm-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/build/autoconf/LICENSE.TXT
+@@ -250,8 +254,6 @@
+ 
+ .PHONY: override_dh_strip
+ override_dh_strip:
+-	dh_strip -p libclang$(SONAME_EXT)-$(LLVM_VERSION) --dbg-package=libclang$(SONAME_EXT)-$(LLVM_VERSION)-dbg
+-	dh_strip -p libllvm$(LLVM_VERSION) --dbg-package=libllvm$(LLVM_VERSION)-dbg
+ 	dh_strip -a
+ 
+ override_dh_shlibdeps:
+@@ -264,6 +266,11 @@
+ 	rm -f $(CURDIR)/debian/lldb-$(LLVM_VERSION)/usr/lib/python*/dist-packages/lldb/__init__.pyc
+ 	rm -f $(CURDIR)/debian/clang-$(LLVM_VERSION)-examples/usr/share/doc/clang-$(LLVM_VERSION)-examples/examples/*Make*
+ 
++	find $(CURDIR)/debian/python-clang-$(LLVM_VERSION)/usr/share/doc/python-clang-$(LLVM_VERSION)/examples -name "*.gz" -exec gzip -d {} \;
++	find $(CURDIR)/debian/python-clang-$(LLVM_VERSION)/usr/share/doc/python-clang-$(LLVM_VERSION)/tests    -name "*.gz" -exec gzip -d {} \;
++	if test -d $(CURDIR)/debian/clang-$(LLVM_VERSION)-relaxng/usr/share/xml/clang-$(LLVM_VERSION)-relaxng ; then \
++		find $(CURDIR)/debian/clang-$(LLVM_VERSION)-relaxng/usr/share/xml/clang-$(LLVM_VERSION)-relaxng -name "*.gz" -exec gzip -d {} \; ; \
++	fi
+ 
+ 
+ ifeq (,$(filter nocheck, $(DEB_BUILD_OPTIONS)))
+@@ -315,6 +322,13 @@
+ 	rm -f tools/clang tools/polly tools/lldb projects/compiler-rt
+ 	rm -rf tools/clang/tools/extra clang/tools/extra/
+ 	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
+-	rm -f $(CURDIR)/clang/tools/clang-format/clang-format-diff-$(LLVM_VERSION)
+ 	rm -f $(CURDIR)/clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
++	rm -f debian/man/scan-build-$(LLVM_VERSION).1
++	rm -f debian/man/scan-view-$(LLVM_VERSION).1
++	for f in clang clang-tblgen clang-check; do \
++		rm -f debian/man/$$f-$(LLVM_VERSION).1; \
++	done
++	for f in llvm-dwarfdump llvm-mc llvm-mcmarkup llvm-objdump llvm-rtdyld llvm-size llvm-tblgen macho-dump lldb clang-format cpp11-migrate; do \
++		rm -f debian/man/$$f-$(LLVM_VERSION).1; \
++	done
+ 

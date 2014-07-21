@@ -1,0 +1,28 @@
+Index: llvm-toolchain-3.3-3.3/lldb/include/lldb/Host/Config.h
+===================================================================
+--- llvm-toolchain-3.3-3.3.orig/lldb/include/lldb/Host/Config.h	2013-08-28 10:29:30.000000000 +0000
++++ llvm-toolchain-3.3-3.3/lldb/include/lldb/Host/Config.h	2013-08-28 17:23:00.000000000 +0000
+@@ -14,7 +14,7 @@
+ 
+ #include "lldb/Host/macosx/Config.h"
+ 
+-#elif defined(__linux__)
++#elif defined(__linux__) || defined(__GNU__)
+ 
+ #include "lldb/Host/linux/Config.h"
+ 
+Index: llvm-toolchain-3.3-3.3/lldb/source/Host/common/Host.cpp
+===================================================================
+--- llvm-toolchain-3.3-3.3.orig/lldb/source/Host/common/Host.cpp	2013-08-28 10:29:30.000000000 +0000
++++ llvm-toolchain-3.3-3.3/lldb/source/Host/common/Host.cpp	2013-08-28 17:25:38.000000000 +0000
+@@ -16,8 +16,10 @@
+ #include <limits.h>
+ #include <netdb.h>
+ #include <pwd.h>
++#ifndef __GNU__
+ #include <sys/sysctl.h>
+ #include <sys/types.h>
++#endif
+ #include <unistd.h>
+ 
+ #if defined (__APPLE__)
