@@ -1,0 +1,22 @@
+Index: llvm-toolchain-snapshot_3.4~svn188146/clang/lib/Basic/Version.cpp
+===================================================================
+--- llvm-toolchain-snapshot_3.4~svn188146.orig/clang/lib/Basic/Version.cpp	2013-08-11 10:01:27.104734895 +0200
++++ llvm-toolchain-snapshot_3.4~svn188146/clang/lib/Basic/Version.cpp	2013-08-11 10:01:27.104734895 +0200
+@@ -15,6 +15,7 @@
+ #include "clang/Basic/LLVM.h"
+ #include "llvm/Config/config.h"
+ #include "llvm/Support/raw_ostream.h"
++#include "clang/Debian/debian_path.h"
+ #include <cstdlib>
+ #include <cstring>
+ 
+@@ -121,7 +122,8 @@
+ #ifdef CLANG_VENDOR
+   OS << CLANG_VENDOR;
+ #endif
+-  OS << "clang version " CLANG_VERSION_STRING " "
++  OS << "clang version " CLANG_VERSION_STRING "-" DEB_PATCHSETVERSION " "
++
+      << getClangFullRepositoryVersion();
+ 
+   // If vendor supplied, include the base LLVM version as well.

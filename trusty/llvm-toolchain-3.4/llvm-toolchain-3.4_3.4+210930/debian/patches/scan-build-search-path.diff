@@ -1,0 +1,39 @@
+Index: llvm-toolchain-3.4-3.4.2/clang/tools/scan-build/ccc-analyzer
+===================================================================
+--- llvm-toolchain-3.4-3.4.2.orig/clang/tools/scan-build/ccc-analyzer	2014-06-22 08:51:25.452950214 -0700
++++ llvm-toolchain-3.4-3.4.2/clang/tools/scan-build/ccc-analyzer	2014-06-22 08:52:17.602331808 -0700
+@@ -25,6 +25,17 @@
+ # Compiler command setup.
+ ##===----------------------------------------------------------------------===##
+ 
++# Search in the PATH if the compiler exists
++sub SearchInPath {
++    my $file = shift;
++    foreach my $dir (split (':', $ENV{PATH})) {
++        if (-x "$dir/$file") {
++            return 1;
++        }
++    }
++    return 0;
++}
++
+ my $Compiler;
+ my $Clang;
+ my $DefaultCCompiler;
+@@ -40,14 +51,14 @@
+ 
+ if ($FindBin::Script =~ /c\+\+-analyzer/) {
+   $Compiler = $ENV{'CCC_CXX'};
+-  if (!defined $Compiler || ! -x $Compiler) { $Compiler = $DefaultCXXCompiler; }
++  if (!defined $Compiler || (! -x $Compiler && ! SearchInPath($Compiler))) { $Compiler = $DefaultCXXCompiler; }
+   
+   $Clang = $ENV{'CLANG_CXX'};
+   if (!defined $Clang || ! -x $Clang) { $Clang = 'clang++'; }
+ }
+ else {
+   $Compiler = $ENV{'CCC_CC'};
+-  if (!defined $Compiler || ! -x $Compiler) { $Compiler = $DefaultCCompiler; }
++  if (!defined $Compiler || (! -x $Compiler && ! SearchInPath($Compiler))) { $Compiler = $DefaultCCompiler; }
+ 
+   $Clang = $ENV{'CLANG'};
+   if (!defined $Clang || ! -x $Clang) { $Clang = 'clang'; }

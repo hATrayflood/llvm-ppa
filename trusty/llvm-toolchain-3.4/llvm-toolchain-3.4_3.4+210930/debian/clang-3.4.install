@@ -1,0 +1,25 @@
+usr/lib/llvm-3.4/bin/clang
+usr/lib/llvm-3.4/bin/clang++
+usr/lib/llvm-3.4/bin/clang-check
+usr/lib/llvm-3.4/bin/clang-tblgen
+usr/lib/llvm-3.4/bin/c-index-test
+usr/lib/llvm-3.4/bin/clang-apply-replacements
+usr/lib/llvm-3.4/bin/clang-tidy
+usr/lib/llvm-3.4/bin/pp-trace
+
+compiler-rt/lib/asan/scripts/asan_symbolize.py	/usr/lib/llvm-3.4/bin/
+clang/tools/scan-build			/usr/lib/llvm-3.4/share/
+clang/tools/scan-view			/usr/lib/llvm-3.4/share/
+#usr/share/man/man1/clang.1	usr/share/man/man1/
+debian/pollycc		/usr/lib/llvm-3.4/bin/
+
+usr/bin/clang-3.4
+usr/bin/clang++-3.4
+usr/bin/clang-check-3.4
+usr/bin/clang-tblgen-3.4
+usr/bin/c-index-test-3.4
+usr/bin/clang-apply-replacements-3.4
+usr/bin/clang-tidy-3.4
+usr/bin/pp-trace-3.4
+
+usr/lib/llvm-3.4/share/man/man1/clang.1

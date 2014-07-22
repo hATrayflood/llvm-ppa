@@ -1,0 +1,341 @@
+Source: llvm-toolchain-3.4
+Section: devel
+Priority: extra
+Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
+Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl, expect,
+    autoconf, automake, perl, libtool, doxygen, chrpath, texinfo,
+    sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
+    lsb-release, patchutils, diffstat, xz-utils, chrpath, python-dev,
+    libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev,
+    libisl-dev (>= 0.11.1), libjsoncpp-dev,
+    lcov, procps, help2man, dh-ocaml
+Build-Conflicts: oprofile, ocaml, libllvm-3.5-ocaml-dev
+Standards-Version: 3.9.5
+Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
+Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
+
+# ------------- clang -------------
+
+Package: clang-3.4
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs},
+ libclang-common-3.4-dev (= ${binary:Version}),
+ libclang1-3.4 (= ${binary:Version}), libc6-dev
+Recommends: llvm-3.4-dev, python
+Suggests: gnustep, gnustep-devel
+Description: C, C++ and Objective-C compiler (LLVM based)
+ Clang project is a C, C++, Objective C and Objective C++ front-end
+ for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+ Collection (GCC).
+ .
+ Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
+ a partial support of C++1y.
+
+Package: clang-format-3.4
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python
+Description: Tool to format C/C++/Obj-C code
+ Clang-format is both a library and a stand-alone tool with the goal of
+ automatically reformatting C++ sources files according to configurable
+ style guides. To do so, clang-format uses Clang's Lexer to transform an
+ input file into a token stream and then changes all the whitespace around
+ those tokens. The goal is for clang-format to both serve both as a user
+ tool (ideally with powerful IDE integrations) and part of other
+ refactoring tools, e.g. to do a reformatting of all the lines changed
+ during a renaming.
+ .
+ This package also provides vim and emacs plugins.
+
+Package: cpp11-migrate-3.4
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, clang-modernize-3.4
+Description: Tool to convert C++98 and C++03 code to C++11
+ The purpose of the C++11 Migrator is to do source-to-source translation to
+ migrate existing C++ code to use C++11 features to enhance
+ maintainability, readability, runtime performance, and compile-time
+ performance. Development is still early and transforms fall mostly into
+ the first two categories. The migrator is based on Clang's LibTooling and
+ the AST Matching library.
+ .
+ This is a transitional dummy package. It can safely be removed.
+
+Package: clang-modernize-3.4
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, clang-3.4
+Description: Tool to convert C++98 and C++03 code to C++11
+ The purpose of the C++11 Migrator is to do source-to-source translation to
+ migrate existing C++ code to use C++11 features to enhance
+ maintainability, readability, runtime performance, and compile-time
+ performance. Development is still early and transforms fall mostly into
+ the first two categories. The migrator is based on Clang's LibTooling and
+ the AST Matching library.
+
+
+Package: clang-3.4-doc
+Architecture: all
+Section: doc
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: C, C++ and Objective-C compiler (LLVM based) - Documentation
+ Clang project is a C, C++, Objective C and Objective C++ front-end
+ for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+ Collection (GCC).
+ .
+ Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
+ a partial support of C++1y.
+ .
+ This package contains the documentation.
+
+Package: libclang1-3.4
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs}
+Pre-Depends: ${misc:Pre-Depends}
+Multi-Arch: same
+Description: C interface to the clang library
+ Clang project is a C, C++, Objective C and Objective C++ front-end
+ for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+ Collection (GCC).
+ .
+ Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
+ a partial support of C++1y.
+ .
+ This package contains the clang library.
+ .
+ The C Interface to Clang provides a relatively small API that exposes
+ facilities for parsing source code into an abstract syntax tree (AST),
+ loading already-parsed ASTs, traversing the AST, associating physical source
+ locations with elements within the AST, and other facilities that support
+ Clang-based development tools.
+
+Package: clang-3.4-relaxng
+Architecture: all
+Section: misc
+Description: clang Relax NG schema for the XML
+ Clang project is a C, C++, Objective C and Objective C++ front-end
+ for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+ Collection (GCC).
+ .
+ Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
+ a partial support of C++1y.
+ .
+ This package contains the clang Relax NG schema for the XML.
+
+Package: libclang-3.4-dev
+Architecture: any
+Section: libdevel
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs},
+ libclang1-3.4 (= ${binary:Version}), libclang-common-3.4-dev (= ${binary:Version})
+Description: clang library - Development package
+ Clang project is a C, C++, Objective C and Objective C++ front-end
+ for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+ Collection (GCC).
+ .
+ Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
+ a partial support of C++1y.
+ .
+ This package contains the clang headers to develop extensions over
+ libclang1-3.4.
+
+Package: libclang-common-3.4-dev
+Architecture: any
+Section: libdevel
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Replaces: libclang-3.4-dev
+Description: clang library - Common development package
+ Clang project is a C, C++, Objective C and Objective C++ front-end
+ for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+ Collection (GCC).
+ .
+ Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
+ a partial support of C++1y.
+ .
+ This package contains the clang generic headers and some libraries
+ (profiling, etc).
+
+
+Package: python-clang-3.4
+Section: python
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-3.4 (= ${binary:Version}), python2.7
+Description: Clang Python Bindings
+ This binding package provides access to the Clang compiler and libraries.
+
+
+Package: clang-3.4-examples
+Architecture: any
+Section: doc
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Clang examples
+ Clang project is a C, C++, Objective C and Objective C++ front-end
+ for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+ Collection (GCC).
+ .
+ Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
+ a partial support of C++1y.
+ .
+ This package contains the clang examples.
+
+# ------------- LLVM -------------
+
+Package: libllvm3.4
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Pre-Depends: ${misc:Pre-Depends}
+Multi-Arch: same
+Description: Modular compiler and toolchain technologies, runtime library
+ LLVM is a collection of libraries and tools that make it easy to build
+ compilers, optimizers, just-in-time code generators, and many other
+ compiler-related programs.
+ .
+ This package contains the LLVM runtime library.
+
+Package: llvm-3.4
+Architecture: any
+Suggests: llvm-3.4-doc
+Depends: llvm-3.4-runtime (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Recommends: llvm-3.4-dev
+Description: Modular compiler and toolchain technologies
+ LLVM is a collection of libraries and tools that make it easy to build
+ compilers, optimizers, just-in-time code generators, and many other
+ compiler-related programs.
+ .
+ LLVM uses a single, language-independent virtual instruction set both
+ as an offline code representation (to communicate code between
+ compiler phases and to run-time systems) and as the compiler internal
+ representation (to analyze and transform programs). This persistent
+ code representation allows a common set of sophisticated compiler
+ techniques to be applied at compile-time, link-time, install-time,
+ run-time, or "idle-time" (between program runs).
+ .
+ The strengths of the LLVM infrastructure are its extremely
+ simple design (which makes it easy to understand and use),
+ source-language independence, powerful mid-level optimizer, automated
+ compiler debugging support, extensibility, and its stability and
+ reliability. LLVM is currently being used to host a wide variety of
+ academic research projects and commercial projects. LLVM includes C
+ and C++ front-ends, a front-end for a Forth-like language (Stacker),
+ a young scheme front-end, and Java support is in development. LLVM can
+ generate code for X86, SparcV9, PowerPC or many other architectures.
+ .
+ LLVM is the key component of the clang compiler and the gcc plugin called
+ dragonegg.
+
+Package: llvm-3.4-runtime
+Architecture: any
+Depends: binfmt-support, ${shlibs:Depends}, ${misc:Depends}
+Description: Modular compiler and toolchain technologies, IR interpreter
+ LLVM is a collection of libraries and tools that make it easy to build
+ compilers, optimizers, just-in-time code generators, and many other
+ compiler-related programs.
+ .
+ LLVM uses a single, language-independent virtual instruction set both
+ as an offline code representation (to communicate code between
+ compiler phases and to run-time systems) and as the compiler internal
+ representation (to analyze and transform programs). This persistent
+ code representation allows a common set of sophisticated compiler
+ techniques to be applied at compile-time, link-time, install-time,
+ run-time, or "idle-time" (between program runs).
+ .
+ This package provides the minimal required to execute programs in LLVM
+ format.
+
+Package: llvm-3.4-dev
+Architecture: any
+Depends: ${shlibs:Depends}, libffi-dev (>= 3.0.9), ${misc:Depends},
+ llvm-3.4 (= ${binary:Version}), libtinfo-dev
+Description: Modular compiler and toolchain technologies, libraries and headers
+ LLVM is a collection of libraries and tools that make it easy to build
+ compilers, optimizers, just-in-time code generators, and many other
+ compiler-related programs.
+ .
+ LLVM uses a single, language-independent virtual instruction set both
+ as an offline code representation (to communicate code between
+ compiler phases and to run-time systems) and as the compiler internal
+ representation (to analyze and transform programs). This persistent
+ code representation allows a common set of sophisticated compiler
+ techniques to be applied at compile-time, link-time, install-time,
+ run-time, or "idle-time" (between program runs).
+ .
+ This package provides the libraries and headers to develop applications
+ using llvm.
+
+Package: llvm-3.4-tools
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python,
+ llvm-3.4-dev (= ${binary:Version})
+Description: Modular compiler and toolchain technologies, tools
+ LLVM is a collection of libraries and tools that make it easy to build
+ compilers, optimizers, just-in-time code generators, and many other
+ compiler-related programs.
+ .
+ LLVM uses a single, language-independent virtual instruction set both
+ as an offline code representation (to communicate code between
+ compiler phases and to run-time systems) and as the compiler internal
+ representation (to analyze and transform programs). This persistent
+ code representation allows a common set of sophisticated compiler
+ techniques to be applied at compile-time, link-time, install-time,
+ run-time, or "idle-time" (between program runs).
+ .
+ This package provides tools for testing.
+
+Package: libllvm-3.4-ocaml-dev
+Section: ocaml
+Architecture: any
+Suggests: llvm-3.4-doc
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${ocaml:Depends}, llvm-3.4-dev (= ${binary:Version})
+Replaces: libllvm-ocaml-3.4-dev
+Conflicts: libllvm-ocaml-3.4-dev
+Provides: ${ocaml:Provides}
+Description: Modular compiler and toolchain technologies, OCaml bindings
+ LLVM is a collection of libraries and tools that make it easy to build
+ compilers, optimizers, just-in-time code generators, and many other
+ compiler-related programs.
+ .
+ LLVM uses a single, language-independent virtual instruction set both
+ as an offline code representation (to communicate code between
+ compiler phases and to run-time systems) and as the compiler internal
+ representation (to analyze and transform programs). This persistent
+ code representation allows a common set of sophisticated compiler
+ techniques to be applied at compile-time, link-time, install-time,
+ run-time, or "idle-time" (between program runs).
+ .
+ This package provides the OCaml bindings to develop applications using llvm.
+
+Package: llvm-3.4-doc
+Section: doc
+Architecture: all
+Depends: ${misc:Depends}, libjs-jquery, libjs-underscore
+Description: Modular compiler and toolchain technologies, documentation
+ LLVM is a collection of libraries and tools that make it easy to build
+ compilers, optimizers, just-in-time code generators, and many other
+ compiler-related programs.
+ .
+ LLVM uses a single, language-independent virtual instruction set both
+ as an offline code representation (to communicate code between
+ compiler phases and to run-time systems) and as the compiler internal
+ representation (to analyze and transform programs). This persistent
+ code representation allows a common set of sophisticated compiler
+ techniques to be applied at compile-time, link-time, install-time,
+ run-time, or "idle-time" (between program runs).
+ .
+ This package contains all documentation (extensive).
+
+Package: llvm-3.4-examples
+Section: doc
+Architecture: all
+Depends: ${misc:Depends}, llvm-3.4-dev (>= ${source:Version}), llvm-3.4-dev (<< ${source:Version}+c~)
+Description: Modular compiler and toolchain technologies, examples
+ LLVM is a collection of libraries and tools that make it easy to build
+ compilers, optimizers, just-in-time code generators, and many other
+ compiler-related programs.
+ .
+ LLVM uses a single, language-independent virtual instruction set both
+ as an offline code representation (to communicate code between
+ compiler phases and to run-time systems) and as the compiler internal
+ representation (to analyze and transform programs). This persistent
+ code representation allows a common set of sophisticated compiler
+ techniques to be applied at compile-time, link-time, install-time,
+ run-time, or "idle-time" (between program runs).
+ .
+ This package contains examples for using LLVM, both in developing
+ extensions to LLVM and in using it to compile code.

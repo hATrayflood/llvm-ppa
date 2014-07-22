@@ -1,0 +1,12 @@
+Index: llvm-toolchain-3.3-3.3/lldb/test/functionalities/thread/break_after_join/TestBreakAfterJoin.py
+===================================================================
+--- llvm-toolchain-3.3-3.3.orig/lldb/test/functionalities/thread/break_after_join/TestBreakAfterJoin.py	(révision 183568)
++++ llvm-toolchain-3.3-3.3/lldb/test/functionalities/thread/break_after_join/TestBreakAfterJoin.py	(révision 183569)
+@@ -21,6 +21,7 @@
+         self.breakpoint_after_join_test()
+ 
+     @expectedFailureDarwin("llvm.org/pr15824") # thread states not properly maintained
++    @skipIfLinux # Causes hangs (llvm.org/pr16170) when run using "make check"
+     @dwarf_test
+     def test_with_dwarf(self):
+         """Test breakpoint handling after a thread join."""
