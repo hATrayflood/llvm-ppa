@@ -1,8 +1,8 @@
-llvm-toolchain-3.2 (1:3.2repack-debian11ppa8) precise; urgency=low
+llvm-toolchain-3.2 (1:3.2repack-debian11precise0) precise; urgency=low
 
   * ppa for precise
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sun, 09 Feb 2014 21:15:00 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Wed, 23 Jul 2014 13:10:00 +0900
 
 llvm-toolchain-3.2 (1:3.2repack-11) unstable; urgency=low
 

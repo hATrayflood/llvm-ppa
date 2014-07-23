@@ -1,12 +1,12 @@
 diff -urN ../../llvm-toolchain-3.3/debian/changelog llvm-toolchain-snapshot_3.3~svn183554/debian/changelog
 --- ../../llvm-toolchain-3.3/debian/changelog	2014-05-09 17:45:31.699078801 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/changelog	2014-05-09 17:45:31.784076558 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/changelog	2014-07-24 01:36:48.110890080 +0900
 @@ -1,3 +1,9 @@
-+llvm-toolchain-3.3 (1:3.3-debian16ppa5) precise; urgency=low
++llvm-toolchain-3.3 (1:3.3-debian16precise0) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sun, 09 Feb 2014 21:15:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 24 Jul 2014 01:40:00 +0900
 +
  llvm-toolchain-3.3 (1:3.3-16) unstable; urgency=low
  
@@ -18,16 +18,16 @@ diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3-relaxng.install llvm-toolcha
 +clang/bindings/xml/comment-xml-schema.rng	/usr/share/xml/clang-3.3-relaxng/
 diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.install llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.install
 --- ../../llvm-toolchain-3.3/debian/clang-3.3.install	2014-05-09 17:45:31.699078801 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.install	2014-05-09 17:45:31.784076558 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.install	2014-07-24 01:34:10.042105898 +0900
 @@ -1,10 +1,15 @@
 -usr/lib/llvm-3.3/bin/clang			/usr/bin/
 -usr/lib/llvm-3.3/bin/clang++			/usr/bin/
 -usr/lib/llvm-3.3/bin/clang-check			/usr/bin/
 -usr/lib/llvm-3.3/bin/clang-tblgen			/usr/bin/
-+usr/lib/llvm-3.3/bin/clang		/usr/lib/llvm-3.3/bin/
-+usr/lib/llvm-3.3/bin/clang++		/usr/lib/llvm-3.3/bin/
-+usr/lib/llvm-3.3/bin/clang-check	/usr/lib/llvm-3.3/bin/
-+usr/lib/llvm-3.3/bin/clang-tblgen	/usr/lib/llvm-3.3/bin/
++usr/lib/llvm-3.3/bin/clang
++usr/lib/llvm-3.3/bin/clang++
++usr/lib/llvm-3.3/bin/clang-check
++usr/lib/llvm-3.3/bin/clang-tblgen
 +usr/bin/clang-3.3
 +usr/bin/clang++-3.3
 +usr/bin/clang-check-3.3
@@ -36,12 +36,12 @@ diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.install llvm-toolchain-snaps
  usr/bin/c-index-test*
 -tools/clang/tools/scan-build			/usr/share/clang/
 -tools/clang/tools/scan-view			/usr/share/clang/
++compiler-rt/lib/asan/scripts/asan_symbolize.py	/usr/lib/llvm-3.3/bin/
 +clang/tools/scan-build			/usr/lib/llvm-3.3/share/
 +clang/tools/scan-view			/usr/lib/llvm-3.3/share/
  #usr/share/man/man1/clang.1	usr/share/man/man1/
 -debian/pollycc		/usr/bin/
 +debian/pollycc				/usr/lib/llvm-3.3/bin/
-+compiler-rt/lib/asan/scripts/asan_symbolize.py	/usr/lib/llvm-3.3/bin/
 diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.links llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.links
 --- ../../llvm-toolchain-3.3/debian/clang-3.3.links	2014-05-09 17:45:31.699078801 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.links	2014-05-09 17:45:31.784076558 +0900
@@ -729,8 +729,8 @@ diff -urN ../../llvm-toolchain-3.3/debian/python-clang-3.3.install llvm-toolchai
 +clang/bindings/python/tests		/usr/share/doc/python-clang-3.3/
 diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn183554/debian/rules
 --- ../../llvm-toolchain-3.3/debian/rules	2014-05-09 17:45:31.704189115 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/rules	2014-05-09 17:45:31.788891940 +0900
-@@ -1,7 +1,7 @@
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/rules	2014-07-24 01:35:32.710515672 +0900
+@@ -1,15 +1,19 @@
  #!/usr/bin/make -f
  
  TARGET_BUILD	:= build-llvm
@@ -739,8 +739,12 @@ diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn1
  LLVM_VERSION	:= 3.3
  SONAME_EXT      := 1
  DEBIAN_REVISION := $(shell dpkg-parsechangelog | sed -rne 's,^Version: .*-(.*),\1,p')
-@@ -9,7 +9,7 @@
+ ifneq (,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
    NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
++else
++    NCPUS := $(shell getconf _NPROCESSORS_ONLN 2>/dev/null || echo 1)
++    NJOBS := -j $(shell if test $(NCPUS) -gt 1; then echo `expr $(NCPUS) + 1`; \
++               else echo $(NCPUS); fi)
  endif
  
 -VENDOR=$(shell lsb_release -is)
@@ -748,7 +752,19 @@ diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn1
  
  DEB_HOST_MULTIARCH  = $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
  DEB_HOST_GNU_TYPE   = $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-@@ -72,6 +72,7 @@
+@@ -42,9 +46,9 @@
+ endif
+ 
+ ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' g++-$(GCC_VERSION)) ge 4.8-20121128-1~ ; echo $$?),0)
+-	control_vars = '-Vdep:devlibs=libstdc++-$(GCC_VERSION)-dev, libgcc-$(GCC_VERSION)-dev, libobjc-$(GCC_VERSION)-dev'
++	control_vars = '-Vdep:devlibs=libstdc++-$(GCC_VERSION)-dev, libgcc-$(GCC_VERSION)-dev'
+ else ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' g++-$(GCC_VERSION)) ge 4.7.2-10~ ; echo $$?),0)
+-	control_vars = '-Vdep:devlibs=libstdc++6-$(GCC_VERSION)-dev, libgcc-$(GCC_VERSION)-dev, libobjc-$(GCC_VERSION)-dev'
++	control_vars = '-Vdep:devlibs=libstdc++6-$(GCC_VERSION)-dev, libgcc-$(GCC_VERSION)-dev'
+ else
+ 	control_vars = '-Vdep:devlibs=libstdc++6-$(GCC_VERSION)-dev'
+ endif
+@@ -72,6 +76,7 @@
  
  LLDB_ENABLE=yes
  LLDB_DISABLE_ARCHS := hurd-i386 mips mipsel
@@ -756,7 +772,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn1
  # hurd has threading issues
  # mips* fails with "undefined references to `__atomic_load_8'"
  ifeq (,$(filter-out $(LLDB_DISABLE_ARCHS), $(DEB_HOST_ARCH)))
-@@ -92,7 +93,9 @@
+@@ -92,7 +97,9 @@
  override_dh_ocamlclean:
  
  
@@ -767,7 +783,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn1
  	echo "Using gcc: "
  	$(CC) -v
  	mkdir -p $(TARGET_BUILD)
-@@ -176,11 +179,11 @@
+@@ -176,11 +183,11 @@
  		cd $$d && rm -f underscore.js && ln -s /usr/share/javascript/underscore/underscore.js; \
  	done
  
@@ -782,7 +798,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn1
  	done
  
  	for f in llvm-dwarfdump llvm-mc llvm-mcmarkup llvm-objdump llvm-rtdyld llvm-size llvm-tblgen macho-dump lldb clang-format cpp11-migrate; do \
-@@ -207,9 +210,6 @@
+@@ -207,9 +214,6 @@
  
  #	cd $(TARGET_BUILD)/tools/clang/runtime/compiler-rt/ && rm -rf $$(find . -iname "SubDir.lib*" -o -iname .dir) && rm -rf $$(find -empty)
  
@@ -792,7 +808,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn1
  # Create this fake directory to make the install libclang-common-dev happy
  # under the unsupported archs of compiler-rt
  	mkdir -p $(CURDIR)/debian/tmp/usr/lib/clang/$(LLVM_VERSION)/lib
-@@ -231,10 +231,10 @@
+@@ -231,10 +235,10 @@
  
  	cp -f $(CURDIR)/utils/vim/tablegen.vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
  
@@ -805,7 +821,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn1
  # Remove some license files
  	rm -f $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/include/llvm/Support/LICENSE.TXT \
  	$(CURDIR)/debian/llvm-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/build/autoconf/LICENSE.TXT
-@@ -250,8 +250,6 @@
+@@ -250,8 +254,6 @@
  
  .PHONY: override_dh_strip
  override_dh_strip:
@@ -814,7 +830,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn1
  	dh_strip -a
  
  override_dh_shlibdeps:
-@@ -264,6 +262,11 @@
+@@ -264,6 +266,11 @@
  	rm -f $(CURDIR)/debian/lldb-$(LLVM_VERSION)/usr/lib/python*/dist-packages/lldb/__init__.pyc
  	rm -f $(CURDIR)/debian/clang-$(LLVM_VERSION)-examples/usr/share/doc/clang-$(LLVM_VERSION)-examples/examples/*Make*
  
@@ -826,7 +842,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn1
  
  
  ifeq (,$(filter nocheck, $(DEB_BUILD_OPTIONS)))
-@@ -315,6 +318,13 @@
+@@ -315,6 +322,13 @@
  	rm -f tools/clang tools/polly tools/lldb projects/compiler-rt
  	rm -rf tools/clang/tools/extra clang/tools/extra/
  	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim

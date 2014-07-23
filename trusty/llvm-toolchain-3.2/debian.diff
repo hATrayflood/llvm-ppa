@@ -18,7 +18,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2-relaxng.install llvm-3.2.src
 +clang/bindings/xml/comment-xml-schema.rng	/usr/share/xml/clang-3.2-relaxng/
 diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.install llvm-3.2.src/debian/clang-3.2.install
 --- ../../llvm-toolchain-3.2/debian/clang-3.2.install	2014-05-09 17:45:31.640600409 +0900
-+++ llvm-3.2.src/debian/clang-3.2.install	2014-05-09 17:45:31.648103894 +0900
++++ llvm-3.2.src/debian/clang-3.2.install	2014-07-22 22:22:46.941248148 +0900
 @@ -1,9 +1,14 @@
 -usr/lib/llvm-3.2/bin/clang			/usr/bin/
 -usr/lib/llvm-3.2/bin/clang++			/usr/bin/
@@ -26,20 +26,20 @@ diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.install llvm-3.2.src/debian/
 -usr/lib/llvm-3.2/bin/clang-tblgen			/usr/bin/
 -tools/clang/tools/scan-build			/usr/share/clang/
 -tools/clang/tools/scan-view			/usr/share/clang/
-+usr/lib/llvm-3.2/bin/clang		/usr/lib/llvm-3.2/bin/
-+usr/lib/llvm-3.2/bin/clang++		/usr/lib/llvm-3.2/bin/
-+usr/lib/llvm-3.2/bin/clang-check	/usr/lib/llvm-3.2/bin/
-+usr/lib/llvm-3.2/bin/clang-tblgen	/usr/lib/llvm-3.2/bin/
++usr/lib/llvm-3.2/bin/clang
++usr/lib/llvm-3.2/bin/clang++
++usr/lib/llvm-3.2/bin/clang-check
++usr/lib/llvm-3.2/bin/clang-tblgen
 +usr/bin/clang-3.2
 +usr/bin/clang++-3.2
 +usr/bin/clang-check-3.2
 +usr/bin/clang-tblgen-3.2
++compiler-rt/lib/asan/scripts/asan_symbolize.py	/usr/lib/llvm-3.2/bin/
 +clang/tools/scan-build			/usr/lib/llvm-3.2/share/
 +clang/tools/scan-view			/usr/lib/llvm-3.2/share/
  #usr/share/man/man1/clang.1	usr/share/man/man1/
 -debian/pollycc		/usr/bin/
 +debian/pollycc				/usr/lib/llvm-3.2/bin/
-+compiler-rt/lib/asan/scripts/asan_symbolize.py	/usr/lib/llvm-3.2/bin/
  
 diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.links llvm-3.2.src/debian/clang-3.2.links
 --- ../../llvm-toolchain-3.2/debian/clang-3.2.links	2014-05-09 17:45:31.640600409 +0900
@@ -120,7 +120,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.prerm llvm-3.2.src/debian/cl
 -exit 0
 diff -urN ../../llvm-toolchain-3.2/debian/control llvm-3.2.src/debian/control
 --- ../../llvm-toolchain-3.2/debian/control	2014-05-09 17:45:31.640600409 +0900
-+++ llvm-3.2.src/debian/control	2014-07-21 00:11:11.927266865 +0900
++++ llvm-3.2.src/debian/control	2014-07-22 22:07:22.660665605 +0900
 @@ -1,30 +1,24 @@
  Source: llvm-toolchain-3.2
  Section: devel
@@ -136,8 +136,8 @@ diff -urN ../../llvm-toolchain-3.2/debian/control llvm-3.2.src/debian/control
      libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev,
 -    libisl-dev (>= 0.11.1), binutils-gold [amd64 armhf i386 x32],
 -    gcc-4.7, g++-4.7, libjsoncpp-dev
-+    libisl-dev (>= 0.11.1), libjsoncpp-dev,
-+    dh-ocaml
++    libisl-dev (>= 0.11.1), dh-ocaml,
++    libjsoncpp-dev
  Build-Conflicts: oprofile, ocaml
  Standards-Version: 3.9.4
 -Homepage: http://www.llvm.org/

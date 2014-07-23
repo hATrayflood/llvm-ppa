@@ -1,12 +1,12 @@
 diff -urN ../../llvm-toolchain-3.2/debian/changelog llvm-3.2.src/debian/changelog
 --- ../../llvm-toolchain-3.2/debian/changelog	2014-05-09 17:45:31.640600409 +0900
-+++ llvm-3.2.src/debian/changelog	2014-05-09 17:45:31.648103894 +0900
++++ llvm-3.2.src/debian/changelog	2014-07-23 13:08:02.715948334 +0900
 @@ -1,3 +1,9 @@
-+llvm-toolchain-3.2 (1:3.2repack-debian11ppa8) precise; urgency=low
++llvm-toolchain-3.2 (1:3.2repack-debian11precise0) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sun, 09 Feb 2014 21:15:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Wed, 23 Jul 2014 13:10:00 +0900
 +
  llvm-toolchain-3.2 (1:3.2repack-11) unstable; urgency=low
  
@@ -18,7 +18,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2-relaxng.install llvm-3.2.src
 +clang/bindings/xml/comment-xml-schema.rng	/usr/share/xml/clang-3.2-relaxng/
 diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.install llvm-3.2.src/debian/clang-3.2.install
 --- ../../llvm-toolchain-3.2/debian/clang-3.2.install	2014-05-09 17:45:31.640600409 +0900
-+++ llvm-3.2.src/debian/clang-3.2.install	2014-05-09 17:45:31.648103894 +0900
++++ llvm-3.2.src/debian/clang-3.2.install	2014-07-23 13:02:39.404771963 +0900
 @@ -1,9 +1,14 @@
 -usr/lib/llvm-3.2/bin/clang			/usr/bin/
 -usr/lib/llvm-3.2/bin/clang++			/usr/bin/
@@ -26,20 +26,20 @@ diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.install llvm-3.2.src/debian/
 -usr/lib/llvm-3.2/bin/clang-tblgen			/usr/bin/
 -tools/clang/tools/scan-build			/usr/share/clang/
 -tools/clang/tools/scan-view			/usr/share/clang/
-+usr/lib/llvm-3.2/bin/clang		/usr/lib/llvm-3.2/bin/
-+usr/lib/llvm-3.2/bin/clang++		/usr/lib/llvm-3.2/bin/
-+usr/lib/llvm-3.2/bin/clang-check	/usr/lib/llvm-3.2/bin/
-+usr/lib/llvm-3.2/bin/clang-tblgen	/usr/lib/llvm-3.2/bin/
++usr/lib/llvm-3.2/bin/clang
++usr/lib/llvm-3.2/bin/clang++
++usr/lib/llvm-3.2/bin/clang-check
++usr/lib/llvm-3.2/bin/clang-tblgen
 +usr/bin/clang-3.2
 +usr/bin/clang++-3.2
 +usr/bin/clang-check-3.2
 +usr/bin/clang-tblgen-3.2
++compiler-rt/lib/asan/scripts/asan_symbolize.py	/usr/lib/llvm-3.2/bin/
 +clang/tools/scan-build			/usr/lib/llvm-3.2/share/
 +clang/tools/scan-view			/usr/lib/llvm-3.2/share/
  #usr/share/man/man1/clang.1	usr/share/man/man1/
 -debian/pollycc		/usr/bin/
 +debian/pollycc				/usr/lib/llvm-3.2/bin/
-+compiler-rt/lib/asan/scripts/asan_symbolize.py	/usr/lib/llvm-3.2/bin/
  
 diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.links llvm-3.2.src/debian/clang-3.2.links
 --- ../../llvm-toolchain-3.2/debian/clang-3.2.links	2014-05-09 17:45:31.640600409 +0900
@@ -120,7 +120,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.prerm llvm-3.2.src/debian/cl
 -exit 0
 diff -urN ../../llvm-toolchain-3.2/debian/control llvm-3.2.src/debian/control
 --- ../../llvm-toolchain-3.2/debian/control	2014-05-09 17:45:31.640600409 +0900
-+++ llvm-3.2.src/debian/control	2014-05-09 17:45:31.648103894 +0900
++++ llvm-3.2.src/debian/control	2014-07-23 13:06:18.503351889 +0900
 @@ -1,30 +1,24 @@
  Source: llvm-toolchain-3.2
  Section: devel
@@ -137,8 +137,8 @@ diff -urN ../../llvm-toolchain-3.2/debian/control llvm-3.2.src/debian/control
 -    libisl-dev (>= 0.11.1), binutils-gold [amd64 armhf i386 x32],
 -    gcc-4.7, g++-4.7, libjsoncpp-dev
 +    libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev-lts,
-+    libisl-dev-lts, libjsoncpp-dev,
-+    dh-ocaml
++    libisl-dev-lts, dh-ocaml,
++    libjsoncpp-dev
  Build-Conflicts: oprofile, ocaml
  Standards-Version: 3.9.4
 -Homepage: http://www.llvm.org/
@@ -169,7 +169,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/control llvm-3.2.src/debian/control
 +Package: libclang1-3.2
  Architecture: any
 -Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++-4.8-dev,
-+Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev
++Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
  Description: clang library
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
@@ -935,8 +935,8 @@ diff -urN ../../llvm-toolchain-3.2/debian/python-clang-3.2.install llvm-3.2.src/
 +clang/bindings/python/tests		/usr/share/doc/python-clang-3.2/
 diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
 --- ../../llvm-toolchain-3.2/debian/rules	2014-05-09 17:45:31.648103894 +0900
-+++ llvm-3.2.src/debian/rules	2014-05-09 17:45:31.652568220 +0900
-@@ -1,7 +1,7 @@
++++ llvm-3.2.src/debian/rules	2014-07-23 13:07:05.423032410 +0900
+@@ -1,15 +1,19 @@
  #!/usr/bin/make -f
  
  TARGET_BUILD	:= build-llvm
@@ -945,8 +945,12 @@ diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
  LLVM_VERSION	:= 3.2
  SONAME_EXT      := 1
  DEBIAN_REVISION := $(shell dpkg-parsechangelog | sed -rne 's,^Version: .*-(.*),\1,p')
-@@ -9,7 +9,7 @@
+ ifneq (,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
    NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
++else
++    NCPUS := $(shell getconf _NPROCESSORS_ONLN 2>/dev/null || echo 1)
++    NJOBS := -j $(shell if test $(NCPUS) -gt 1; then echo `expr $(NCPUS) + 1`; \
++               else echo $(NCPUS); fi)
  endif
  
 -VENDOR=$(shell lsb_release -is)
@@ -954,7 +958,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
  
  DEB_HOST_MULTIARCH  = $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
  DEB_HOST_GNU_TYPE   = $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-@@ -41,13 +41,20 @@
+@@ -41,13 +45,20 @@
  	LLDB_ENABLE=yes
  endif
  
@@ -978,7 +982,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
  	echo "Using gcc: "
  	$(CC) -v
  	mkdir -p $(TARGET_BUILD)
-@@ -126,12 +133,13 @@
+@@ -126,12 +137,13 @@
  		mv $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/liblldb.so $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/liblldb.so.$(SONAME_EXT); \
  	fi
  
@@ -996,7 +1000,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
  # Create this fake directory to make the install libclang-common-dev happy
  # under the unsupported archs of compiler-rt
  	mkdir -p $(CURDIR)/debian/tmp/usr/lib/clang/$(LLVM_VERSION)/lib
-@@ -153,6 +161,14 @@
+@@ -153,6 +165,14 @@
  	done
  
  	mv $(CURDIR)/build-llvm/tools/clang/docs/tools/clang.1 $(CURDIR)/build-llvm/tools/clang/docs/tools/clang-$(LLVM_VERSION).1
@@ -1011,7 +1015,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
  
  # Remove some license files
  	rm $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/include/llvm/Support/LICENSE.TXT
-@@ -172,13 +188,18 @@
+@@ -172,13 +192,18 @@
  
  .PHONY: override_dh_strip
  override_dh_strip:
@@ -1032,7 +1036,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
  override_dh_auto_test:
  	$(MAKE) -C $(TARGET_BUILD) check || true
  
-@@ -188,4 +209,7 @@
+@@ -188,4 +213,7 @@
  	find utils -name '*.pyc' | xargs -r rm -f
  	find test -name '*.pyc' -o -name '*.o' -o -name '*.cm[ix]' | xargs -r rm -f
  	rm -f tools/clang tools/polly tools/lldb projects/compiler-rt

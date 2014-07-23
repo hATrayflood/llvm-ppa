@@ -18,16 +18,16 @@ diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3-relaxng.install llvm-toolcha
 +clang/bindings/xml/comment-xml-schema.rng	/usr/share/xml/clang-3.3-relaxng/
 diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.install llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.install
 --- ../../llvm-toolchain-3.3/debian/clang-3.3.install	2014-05-09 17:45:31.699078801 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.install	2014-05-09 17:45:31.784076558 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.install	2014-07-22 22:13:45.430562891 +0900
 @@ -1,10 +1,15 @@
 -usr/lib/llvm-3.3/bin/clang			/usr/bin/
 -usr/lib/llvm-3.3/bin/clang++			/usr/bin/
 -usr/lib/llvm-3.3/bin/clang-check			/usr/bin/
 -usr/lib/llvm-3.3/bin/clang-tblgen			/usr/bin/
-+usr/lib/llvm-3.3/bin/clang		/usr/lib/llvm-3.3/bin/
-+usr/lib/llvm-3.3/bin/clang++		/usr/lib/llvm-3.3/bin/
-+usr/lib/llvm-3.3/bin/clang-check	/usr/lib/llvm-3.3/bin/
-+usr/lib/llvm-3.3/bin/clang-tblgen	/usr/lib/llvm-3.3/bin/
++usr/lib/llvm-3.3/bin/clang
++usr/lib/llvm-3.3/bin/clang++
++usr/lib/llvm-3.3/bin/clang-check
++usr/lib/llvm-3.3/bin/clang-tblgen
 +usr/bin/clang-3.3
 +usr/bin/clang++-3.3
 +usr/bin/clang-check-3.3
@@ -36,12 +36,12 @@ diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.install llvm-toolchain-snaps
  usr/bin/c-index-test*
 -tools/clang/tools/scan-build			/usr/share/clang/
 -tools/clang/tools/scan-view			/usr/share/clang/
++compiler-rt/lib/asan/scripts/asan_symbolize.py	/usr/lib/llvm-3.3/bin/
 +clang/tools/scan-build			/usr/lib/llvm-3.3/share/
 +clang/tools/scan-view			/usr/lib/llvm-3.3/share/
  #usr/share/man/man1/clang.1	usr/share/man/man1/
 -debian/pollycc		/usr/bin/
 +debian/pollycc				/usr/lib/llvm-3.3/bin/
-+compiler-rt/lib/asan/scripts/asan_symbolize.py	/usr/lib/llvm-3.3/bin/
 diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.links llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.links
 --- ../../llvm-toolchain-3.3/debian/clang-3.3.links	2014-05-09 17:45:31.699078801 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.links	2014-05-09 17:45:31.784076558 +0900
