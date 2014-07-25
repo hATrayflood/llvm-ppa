@@ -1,8 +1,16 @@
-llvm-toolchain-3.4 (1:3.4.2-debian4trusty0) trusty; urgency=medium
+llvm-toolchain-3.4 (1:3.4.2-debian5trusty0) trusty; urgency=medium
 
   * ppa for trusty
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Tue, 22 Jul 2014 16:40:00 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 25 Jul 2014 22:00:00 +0900
+
+llvm-toolchain-3.4 (1:3.4.2-5) unstable; urgency=medium
+
+  * For i386, gcc 4.9 updated its paths to i586-linux-gnu (i486-linux-gnu
+    previously). Adding this triple to the list of search (Closes: #754963)
+  * Clang will now show the full version. Example: 3.5.0-svn213052-1~exp1
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Fri, 18 Jul 2014 17:50:51 +0200
 
 llvm-toolchain-3.4 (1:3.4.2-4) unstable; urgency=medium
 

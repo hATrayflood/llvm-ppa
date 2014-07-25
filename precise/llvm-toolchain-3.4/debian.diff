@@ -1,16 +1,16 @@
 diff -urN ../../llvm-toolchain-3.4/debian/changelog llvm-toolchain-3.4_3.4+210930/debian/changelog
---- ../../llvm-toolchain-3.4/debian/changelog	2014-06-25 07:28:48.000000000 +0900
-+++ llvm-toolchain-3.4_3.4+210930/debian/changelog	2014-07-12 00:50:17.831316863 +0900
+--- ../../llvm-toolchain-3.4/debian/changelog	2014-07-19 00:56:04.000000000 +0900
++++ llvm-toolchain-3.4_3.4+210930/debian/changelog	2014-07-26 00:23:15.803856031 +0900
 @@ -1,3 +1,9 @@
-+llvm-toolchain-3.4 (1:3.4.2-debian4precise0) precise; urgency=medium
++llvm-toolchain-3.4 (1:3.4.2-debian5precise0) precise; urgency=medium
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sat, 12 Jul 2014 00:50:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sat, 26 Jul 2014 00:25:00 +0900
 +
- llvm-toolchain-3.4 (1:3.4.2-4) unstable; urgency=medium
+ llvm-toolchain-3.4 (1:3.4.2-5) unstable; urgency=medium
  
-   * Create a empty directory to make dh_install happy
+   * For i386, gcc 4.9 updated its paths to i586-linux-gnu (i486-linux-gnu
 diff -urN ../../llvm-toolchain-3.4/debian/clang-3.4-relaxng.install llvm-toolchain-3.4_3.4+210930/debian/clang-3.4-relaxng.install
 --- ../../llvm-toolchain-3.4/debian/clang-3.4-relaxng.install	1970-01-01 09:00:00.000000000 +0900
 +++ llvm-toolchain-3.4_3.4+210930/debian/clang-3.4-relaxng.install	2014-05-09 17:45:32.051424788 +0900
@@ -660,14 +660,13 @@ diff -urN ../../llvm-toolchain-3.4/debian/patches/python-clangpath.diff llvm-too
           if Config.library_path:
               file = Config.library_path + '/' + file
 diff -urN ../../llvm-toolchain-3.4/debian/patches/series llvm-toolchain-3.4_3.4+210930/debian/patches/series
---- ../../llvm-toolchain-3.4/debian/patches/series	2014-06-25 07:28:48.000000000 +0900
-+++ llvm-toolchain-3.4_3.4+210930/debian/patches/series	2014-07-24 02:14:41.678160898 +0900
-@@ -42,4 +42,5 @@
- CVE-2014-2893.diff
+--- ../../llvm-toolchain-3.4/debian/patches/series	2014-07-19 00:47:03.000000000 +0900
++++ llvm-toolchain-3.4_3.4+210930/debian/patches/series	2014-07-26 00:22:28.647212081 +0900
+@@ -42,3 +42,4 @@
  follow-parallel-var.diff
  scan-build-search-path.diff
+ gcc-4.9-i586-linux-gnu.diff
 +99-python-bindings.patch
- 
 diff -urN ../../llvm-toolchain-3.4/debian/pollycc.in llvm-toolchain-3.4_3.4+210930/debian/pollycc.in
 --- ../../llvm-toolchain-3.4/debian/pollycc.in	2014-06-11 00:47:26.000000000 +0900
 +++ llvm-toolchain-3.4_3.4+210930/debian/pollycc.in	2014-05-09 17:45:32.055630901 +0900
@@ -686,9 +685,9 @@ diff -urN ../../llvm-toolchain-3.4/debian/python-clang-3.4.install llvm-toolchai
 +clang/bindings/python/examples		/usr/share/doc/python-clang-3.4/
 +clang/bindings/python/tests		/usr/share/doc/python-clang-3.4/
 diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/debian/rules
---- ../../llvm-toolchain-3.4/debian/rules	2014-06-25 07:28:48.000000000 +0900
-+++ llvm-toolchain-3.4_3.4+210930/debian/rules	2014-07-24 02:15:55.162527936 +0900
-@@ -3,16 +3,20 @@
+--- ../../llvm-toolchain-3.4/debian/rules	2014-07-15 21:52:22.000000000 +0900
++++ llvm-toolchain-3.4_3.4+210930/debian/rules	2014-07-26 00:24:14.222921730 +0900
+@@ -3,7 +3,7 @@
  TARGET_BUILD	:= build-llvm
  # Force the version of gcc. Some archs are still using gcc 4.6
  #GCC_VERSION     := 4.8
@@ -697,7 +696,8 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  LLVM_VERSION	:= 3.4
  LLVM_VERSION_FULL := $(LLVM_VERSION).2
  SONAME_EXT      := 1
- DEBIAN_REVISION := $(shell dpkg-parsechangelog | sed -rne 's,^Version: .*-(.*),\1,p')
+@@ -11,9 +11,13 @@
+ DEBIAN_REVISION := $(shell dpkg-parsechangelog |  sed -rne "s,^Version: 1:([0-9.]+)(~|-)(.*),\3,p")
  ifneq (,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
    NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
 +else
@@ -711,7 +711,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  
  DEB_HOST_MULTIARCH  = $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
  DEB_HOST_GNU_TYPE   = $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-@@ -47,9 +51,9 @@
+@@ -48,9 +52,9 @@
  endif
  
  ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' g++-$(GCC_VERSION)) ge 4.8-20121128-1~ ; echo $$?),0)
@@ -723,7 +723,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  else
  	control_vars = '-Vdep:devlibs=libstdc++6-$(GCC_VERSION)-dev'
  endif
-@@ -64,8 +68,8 @@
+@@ -65,8 +69,8 @@
  
  # Enable polly (or not)
  POLLY_ENABLE=no
@@ -734,7 +734,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  POLLY_ENABLE=yes
  endif
  endif
-@@ -110,6 +114,7 @@
+@@ -111,6 +115,7 @@
  
  LLDB_ENABLE=yes
  LLDB_DISABLE_ARCHS := arm64 hurd-i386 mips mipsel ia64
@@ -742,7 +742,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  # hurd has threading issues
  # mips* fails with "undefined references to `__atomic_load_8'"
  ifeq (,$(filter-out $(LLDB_DISABLE_ARCHS), $(DEB_HOST_ARCH)))
-@@ -129,7 +134,9 @@
+@@ -130,7 +135,9 @@
  override_dh_ocamlinit:
  override_dh_ocamlclean:
  
@@ -753,7 +753,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  	echo "Using gcc: "
  	$(CC) -v
  	mkdir -p $(TARGET_BUILD)
-@@ -235,11 +242,11 @@
+@@ -236,11 +243,11 @@
  		cd $$d && rm -f underscore.js && ln -s /usr/share/javascript/underscore/underscore.js; \
  	done
  
@@ -768,7 +768,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  	done
  
  	for f in llvm-dwarfdump llvm-mc llvm-mcmarkup llvm-objdump llvm-rtdyld llvm-size llvm-tblgen macho-dump lldb clang-format clang-modernize; do \
-@@ -274,9 +281,6 @@
+@@ -275,9 +282,6 @@
  	cd $(TARGET_BUILD)/tools/clang/runtime/compiler-rt/clang_linux && rm -rf $$(find . -mindepth 2 -maxdepth 2 -type d) && rm -rf $$(find -empty) && rm -rf */.dir; \
  	fi
  
@@ -778,7 +778,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  # Create this fake directory to make the install libclang-common-dev happy
  # under the unsupported archs of compiler-rt
  	mkdir -p $(CURDIR)/debian/tmp/usr/lib/clang/$(LLVM_VERSION)/lib
-@@ -295,15 +299,16 @@
+@@ -296,15 +300,16 @@
  # Rename some stuff with the version name
  	# WILL DO when we can install several clang versions together
  	#mv $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang.1 $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang-$(LLVM_VERSION).1
@@ -797,7 +797,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  # Remove some license files
  	rm -f $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/include/llvm/Support/LICENSE.TXT \
  	$(CURDIR)/debian/llvm-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/build/autoconf/LICENSE.TXT
-@@ -327,8 +332,6 @@
+@@ -328,8 +333,6 @@
  
  .PHONY: override_dh_strip
  override_dh_strip:
@@ -806,7 +806,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  	dh_strip -a
  
  
-@@ -349,6 +352,11 @@
+@@ -350,6 +353,11 @@
  # Remove auto generated python pyc
  	find $(CURDIR)/debian/llvm-$(LLVM_VERSION)-tools/usr/lib/llvm-$(LLVM_VERSION)/ -name '*.pyc' | xargs -r rm -f
  
@@ -818,7 +818,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  
  
  
-@@ -424,5 +432,12 @@
+@@ -425,5 +433,12 @@
  	rm -f tools/clang tools/polly tools/lldb projects/compiler-rt
  	rm -rf tools/clang/tools/extra clang/tools/extra/
  	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
