@@ -1,12 +1,12 @@
 diff -urN ../../llvm-3.2/debian/changelog llvm-3.2.src/debian/changelog
 --- ../../llvm-3.2/debian/changelog	2014-05-09 17:45:31.600387130 +0900
-+++ llvm-3.2.src/debian/changelog	2014-05-09 17:45:31.604271854 +0900
++++ llvm-3.2.src/debian/changelog	2014-07-25 14:40:22.886646260 +0900
 @@ -1,3 +1,9 @@
-+llvm-3.2 (3.2-debian5ppa3) precise; urgency=low
++llvm-3.2 (3.2-debian5precise0) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 24 Oct 2013 15:25:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 25 Jul 2014 14:45:00 +0900
 +
  llvm-3.2 (3.2-5) unstable; urgency=low
  
@@ -139,8 +139,8 @@ diff -urN ../../llvm-3.2/debian/llvm-3.2-runtime.prerm.in llvm-3.2.src/debian/ll
 -
 diff -urN ../../llvm-3.2/debian/rules llvm-3.2.src/debian/rules
 --- ../../llvm-3.2/debian/rules	2014-05-09 17:45:31.604271854 +0900
-+++ llvm-3.2.src/debian/rules	2014-05-09 17:45:31.608109389 +0900
-@@ -1,11 +1,13 @@
++++ llvm-3.2.src/debian/rules	2014-07-25 14:41:43.226854992 +0900
+@@ -1,19 +1,28 @@
  #!/usr/bin/make -f
  
  TARGET_BUILD	:= $(CURDIR)/build-llvm
@@ -154,8 +154,12 @@ diff -urN ../../llvm-3.2/debian/rules llvm-3.2.src/debian/rules
  OCAML_STDLIB_DIR    ?= $(shell ocamlc -where)
  DISTRELEASE := $(shell lsb_release -is)
  COMMA = ,
-@@ -13,7 +15,10 @@
+ ifneq (,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
    NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
++else
++    NCPUS := $(shell getconf _NPROCESSORS_ONLN 2>/dev/null || echo 1)
++    NJOBS := -j $(shell if test $(NCPUS) -gt 1; then echo `expr $(NCPUS) + 1`; \
++               else echo $(NCPUS); fi)
  endif
  
 -confargs := --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) \
@@ -166,7 +170,7 @@ diff -urN ../../llvm-3.2/debian/rules llvm-3.2.src/debian/rules
  --disable-assertions --prefix=/usr/lib/llvm-$(LLVM_VERSION) \
  --enable-optimized --with-optimize-option=' -g -O2' --enable-pic \
  --enable-libffi --with-ocaml-libdir=/usr/lib/ocaml/llvm-$(LLVM_VERSION) \
-@@ -23,13 +28,20 @@
+@@ -23,13 +32,20 @@
  --enable-experimental-targets=R600 \
  --enable-shared
  
@@ -189,18 +193,17 @@ diff -urN ../../llvm-3.2/debian/rules llvm-3.2.src/debian/rules
  	mkdir -p $(TARGET_BUILD)
  	echo "#define LLVM_DEBIAN_INFO \"$(DISTRELEASE) $(LLVM_FULL_VERSION)\"" > $(TARGET_BUILD)/debian.h
  	cd $(TARGET_BUILD) && \
-@@ -87,14 +99,18 @@
+@@ -87,14 +103,16 @@
  	for f in *.1; do \
  		echo "$$f"|grep "3\.2" || mv $$f `echo $$f|sed "s|\.1|-$(LLVM_VERSION).1|"`; \
  	done
+-	dh_auto_install
 +
 +	cp -f $(CURDIR)/utils/vim/llvm.vim $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim
 +
 +	cp -f $(CURDIR)/utils/vim/tablegen.vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
 +
 +	cp -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
-+
- 	dh_auto_install
  
  override_dh_shlibdeps:
  	LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/ dh_shlibdeps
@@ -211,7 +214,15 @@ diff -urN ../../llvm-3.2/debian/rules llvm-3.2.src/debian/rules
  override_dh_installdeb:
  	# Belong to llvm runtime
  	rm -f $(CURDIR)/debian/llvm-$(LLVM_VERSION)/usr/share/man/man1/lli*
-@@ -112,4 +128,6 @@
+@@ -106,10 +124,13 @@
+ 
+ #override_dh_auto_test:
+ #	$(MAKE) -C $(TARGET_BUILD)  check || true
++override_dh_auto_test:
++	$(MAKE) -C $(TARGET_BUILD)  check || true
+ 
+ override_dh_auto_clean:
+-	dh_auto_clean
  	rm -rf $(TARGET_BUILD)
  	find utils -name '*.pyc' | xargs -r rm -f
  	find test -name '*.pyc' -o -name '*.o' -o -name '*.cm[ix]' | xargs -r rm -f

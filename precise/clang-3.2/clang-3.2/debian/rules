@@ -7,6 +7,10 @@ SONAME_EXT      := 1
 DEBIAN_REVISION := $(shell dpkg-parsechangelog | sed -rne 's,^Version: .*-(.*),\1,p')
 ifneq (,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
   NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
+else
+    NCPUS := $(shell getconf _NPROCESSORS_ONLN 2>/dev/null || echo 1)
+    NJOBS := -j $(shell if test $(NCPUS) -gt 1; then echo `expr $(NCPUS) + 1`; \
+               else echo $(NCPUS); fi)
 endif
 VENDOR=Debian
 

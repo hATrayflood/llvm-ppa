@@ -13,7 +13,7 @@ diff -urN ../../clang-2.9/debian/changelog clang-2.9/debian/changelog
    * Fix one more path issues under i386 ... (Closes: #643959)
 diff -urN ../../clang-2.9/debian/control clang-2.9/debian/control
 --- ../../clang-2.9/debian/control	2014-05-09 17:45:31.456192953 +0900
-+++ clang-2.9/debian/control	2014-07-16 23:53:46.354768963 +0900
++++ clang-2.9/debian/control	2014-07-24 20:12:51.329056466 +0900
 @@ -1,22 +1,21 @@
 -Source: clang
 +Source: clang-2.9
@@ -27,15 +27,15 @@ diff -urN ../../clang-2.9/debian/control clang-2.9/debian/control
  Build-Depends: debhelper (>= 6.0.0), flex, bison, dejagnu, tcl8.5, expect,
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
-     lsb-release, patchutils, diffstat, xz-utils, llvm-2.9-dev (>= 2.9), llvm-2.9-source (>= 2.9)
+-    lsb-release, patchutils, diffstat, xz-utils, llvm-2.9-dev (>= 2.9), llvm-2.9-source (>= 2.9)
 -Build-Conflicts: oprofile, ocaml, ocaml-nox
--Standards-Version: 3.9.2
++    lsb-release, patchutils, diffstat, xz-utils, llvm-2.9-dev (>= 2.9), llvm-2.9-source (>= 2.9),
++    gcc-4.6, g++-4.6
++Build-Conflicts: oprofile, ocaml
+ Standards-Version: 3.9.2
 -Homepage: http://www.llvm.org/
 -Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/clang/trunk/
 -Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/clang/trunk/
-+   , gcc-4.6, g++-4.6
-+Build-Conflicts: oprofile, ocaml
-+Standards-Version: 3.9.3
 +Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
 +Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
  
@@ -220,7 +220,7 @@ diff -urN ../../clang-2.9/debian/control.in/python-clang clang-2.9/debian/contro
 + This binding package provides access to the Clang compiler and libraries.
 diff -urN ../../clang-2.9/debian/control.in/source clang-2.9/debian/control.in/source
 --- ../../clang-2.9/debian/control.in/source	2014-05-09 17:45:31.456192953 +0900
-+++ clang-2.9/debian/control.in/source	2014-07-16 23:42:17.159351338 +0900
++++ clang-2.9/debian/control.in/source	2014-07-24 20:11:37.965392420 +0900
 @@ -1,16 +1,14 @@
  Source: @PKGSOURCE@
  Section: devel
@@ -233,14 +233,14 @@ diff -urN ../../clang-2.9/debian/control.in/source clang-2.9/debian/control.in/s
  Build-Depends: debhelper (>= 6.0.0), flex, bison, dejagnu, tcl8.5, expect,
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
-     lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@
-+    , gcc-4.6, g++-4.6
+-    lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@
++    lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@,
++    gcc-4.6, g++-4.6
  Build-Conflicts: oprofile @BUILDCONFLICTS@
--Standards-Version: 3.9.2
+ Standards-Version: 3.9.2
 -Homepage: http://www.llvm.org/
 -Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/clang/trunk/
 -Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/clang/trunk/
-+Standards-Version: 3.9.3
 +Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
 +Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
  

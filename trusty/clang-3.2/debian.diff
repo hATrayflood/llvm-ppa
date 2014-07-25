@@ -127,7 +127,7 @@ diff -urN ../../clang-3.2/debian/compiler-rt-3.2.links clang-3.2/debian/compiler
 +usr/lib/clang/3.2/bin/asan_symbolize.py	usr/bin/asan_symbolize-3.2
 diff -urN ../../clang-3.2/debian/control clang-3.2/debian/control
 --- ../../clang-3.2/debian/control	2014-05-09 17:45:31.516820473 +0900
-+++ clang-3.2/debian/control	2014-07-20 18:57:03.074272351 +0900
++++ clang-3.2/debian/control	2014-07-24 16:05:11.495527940 +0900
 @@ -1,56 +1,23 @@
 -Source: clang
 +Source: clang-3.2
@@ -143,8 +143,8 @@ diff -urN ../../clang-3.2/debian/control clang-3.2/debian/control
      lsb-release, patchutils, diffstat, xz-utils, llvm-3.2-dev (>= 3.2),
 -    llvm-3.2-source (>= 3.2), chrpath, python, 
 -    binutils-gold [amd64 armel armhf i386 powerpc powerpcspe ppc64 sparc sparc64 x32]
-+    llvm-3.2-source (>= 3.2), chrpath, python
-+    , gcc-4.7, g++-4.7
++    llvm-3.2-source (>= 3.2), chrpath, python,
++    gcc-4.7, g++-4.7
  Build-Conflicts: oprofile, ocaml
  Standards-Version: 3.9.3
 -Homepage: http://clang.llvm.org/

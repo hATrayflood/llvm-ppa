@@ -13,7 +13,7 @@ diff -urN ../../llvm-3.1/debian/changelog llvm-3.1-3.1/debian/changelog
    * llvm-3.1 did not include line number information recognizable by gdb
 diff -urN ../../llvm-3.1/debian/control llvm-3.1-3.1/debian/control
 --- ../../llvm-3.1/debian/control	2014-05-09 17:45:31.572302008 +0900
-+++ llvm-3.1-3.1/debian/control	2014-07-18 23:31:33.090950416 +0900
++++ llvm-3.1-3.1/debian/control	2014-07-24 16:38:05.613316704 +0900
 @@ -1,18 +1,17 @@
  Source: llvm-3.1
  Section: devel
@@ -26,8 +26,9 @@ diff -urN ../../llvm-3.1/debian/control llvm-3.1-3.1/debian/control
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo, quilt,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
      lsb-release, xz-utils, 
-     binutils-dev (>= 2.20.51.20100222-1~), ocaml-nox (>= 3.11.2), ocaml-best-compilers | ocaml-nox, dh-ocaml (>= 0.9.1)
-+   , gcc-4.6, g++-4.6
+-    binutils-dev (>= 2.20.51.20100222-1~), ocaml-nox (>= 3.11.2), ocaml-best-compilers | ocaml-nox, dh-ocaml (>= 0.9.1)
++    binutils-dev (>= 2.20.51.20100222-1~), ocaml-nox (>= 3.11.2), ocaml-best-compilers | ocaml-nox, dh-ocaml (>= 0.9.1),
++    gcc-4.6, g++-4.6
  Build-Conflicts: oprofile
  Standards-Version: 3.9.3
 -Homepage: http://www.llvm.org/
@@ -101,7 +102,7 @@ diff -urN ../../llvm-3.1/debian/control.in/llvm-runtime llvm-3.1-3.1/debian/cont
   tools that make it easy to build compilers, optimizers, Just-In-Time
 diff -urN ../../llvm-3.1/debian/control.in/source llvm-3.1-3.1/debian/control.in/source
 --- ../../llvm-3.1/debian/control.in/source	2014-05-09 17:45:31.572302008 +0900
-+++ llvm-3.1-3.1/debian/control.in/source	2014-07-18 21:41:20.210157533 +0900
++++ llvm-3.1-3.1/debian/control.in/source	2014-07-24 16:36:53.936961272 +0900
 @@ -1,17 +1,16 @@
  Source: @PKGSOURCE@
  Section: devel
@@ -114,8 +115,9 @@ diff -urN ../../llvm-3.1/debian/control.in/source llvm-3.1-3.1/debian/control.in
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo, quilt,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
      lsb-release, xz-utils, 
-     binutils-dev (>= 2.20.51.20100222-1~) @BUILDDEPS@
-+    , gcc-4.6, g++-4.6
+-    binutils-dev (>= 2.20.51.20100222-1~) @BUILDDEPS@
++    binutils-dev (>= 2.20.51.20100222-1~) @BUILDDEPS@,
++    gcc-4.6, g++-4.6
  Build-Conflicts: oprofile @BUILDCONFLICTS@
  Standards-Version: 3.9.3
 -Homepage: http://www.llvm.org/

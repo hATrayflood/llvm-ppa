@@ -13,3 +13,4 @@
 0044-soname.diff
 0045-hurd-stat.patch
 0046-Revert-Patch-to-set-is_stmt-a-little-better-for-prol.patch
+pod2man.patch

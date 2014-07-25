@@ -13,7 +13,7 @@ diff -urN ../../llvm-2.9/debian/changelog llvm-2.9/debian/changelog
    [ Vincent Legout ]
 diff -urN ../../llvm-2.9/debian/control llvm-2.9/debian/control
 --- ../../llvm-2.9/debian/control	2014-05-09 17:45:31.520275608 +0900
-+++ llvm-2.9/debian/control	2014-07-16 23:40:10.970725686 +0900
++++ llvm-2.9/debian/control	2014-07-24 19:50:44.870033622 +0900
 @@ -1,18 +1,17 @@
  Source: llvm-2.9
  Section: devel
@@ -26,8 +26,9 @@ diff -urN ../../llvm-2.9/debian/control llvm-2.9/debian/control
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
      lsb-release, patchutils, diffstat, xz-utils, 
-     binutils-dev (>= 2.20.51.20100222-1~), ocaml-nox (>= 3.11.2), ocaml-best-compilers | ocaml-nox, dh-ocaml (>= 0.9.1)
-+   , gcc-4.6, g++-4.6
+-    binutils-dev (>= 2.20.51.20100222-1~), ocaml-nox (>= 3.11.2), ocaml-best-compilers | ocaml-nox, dh-ocaml (>= 0.9.1)
++    binutils-dev (>= 2.20.51.20100222-1~), ocaml-nox (>= 3.11.2), ocaml-best-compilers | ocaml-nox, dh-ocaml (>= 0.9.1),
++    gcc-4.6, g++-4.6
  Build-Conflicts: oprofile
  Standards-Version: 3.9.3
 -Homepage: http://www.llvm.org/
@@ -101,7 +102,7 @@ diff -urN ../../llvm-2.9/debian/control.in/llvm-runtime llvm-2.9/debian/control.
   tools that make it easy to build compilers, optimizers, Just-In-Time
 diff -urN ../../llvm-2.9/debian/control.in/source llvm-2.9/debian/control.in/source
 --- ../../llvm-2.9/debian/control.in/source	2014-05-09 17:45:31.520275608 +0900
-+++ llvm-2.9/debian/control.in/source	2014-07-16 23:30:18.183785645 +0900
++++ llvm-2.9/debian/control.in/source	2014-07-24 19:50:02.095219449 +0900
 @@ -1,17 +1,16 @@
  Source: @PKGSOURCE@
  Section: devel
@@ -114,8 +115,9 @@ diff -urN ../../llvm-2.9/debian/control.in/source llvm-2.9/debian/control.in/sou
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
      lsb-release, patchutils, diffstat, xz-utils, 
-     binutils-dev (>= 2.20.51.20100222-1~) @BUILDDEPS@
-+    , gcc-4.6, g++-4.6
+-    binutils-dev (>= 2.20.51.20100222-1~) @BUILDDEPS@
++    binutils-dev (>= 2.20.51.20100222-1~) @BUILDDEPS@,
++    gcc-4.6, g++-4.6
  Build-Conflicts: oprofile @BUILDCONFLICTS@
  Standards-Version: 3.9.3
 -Homepage: http://www.llvm.org/

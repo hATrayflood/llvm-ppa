@@ -1,12 +1,12 @@
 diff -urN ../../clang-3.2/debian/changelog clang-3.2/debian/changelog
 --- ../../clang-3.2/debian/changelog	2014-05-09 17:45:31.516820473 +0900
-+++ clang-3.2/debian/changelog	2014-05-09 17:45:31.496590102 +0900
++++ clang-3.2/debian/changelog	2014-07-25 14:54:24.429841435 +0900
 @@ -1,3 +1,9 @@
-+clang-3.2 (1:3.2-debian1~exp9ppa5) precise; urgency=low
++clang-3.2 (1:3.2-debian1~exp9precise0) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sat, 11 Jan 2014 21:45:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 25 Jul 2014 14:55:00 +0900
 +
  clang (1:3.2-1~exp9) experimental; urgency=low
  
@@ -579,8 +579,8 @@ diff -urN ../../clang-3.2/debian/python-clang-3.2.install clang-3.2/debian/pytho
 +tools/clang/bindings/python/tests	/usr/share/doc/python-clang-3.2/
 diff -urN ../../clang-3.2/debian/rules clang-3.2/debian/rules
 --- ../../clang-3.2/debian/rules	2014-05-09 17:45:31.520275608 +0900
-+++ clang-3.2/debian/rules	2014-05-09 17:45:31.496590102 +0900
-@@ -1,14 +1,14 @@
++++ clang-3.2/debian/rules	2014-07-25 14:55:21.429610294 +0900
+@@ -1,14 +1,18 @@
  #!/usr/bin/make -f
  
  TARGET_BUILD	:= build-clang
@@ -591,13 +591,17 @@ diff -urN ../../clang-3.2/debian/rules clang-3.2/debian/rules
  DEBIAN_REVISION := $(shell dpkg-parsechangelog | sed -rne 's,^Version: .*-(.*),\1,p')
  ifneq (,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
    NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
++else
++    NCPUS := $(shell getconf _NPROCESSORS_ONLN 2>/dev/null || echo 1)
++    NJOBS := -j $(shell if test $(NCPUS) -gt 1; then echo `expr $(NCPUS) + 1`; \
++               else echo $(NCPUS); fi)
  endif
 -VENDOR=$(lsb_release -is)
 +VENDOR=Debian
  
  DEB_HOST_MULTIARCH  = $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
  DEB_HOST_GNU_TYPE   = $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-@@ -17,6 +17,8 @@
+@@ -17,6 +21,8 @@
  
  
  confargs := \
@@ -606,7 +610,7 @@ diff -urN ../../clang-3.2/debian/rules clang-3.2/debian/rules
          --with-c-include-dirs=/usr/include/$(DEB_HOST_MULTIARCH):/usr/include/$(DEB_HOST_GNU_TYPE):/usr/include \
  	--with-cxx-include-root=/usr/include/c++/$(GCC_VERSION) \
  	--with-cxx-include-arch=$(DEB_HOST_GNU_TYPE) \
-@@ -37,7 +39,10 @@
+@@ -37,7 +43,10 @@
  %:
  	dh $@
  
@@ -618,7 +622,7 @@ diff -urN ../../clang-3.2/debian/rules clang-3.2/debian/rules
  	xzcat /usr/src/llvm-$(LLVM_VERSION)/llvm-$(LLVM_VERSION).tar.xz|tar -x -f -
  	mkdir -p tools/clang/include/clang/Debian
  	mkdir -p $(TARGET_BUILD)
-@@ -83,20 +88,29 @@
+@@ -83,20 +92,29 @@
  override_dh_auto_install:
  	chrpath -d build-clang/Release/bin/clang build-clang/Release/bin/clang-check build-clang/Release/bin/clang-tblgen
  	$(MAKE) -C $(TARGET_BUILD)  VERBOSE=1  ONLY_TOOLS="clang" install DESTDIR=$(CURDIR)/debian/tmp/

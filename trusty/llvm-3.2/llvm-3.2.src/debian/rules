@@ -110,8 +110,6 @@ override_dh_auto_install: llvm_source_package
 
 	cp -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
 
-	[ ! -f Makefile.config ] || dh_auto_install
-
 override_dh_shlibdeps:
 	LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/ dh_shlibdeps
 
@@ -127,10 +125,9 @@ override_dh_installdeb:
 #override_dh_auto_test:
 #	$(MAKE) -C $(TARGET_BUILD)  check || true
 override_dh_auto_test:
-	[ ! -f Makefile.config ] || dh_auto_test
+	$(MAKE) -C $(TARGET_BUILD)  check || true
 
 override_dh_auto_clean:
-	[ ! -f Makefile.config ] || dh_auto_clean
 	rm -rf $(TARGET_BUILD)
 	find utils -name '*.pyc' | xargs -r rm -f
 	find test -name '*.pyc' -o -name '*.o' -o -name '*.cm[ix]' | xargs -r rm -f

@@ -1,19 +1,19 @@
 diff -urN ../../llvm-3.0/debian/changelog llvm-3.0.src/debian/changelog
 --- ../../llvm-3.0/debian/changelog	2014-05-09 17:45:31.548312843 +0900
-+++ llvm-3.0.src/debian/changelog	2014-05-09 17:45:31.548312843 +0900
++++ llvm-3.0.src/debian/changelog	2014-07-25 15:53:30.461540128 +0900
 @@ -1,3 +1,9 @@
-+llvm-3.0 (3.0-debian10ppa4) precise; urgency=low
++llvm-3.0 (3.0-debian10precise0) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sun, 09 Feb 2014 21:15:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 25 Jul 2014 15:55:00 +0900
 +
  llvm-3.0 (3.0-10) unstable; urgency=low
  
    * Rebuild package to fix symbol issues (Closes: #680326, #681109)
 diff -urN ../../llvm-3.0/debian/control llvm-3.0.src/debian/control
 --- ../../llvm-3.0/debian/control	2014-05-09 17:45:31.548312843 +0900
-+++ llvm-3.0.src/debian/control	2014-05-09 17:45:31.548312843 +0900
++++ llvm-3.0.src/debian/control	2014-07-25 15:53:54.153805674 +0900
 @@ -1,8 +1,7 @@
  Source: llvm-3.0
  Section: devel

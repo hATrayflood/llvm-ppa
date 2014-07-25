@@ -13,6 +13,10 @@ DISTRELEASE := $(shell lsb_release -is)
 COMMA = ,
 ifneq (,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
   NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
+else
+    NCPUS := $(shell getconf _NPROCESSORS_ONLN 2>/dev/null || echo 1)
+    NJOBS := -j $(shell if test $(NCPUS) -gt 1; then echo `expr $(NCPUS) + 1`; \
+               else echo $(NCPUS); fi)
 endif
 
 confargs := \
@@ -106,8 +110,6 @@ override_dh_auto_install: llvm_source_package
 
 	cp -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
 
-	dh_auto_install
-
 override_dh_shlibdeps:
 	LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/ dh_shlibdeps
 
@@ -122,9 +124,10 @@ override_dh_installdeb:
 
 #override_dh_auto_test:
 #	$(MAKE) -C $(TARGET_BUILD)  check || true
+override_dh_auto_test:
+	$(MAKE) -C $(TARGET_BUILD)  check || true
 
 override_dh_auto_clean:
-	dh_auto_clean
 	rm -rf $(TARGET_BUILD)
 	find utils -name '*.pyc' | xargs -r rm -f
 	find test -name '*.pyc' -o -name '*.o' -o -name '*.cm[ix]' | xargs -r rm -f

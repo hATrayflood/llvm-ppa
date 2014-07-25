@@ -13,7 +13,7 @@ diff -urN ../../llvm-3.2/debian/changelog llvm-3.2.src/debian/changelog
    * Fixes a segfault in the exception table of the JIT code emitter.
 diff -urN ../../llvm-3.2/debian/control llvm-3.2.src/debian/control
 --- ../../llvm-3.2/debian/control	2014-05-09 17:45:31.600387130 +0900
-+++ llvm-3.2.src/debian/control	2014-07-20 18:55:03.005676295 +0900
++++ llvm-3.2.src/debian/control	2014-07-24 15:48:54.250681693 +0900
 @@ -1,18 +1,17 @@
  Source: llvm-3.2
  Section: devel
@@ -26,9 +26,10 @@ diff -urN ../../llvm-3.2/debian/control llvm-3.2.src/debian/control
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo, quilt,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
 -    lsb-release, xz-utils, dh-exec (>=0.3), python, python-sphinx,
+-    binutils-dev (>= 2.20.51.20100222-1~), ocaml-nox (>= 3.11.2), ocaml-best-compilers | ocaml-nox, dh-ocaml (>= 0.9.1)
 +    lsb-release, xz-utils, python, python-sphinx,
-     binutils-dev (>= 2.20.51.20100222-1~), ocaml-nox (>= 3.11.2), ocaml-best-compilers | ocaml-nox, dh-ocaml (>= 0.9.1)
-+    , gcc-4.7, g++-4.7
++    binutils-dev (>= 2.20.51.20100222-1~), ocaml-nox (>= 3.11.2), ocaml-best-compilers | ocaml-nox, dh-ocaml (>= 0.9.1),
++    gcc-4.7, g++-4.7
  Build-Conflicts: oprofile
  Standards-Version: 3.9.3
 -Homepage: http://www.llvm.org/
@@ -140,7 +141,7 @@ diff -urN ../../llvm-3.2/debian/llvm-3.2-runtime.prerm.in llvm-3.2.src/debian/ll
 -
 diff -urN ../../llvm-3.2/debian/rules llvm-3.2.src/debian/rules
 --- ../../llvm-3.2/debian/rules	2014-05-09 17:45:31.604271854 +0900
-+++ llvm-3.2.src/debian/rules	2014-07-20 18:53:46.437306086 +0900
++++ llvm-3.2.src/debian/rules	2014-07-24 15:45:54.533790772 +0900
 @@ -1,19 +1,28 @@
  #!/usr/bin/make -f
  
@@ -194,7 +195,7 @@ diff -urN ../../llvm-3.2/debian/rules llvm-3.2.src/debian/rules
  	mkdir -p $(TARGET_BUILD)
  	echo "#define LLVM_DEBIAN_INFO \"$(DISTRELEASE) $(LLVM_FULL_VERSION)\"" > $(TARGET_BUILD)/debian.h
  	cd $(TARGET_BUILD) && \
-@@ -87,14 +103,18 @@
+@@ -87,14 +103,16 @@
  	for f in *.1; do \
  		echo "$$f"|grep "3\.2" || mv $$f `echo $$f|sed "s|\.1|-$(LLVM_VERSION).1|"`; \
  	done
@@ -205,8 +206,6 @@ diff -urN ../../llvm-3.2/debian/rules llvm-3.2.src/debian/rules
 +	cp -f $(CURDIR)/utils/vim/tablegen.vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
 +
 +	cp -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
-+
-+	[ ! -f Makefile.config ] || dh_auto_install
  
  override_dh_shlibdeps:
  	LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/ dh_shlibdeps
@@ -217,16 +216,15 @@ diff -urN ../../llvm-3.2/debian/rules llvm-3.2.src/debian/rules
  override_dh_installdeb:
  	# Belong to llvm runtime
  	rm -f $(CURDIR)/debian/llvm-$(LLVM_VERSION)/usr/share/man/man1/lli*
-@@ -106,10 +126,14 @@
+@@ -106,10 +124,13 @@
  
  #override_dh_auto_test:
  #	$(MAKE) -C $(TARGET_BUILD)  check || true
 +override_dh_auto_test:
-+	[ ! -f Makefile.config ] || dh_auto_test
++	$(MAKE) -C $(TARGET_BUILD)  check || true
  
  override_dh_auto_clean:
 -	dh_auto_clean
-+	[ ! -f Makefile.config ] || dh_auto_clean
  	rm -rf $(TARGET_BUILD)
  	find utils -name '*.pyc' | xargs -r rm -f
  	find test -name '*.pyc' -o -name '*.o' -o -name '*.cm[ix]' | xargs -r rm -f
