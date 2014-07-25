@@ -1,3 +1,0 @@
-package llvm
-interpreter /usr/bin/lli-@UVERSION@
-magic BC

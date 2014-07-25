@@ -1,5 +1,5 @@
 diff -urN ../../llvm-toolchain-3.2/debian/changelog llvm-3.2.src/debian/changelog
---- ../../llvm-toolchain-3.2/debian/changelog	2014-05-09 17:45:31.640600409 +0900
+--- ../../llvm-toolchain-3.2/debian/changelog	2013-08-23 20:23:50.000000000 +0900
 +++ llvm-3.2.src/debian/changelog	2014-07-23 13:08:02.715948334 +0900
 @@ -1,3 +1,9 @@
 +llvm-toolchain-3.2 (1:3.2repack-debian11precise0) precise; urgency=low
@@ -17,7 +17,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2-relaxng.install llvm-3.2.src
 @@ -0,0 +1 @@
 +clang/bindings/xml/comment-xml-schema.rng	/usr/share/xml/clang-3.2-relaxng/
 diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.install llvm-3.2.src/debian/clang-3.2.install
---- ../../llvm-toolchain-3.2/debian/clang-3.2.install	2014-05-09 17:45:31.640600409 +0900
+--- ../../llvm-toolchain-3.2/debian/clang-3.2.install	2013-03-03 01:33:25.000000000 +0900
 +++ llvm-3.2.src/debian/clang-3.2.install	2014-07-23 13:02:39.404771963 +0900
 @@ -1,9 +1,14 @@
 -usr/lib/llvm-3.2/bin/clang			/usr/bin/
@@ -42,7 +42,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.install llvm-3.2.src/debian/
 +debian/pollycc				/usr/lib/llvm-3.2/bin/
  
 diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.links llvm-3.2.src/debian/clang-3.2.links
---- ../../llvm-toolchain-3.2/debian/clang-3.2.links	2014-05-09 17:45:31.640600409 +0900
+--- ../../llvm-toolchain-3.2/debian/clang-3.2.links	2013-05-17 19:28:05.000000000 +0900
 +++ llvm-3.2.src/debian/clang-3.2.links	2014-05-09 17:45:31.648103894 +0900
 @@ -1,5 +1,7 @@
 -usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/llvm-clang.1.gz
@@ -58,7 +58,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.links llvm-3.2.src/debian/cl
 +usr/lib/llvm-3.2/bin/pollycc			usr/bin/pollycc-3.2
 +usr/lib/llvm-3.2/bin/asan_symbolize.py		usr/bin/asan_symbolize-3.2
 diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.manpages llvm-3.2.src/debian/clang-3.2.manpages
---- ../../llvm-toolchain-3.2/debian/clang-3.2.manpages	2014-05-09 17:45:31.640600409 +0900
+--- ../../llvm-toolchain-3.2/debian/clang-3.2.manpages	2013-03-03 01:33:25.000000000 +0900
 +++ llvm-3.2.src/debian/clang-3.2.manpages	2014-05-09 17:45:31.648103894 +0900
 @@ -1,2 +1,3 @@
  build-llvm/tools/clang/docs/tools/clang-3.2.1
@@ -66,7 +66,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.manpages llvm-3.2.src/debian
 +debian/man/scan-build-3.2.1
 +debian/man/scan-view-3.2.1
 diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.postinst llvm-3.2.src/debian/clang-3.2.postinst
---- ../../llvm-toolchain-3.2/debian/clang-3.2.postinst	2014-05-09 17:45:31.640600409 +0900
+--- ../../llvm-toolchain-3.2/debian/clang-3.2.postinst	2013-03-03 01:33:25.000000000 +0900
 +++ llvm-3.2.src/debian/clang-3.2.postinst	1970-01-01 09:00:00.000000000 +0900
 @@ -1,31 +0,0 @@
 -#! /bin/sh -e
@@ -101,7 +101,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.postinst llvm-3.2.src/debian
 -
 -exit 0
 diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.prerm llvm-3.2.src/debian/clang-3.2.prerm
---- ../../llvm-toolchain-3.2/debian/clang-3.2.prerm	2014-05-09 17:45:31.640600409 +0900
+--- ../../llvm-toolchain-3.2/debian/clang-3.2.prerm	2013-03-03 01:33:25.000000000 +0900
 +++ llvm-3.2.src/debian/clang-3.2.prerm	1970-01-01 09:00:00.000000000 +0900
 @@ -1,14 +0,0 @@
 -#!/bin/sh
@@ -119,7 +119,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.prerm llvm-3.2.src/debian/cl
 -
 -exit 0
 diff -urN ../../llvm-toolchain-3.2/debian/control llvm-3.2.src/debian/control
---- ../../llvm-toolchain-3.2/debian/control	2014-05-09 17:45:31.640600409 +0900
+--- ../../llvm-toolchain-3.2/debian/control	2013-08-23 20:23:50.000000000 +0900
 +++ llvm-3.2.src/debian/control	2014-07-23 13:06:18.503351889 +0900
 @@ -1,30 +1,24 @@
  Source: llvm-toolchain-3.2
@@ -602,14 +602,14 @@ diff -urN ../../llvm-toolchain-3.2/debian/libclang1-3.2.symbols llvm-3.2.src/deb
 + clang_visitChildren@Base 1:3.2
 + clang_visitChildrenWithBlock@Base 1:3.2
 diff -urN ../../llvm-toolchain-3.2/debian/libllvm-3.2-ocaml-dev.dirs.in llvm-3.2.src/debian/libllvm-3.2-ocaml-dev.dirs.in
---- ../../llvm-toolchain-3.2/debian/libllvm-3.2-ocaml-dev.dirs.in	2014-05-09 17:45:31.640600409 +0900
+--- ../../llvm-toolchain-3.2/debian/libllvm-3.2-ocaml-dev.dirs.in	2013-03-03 01:33:25.000000000 +0900
 +++ llvm-3.2.src/debian/libllvm-3.2-ocaml-dev.dirs.in	2014-05-09 17:45:31.648103894 +0900
 @@ -1,2 +1,2 @@
 -@OCAML_STDLIB_DIR@/META/
 +@OCAML_STDLIB_DIR@/METAS
  
 diff -urN ../../llvm-toolchain-3.2/debian/llvm-3.2-dev.install llvm-3.2.src/debian/llvm-3.2-dev.install
---- ../../llvm-toolchain-3.2/debian/llvm-3.2-dev.install	2014-05-09 17:45:31.640600409 +0900
+--- ../../llvm-toolchain-3.2/debian/llvm-3.2-dev.install	2013-03-03 01:33:26.000000000 +0900
 +++ llvm-3.2.src/debian/llvm-3.2-dev.install	2014-05-09 17:45:31.648103894 +0900
 @@ -13,8 +13,8 @@
  configure			            /usr/lib/llvm-3.2/build/
@@ -623,7 +623,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/llvm-3.2-dev.install llvm-3.2.src/debi
  utils/emacs/emacs.el		    usr/share/emacs/site-lisp/llvm-3.2/
  utils/emacs/llvm-mode.el	    usr/share/emacs/site-lisp/llvm-3.2/
 diff -urN ../../llvm-toolchain-3.2/debian/llvm-3.2-runtime.postinst llvm-3.2.src/debian/llvm-3.2-runtime.postinst
---- ../../llvm-toolchain-3.2/debian/llvm-3.2-runtime.postinst	2014-05-09 17:45:31.640600409 +0900
+--- ../../llvm-toolchain-3.2/debian/llvm-3.2-runtime.postinst	2013-03-03 01:33:26.000000000 +0900
 +++ llvm-3.2.src/debian/llvm-3.2-runtime.postinst	1970-01-01 09:00:00.000000000 +0900
 @@ -1,9 +0,0 @@
 -#!/bin/sh -e
@@ -636,7 +636,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/llvm-3.2-runtime.postinst llvm-3.2.src
 -
 -#DEBHELPER#
 diff -urN ../../llvm-toolchain-3.2/debian/llvm-3.2-runtime.prerm.in llvm-3.2.src/debian/llvm-3.2-runtime.prerm.in
---- ../../llvm-toolchain-3.2/debian/llvm-3.2-runtime.prerm.in	2014-05-09 17:45:31.640600409 +0900
+--- ../../llvm-toolchain-3.2/debian/llvm-3.2-runtime.prerm.in	2013-03-03 01:33:26.000000000 +0900
 +++ llvm-3.2.src/debian/llvm-3.2-runtime.prerm.in	1970-01-01 09:00:00.000000000 +0900
 @@ -1,16 +0,0 @@
 -#!/bin/sh -e
@@ -909,7 +909,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/patches/python-clangpath.diff llvm-3.2
 +         if Config.library_path:
 +             file = Config.library_path + '/' + file
 diff -urN ../../llvm-toolchain-3.2/debian/patches/series llvm-3.2.src/debian/patches/series
---- ../../llvm-toolchain-3.2/debian/patches/series	2014-05-09 17:45:31.648103894 +0900
+--- ../../llvm-toolchain-3.2/debian/patches/series	2013-08-23 20:23:50.000000000 +0900
 +++ llvm-3.2.src/debian/patches/series	2014-05-09 17:45:31.652568220 +0900
 @@ -49,3 +49,5 @@
  ia64-fix.diff
@@ -918,7 +918,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/patches/series llvm-3.2.src/debian/pat
 +python-clangpath.diff
 +99-python-bindings.patch
 diff -urN ../../llvm-toolchain-3.2/debian/pollycc llvm-3.2.src/debian/pollycc
---- ../../llvm-toolchain-3.2/debian/pollycc	2014-05-09 17:45:31.648103894 +0900
+--- ../../llvm-toolchain-3.2/debian/pollycc	2013-03-03 01:33:26.000000000 +0900
 +++ llvm-3.2.src/debian/pollycc	2014-05-09 17:45:31.652568220 +0900
 @@ -1,3 +1,3 @@
  #!/bin/sh
@@ -934,7 +934,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/python-clang-3.2.install llvm-3.2.src/
 +clang/bindings/python/examples		/usr/share/doc/python-clang-3.2/
 +clang/bindings/python/tests		/usr/share/doc/python-clang-3.2/
 diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
---- ../../llvm-toolchain-3.2/debian/rules	2014-05-09 17:45:31.648103894 +0900
+--- ../../llvm-toolchain-3.2/debian/rules	2013-08-23 20:23:50.000000000 +0900
 +++ llvm-3.2.src/debian/rules	2014-07-23 13:07:05.423032410 +0900
 @@ -1,15 +1,19 @@
  #!/usr/bin/make -f

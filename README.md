@@ -1,7 +1,7 @@
 LLVM/clang PPA
 ==============
 
-Porting from [Debian LLVM Packages](http://qa.debian.org/developer.php?login=pkg-llvm-team@lists.alioth.debian.org) to Ubuntu 12.04
+Porting from [Debian LLVM Packages](http://qa.debian.org/developer.php?login=pkg-llvm-team@lists.alioth.debian.org) to Ubuntu LTS
 
 **if you failed to upgrade, purge and re-install.**
 
@@ -35,13 +35,13 @@ usage
 upstream
 --------
 https://launchpad.net/debian/+source/clang  
-http://packages.qa.debian.org/c/clang.html  
-http://packages.qa.debian.org/l/llvm-2.9.html  
-http://packages.qa.debian.org/l/llvm-3.0.html  
-http://packages.qa.debian.org/l/llvm-3.1.html  
-http://packages.qa.debian.org/l/llvm-toolchain-3.2.html  
-http://packages.qa.debian.org/l/llvm-toolchain-3.3.html  
-http://packages.qa.debian.org/l/llvm-toolchain-3.4.html  
+https://launchpad.net/debian/+source/llvm-2.9  
+https://launchpad.net/debian/+source/llvm-3.0  
+https://launchpad.net/debian/+source/llvm-3.1  
+https://launchpad.net/debian/+source/llvm-3.2  
+https://launchpad.net/debian/+source/llvm-toolchain-3.2  
+https://tracker.debian.org/pkg/llvm-toolchain-3.3  
+https://tracker.debian.org/pkg/llvm-toolchain-3.4  
 
 launchpad
 ---------

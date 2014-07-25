@@ -1,2 +1,0 @@
-# It is in the section ocaml which is fine.
-libllvm-@UVERSION@-ocaml-dev: wrong-section-according-to-package-name libllvm-@UVERSION@-ocaml-dev => libdevel

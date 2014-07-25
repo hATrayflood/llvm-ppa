@@ -1,4 +1,0 @@
-debian/@TMP@/@PF@/lib/clang/@UVERSION@			@PF@/include/clang/
-debian/@TMP@/@PF@/include/clang                  @PF@/include/
-debian/@TMP@/@PF@/include/clang-c                  @PF@/include/
-debian/@TMP@/@PF@/lib/libclang.so                       @PF@/lib/

@@ -1,2 +1,0 @@
-# That is normal. Upstream does not match the debian convention
-libllvm3.4: package-name-doesnt-match-sonames libLLVM-3.4-1

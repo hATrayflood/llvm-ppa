@@ -1,3 +1,0 @@
-package llvm
-interpreter /usr/bin/lli-2.9
-magic BC

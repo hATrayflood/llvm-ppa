@@ -1,5 +1,0 @@
-debian/@TMP@/@PF@/bin/clang			@PF@/bin/
-debian/@TMP@/@PF@/bin/clang++			@PF@/bin/
-tools/clang/tools/scan-build			@PF@/share/clang/
-tools/clang/tools/scan-view			@PF@/share/clang/
-debian/@TMP@/@PF@/share/man/man1/clang.1	usr/share/man/man1/

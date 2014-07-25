@@ -1,5 +1,5 @@
 diff -urN ../../llvm-2.9/debian/changelog llvm-2.9/debian/changelog
---- ../../llvm-2.9/debian/changelog	2014-05-09 17:45:31.520275608 +0900
+--- ../../llvm-2.9/debian/changelog	2012-05-20 23:21:30.000000000 +0900
 +++ llvm-2.9/debian/changelog	2014-07-25 16:20:24.774617792 +0900
 @@ -1,3 +1,9 @@
 +llvm-2.9 (2.9+dfsg-debian7precise0) precise; urgency=low
@@ -12,8 +12,8 @@ diff -urN ../../llvm-2.9/debian/changelog llvm-2.9/debian/changelog
  
    [ Vincent Legout ]
 diff -urN ../../llvm-2.9/debian/control llvm-2.9/debian/control
---- ../../llvm-2.9/debian/control	2014-05-09 17:45:31.520275608 +0900
-+++ llvm-2.9/debian/control	2014-07-25 16:20:51.078748225 +0900
+--- ../../llvm-2.9/debian/control	2012-05-20 23:25:51.000000000 +0900
++++ llvm-2.9/debian/control	2014-07-25 20:37:20.580863862 +0900
 @@ -1,8 +1,7 @@
  Source: llvm-2.9
  Section: devel
@@ -64,7 +64,7 @@ diff -urN ../../llvm-2.9/debian/control llvm-2.9/debian/control
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
 diff -urN ../../llvm-2.9/debian/control.in/llvm llvm-2.9/debian/control.in/llvm
---- ../../llvm-2.9/debian/control.in/llvm	2014-05-09 17:45:31.520275608 +0900
+--- ../../llvm-2.9/debian/control.in/llvm	2012-05-18 16:22:45.000000000 +0900
 +++ llvm-2.9/debian/control.in/llvm	2014-05-09 17:45:31.520275608 +0900
 @@ -3,8 +3,6 @@
  Suggests: llvm-@UVERSION@-doc
@@ -76,7 +76,7 @@ diff -urN ../../llvm-2.9/debian/control.in/llvm llvm-2.9/debian/control.in/llvm
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
 diff -urN ../../llvm-2.9/debian/control.in/llvm-dev llvm-2.9/debian/control.in/llvm-dev
---- ../../llvm-2.9/debian/control.in/llvm-dev	2014-05-09 17:45:31.520275608 +0900
+--- ../../llvm-2.9/debian/control.in/llvm-dev	2012-05-18 16:22:45.000000000 +0900
 +++ llvm-2.9/debian/control.in/llvm-dev	2014-05-09 17:45:31.520275608 +0900
 @@ -1,7 +1,6 @@
  Package: llvm-@UVERSION@-dev
@@ -87,7 +87,7 @@ diff -urN ../../llvm-2.9/debian/control.in/llvm-dev llvm-2.9/debian/control.in/l
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
 diff -urN ../../llvm-2.9/debian/control.in/llvm-runtime llvm-2.9/debian/control.in/llvm-runtime
---- ../../llvm-2.9/debian/control.in/llvm-runtime	2014-05-09 17:45:31.520275608 +0900
+--- ../../llvm-2.9/debian/control.in/llvm-runtime	2012-05-18 16:22:45.000000000 +0900
 +++ llvm-2.9/debian/control.in/llvm-runtime	2014-05-09 17:45:31.520275608 +0900
 @@ -1,8 +1,6 @@
  Package: llvm-@UVERSION@-runtime
@@ -99,7 +99,7 @@ diff -urN ../../llvm-2.9/debian/control.in/llvm-runtime llvm-2.9/debian/control.
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
 diff -urN ../../llvm-2.9/debian/control.in/source llvm-2.9/debian/control.in/source
---- ../../llvm-2.9/debian/control.in/source	2014-05-09 17:45:31.520275608 +0900
+--- ../../llvm-2.9/debian/control.in/source	2012-05-18 16:22:45.000000000 +0900
 +++ llvm-2.9/debian/control.in/source	2014-05-09 17:45:31.520275608 +0900
 @@ -1,8 +1,7 @@
  Source: @PKGSOURCE@
@@ -124,7 +124,7 @@ diff -urN ../../llvm-2.9/debian/control.in/source llvm-2.9/debian/control.in/sou
  
  
 diff -urN ../../llvm-2.9/debian/debhelper.in/llvm-dev.install llvm-2.9/debian/debhelper.in/llvm-dev.install
---- ../../llvm-2.9/debian/debhelper.in/llvm-dev.install	2014-05-09 17:45:31.520275608 +0900
+--- ../../llvm-2.9/debian/debhelper.in/llvm-dev.install	2012-05-18 16:22:46.000000000 +0900
 +++ llvm-2.9/debian/debhelper.in/llvm-dev.install	2014-05-09 17:45:31.520275608 +0900
 @@ -8,8 +8,8 @@
  configure			@PF@/build/
@@ -138,7 +138,7 @@ diff -urN ../../llvm-2.9/debian/debhelper.in/llvm-dev.install llvm-2.9/debian/de
  utils/emacs/emacs.el		usr/share/emacs/site-lisp/llvm-2.9/
  utils/emacs/llvm-mode.el	usr/share/emacs/site-lisp/llvm-2.9/
 diff -urN ../../llvm-2.9/debian/debhelper.in/llvm-runtime.postinst llvm-2.9/debian/debhelper.in/llvm-runtime.postinst
---- ../../llvm-2.9/debian/debhelper.in/llvm-runtime.postinst	2014-05-09 17:45:31.520275608 +0900
+--- ../../llvm-2.9/debian/debhelper.in/llvm-runtime.postinst	2012-05-18 16:22:46.000000000 +0900
 +++ llvm-2.9/debian/debhelper.in/llvm-runtime.postinst	1970-01-01 09:00:00.000000000 +0900
 @@ -1,9 +0,0 @@
 -#!/bin/sh -e
@@ -151,7 +151,7 @@ diff -urN ../../llvm-2.9/debian/debhelper.in/llvm-runtime.postinst llvm-2.9/debi
 -
 -#DEBHELPER#
 diff -urN ../../llvm-2.9/debian/debhelper.in/llvm-runtime.prerm llvm-2.9/debian/debhelper.in/llvm-runtime.prerm
---- ../../llvm-2.9/debian/debhelper.in/llvm-runtime.prerm	2014-05-09 17:45:31.520275608 +0900
+--- ../../llvm-2.9/debian/debhelper.in/llvm-runtime.prerm	2012-05-18 16:22:46.000000000 +0900
 +++ llvm-2.9/debian/debhelper.in/llvm-runtime.prerm	1970-01-01 09:00:00.000000000 +0900
 @@ -1,11 +0,0 @@
 -#!/bin/sh -e
@@ -166,7 +166,7 @@ diff -urN ../../llvm-2.9/debian/debhelper.in/llvm-runtime.prerm llvm-2.9/debian/
 -#DEBHELPER#
 -
 diff -urN ../../llvm-2.9/debian/packages.d/llvm.mk llvm-2.9/debian/packages.d/llvm.mk
---- ../../llvm-2.9/debian/packages.d/llvm.mk	2014-05-09 17:45:31.520275608 +0900
+--- ../../llvm-2.9/debian/packages.d/llvm.mk	2012-05-18 16:22:46.000000000 +0900
 +++ llvm-2.9/debian/packages.d/llvm.mk	2014-05-09 17:45:31.520275608 +0900
 @@ -68,6 +68,8 @@
  	mkdir -p $(D)/debian/tmp-llvm/usr/lib/$(DEB_HOST_MULTIARCH)
@@ -178,7 +178,7 @@ diff -urN ../../llvm-2.9/debian/packages.d/llvm.mk llvm-2.9/debian/packages.d/ll
  
  define llvm-runtime_extra_binary
 diff -urN ../../llvm-2.9/debian/rules llvm-2.9/debian/rules
---- ../../llvm-2.9/debian/rules	2014-05-09 17:45:31.520275608 +0900
+--- ../../llvm-2.9/debian/rules	2012-05-18 16:22:46.000000000 +0900
 +++ llvm-2.9/debian/rules	2014-05-09 17:45:31.520275608 +0900
 @@ -17,7 +17,7 @@
  
@@ -198,7 +198,7 @@ diff -urN ../../llvm-2.9/debian/rules llvm-2.9/debian/rules
  
  .PHONY: clean
 diff -urN ../../llvm-2.9/debian/rules.d/control.mk llvm-2.9/debian/rules.d/control.mk
---- ../../llvm-2.9/debian/rules.d/control.mk	2014-05-09 17:45:31.520275608 +0900
+--- ../../llvm-2.9/debian/rules.d/control.mk	2012-05-18 16:22:46.000000000 +0900
 +++ llvm-2.9/debian/rules.d/control.mk	2014-05-09 17:45:31.520275608 +0900
 @@ -10,7 +10,7 @@
  	    -e "s/ *@BUILDDEPS@/$(BUILDDEPS)/g"			\
@@ -210,7 +210,7 @@ diff -urN ../../llvm-2.9/debian/rules.d/control.mk llvm-2.9/debian/rules.d/contr
  	    -e "s/ , /, /g"					\
  	    $@.in/source $(addprefix $@.in/,$(packages)) > $@
 diff -urN ../../llvm-2.9/debian/rules.d/vars.mk llvm-2.9/debian/rules.d/vars.mk
---- ../../llvm-2.9/debian/rules.d/vars.mk	2014-05-09 17:45:31.520275608 +0900
+--- ../../llvm-2.9/debian/rules.d/vars.mk	2012-05-18 16:22:46.000000000 +0900
 +++ llvm-2.9/debian/rules.d/vars.mk	2014-05-09 17:45:31.520275608 +0900
 @@ -3,6 +3,7 @@
  VERSION		:= $(shell dpkg-parsechangelog | grep ^Version | sed -e 's/^Version: //')

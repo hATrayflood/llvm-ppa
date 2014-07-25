@@ -1,4 +1,0 @@
-llvm-2.9/cmake/modules/LLVMParseArguments.cmake is removed from the archive
-because it is released under the (non-DFSG-free) CC-BY-2.5 license.
-
- -- Sylvestre Ledru <sylvestre@debian.org>  Sun, 17 Apr 2011 02:30:13 +0200

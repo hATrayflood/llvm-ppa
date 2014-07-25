@@ -5,6 +5,7 @@ all: debclean
 	cd $(DIR) && debuild -uc -us
 
 dput:
+	$(MAKE) -C ../../$(PKGNAME)
 	rm -f *_source.changes
 	cd $(DIR) && debuild -S  -sa
 	@echo
@@ -12,6 +13,7 @@ dput:
 	@echo
 
 diff:
+	$(MAKE) -C ../../$(PKGNAME) debian
 	if test -d ../../$(PKGNAME)/debian ; then \
 		echo $$(diff -urN ../../$(PKGNAME)/debian $(DIR)/debian > debian.diff) ; \
 	fi

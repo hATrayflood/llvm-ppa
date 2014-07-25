@@ -1,5 +1,5 @@
 diff -urN ../../llvm-toolchain-3.3/debian/changelog llvm-toolchain-snapshot_3.3~svn183554/debian/changelog
---- ../../llvm-toolchain-3.3/debian/changelog	2014-05-09 17:45:31.699078801 +0900
+--- ../../llvm-toolchain-3.3/debian/changelog	2013-12-18 19:33:46.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/changelog	2014-07-24 01:36:48.110890080 +0900
 @@ -1,3 +1,9 @@
 +llvm-toolchain-3.3 (1:3.3-debian16precise0) precise; urgency=low
@@ -17,7 +17,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3-relaxng.install llvm-toolcha
 @@ -0,0 +1 @@
 +clang/bindings/xml/comment-xml-schema.rng	/usr/share/xml/clang-3.3-relaxng/
 diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.install llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.install
---- ../../llvm-toolchain-3.3/debian/clang-3.3.install	2014-05-09 17:45:31.699078801 +0900
+--- ../../llvm-toolchain-3.3/debian/clang-3.3.install	2013-11-05 21:23:55.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.install	2014-07-24 01:34:10.042105898 +0900
 @@ -1,10 +1,15 @@
 -usr/lib/llvm-3.3/bin/clang			/usr/bin/
@@ -43,7 +43,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.install llvm-toolchain-snaps
 -debian/pollycc		/usr/bin/
 +debian/pollycc				/usr/lib/llvm-3.3/bin/
 diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.links llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.links
---- ../../llvm-toolchain-3.3/debian/clang-3.3.links	2014-05-09 17:45:31.699078801 +0900
+--- ../../llvm-toolchain-3.3/debian/clang-3.3.links	2013-10-14 19:49:12.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.links	2014-05-09 17:45:31.784076558 +0900
 @@ -1,5 +1,7 @@
 -usr/share/man/man1/clang-3.3.1.gz		usr/share/man/man1/llvm-clang.1.gz
@@ -59,7 +59,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.links llvm-toolchain-snapsho
 +usr/lib/llvm-3.3/bin/pollycc			usr/bin/pollycc-3.3
 +usr/lib/llvm-3.3/bin/asan_symbolize.py		usr/bin/asan_symbolize-3.3
 diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.manpages llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.manpages
---- ../../llvm-toolchain-3.3/debian/clang-3.3.manpages	2014-05-09 17:45:31.699078801 +0900
+--- ../../llvm-toolchain-3.3/debian/clang-3.3.manpages	2013-10-14 19:49:12.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.manpages	2014-05-09 17:45:31.784076558 +0900
 @@ -1,5 +1,5 @@
  build-llvm/tools/clang/docs/tools/clang-3.3.1
@@ -72,7 +72,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.manpages llvm-toolchain-snap
 +debian/man/clang-tblgen-3.3.1
 +debian/man/scan-view-3.3.1
 diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.postinst llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.postinst
---- ../../llvm-toolchain-3.3/debian/clang-3.3.postinst	2014-05-09 17:45:31.699078801 +0900
+--- ../../llvm-toolchain-3.3/debian/clang-3.3.postinst	2013-10-14 19:49:12.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.postinst	1970-01-01 09:00:00.000000000 +0900
 @@ -1,31 +0,0 @@
 -#! /bin/sh -e
@@ -107,7 +107,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.postinst llvm-toolchain-snap
 -
 -exit 0
 diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.prerm llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.prerm
---- ../../llvm-toolchain-3.3/debian/clang-3.3.prerm	2014-05-09 17:45:31.699078801 +0900
+--- ../../llvm-toolchain-3.3/debian/clang-3.3.prerm	2013-10-14 19:49:12.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.prerm	1970-01-01 09:00:00.000000000 +0900
 @@ -1,14 +0,0 @@
 -#!/bin/sh
@@ -125,7 +125,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.prerm llvm-toolchain-snapsho
 -
 -exit 0
 diff -urN ../../llvm-toolchain-3.3/debian/clang-format-3.3.install llvm-toolchain-snapshot_3.3~svn183554/debian/clang-format-3.3.install
---- ../../llvm-toolchain-3.3/debian/clang-format-3.3.install	2014-05-09 17:45:31.699078801 +0900
+--- ../../llvm-toolchain-3.3/debian/clang-format-3.3.install	2013-10-14 19:49:12.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-format-3.3.install	2014-05-09 17:45:31.784076558 +0900
 @@ -1,5 +1,5 @@
  clang/tools/clang-format/clang-format-3.3.py usr/share/vim/addons/syntax/
@@ -140,7 +140,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/clang-format-3.3.links llvm-toolchain-
 @@ -0,0 +1 @@
 +usr/lib/llvm-3.3/bin/clang-format-diff.py	usr/bin/clang-format-diff-3.3
 diff -urN ../../llvm-toolchain-3.3/debian/control llvm-toolchain-snapshot_3.3~svn183554/debian/control
---- ../../llvm-toolchain-3.3/debian/control	2014-05-09 17:45:31.699078801 +0900
+--- ../../llvm-toolchain-3.3/debian/control	2013-12-18 19:33:46.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/control	2014-05-09 17:45:31.784076558 +0900
 @@ -1,20 +1,18 @@
  Source: llvm-toolchain-3.3
@@ -325,14 +325,14 @@ diff -urN ../../llvm-toolchain-3.3/debian/control llvm-toolchain-snapshot_3.3~sv
 - .
 - This package provides the header files to build extension over lldb.
 diff -urN ../../llvm-toolchain-3.3/debian/libllvm-3.3-ocaml-dev.dirs.in llvm-toolchain-snapshot_3.3~svn183554/debian/libllvm-3.3-ocaml-dev.dirs.in
---- ../../llvm-toolchain-3.3/debian/libllvm-3.3-ocaml-dev.dirs.in	2014-05-09 17:45:31.699078801 +0900
+--- ../../llvm-toolchain-3.3/debian/libllvm-3.3-ocaml-dev.dirs.in	2013-10-14 19:49:12.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/libllvm-3.3-ocaml-dev.dirs.in	2014-05-09 17:45:31.784076558 +0900
 @@ -1,2 +1,2 @@
 -@OCAML_STDLIB_DIR@/META/
 +@OCAML_STDLIB_DIR@/METAS
  
 diff -urN ../../llvm-toolchain-3.3/debian/llvm-3.3-runtime.postinst llvm-toolchain-snapshot_3.3~svn183554/debian/llvm-3.3-runtime.postinst
---- ../../llvm-toolchain-3.3/debian/llvm-3.3-runtime.postinst	2014-05-09 17:45:31.704189115 +0900
+--- ../../llvm-toolchain-3.3/debian/llvm-3.3-runtime.postinst	2013-10-14 19:49:12.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/llvm-3.3-runtime.postinst	1970-01-01 09:00:00.000000000 +0900
 @@ -1,9 +0,0 @@
 -#!/bin/sh -e
@@ -345,7 +345,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/llvm-3.3-runtime.postinst llvm-toolcha
 -
 -#DEBHELPER#
 diff -urN ../../llvm-toolchain-3.3/debian/llvm-3.3-runtime.prerm.in llvm-toolchain-snapshot_3.3~svn183554/debian/llvm-3.3-runtime.prerm.in
---- ../../llvm-toolchain-3.3/debian/llvm-3.3-runtime.prerm.in	2014-05-09 17:45:31.704189115 +0900
+--- ../../llvm-toolchain-3.3/debian/llvm-3.3-runtime.prerm.in	2013-10-14 19:49:12.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/llvm-3.3-runtime.prerm.in	1970-01-01 09:00:00.000000000 +0900
 @@ -1,16 +0,0 @@
 -#!/bin/sh -e
@@ -682,7 +682,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/patches/99-python-bindings.patch llvm-
 + def get_tu(source, lang='c', all_warnings=False, flags=[]):
 +     """Obtain a translation unit from source and language.
 diff -urN ../../llvm-toolchain-3.3/debian/patches/python-clangpath.diff llvm-toolchain-snapshot_3.3~svn183554/debian/patches/python-clangpath.diff
---- ../../llvm-toolchain-3.3/debian/patches/python-clangpath.diff	2014-05-09 17:45:31.704189115 +0900
+--- ../../llvm-toolchain-3.3/debian/patches/python-clangpath.diff	2013-10-14 23:22:49.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/patches/python-clangpath.diff	2014-05-09 17:45:31.788891940 +0900
 @@ -7,7 +7,7 @@
               file = 'libclang.dll'
@@ -694,7 +694,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/patches/python-clangpath.diff llvm-too
           if Config.library_path:
               file = Config.library_path + '/' + file
 diff -urN ../../llvm-toolchain-3.3/debian/patches/series llvm-toolchain-snapshot_3.3~svn183554/debian/patches/series
---- ../../llvm-toolchain-3.3/debian/patches/series	2014-05-09 17:45:31.704189115 +0900
+--- ../../llvm-toolchain-3.3/debian/patches/series	2013-12-01 00:37:53.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/patches/series	2014-05-09 17:45:31.788891940 +0900
 @@ -6,6 +6,7 @@
  27-fix_clang_stdint.diff
@@ -711,7 +711,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/patches/series llvm-toolchain-snapshot
 +#98-unwind.h.patch
 +99-python-bindings.patch
 diff -urN ../../llvm-toolchain-3.3/debian/pollycc.in llvm-toolchain-snapshot_3.3~svn183554/debian/pollycc.in
---- ../../llvm-toolchain-3.3/debian/pollycc.in	2014-05-09 17:45:31.704189115 +0900
+--- ../../llvm-toolchain-3.3/debian/pollycc.in	2013-10-14 19:49:12.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/pollycc.in	2014-05-09 17:45:31.788891940 +0900
 @@ -1,3 +1,3 @@
  #!/bin/sh
@@ -719,7 +719,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/pollycc.in llvm-toolchain-snapshot_3.3
 -clang -Xclang -load -Xclang /usr/lib/llvm-@LLVM_VERSION@/lib/LLVMPolly.so $@
 +clang-@LLVM_VERSION@ -Xclang -load -Xclang /usr/lib/llvm-@LLVM_VERSION@/lib/LLVMPolly.so $@
 diff -urN ../../llvm-toolchain-3.3/debian/python-clang-3.3.install llvm-toolchain-snapshot_3.3~svn183554/debian/python-clang-3.3.install
---- ../../llvm-toolchain-3.3/debian/python-clang-3.3.install	2014-05-09 17:45:31.704189115 +0900
+--- ../../llvm-toolchain-3.3/debian/python-clang-3.3.install	2013-10-14 19:49:12.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/python-clang-3.3.install	2014-05-09 17:45:31.788891940 +0900
 @@ -1 +1,4 @@
 -tools/clang/bindings/python/clang/ /usr/lib/python2.7/dist-packages/
@@ -728,7 +728,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/python-clang-3.3.install llvm-toolchai
 +clang/bindings/python/examples		/usr/share/doc/python-clang-3.3/
 +clang/bindings/python/tests		/usr/share/doc/python-clang-3.3/
 diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn183554/debian/rules
---- ../../llvm-toolchain-3.3/debian/rules	2014-05-09 17:45:31.704189115 +0900
+--- ../../llvm-toolchain-3.3/debian/rules	2013-12-05 01:51:37.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/rules	2014-07-24 01:35:32.710515672 +0900
 @@ -1,15 +1,19 @@
  #!/usr/bin/make -f

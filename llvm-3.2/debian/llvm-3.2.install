@@ -1,2 +1,0 @@
-debian/tmp//usr/lib/llvm-3.2/bin/*			/usr/lib/llvm-3.2/bin/
-debian/tmp/usr/bin/*			            /usr/bin

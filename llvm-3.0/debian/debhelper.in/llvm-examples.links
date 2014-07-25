@@ -1,3 +1,0 @@
-@PF@/build/Makefile.common	usr/share/doc/llvm-@UVERSION@-examples/Makefile.common
-@PF@/build/Makefile.config	usr/share/doc/llvm-@UVERSION@-examples/Makefile.config
-@PF@/build/Makefile.rules	usr/share/doc/llvm-@UVERSION@-examples/Makefile.rules
