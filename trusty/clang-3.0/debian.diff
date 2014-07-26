@@ -13,7 +13,7 @@ diff -urN ../../clang-3.0/debian/changelog clang-3.0/debian/changelog
    * Non-maintainer upload with maintainer's approval.
 diff -urN ../../clang-3.0/debian/control clang-3.0/debian/control
 --- ../../clang-3.0/debian/control	2013-03-31 10:15:22.000000000 +0900
-+++ clang-3.0/debian/control	2014-07-25 20:43:19.143272766 +0900
++++ clang-3.0/debian/control	2014-07-26 09:18:36.373483948 +0900
 @@ -1,24 +1,22 @@
 -Source: clang
 +Source: clang-3.0
@@ -29,7 +29,7 @@ diff -urN ../../clang-3.0/debian/control clang-3.0/debian/control
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
 -    lsb-release, patchutils, diffstat, xz-utils, llvm-3.0-dev (>= 3.0), llvm-3.0-source (>= 3.0)
 -Build-Conflicts: oprofile, ocaml, ocaml-nox
-+    lsb-release, patchutils, diffstat, xz-utils, llvm-3.0-dev (>= 3.0), llvm-3.0-source (>= 3.0),
++    lsb-release, patchutils, diffstat, xz-utils, llvm-3.0-dev (>= 3.0), llvm-3.0-source (>= 3.0), python,
 +    gcc-4.6, g++-4.6
 +Build-Conflicts: oprofile, ocaml
  Standards-Version: 3.9.2
@@ -158,7 +158,7 @@ diff -urN ../../clang-3.0/debian/control.in/python-clang clang-3.0/debian/contro
 + This binding package provides access to the Clang compiler and libraries.
 diff -urN ../../clang-3.0/debian/control.in/source clang-3.0/debian/control.in/source
 --- ../../clang-3.0/debian/control.in/source	2011-12-08 00:39:17.000000000 +0900
-+++ clang-3.0/debian/control.in/source	2014-07-24 17:27:25.171991372 +0900
++++ clang-3.0/debian/control.in/source	2014-07-26 09:18:32.987161133 +0900
 @@ -1,17 +1,15 @@
  Source: @PKGSOURCE@
  Section: devel
@@ -172,7 +172,7 @@ diff -urN ../../clang-3.0/debian/control.in/source clang-3.0/debian/control.in/s
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
 -    lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@
-+    lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@,
++    lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@, python,
 +    gcc-4.6, g++-4.6
  Build-Conflicts: oprofile @BUILDCONFLICTS@
  Standards-Version: 3.9.2

@@ -5,7 +5,7 @@ Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
 Build-Depends: debhelper (>= 6.0.0), flex, bison, dejagnu, tcl8.5, expect,
     autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
-    lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@,
+    lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@, python,
     gcc-4.6, g++-4.6
 Build-Conflicts: oprofile @BUILDCONFLICTS@
 Standards-Version: 3.9.2

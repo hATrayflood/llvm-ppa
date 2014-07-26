@@ -13,8 +13,8 @@ diff -urN ../../clang-3.1/debian/changelog clang-3.1/debian/changelog
    * Also ship clang static libraries for the plugin developments
 diff -urN ../../clang-3.1/debian/control clang-3.1/debian/control
 --- ../../clang-3.1/debian/control	2012-06-28 07:12:08.000000000 +0900
-+++ clang-3.1/debian/control	2014-07-25 20:46:59.166298347 +0900
-@@ -1,9 +1,7 @@
++++ clang-3.1/debian/control	2014-07-26 09:17:45.554653818 +0900
+@@ -1,26 +1,22 @@
 -Source: clang
 +Source: clang-3.1
  Section: devel
@@ -27,7 +27,8 @@ diff -urN ../../clang-3.1/debian/control clang-3.1/debian/control
  Build-Depends: debhelper (>= 6.0.0), flex, bison, dejagnu, tcl8.5, expect,
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
-@@ -11,16 +9,14 @@
+-    lsb-release, patchutils, diffstat, xz-utils, llvm-3.1-dev (>= 3.1), llvm-3.1-source (>= 3.1),
++    lsb-release, patchutils, diffstat, xz-utils, llvm-3.1-dev (>= 3.1), llvm-3.1-source (>= 3.1), python,
      gcc-4.6, g++-4.6
  Build-Conflicts: oprofile, ocaml
  Standards-Version: 3.9.3
@@ -158,8 +159,8 @@ diff -urN ../../clang-3.1/debian/control.in/python-clang clang-3.1/debian/contro
 + This binding package provides access to the Clang compiler and libraries.
 diff -urN ../../clang-3.1/debian/control.in/source clang-3.1/debian/control.in/source
 --- ../../clang-3.1/debian/control.in/source	2012-06-21 18:03:51.000000000 +0900
-+++ clang-3.1/debian/control.in/source	2014-07-18 23:06:38.159537462 +0900
-@@ -1,9 +1,7 @@
++++ clang-3.1/debian/control.in/source	2014-07-26 09:17:42.660087500 +0900
+@@ -1,18 +1,15 @@
  Source: @PKGSOURCE@
  Section: devel
 -Priority: optional
@@ -171,7 +172,8 @@ diff -urN ../../clang-3.1/debian/control.in/source clang-3.1/debian/control.in/s
  Build-Depends: debhelper (>= 6.0.0), flex, bison, dejagnu, tcl8.5, expect,
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
-@@ -11,8 +9,7 @@
+-    lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@,
++    lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@, python,
      gcc-4.6, g++-4.6
  Build-Conflicts: oprofile @BUILDCONFLICTS@
  Standards-Version: 3.9.3

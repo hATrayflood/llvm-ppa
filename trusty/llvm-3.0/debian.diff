@@ -13,7 +13,7 @@ diff -urN ../../llvm-3.0/debian/changelog llvm-3.0.src/debian/changelog
    * Rebuild package to fix symbol issues (Closes: #680326, #681109)
 diff -urN ../../llvm-3.0/debian/control llvm-3.0.src/debian/control
 --- ../../llvm-3.0/debian/control	2012-07-13 20:36:21.000000000 +0900
-+++ llvm-3.0.src/debian/control	2014-07-25 20:41:16.176176707 +0900
++++ llvm-3.0.src/debian/control	2014-07-26 09:13:14.089107021 +0900
 @@ -1,18 +1,17 @@
  Source: llvm-3.0
  Section: devel
@@ -25,8 +25,9 @@ diff -urN ../../llvm-3.0/debian/control llvm-3.0.src/debian/control
  Build-Depends: debhelper (>= 8.1.3), flex, bison, dejagnu, tcl8.5, expect,
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo, quilt,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
-     lsb-release, xz-utils, 
+-    lsb-release, xz-utils, 
 -    binutils-dev (>= 2.20.51.20100222-1~), ocaml-nox (>= 3.11.2), ocaml-best-compilers | ocaml-nox, dh-ocaml (>= 0.9.1)
++    lsb-release, xz-utils, python,
 +    binutils-dev (>= 2.20.51.20100222-1~), ocaml-nox (>= 3.11.2), ocaml-best-compilers | ocaml-nox, dh-ocaml (>= 0.9.1),
 +    gcc-4.6, g++-4.6
  Build-Conflicts: oprofile
@@ -102,7 +103,7 @@ diff -urN ../../llvm-3.0/debian/control.in/llvm-runtime llvm-3.0.src/debian/cont
   tools that make it easy to build compilers, optimizers, Just-In-Time
 diff -urN ../../llvm-3.0/debian/control.in/source llvm-3.0.src/debian/control.in/source
 --- ../../llvm-3.0/debian/control.in/source	2012-04-06 19:54:36.000000000 +0900
-+++ llvm-3.0.src/debian/control.in/source	2014-07-24 17:08:29.078358790 +0900
++++ llvm-3.0.src/debian/control.in/source	2014-07-26 09:13:11.122576176 +0900
 @@ -1,17 +1,16 @@
  Source: @PKGSOURCE@
  Section: devel
@@ -114,8 +115,9 @@ diff -urN ../../llvm-3.0/debian/control.in/source llvm-3.0.src/debian/control.in
  Build-Depends: debhelper (>= 8.1.3), flex, bison, dejagnu, tcl8.5, expect,
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo, quilt,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
-     lsb-release, xz-utils, 
+-    lsb-release, xz-utils, 
 -    binutils-dev (>= 2.20.51.20100222-1~) @BUILDDEPS@
++    lsb-release, xz-utils, python,
 +    binutils-dev (>= 2.20.51.20100222-1~) @BUILDDEPS@,
 +    gcc-4.6, g++-4.6
  Build-Conflicts: oprofile @BUILDCONFLICTS@

@@ -13,8 +13,8 @@ diff -urN ../../llvm-2.9/debian/changelog llvm-2.9/debian/changelog
    [ Vincent Legout ]
 diff -urN ../../llvm-2.9/debian/control llvm-2.9/debian/control
 --- ../../llvm-2.9/debian/control	2012-05-20 23:25:51.000000000 +0900
-+++ llvm-2.9/debian/control	2014-07-25 20:37:20.580863862 +0900
-@@ -1,8 +1,7 @@
++++ llvm-2.9/debian/control	2014-07-26 09:24:56.174866224 +0900
+@@ -1,18 +1,16 @@
  Source: llvm-2.9
  Section: devel
 -Priority: optional
@@ -25,7 +25,8 @@ diff -urN ../../llvm-2.9/debian/control llvm-2.9/debian/control
  Build-Depends: debhelper (>= 8.1.3), flex, bison, dejagnu, tcl8.5, expect,
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
-@@ -10,9 +9,8 @@
+-    lsb-release, patchutils, diffstat, xz-utils, 
++    lsb-release, patchutils, diffstat, xz-utils, python,
      binutils-dev (>= 2.20.51.20100222-1~), ocaml-nox (>= 3.11.2), ocaml-best-compilers | ocaml-nox, dh-ocaml (>= 0.9.1)
  Build-Conflicts: oprofile
  Standards-Version: 3.9.3
@@ -100,8 +101,8 @@ diff -urN ../../llvm-2.9/debian/control.in/llvm-runtime llvm-2.9/debian/control.
   tools that make it easy to build compilers, optimizers, Just-In-Time
 diff -urN ../../llvm-2.9/debian/control.in/source llvm-2.9/debian/control.in/source
 --- ../../llvm-2.9/debian/control.in/source	2012-05-18 16:22:45.000000000 +0900
-+++ llvm-2.9/debian/control.in/source	2014-05-09 17:45:31.520275608 +0900
-@@ -1,8 +1,7 @@
++++ llvm-2.9/debian/control.in/source	2014-07-26 09:24:53.348266209 +0900
+@@ -1,17 +1,15 @@
  Source: @PKGSOURCE@
  Section: devel
 -Priority: optional
@@ -112,7 +113,8 @@ diff -urN ../../llvm-2.9/debian/control.in/source llvm-2.9/debian/control.in/sou
  Build-Depends: debhelper (>= 8.1.3), flex, bison, dejagnu, tcl8.5, expect,
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
-@@ -10,8 +9,7 @@
+-    lsb-release, patchutils, diffstat, xz-utils, 
++    lsb-release, patchutils, diffstat, xz-utils, python,
      binutils-dev (>= 2.20.51.20100222-1~) @BUILDDEPS@
  Build-Conflicts: oprofile @BUILDCONFLICTS@
  Standards-Version: 3.9.3
