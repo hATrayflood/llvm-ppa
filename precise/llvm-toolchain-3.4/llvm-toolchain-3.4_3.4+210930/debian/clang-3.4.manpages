@@ -1,6 +1,0 @@
-build-llvm/tools/clang/docs/tools/clang-3.4.1
-debian/man/scan-build-3.4.1
-debian/man/clang-check-3.4.1
-debian/man/clang-tblgen-3.4.1
-debian/man/scan-view-3.4.1
-

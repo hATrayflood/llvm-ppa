@@ -1,0 +1,6 @@
+build-llvm/tools/clang/docs/tools/clang-@LLVM_VERSION@.1
+debian/man/scan-build-@LLVM_VERSION@.1
+debian/man/clang-check-@LLVM_VERSION@.1
+debian/man/clang-tblgen-@LLVM_VERSION@.1
+debian/man/scan-view-@LLVM_VERSION@.1
+

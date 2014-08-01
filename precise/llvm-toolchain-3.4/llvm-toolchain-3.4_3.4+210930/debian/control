@@ -22,7 +22,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs},
  libclang-common-3.4-dev (= ${binary:Version}),
  libclang1-3.4 (= ${binary:Version}), libc6-dev
 Recommends: llvm-3.4-dev, python
-Suggests: gnustep, gnustep-devel
+Suggests: gnustep, gnustep-devel, clang-3.4-doc
 Description: C, C++ and Objective-C compiler (LLVM based)
  Clang project is a C, C++, Objective C and Objective C++ front-end
  for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler

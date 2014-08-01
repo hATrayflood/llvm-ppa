@@ -1,0 +1,8 @@
+usr/lib/llvm-@LLVM_VERSION@/lib/clang/@LLVM_VERSION_FULL@/include
+usr/lib/llvm-@LLVM_VERSION@/include/polly/
+
+usr/lib/llvm-@LLVM_VERSION@/lib/clang/@LLVM_VERSION_FULL@/lib
+
+
+#usr/lib/clang/@LLVM_VERSION@/lib             /usr/lib/clang/@LLVM_VERSION@/
+#usr/lib/clang/@LLVM_VERSION@/include/         /usr/include/clang/@LLVM_VERSION@/

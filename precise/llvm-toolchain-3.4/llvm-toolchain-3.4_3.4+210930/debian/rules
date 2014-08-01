@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 
 TARGET_BUILD	:= build-llvm
+DEB_INST		:= $(CURDIR)/debian/tmp/
 # Force the version of gcc. Some archs are still using gcc 4.6
 #GCC_VERSION     := 4.8
 GCC_VERSION     := 4.6
@@ -26,8 +27,6 @@ DEB_HOST_ARCH       = $(shell dpkg-architecture -qDEB_HOST_ARCH)
 
 OCAML_STDLIB_DIR    ?= $(shell ocamlc -where)
 
-export CC=gcc-$(GCC_VERSION)
-export CXX=g++-$(GCC_VERSION)
 
 LDFLAGS_EXTRA=
 CXXFLAGS_EXTRA=
@@ -36,6 +35,9 @@ CONFIGURE_EXTRA=
 ifneq (,$(filter $(DEB_HOST_ARCH),powerpc powerpcspe))
 LDFLAGS_EXTRA += -latomic
 endif
+
+export CC=gcc-$(GCC_VERSION)
+export CXX=g++-$(GCC_VERSION)
 
 confargs := \
 	--host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE)
@@ -128,14 +130,23 @@ endif
 	dh $@ --with ocaml
 
 
-debian/%: debian/%.in
-	sed -e 's|@DEB_HOST_MULTIARCH@|$(DEB_HOST_MULTIARCH)|g' -e "s|@OCAML_STDLIB_DIR@|$(OCAML_STDLIB_DIR)|g" -e "s|@LLVM_VERSION@|$(LLVM_VERSION)|g" $< > $@
+
+preconfigure:
+	for f in debian/*.in; do \
+		f2=$$(echo $$f | sed 's/\.in$$//;s/X\.Y/$(LLVM_VERSION)/'); \
+		echo "$$f => $$f2"; \
+		sed -e 's|@DEB_HOST_MULTIARCH@|$(DEB_HOST_MULTIARCH)|g' \
+			-e "s|@OCAML_STDLIB_DIR@|$(OCAML_STDLIB_DIR)|g" \
+			-e "s|@LLVM_VERSION_FULL@|$(LLVM_VERSION_FULL)|g" \
+			-e "s|@LLVM_VERSION@|$(LLVM_VERSION)|g" $$f > $$f2; \
+	done
 
 # Override this two targets. They are trying to manage the .in conversion for me
 override_dh_ocamlinit:
 override_dh_ocamlclean:
 
-override_dh_auto_configure: debian/lldb-$(LLVM_VERSION).install debian/lldb-$(LLVM_VERSION).links debian/libllvm$(LLVM_VERSION).install debian/llvm-$(LLVM_VERSION)-dev.links debian/libllvm-$(LLVM_VERSION)-ocaml-dev.install debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs debian/llvm-$(LLVM_VERSION)-runtime.binfmt debian/libclang-$(LLVM_VERSION)-dev.links debian/libclang1-$(LLVM_VERSION).install debian/pollycc
+
+override_dh_auto_configure: preconfigure
 	chmod +x debian/pollycc
 	chmod +x compiler-rt/lib/asan/scripts/asan_symbolize.py
 	echo "Using gcc: "
@@ -256,17 +267,17 @@ build_doc:
 
 
 override_dh_auto_install:
-	$(MAKE) -C $(TARGET_BUILD) VERBOSE=1 install DESTDIR=$(CURDIR)/debian/tmp/
+	$(MAKE) -C $(TARGET_BUILD) VERBOSE=1 install DESTDIR=$(DEB_INST)/
 
 	chrpath -d $(TARGET_BUILD)/Release/bin/clang
-	chrpath -d `find $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/bin/ -type f -executable`
+	chrpath -d `find $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/bin/ -type f -executable`
 
 # Add the trailing soname
-	mv $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/libLLVM-$(LLVM_VERSION).so $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/libLLVM-$(LLVM_VERSION).so.$(SONAME_EXT)
+	mv $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/lib/libLLVM-$(LLVM_VERSION).so $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/lib/libLLVM-$(LLVM_VERSION).so.$(SONAME_EXT)
 
 
 	if test $(LLDB_ENABLE) = yes; then \
-		mv $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/liblldb.so $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/liblldb.so.$(SONAME_EXT); \
+		mv $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/lib/liblldb.so $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/lib/liblldb.so.$(SONAME_EXT); \
 	fi
 
 	cd debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/ && \
@@ -284,14 +295,14 @@ override_dh_auto_install:
 
 # Create this fake directory to make the install libclang-common-dev happy
 # under the unsupported archs of compiler-rt
-	mkdir -p $(CURDIR)/debian/tmp/usr/lib/clang/$(LLVM_VERSION)/lib
-	mkdir -p $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/clang/$(LLVM_VERSION_FULL)/lib/
-	mkdir -p $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/clang/$(LLVM_VERSION)/lib/clang_linux/
+	mkdir -p $(DEB_INST)/usr/lib/clang/$(LLVM_VERSION)/lib
+	mkdir -p $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/lib/clang/$(LLVM_VERSION_FULL)/lib/
+	mkdir -p $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/lib/clang/$(LLVM_VERSION)/lib/clang_linux/
 	mkdir -p $(TARGET_BUILD)/tools/clang/runtime/compiler-rt/clang_linux/
 
 # Rename binaries
-	mkdir -p $(CURDIR)/debian/tmp/usr/bin/
-	cd $(CURDIR)/debian/tmp/usr/bin/; rm -f *; \
+	mkdir -p $(DEB_INST)/usr/bin/
+	cd $(DEB_INST)/usr/bin/; rm -f *; \
 	for f in ../lib/llvm-$(LLVM_VERSION)/bin/*; do \
 		ln -s $$f `basename $$f`-$(LLVM_VERSION); \
 		echo "Link $$f to `basename $$f`-$(LLVM_VERSION)"; \
@@ -311,7 +322,7 @@ override_dh_auto_install:
 	cp -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
 
 # Remove some license files
-	rm -f $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/include/llvm/Support/LICENSE.TXT \
+	rm -f $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/include/llvm/Support/LICENSE.TXT \
 	$(CURDIR)/debian/llvm-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/build/autoconf/LICENSE.TXT
 
 # Managed in lldb-X.Y.links.in
@@ -319,7 +330,7 @@ override_dh_auto_install:
 
 
 override_dh_shlibdeps:
-	LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/ dh_shlibdeps
+	LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/lib/ dh_shlibdeps
 
 
 override_dh_install:
@@ -331,13 +342,9 @@ override_dh_installman:
 	rm -f $(CURDIR)/debian/llvm-$(LLVM_VERSION)/usr/share/man/man1/lli*
 
 
-.PHONY: override_dh_strip
 override_dh_strip:
 	dh_strip -a
 
-
-#override_dh_shlibdeps:
-#	LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/ dh_shlibdeps
 
 override_dh_install:
 	dh_install --fail-missing
@@ -442,3 +449,9 @@ override_dh_auto_clean:
 	for f in llvm-dwarfdump llvm-mc llvm-mcmarkup llvm-objdump llvm-rtdyld llvm-size llvm-tblgen macho-dump lldb clang-format clang-modernize; do \
 		rm -f debian/man/$$f-$(LLVM_VERSION).1; \
 	done
+	for f in debian/*.in; do \
+		rm -f $$(echo $$f | sed 's/\.in$$//;s/X\.Y/$(LLVM_VERSION)/'); \
+	done
+
+
+.PHONY: override_dh_strip preconfigure
