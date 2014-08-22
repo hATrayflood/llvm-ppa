@@ -1,14 +1,14 @@
-Index: llvm-toolchain-3.4-3.4.2/utils/TableGen/InstrInfoEmitter.cpp
+Index: llvm-toolchain-3.4-3.4.2/utils/TableGen/CodeEmitterGen.cpp
 ===================================================================
---- llvm-toolchain-3.4-3.4.2.orig/utils/TableGen/InstrInfoEmitter.cpp
-+++ llvm-toolchain-3.4-3.4.2/utils/TableGen/InstrInfoEmitter.cpp
-@@ -569,6 +569,9 @@ void InstrInfoEmitter::emitEnums(raw_ost
-   OS << "\n#ifdef GET_INSTRINFO_ENUM\n";
-   OS << "#undef GET_INSTRINFO_ENUM\n";
+--- llvm-toolchain-3.4-3.4.2.orig/utils/TableGen/CodeEmitterGen.cpp
++++ llvm-toolchain-3.4-3.4.2/utils/TableGen/CodeEmitterGen.cpp
+@@ -244,6 +244,9 @@ void CodeEmitterGen::run(raw_ostream &o)
+   const std::vector<const CodeGenInstruction*> &NumberedInstructions =
+     Target.getInstructionsByEnumValue();
  
-+  OS << "// Undef for HURD\n";
-+  OS << "#ifdef EIEIO\n#undef EIEIO\n#endif\n";
++  o << "// Undef for HURD\n";
++  o << "#ifdef EIEIO\n#undef EIEIO\n#endif\n";
 +
-   OS << "namespace llvm {\n\n";
- 
-   CodeGenTarget Target(Records);
+   // Emit function declaration
+   o << "uint64_t " << Target.getName();
+   if (MCEmitter)

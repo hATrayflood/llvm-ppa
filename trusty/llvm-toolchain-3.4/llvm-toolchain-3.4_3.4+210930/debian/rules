@@ -116,7 +116,7 @@ endif
 
 
 LLDB_ENABLE=yes
-LLDB_DISABLE_ARCHS := arm64 hurd-i386 mips mipsel ia64
+LLDB_DISABLE_ARCHS := arm64 hurd-i386 ia64
 LLDB_DISABLE_ARCHS += i386 amd64
 # hurd has threading issues
 # mips* fails with "undefined references to `__atomic_load_8'"
@@ -309,8 +309,6 @@ override_dh_auto_install:
 	done
 
 # Rename some stuff with the version name
-	# WILL DO when we can install several clang versions together
-	#mv $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang.1 $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang-$(LLVM_VERSION).1
 	mv $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang.1 $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang-$(LLVM_VERSION).1
 
 	cp -f $(CURDIR)/utils/vim/llvm.vim $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim
@@ -327,6 +325,16 @@ override_dh_auto_install:
 
 # Managed in lldb-X.Y.links.in
 	rm -f $(CURDIR)/$(TARGET_BUILD)/Release/lib/python*/site-packages/lldb/_lldb.so
+
+# Manage the polly files. Sometimes, we build them. Sometimes not.
+	if test $(POLLY_ENABLE) = yes; then \
+		mkdir -p $(CURDIR)/debian/libclang-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/lib/ $(CURDIR)/debian/libclang-common-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/include/polly/; \
+		mv -f $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/lib/libpolly* \
+		$(CURDIR)/debian/libclang-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/lib/; \
+		rm -rf $(CURDIR)/debian/libclang-common-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/include/polly; \
+		mv -f $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/include/polly/ \
+		$(CURDIR)/debian/libclang-common-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/include/; \
+	fi
 
 
 override_dh_shlibdeps:
