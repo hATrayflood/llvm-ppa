@@ -1,0 +1,2 @@
+# I know and I am not planning to change that.
+libclang1-@LLVM_VERSION@: package-name-doesnt-match-sonames libclang1

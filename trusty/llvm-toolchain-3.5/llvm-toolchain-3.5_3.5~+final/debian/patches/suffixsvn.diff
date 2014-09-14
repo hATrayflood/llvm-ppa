@@ -1,0 +1,26 @@
+Index: llvm-toolchain-snapshot_3.5~svn207356/autoconf/configure.ac
+===================================================================
+--- llvm-toolchain-snapshot_3.5~svn207356.orig/autoconf/configure.ac	2014-04-27 07:56:06.576699406 -0700
++++ llvm-toolchain-snapshot_3.5~svn207356/autoconf/configure.ac	2014-04-27 07:56:06.572699443 -0700
+@@ -37,7 +37,7 @@
+ LLVM_VERSION_MAJOR=3
+ LLVM_VERSION_MINOR=5
+ LLVM_VERSION_PATCH=0
+-LLVM_VERSION_SUFFIX=svn
++LLVM_VERSION_SUFFIX=
+ 
+ AC_DEFINE_UNQUOTED([LLVM_VERSION_MAJOR], $LLVM_VERSION_MAJOR, [Major version of the LLVM API])
+ AC_DEFINE_UNQUOTED([LLVM_VERSION_MINOR], $LLVM_VERSION_MINOR, [Minor version of the LLVM API])
+Index: llvm-toolchain-snapshot_3.5~svn207356/configure
+===================================================================
+--- llvm-toolchain-snapshot_3.5~svn207356.orig/configure	2014-04-27 07:56:06.312701828 -0700
++++ llvm-toolchain-snapshot_3.5~svn207356/configure	2014-04-27 10:00:36.436143478 -0700
+@@ -1938,7 +1938,7 @@
+ LLVM_VERSION_MAJOR=3
+ LLVM_VERSION_MINOR=5
+ LLVM_VERSION_PATCH=0
+-LLVM_VERSION_SUFFIX=svn
++LLVM_VERSION_SUFFIX=
+ 
+ 
+ cat >>confdefs.h <<_ACEOF

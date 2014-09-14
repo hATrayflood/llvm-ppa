@@ -1,0 +1,81 @@
+Index: llvm-toolchain-snapshot_3.4~svn188146/lldb/source/Host/freebsd/Host.cpp
+===================================================================
+--- llvm-toolchain-snapshot_3.4~svn188146.orig/lldb/source/Host/freebsd/Host.cpp	2013-08-11 10:01:39.192734591 +0200
++++ llvm-toolchain-snapshot_3.4~svn188146/lldb/source/Host/freebsd/Host.cpp	2013-08-11 10:01:39.188734591 +0200
+@@ -20,6 +20,35 @@
+ #include <sys/exec.h>
+ #include <machine/elf.h>
+ 
++#include <signal.h>
++#include <sys/kern/param.h>
++#include <machine/reg.h>
++
++#define	PT_LWPINFO	13	/* Info about the LWP that stopped. */
++#define PT_GETNUMLWPS	14	/* get total number of threads */
++#define PT_GETLWPLIST	15	/* get thread list */
++
++/* Argument structure for PT_LWPINFO. */
++struct ptrace_lwpinfo {
++	__lwpid_t	pl_lwpid;	/* LWP described. */
++	int	pl_event;	/* Event that stopped the LWP. */
++#define	PL_EVENT_NONE	0
++#define	PL_EVENT_SIGNAL	1
++	int	pl_flags;	/* LWP flags. */
++#define	PL_FLAG_SA	0x01	/* M:N thread */
++#define	PL_FLAG_BOUND	0x02	/* M:N bound thread */
++#define	PL_FLAG_SCE	0x04	/* syscall enter point */
++#define	PL_FLAG_SCX	0x08	/* syscall leave point */
++#define	PL_FLAG_EXEC	0x10	/* exec(2) succeeded */
++#define	PL_FLAG_SI	0x20	/* siginfo is valid */
++#define	PL_FLAG_FORKED	0x40	/* new child */
++#define	PL_FLAG_CHILD	0x80	/* I am from child */
++	sigset_t	pl_sigmask;	/* LWP signal mask */
++	sigset_t	pl_siglist;	/* LWP pending signal */
++	struct siginfo	pl_siginfo;	/* siginfo for signal */
++	char		pl_tdname[MAXCOMLEN + 1]; /* LWP name */
++	int		pl_child_pid;	/* New child pid */
++};
+ 
+ // C++ Includes
+ // Other libraries and framework includes
+Index: llvm-toolchain-snapshot_3.4~svn188146/lldb/source/Plugins/Process/FreeBSD/ProcessMonitor.cpp
+===================================================================
+--- llvm-toolchain-snapshot_3.4~svn188146.orig/lldb/source/Plugins/Process/FreeBSD/ProcessMonitor.cpp	2013-08-11 10:01:39.192734591 +0200
++++ llvm-toolchain-snapshot_3.4~svn188146/lldb/source/Plugins/Process/FreeBSD/ProcessMonitor.cpp	2013-08-11 10:01:39.188734591 +0200
+@@ -19,6 +19,36 @@
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ 
++#include <signal.h>
++#include <sys/kern/param.h>
++#include <machine/reg.h>
++
++#define	PT_LWPINFO	13	/* Info about the LWP that stopped. */
++#define PT_GETNUMLWPS	14	/* get total number of threads */
++#define PT_GETLWPLIST	15	/* get thread list */
++
++/* Argument structure for PT_LWPINFO. */
++struct ptrace_lwpinfo {
++	__lwpid_t	pl_lwpid;	/* LWP described. */
++	int	pl_event;	/* Event that stopped the LWP. */
++#define	PL_EVENT_NONE	0
++#define	PL_EVENT_SIGNAL	1
++	int	pl_flags;	/* LWP flags. */
++#define	PL_FLAG_SA	0x01	/* M:N thread */
++#define	PL_FLAG_BOUND	0x02	/* M:N bound thread */
++#define	PL_FLAG_SCE	0x04	/* syscall enter point */
++#define	PL_FLAG_SCX	0x08	/* syscall leave point */
++#define	PL_FLAG_EXEC	0x10	/* exec(2) succeeded */
++#define	PL_FLAG_SI	0x20	/* siginfo is valid */
++#define	PL_FLAG_FORKED	0x40	/* new child */
++#define	PL_FLAG_CHILD	0x80	/* I am from child */
++	sigset_t	pl_sigmask;	/* LWP signal mask */
++	sigset_t	pl_siglist;	/* LWP pending signal */
++	struct siginfo	pl_siginfo;	/* siginfo for signal */
++	char		pl_tdname[MAXCOMLEN + 1]; /* LWP name */
++	int		pl_child_pid;	/* New child pid */
++};
++
+ // C++ Includes
+ // Other libraries and framework includes
+ #include "lldb/Core/Error.h"

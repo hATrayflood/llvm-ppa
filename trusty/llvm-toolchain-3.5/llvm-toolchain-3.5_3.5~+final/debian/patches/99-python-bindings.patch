@@ -1,0 +1,258 @@
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/README.txt llvm-toolchain-3.5_3.5~+final/clang/bindings/python/README.txt
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/README.txt	2010-05-01 06:51:10.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/README.txt	2014-09-14 13:03:19.021235156 +0900
+@@ -4,12 +4,9 @@
+ 
+ This directory implements Python bindings for Clang.
+ 
+-You may need to alter LD_LIBRARY_PATH so that the Clang library can be
+-found. The unit tests are designed to be run with 'nosetests'. For example:
++The unit tests are designed to be run with 'nosetests'. For example:
+ --
+-$ env PYTHONPATH=$(echo ~/llvm/tools/clang/bindings/python/) \
+-      LD_LIBRARY_PATH=$(llvm-config --libdir) \
+-  nosetests -v
++$ nosetests -v
+ tests.cindex.test_index.test_create ... ok
+ ...
+ 
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/clang/cindex.py llvm-toolchain-3.5_3.5~+final/clang/bindings/python/clang/cindex.py
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/clang/cindex.py	2014-06-23 08:28:54.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/clang/cindex.py	2014-09-14 13:04:37.366432492 +0900
+@@ -65,7 +65,7 @@
+ from ctypes import *
+ import collections
+ 
+-import clang.enumerations
++import clang35.enumerations
+ 
+ # ctypes doesn't implicitly convert c_void_p to the appropriate wrapper
+ # object. This is a problem, because it means that from_parameter will see an
+@@ -3470,7 +3470,7 @@
+         return True
+ 
+ def register_enumerations():
+-    for name, value in clang.enumerations.TokenKinds:
++    for name, value in clang35.enumerations.TokenKinds:
+         TokenKind.register(value, name)
+ 
+ conf = Config()
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/examples/cindex/cindex-dump.py llvm-toolchain-3.5_3.5~+final/clang/bindings/python/examples/cindex/cindex-dump.py
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/examples/cindex/cindex-dump.py	2014-05-05 13:42:26.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/examples/cindex/cindex-dump.py	2014-09-14 12:49:48.594629005 +0900
+@@ -54,7 +54,7 @@
+              'children' : children }
+ 
+ def main():
+-    from clang.cindex import Index
++    from clang35.cindex import Index
+     from pprint import pprint
+ 
+     from optparse import OptionParser, OptionGroup
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/examples/cindex/cindex-includes.py llvm-toolchain-3.5_3.5~+final/clang/bindings/python/examples/cindex/cindex-includes.py
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/examples/cindex/cindex-includes.py	2010-02-14 03:33:28.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/examples/cindex/cindex-includes.py	2014-09-14 12:50:01.544215302 +0900
+@@ -16,7 +16,7 @@
+ 
+ def main():
+     import sys
+-    from clang.cindex import Index
++    from clang35.cindex import Index
+ 
+     from optparse import OptionParser, OptionGroup
+ 
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_access_specifiers.py llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_access_specifiers.py
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_access_specifiers.py	2014-04-25 11:58:03.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_access_specifiers.py	2014-09-14 12:58:37.296770631 +0900
+@@ -1,7 +1,7 @@
+ 
+-from clang.cindex import AccessSpecifier
+-from clang.cindex import Cursor
+-from clang.cindex import TranslationUnit
++from clang35.cindex import AccessSpecifier
++from clang35.cindex import Cursor
++from clang35.cindex import TranslationUnit
+ 
+ from .util import get_cursor
+ from .util import get_tu
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_cdb.py llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_cdb.py
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_cdb.py	2013-12-20 10:34:00.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_cdb.py	2014-09-14 12:58:12.732936143 +0900
+@@ -1,7 +1,7 @@
+-from clang.cindex import CompilationDatabase
+-from clang.cindex import CompilationDatabaseError
+-from clang.cindex import CompileCommands
+-from clang.cindex import CompileCommand
++from clang35.cindex import CompilationDatabase
++from clang35.cindex import CompilationDatabaseError
++from clang35.cindex import CompileCommands
++from clang35.cindex import CompileCommand
+ import os
+ import gc
+ 
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_code_completion.py llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_code_completion.py
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_code_completion.py	2012-10-07 20:46:37.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_code_completion.py	2014-09-14 12:57:48.864759671 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import TranslationUnit
++from clang35.cindex import TranslationUnit
+ 
+ def check_completion_results(cr, expected):
+     assert cr is not None
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_comment.py llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_comment.py
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_comment.py	2013-10-08 01:38:40.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_comment.py	2014-09-14 12:57:40.900702193 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import TranslationUnit
++from clang35.cindex import TranslationUnit
+ from tests.cindex.util import get_cursor
+ 
+ def test_comment():
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_cursor.py llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_cursor.py
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_cursor.py	2014-05-22 04:17:38.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_cursor.py	2014-09-14 12:57:27.427376538 +0900
+@@ -1,8 +1,8 @@
+ import gc
+ 
+-from clang.cindex import CursorKind
+-from clang.cindex import TranslationUnit
+-from clang.cindex import TypeKind
++from clang35.cindex import CursorKind
++from clang35.cindex import TranslationUnit
++from clang35.cindex import TypeKind
+ from .util import get_cursor
+ from .util import get_cursors
+ from .util import get_tu
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_cursor_kind.py llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_cursor_kind.py
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_cursor_kind.py	2013-06-12 03:05:42.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_cursor_kind.py	2014-09-14 12:57:14.953553441 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import CursorKind
++from clang35.cindex import CursorKind
+ 
+ def test_name():
+     assert CursorKind.UNEXPOSED_DECL.name is 'UNEXPOSED_DECL'
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_diagnostics.py llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_diagnostics.py
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_diagnostics.py	2012-03-11 07:19:05.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_diagnostics.py	2014-09-14 12:57:01.092418671 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import *
++from clang35.cindex import *
+ from .util import get_tu
+ 
+ # FIXME: We need support for invalid translation units to test better.
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_file.py llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_file.py
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_file.py	2011-10-31 09:07:19.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_file.py	2014-09-14 12:56:45.911937700 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import Index, File
++from clang35.cindex import Index, File
+ 
+ def test_file():
+   index = Index.create()
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_index.py llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_index.py
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_index.py	2010-01-24 11:02:07.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_index.py	2014-09-14 12:56:36.444625812 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import *
++from clang35.cindex import *
+ import os
+ 
+ kInputsDir = os.path.join(os.path.dirname(__file__), 'INPUTS')
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_location.py llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_location.py
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_location.py	2012-06-11 20:11:48.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_location.py	2014-09-14 12:56:27.393107870 +0900
+@@ -1,7 +1,7 @@
+-from clang.cindex import Cursor
+-from clang.cindex import File
+-from clang.cindex import SourceLocation
+-from clang.cindex import SourceRange
++from clang35.cindex import Cursor
++from clang35.cindex import File
++from clang35.cindex import SourceLocation
++from clang35.cindex import SourceRange
+ from .util import get_cursor
+ from .util import get_tu
+ 
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_token_kind.py llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_token_kind.py
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_token_kind.py	2012-07-12 16:21:12.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_token_kind.py	2014-09-14 12:53:28.985472112 +0900
+@@ -1,4 +1,4 @@
+-from clang.cindex import TokenKind
++from clang35.cindex import TokenKind
+ from nose.tools import eq_
+ from nose.tools import ok_
+ from nose.tools import raises
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_tokens.py llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_tokens.py
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_tokens.py	2012-07-12 16:21:12.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_tokens.py	2014-09-14 12:52:18.468397995 +0900
+@@ -1,8 +1,8 @@
+-from clang.cindex import CursorKind
+-from clang.cindex import Index
+-from clang.cindex import SourceLocation
+-from clang.cindex import SourceRange
+-from clang.cindex import TokenKind
++from clang35.cindex import CursorKind
++from clang35.cindex import Index
++from clang35.cindex import SourceLocation
++from clang35.cindex import SourceRange
++from clang35.cindex import TokenKind
+ from nose.tools import eq_
+ from nose.tools import ok_
+ 
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_translation_unit.py llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_translation_unit.py
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_translation_unit.py	2014-02-20 16:24:03.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_translation_unit.py	2014-09-14 12:51:59.010035986 +0900
+@@ -2,15 +2,15 @@
+ import os
+ import tempfile
+ 
+-from clang.cindex import CursorKind
+-from clang.cindex import Cursor
+-from clang.cindex import File
+-from clang.cindex import Index
+-from clang.cindex import SourceLocation
+-from clang.cindex import SourceRange
+-from clang.cindex import TranslationUnitSaveError
+-from clang.cindex import TranslationUnitLoadError
+-from clang.cindex import TranslationUnit
++from clang35.cindex import CursorKind
++from clang35.cindex import Cursor
++from clang35.cindex import File
++from clang35.cindex import Index
++from clang35.cindex import SourceLocation
++from clang35.cindex import SourceRange
++from clang35.cindex import TranslationUnitSaveError
++from clang35.cindex import TranslationUnitLoadError
++from clang35.cindex import TranslationUnit
+ from .util import get_cursor
+ from .util import get_tu
+ 
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_type.py llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_type.py
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/test_type.py	2013-10-04 01:19:27.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/test_type.py	2014-09-14 12:51:37.960458189 +0900
+@@ -1,8 +1,8 @@
+ import gc
+ 
+-from clang.cindex import CursorKind
+-from clang.cindex import TranslationUnit
+-from clang.cindex import TypeKind
++from clang35.cindex import CursorKind
++from clang35.cindex import TranslationUnit
++from clang35.cindex import TypeKind
+ from nose.tools import raises
+ from .util import get_cursor
+ from .util import get_tu
+diff -urN llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/util.py llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/util.py
+--- llvm-toolchain-3.5_3.5~+final/clang/bindings/python.orig/tests/cindex/util.py	2014-05-29 11:35:27.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/clang/bindings/python/tests/cindex/util.py	2014-09-14 12:52:54.478563374 +0900
+@@ -1,7 +1,7 @@
+ # This file provides common utility functions for the test suite.
+ 
+-from clang.cindex import Cursor
+-from clang.cindex import TranslationUnit
++from clang35.cindex import Cursor
++from clang35.cindex import TranslationUnit
+ 
+ def get_tu(source, lang='c', all_warnings=False, flags=[]):
+     """Obtain a translation unit from source and language.

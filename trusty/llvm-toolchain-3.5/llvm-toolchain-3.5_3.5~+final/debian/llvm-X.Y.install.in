@@ -1,0 +1,10 @@
+usr/lib/llvm-@LLVM_VERSION@/bin/llvm-*
+usr/lib/llvm-@LLVM_VERSION@/bin/opt*
+usr/lib/llvm-@LLVM_VERSION@/bin/macho-dump*
+usr/lib/llvm-@LLVM_VERSION@/bin/bugpoint*
+usr/lib/llvm-@LLVM_VERSION@/bin/llc*
+usr/bin/llvm-*
+usr/bin/opt*
+usr/bin/macho-dump*
+usr/bin/bugpoint*
+usr/bin/llc*

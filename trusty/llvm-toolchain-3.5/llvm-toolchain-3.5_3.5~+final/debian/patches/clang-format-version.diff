@@ -1,0 +1,39 @@
+Index: llvm-toolchain-snapshot_3.4~svn193603/clang/tools/clang-format/clang-format.py
+===================================================================
+--- llvm-toolchain-snapshot_3.4~svn193603.orig/clang/tools/clang-format/clang-format.py	2013-10-29 12:26:23.002137599 +0100
++++ llvm-toolchain-snapshot_3.4~svn193603/clang/tools/clang-format/clang-format.py	2013-10-29 12:26:23.002137599 +0100
+@@ -24,7 +24,7 @@
+ import vim
+ 
+ # Change this to the full path if clang-format is not on the path.
+-binary = 'clang-format'
++binary = 'clang-format-3.5'
+ 
+ # Change this to format according to other formatting styles. See the output of
+ # 'clang-format --help' for a list of supported styles. The default looks for
+Index: llvm-toolchain-snapshot_3.4~svn193603/clang/tools/clang-format/clang-format-diff.py
+===================================================================
+--- llvm-toolchain-snapshot_3.4~svn193603.orig/clang/tools/clang-format/clang-format-diff.py	2013-10-29 12:26:23.002137599 +0100
++++ llvm-toolchain-snapshot_3.4~svn193603/clang/tools/clang-format/clang-format-diff.py	2013-10-29 12:26:23.002137599 +0100
+@@ -31,7 +31,7 @@
+ 
+ 
+ # Change this to the full path if clang-format is not on the path.
+-binary = 'clang-format'
++binary = 'clang-format-3.5'
+ 
+ 
+ def main():
+Index: llvm-toolchain-snapshot_3.4~svn193603/clang/tools/clang-format/clang-format.el
+===================================================================
+--- llvm-toolchain-snapshot_3.4~svn193603.orig/clang/tools/clang-format/clang-format.el	2013-10-29 12:26:23.002137599 +0100
++++ llvm-toolchain-snapshot_3.4~svn193603/clang/tools/clang-format/clang-format.el	2013-10-29 12:26:23.002137599 +0100
+@@ -13,7 +13,7 @@
+ 
+ ;; *Location of the clang-format binary. If it is on your PATH, a full path name
+ ;; need not be specified.
+-(defvar clang-format-binary "clang-format")
++(defvar clang-format-binary "clang-format-3.5")
+ 
+ (defun clang-format-region ()
+   "Use clang-format to format the currently active region."

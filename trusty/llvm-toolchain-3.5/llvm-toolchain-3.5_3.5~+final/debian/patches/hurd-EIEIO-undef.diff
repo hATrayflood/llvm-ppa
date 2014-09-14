@@ -1,0 +1,14 @@
+Index: llvm-toolchain-snapshot-3.6~svn215188/utils/TableGen/CodeEmitterGen.cpp
+===================================================================
+--- llvm-toolchain-snapshot-3.6~svn215188.orig/utils/TableGen/CodeEmitterGen.cpp
++++ llvm-toolchain-snapshot-3.6~svn215188/utils/TableGen/CodeEmitterGen.cpp
+@@ -241,6 +241,9 @@ void CodeEmitterGen::run(raw_ostream &o)
+   const std::vector<const CodeGenInstruction*> &NumberedInstructions =
+     Target.getInstructionsByEnumValue();
+ 
++  o << "// Undef for HURD\n";
++  o << "#ifdef EIEIO\n#undef EIEIO\n#endif\n";
++
+   // Emit function declaration
+   o << "uint64_t " << Target.getName();
+   if (MCEmitter)

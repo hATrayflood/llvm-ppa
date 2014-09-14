@@ -1,0 +1,28 @@
+Index: llvm-toolchain-snapshot_3.5~svn202847/autoconf/configure.ac
+===================================================================
+--- llvm-toolchain-snapshot_3.5~svn202847.orig/autoconf/configure.ac	2014-03-04 14:43:34.430731503 +0100
++++ llvm-toolchain-snapshot_3.5~svn202847/autoconf/configure.ac	2014-03-04 14:43:53.702730643 +0100
+@@ -32,7 +32,7 @@
+ dnl Initialize autoconf and define the package name, version number and
+ dnl address for reporting bugs.
+ 
+-AC_INIT([LLVM],[3.5.0svn],[http://llvm.org/bugs/])
++AC_INIT([LLVM],[3.5.0],[http://llvm.org/bugs/])
+ 
+ LLVM_VERSION_MAJOR=3
+ LLVM_VERSION_MINOR=5
+Index: llvm-toolchain-snapshot_3.5~svn202847/configure
+===================================================================
+--- llvm-toolchain-snapshot_3.5~svn202847.orig/configure	2014-03-04 14:43:34.430731503 +0100
++++ llvm-toolchain-snapshot_3.5~svn202847/configure	2014-03-04 14:44:24.942729247 +0100
+@@ -561,8 +561,8 @@
+ # Identity of this package.
+ PACKAGE_NAME='LLVM'
+ PACKAGE_TARNAME='llvm'
+-PACKAGE_VERSION='3.5.0svn'
+-PACKAGE_STRING='LLVM 3.5.0svn'
++PACKAGE_VERSION='3.5.0'
++PACKAGE_STRING='LLVM 3.5.0'
+ PACKAGE_BUGREPORT='http://llvm.org/bugs/'
+ 
+ ac_unique_file="lib/IR/Module.cpp"
