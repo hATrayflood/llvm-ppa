@@ -19,6 +19,8 @@ provides
     /usr/bin/clang++-3.3
     /usr/bin/clang-3.4
     /usr/bin/clang++-3.4
+    /usr/bin/clang-3.5
+    /usr/bin/clang++-3.5
 
 usage
 -----
@@ -31,6 +33,7 @@ usage
     sudo apt-get install clang-3.2
     sudo apt-get install clang-3.3
     sudo apt-get install clang-3.4
+    sudo apt-get install clang-3.5
 
 upstream
 --------
@@ -42,10 +45,12 @@ https://launchpad.net/debian/+source/llvm-3.2
 https://launchpad.net/debian/+source/llvm-toolchain-3.2  
 https://tracker.debian.org/pkg/llvm-toolchain-3.3  
 https://tracker.debian.org/pkg/llvm-toolchain-3.4  
+https://tracker.debian.org/pkg/llvm-toolchain-3.5  
 
 launchpad
 ---------
-https://launchpad.net/~h-rayflood/+archive/llvm
+https://launchpad.net/~h-rayflood/+archive/llvm  
+https://launchpad.net/~h-rayflood/+archive/llvm-upper (depends ppa:h-rayflood/gcc-upper)  
 
 github
 ------
