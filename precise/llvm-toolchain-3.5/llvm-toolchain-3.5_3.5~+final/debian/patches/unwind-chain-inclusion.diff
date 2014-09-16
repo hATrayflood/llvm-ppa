@@ -1,0 +1,39 @@
+# Without this patch, the first local include of unwind.h might, with the 
+# __has_include_next, try to include the one from the system.
+# It might be /usr/include/clang/3.4/include/unwind.h
+# Because of the #ifndef __CLANG_UNWIND_H, it might never include any declaration
+# from the system. 
+
+Index: llvm-toolchain-snapshot_3.5~svn201843/clang/lib/Headers/unwind.h
+===================================================================
+--- llvm-toolchain-snapshot_3.5~svn201843.orig/clang/lib/Headers/unwind.h	2014-02-21 11:12:42.154418157 +0100
++++ llvm-toolchain-snapshot_3.5~svn201843/clang/lib/Headers/unwind.h	2014-02-21 11:12:42.150418157 +0100
+@@ -23,9 +23,6 @@
+ 
+ /* See "Data Definitions for libgcc_s" in the Linux Standard Base.*/
+ 
+-#ifndef __CLANG_UNWIND_H
+-#define __CLANG_UNWIND_H
+-
+ #if __has_include_next(<unwind.h>)
+ /* Darwin (from 11.x on) and libunwind provide an unwind.h. If that's available,
+  * use it. libunwind wraps some of its definitions in #ifdef _GNU_SOURCE,
+@@ -53,6 +50,9 @@
+ # endif
+ #else
+ 
++#ifndef __CLANG_UNWIND_H
++#define __CLANG_UNWIND_H
++
+ #include <stdint.h>
+ 
+ #ifdef __cplusplus
+@@ -275,6 +275,7 @@
+ }
+ #endif
+ 
++#endif /* __CLANG_UNWIND_H */
++
+ #endif
+ 
+-#endif /* __CLANG_UNWIND_H */

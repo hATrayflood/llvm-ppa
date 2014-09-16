@@ -1,0 +1,21 @@
+Index: llvm-toolchain-snapshot_3.5~svn199197/clang/lib/Driver/Tools.cpp
+===================================================================
+--- llvm-toolchain-snapshot_3.5~svn199197.orig/clang/lib/Driver/Tools.cpp	2014-01-14 11:30:37.196868940 +0100
++++ llvm-toolchain-snapshot_3.5~svn199197/clang/lib/Driver/Tools.cpp	2014-01-14 11:30:37.192868940 +0100
+@@ -37,6 +37,7 @@
+ #include "llvm/Support/Process.h"
+ #include "llvm/Support/Program.h"
+ #include "llvm/Support/raw_ostream.h"
++#include "llvm/Config/config.h"
+ #include <sys/stat.h>
+ 
+ using namespace clang::driver;
+@@ -225,7 +226,7 @@
+   // libprofile_rt.so. We used to use the -l:libprofile_rt.a syntax, but that is
+   // not supported by old linkers.
+   std::string ProfileRT =
+-    std::string(TC.getDriver().Dir) + "/../lib/libprofile_rt.a";
++    std::string(TC.getDriver().Dir) + "/../lib/llvm-"+PACKAGE_VERSION+"/lib/libprofile_rt.a";
+ 
+   CmdArgs.push_back(Args.MakeArgString(ProfileRT));
+ }

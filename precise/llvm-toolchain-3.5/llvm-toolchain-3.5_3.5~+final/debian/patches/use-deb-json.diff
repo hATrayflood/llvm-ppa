@@ -1,0 +1,26 @@
+Index: llvm-toolchain-snapshot_3.5~svn204005/polly/lib/Makefile
+===================================================================
+--- llvm-toolchain-snapshot_3.5~svn204005.orig/polly/lib/Makefile	2014-03-15 13:31:47.078458657 +0100
++++ llvm-toolchain-snapshot_3.5~svn204005/polly/lib/Makefile	2014-03-15 13:37:10.367703705 +0100
+@@ -13,7 +13,7 @@
+ CPP.Flags += $(POLLY_INC)
+ LD.Flags += $(POLLY_LD) $(POLLY_LIB)
+ 
+-LIBS += $(POLLY_LD) $(POLLY_LIB)
++LIBS += $(POLLY_LD) $(POLLY_LIB) -ljsoncpp
+ 
+ include $(LEVEL)/Makefile.config
+ 
+@@ -46,9 +46,9 @@
+ ISL_CODEGEN_FILES= CodeGen/IslAst.cpp \
+                    CodeGen/IslCodeGeneration.cpp
+ 
+-POLLY_JSON_FILES= JSON/json_reader.cpp \
+-		  JSON/json_value.cpp \
+-		  JSON/json_writer.cpp
++# POLLY_JSON_FILES= JSON/json_reader.cpp \
++# 		  JSON/json_value.cpp \
++# 		  JSON/json_writer.cpp
+ 
+ SOURCES= Polly.cpp \
+ 	 Support/GICHelper.cpp \

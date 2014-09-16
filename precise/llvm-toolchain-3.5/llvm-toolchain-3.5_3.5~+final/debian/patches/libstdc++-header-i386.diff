@@ -1,0 +1,16 @@
+Index: llvm-toolchain-snapshot_3.5~svn201651/clang/lib/Driver/ToolChains.cpp
+===================================================================
+--- llvm-toolchain-snapshot_3.5~svn201651.orig/clang/lib/Driver/ToolChains.cpp	2014-02-17 12:12:04.000000000 +0100
++++ llvm-toolchain-snapshot_3.5~svn201651/clang/lib/Driver/ToolChains.cpp	2014-02-19 09:46:23.400300812 +0100
+@@ -3237,6 +3237,11 @@
+   const Multilib &Multilib = GCCInstallation.getMultilib();
+   const GCCVersion &Version = GCCInstallation.getVersion();
+ 
++#ifdef __i386__
++  // clang does not detect this path: /usr/include/i386-linux-gnu/c++/4.8/ Help him
++  addLibStdCXXIncludePaths( "/usr/include/", "/c++/" + Version.str(), "i386-linux-gnu", GCCInstallation.getMultiarchSuffix(), DriverArgs, CC1Args);
++#endif
++
+   if (addLibStdCXXIncludePaths(LibDir.str() + "/../include",
+                                "/c++/" + Version.Text, TripleStr,
+                                Multilib.includeSuffix(), DriverArgs, CC1Args))

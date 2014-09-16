@@ -1,0 +1,276 @@
+Index: llvm-toolchain-snapshot_3.5~svn193603/clang/test/Driver/clang_f_opts.c
+===================================================================
+--- llvm-toolchain-snapshot_3.5~svn193603.orig/clang/test/Driver/clang_f_opts.c	(révision 214905)
++++ llvm-toolchain-snapshot_3.5~svn193603/clang/test/Driver/clang_f_opts.c	(révision 214906)
+@@ -166,6 +166,47 @@
+ // RUN:     -fstrength-reduce -fno-strength-reduce                            \
+ // RUN:     -finline-limit=1000                                               \
+ // RUN:     -finline-limit                                                    \
++// RUN:     -flto=1                                                           \
++// RUN:     -falign-labels                                                    \
++// RUN:     -falign-labels=100                                                \
++// RUN:     -falign-loops                                                     \
++// RUN:     -falign-loops=100                                                 \
++// RUN:     -falign-jumps                                                     \
++// RUN:     -falign-jumps=100                                                 \
++// RUN:     -fexcess-precision=100                                            \
++// RUN:     -fbranch-count-reg                                                \ 
++// RUN:     -fcaller-saves                                                    \
++// RUN:     -fno-default-inline -fdefault-inline                              \
++// RUN:     -fgcse-after-reload                                               \
++// RUN:     -fgcse-las                                                        \
++// RUN:     -fgcse-sm                                                         \
++// RUN:     -fipa-cp                                                          \
++// RUN:     -finline-functions-called-once                                    \
++// RUN:     -fmodulo-sched                                                    \
++// RUN:     -fmodulo-sched-allow-regmoves                                     \
++// RUN:     -fpeel-loops                                                      \
++// RUN:     -frename-registers                                                \
++// RUN:     -fschedule-insns2                                                 \
++// RUN:     -fsingle-precision-constant                                       \
++// RUN:     -ftree_loop_im                                                    \
++// RUN:     -ftree_loop_ivcanon                                               \
++// RUN:     -ftree_loop_linear                                                \
++// RUN:     -funsafe-loop-optimizations                                       \
++// RUN:     -fuse-linker-plugin                                               \
++// RUN:     -fvect-cost-model                                                 \
++// RUN:     -fvariable-expansion-in-unroller                                  \
++// RUN:     -fweb                                                             \
++// RUN:     -fwhole-program                                                   \
++// RUN:     -fno-tree-dce -ftree-dce                                          \
++// RUN:     -fno-tree-ter -ftree-ter                                          \
++// RUN:     -fno-tree-vrp -ftree-vrp                                          \
++// RUN:     -fno-delete-null-pointer-checks -fdelete-null-pointer-checks      \
++// RUN:     -fno-inline-small-functions -finline-small-functions              \
++// RUN:     -fno-fat-lto-objects -ffat-lto-objects                            \
++// RUN:     -fno-merge-constants -fmerge-constants                            \
++// RUN:     -fno-caller-saves -fcaller-saves                                  \
++// RUN:     -fno-reorder-blocks -freorder-blocks                              \
++// RUN:     -fno-schedule-insns2 -fschedule-insns2                            \
+ // RUN:     %s 2>&1 | FileCheck --check-prefix=IGNORE %s
+ // IGNORE-NOT: error: unknown argument
+ 
+@@ -197,6 +238,46 @@
+ // RUN: -ftracer                                                              \
+ // RUN: -funroll-all-loops                                                    \
+ // RUN: -funswitch-loops                                                      \
++// RUN: -flto=1                                                               \
++// RUN: -falign-labels                                                        \
++// RUN: -falign-labels=100                                                    \
++// RUN: -falign-loops                                                         \
++// RUN: -falign-loops=100                                                     \
++// RUN: -falign-jumps                                                         \
++// RUN: -falign-jumps=100                                                     \
++// RUN: -fexcess-precision=100                                                \
++// RUN: -fbranch-count-reg                                                    \ 
++// RUN: -fcaller-saves                                                        \
++// RUN: -fno-default-inline                                                   \
++// RUN: -fgcse-after-reload                                                   \
++// RUN: -fgcse-las                                                            \
++// RUN: -fgcse-sm                                                             \
++// RUN: -fipa-cp                                                              \
++// RUN: -finline-functions-called-once                                        \
++// RUN: -fmodulo-sched                                                        \
++// RUN: -fmodulo-sched-allow-regmoves                                         \
++// RUN: -fpeel-loops                                                          \
++// RUN: -frename-registers                                                    \
++// RUN: -fschedule-insns2                                                     \
++// RUN: -fsingle-precision-constant                                           \
++// RUN: -ftree_loop_im                                                        \
++// RUN: -ftree_loop_ivcanon                                                   \
++// RUN: -ftree_loop_linear                                                    \
++// RUN: -funsafe-loop-optimizations                                           \
++// RUN: -fuse-linker-plugin                                                   \
++// RUN: -fvect-cost-model                                                     \
++// RUN: -fvariable-expansion-in-unroller                                      \
++// RUN: -fweb                                                                 \
++// RUN: -fwhole-program                                                       \
++// RUN: -fcaller-saves                                                        \
++// RUN: -freorder-blocks                                                      \
++// RUN: -fdelete-null-pointer-checks                                          \
++// RUN: -ffat-lto-objects                                                     \
++// RUN: -fmerge-constants                                                     \
++// RUN: -finline-small-functions                                              \
++// RUN: -ftree-dce                                                            \
++// RUN: -ftree-ter                                                            \
++// RUN: -ftree-vrp                                                            \
+ // RUN: %s 2>&1 | FileCheck --check-prefix=CHECK-WARNING %s
+ // CHECK-WARNING-DAG: optimization flag '-finline-limit=1000' is not supported
+ // CHECK-WARNING-DAG: optimization flag '-finline-limit' is not supported
+@@ -224,6 +305,46 @@
+ // CHECK-WARNING-DAG: optimization flag '-ftracer' is not supported
+ // CHECK-WARNING-DAG: optimization flag '-funroll-all-loops' is not supported
+ // CHECK-WARNING-DAG: optimization flag '-funswitch-loops' is not supported
++// CHECK-WARNING-DAG: optimization flag '-flto=1' is not supported
++// CHECK-WARNING-DAG: optimization flag '-falign-labels' is not supported
++// CHECK-WARNING-DAG: optimization flag '-falign-labels=100' is not supported
++// CHECK-WARNING-DAG: optimization flag '-falign-loops' is not supported
++// CHECK-WARNING-DAG: optimization flag '-falign-loops=100' is not supported
++// CHECK-WARNING-DAG: optimization flag '-falign-jumps' is not supported
++// CHECK-WARNING-DAG: optimization flag '-falign-jumps=100' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fexcess-precision=100' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fbranch-count-reg' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fcaller-saves' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fno-default-inline' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fgcse-after-reload' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fgcse-las' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fgcse-sm' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fipa-cp' is not supported
++// CHECK-WARNING-DAG: optimization flag '-finline-functions-called-once' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fmodulo-sched' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fmodulo-sched-allow-regmoves' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fpeel-loops' is not supported
++// CHECK-WARNING-DAG: optimization flag '-frename-registers' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fschedule-insns2' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fsingle-precision-constant' is not supported
++// CHECK-WARNING-DAG: optimization flag '-ftree_loop_im' is not supported
++// CHECK-WARNING-DAG: optimization flag '-ftree_loop_ivcanon' is not supported
++// CHECK-WARNING-DAG: optimization flag '-ftree_loop_linear' is not supported
++// CHECK-WARNING-DAG: optimization flag '-funsafe-loop-optimizations' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fuse-linker-plugin' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fvect-cost-model' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fvariable-expansion-in-unroller' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fweb' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fwhole-program' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fcaller-saves' is not supported
++// CHECK-WARNING-DAG: optimization flag '-freorder-blocks' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fdelete-null-pointer-checks' is not supported
++// CHECK-WARNING-DAG: optimization flag '-ffat-lto-objects' is not supported
++// CHECK-WARNING-DAG: optimization flag '-fmerge-constants' is not supported
++// CHECK-WARNING-DAG: optimization flag '-finline-small-functions' is not supported
++// CHECK-WARNING-DAG: optimization flag '-ftree-dce' is not supported
++// CHECK-WARNING-DAG: optimization flag '-ftree-ter' is not supported
++// CHECK-WARNING-DAG: optimization flag '-ftree-vrp' is not supported
+ 
+ // Test that we mute the warning on these
+ // RUN: %clang -### -finline-limit=1000 -Wno-invalid-command-line-argument              \
+Index: llvm-toolchain-snapshot_3.5~svn193603/clang/include/clang/Driver/Options.td
+===================================================================
+--- llvm-toolchain-snapshot_3.5~svn193603.orig/clang/include/clang/Driver/Options.td	(révision 214905)
++++ llvm-toolchain-snapshot_3.5~svn193603/clang/include/clang/Driver/Options.td	(révision 214906)
+@@ -478,6 +478,8 @@
+ def ferror_limit_EQ : Joined<["-"], "ferror-limit=">, Group<f_Group>, Flags<[CoreOption]>;
+ def fexceptions : Flag<["-"], "fexceptions">, Group<f_Group>, Flags<[CC1Option]>,
+   HelpText<"Enable support for exception handling">;
++def fexcess_precision_EQ : Joined<["-"], "fexcess-precision=">,
++    Group<clang_ignored_gcc_optimization_f_Group>;
+ def : Flag<["-"], "fexpensive-optimizations">, Group<clang_ignored_gcc_optimization_f_Group>;
+ def : Flag<["-"], "fno-expensive-optimizations">, Group<clang_ignored_gcc_optimization_f_Group>;
+ def fextdirs_EQ : Joined<["-"], "fextdirs=">, Group<f_Group>;
+@@ -579,6 +581,7 @@
+ def flat__namespace : Flag<["-"], "flat_namespace">;
+ def flax_vector_conversions : Flag<["-"], "flax-vector-conversions">, Group<f_Group>;
+ def flimited_precision_EQ : Joined<["-"], "flimited-precision=">, Group<f_Group>;
++def flto_EQ : Joined<["-"], "flto=">, Group<clang_ignored_gcc_optimization_f_Group>;
+ def flto : Flag<["-"], "flto">, Group<f_Group>;
+ def fno_lto : Flag<["-"], "fno-lto">, Group<f_Group>;
+ def fmacro_backtrace_limit_EQ : Joined<["-"], "fmacro-backtrace-limit=">,
+@@ -818,7 +821,6 @@
+ def : Flag<["-"], "fsched-interblock">, Group<clang_ignored_f_Group>;
+ def fshort_enums : Flag<["-"], "fshort-enums">, Group<f_Group>, Flags<[CC1Option]>,
+   HelpText<"Allocate to an enum type only as many bytes as it needs for the declared range of possible values">;
+-def : Flag<["-"], "freorder-blocks">, Group<clang_ignored_gcc_optimization_f_Group>;
+ def fshort_wchar : Flag<["-"], "fshort-wchar">, Group<f_Group>, Flags<[CC1Option]>,
+   HelpText<"Force wchar_t to be a short unsigned int">;
+ def fno_short_wchar : Flag<["-"], "fno-short-wchar">, Group<f_Group>, Flags<[CC1Option]>,
+@@ -913,8 +915,7 @@
+ def fuse_cxa_atexit : Flag<["-"], "fuse-cxa-atexit">, Group<f_Group>;
+ def fuse_init_array : Flag<["-"], "fuse-init-array">, Group<f_Group>, Flags<[CC1Option]>,
+   HelpText<"Use .init_array instead of .ctors">;
+-def fno_var_tracking : Flag<["-"], "fno-var-tracking">,
+-  Group<clang_ignored_f_Group>;
++def fno_var_tracking : Flag<["-"], "fno-var-tracking">, Group<clang_ignored_f_Group>;
+ def fverbose_asm : Flag<["-"], "fverbose-asm">, Group<f_Group>;
+ def fvisibility_EQ : Joined<["-"], "fvisibility=">, Group<f_Group>,
+   HelpText<"Set the default symbol visibility for all global declarations">;
+@@ -1608,22 +1609,49 @@
+ 
+ defm align_functions : BooleanFFlag<"align-functions">, Group<clang_ignored_gcc_optimization_f_Group>;
+ def falign_functions_EQ : Joined<["-"], "falign-functions=">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm align_labels : BooleanFFlag<"align-labels">, Group<clang_ignored_gcc_optimization_f_Group>;
++def falign_labels_EQ : Joined<["-"], "falign-labels=">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm align_loops : BooleanFFlag<"align-loops">, Group<clang_ignored_gcc_optimization_f_Group>;
++def falign_loops_EQ : Joined<["-"], "falign-loops=">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm align_jumps : BooleanFFlag<"align-jumps">, Group<clang_ignored_gcc_optimization_f_Group>;
++def falign_jumps_EQ : Joined<["-"], "falign-jumps=">, Group<clang_ignored_gcc_optimization_f_Group>;
+ 
+ // FIXME: This option should be supported and wired up to our diognostics, but
+ // ignore it for now to avoid breaking builds that use it.
+ def fdiagnostics_show_location_EQ : Joined<["-"], "fdiagnostics-show-location=">, Group<clang_ignored_f_Group>;
+ 
++defm caller_saves : BooleanFFlag<"caller-saves">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm reorder_blocks : BooleanFFlag<"reorder-blocks">, Group<clang_ignored_gcc_optimization_f_Group>;
+ defm eliminate_unused_debug_types : BooleanFFlag<"eliminate-unused-debug-types">, Group<clang_ignored_f_Group>;
++defm branch_count_reg : BooleanFFlag<"branch-count-reg">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm default_inline : BooleanFFlag<"default-inline">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm delete_null_pointer_checks : BooleanFFlag<"delete-null-pointer-checks">,
++    Group<clang_ignored_gcc_optimization_f_Group>;
++defm fat_lto_objects : BooleanFFlag<"fat-lto-objects">, Group<clang_ignored_gcc_optimization_f_Group>;
+ defm float_store : BooleanFFlag<"float-store">, Group<clang_ignored_gcc_optimization_f_Group>;
+ defm function_attribute_list : BooleanFFlag<"function-attribute-list">, Group<clang_ignored_f_Group>;
+ defm gcse : BooleanFFlag<"gcse">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm gcse_after_reload: BooleanFFlag<"gcse-after-reload">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm gcse_las: BooleanFFlag<"gcse-las">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm gcse_sm: BooleanFFlag<"gcse-sm">, Group<clang_ignored_gcc_optimization_f_Group>;
+ defm gnu : BooleanFFlag<"gnu">, Group<clang_ignored_f_Group>;
+ defm ident : BooleanFFlag<"ident">, Group<clang_ignored_f_Group>;
+ defm implicit_templates : BooleanFFlag<"implicit-templates">, Group<clang_ignored_f_Group>;
++defm merge_constants : BooleanFFlag<"merge-constants">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm modulo_sched : BooleanFFlag<"modulo-sched">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm modulo_sched_allow_regmoves : BooleanFFlag<"modulo-sched-allow-regmoves">,
++    Group<clang_ignored_gcc_optimization_f_Group>;
++defm inline_functions_called_once : BooleanFFlag<"inline-functions-called-once">,
++    Group<clang_ignored_gcc_optimization_f_Group>;
+ def finline_limit_EQ : Joined<["-"], "finline-limit=">, Group<clang_ignored_gcc_optimization_f_Group>;
+ defm finline_limit : BooleanFFlag<"inline-limit">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm inline_small_functions : BooleanFFlag<"inline-small-functions">,
++    Group<clang_ignored_gcc_optimization_f_Group>;
++defm ipa_cp : BooleanFFlag<"ipa-cp">,
++    Group<clang_ignored_gcc_optimization_f_Group>;
+ defm ivopts : BooleanFFlag<"ivopts">, Group<clang_ignored_gcc_optimization_f_Group>;
+ defm non_call_exceptions : BooleanFFlag<"non-call-exceptions">, Group<clang_ignored_f_Group>;
++defm peel_loops : BooleanFFlag<"peel-loops">, Group<clang_ignored_gcc_optimization_f_Group>;
+ defm permissive : BooleanFFlag<"permissive">, Group<clang_ignored_f_Group>;
+ defm prefetch_loop_arrays : BooleanFFlag<"prefetch-loop-arrays">, Group<clang_ignored_gcc_optimization_f_Group>;
+ defm printf : BooleanFFlag<"printf">, Group<clang_ignored_f_Group>;
+@@ -1633,22 +1661,39 @@
+ defm profile_reusedist : BooleanFFlag<"profile-reusedist">, Group<clang_ignored_f_Group>;
+ defm profile_values : BooleanFFlag<"profile-values">, Group<clang_ignored_gcc_optimization_f_Group>;
+ defm regs_graph : BooleanFFlag<"regs-graph">, Group<clang_ignored_f_Group>;
++defm rename_registers : BooleanFFlag<"rename-registers">, Group<clang_ignored_gcc_optimization_f_Group>;
+ defm ripa : BooleanFFlag<"ripa">, Group<clang_ignored_f_Group>;
+ defm rounding_math : BooleanFFlag<"rounding-math">, Group<clang_ignored_gcc_optimization_f_Group>;
+ defm schedule_insns : BooleanFFlag<"schedule-insns">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm schedule_insns2 : BooleanFFlag<"schedule-insns2">, Group<clang_ignored_gcc_optimization_f_Group>;
+ defm see : BooleanFFlag<"see">, Group<clang_ignored_f_Group>;
+ defm signaling_nans : BooleanFFlag<"signaling-nans">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm single_precision_constant : BooleanFFlag<"single-precision-constant">,
++    Group<clang_ignored_gcc_optimization_f_Group>;
+ defm spec_constr_count : BooleanFFlag<"spec-constr-count">, Group<clang_ignored_f_Group>;
+ defm strength_reduce :
+     BooleanFFlag<"strength-reduce">, Group<clang_ignored_gcc_optimization_f_Group>;
+ defm tls_model : BooleanFFlag<"tls-model">, Group<clang_ignored_f_Group>;
+ defm tracer : BooleanFFlag<"tracer">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm tree_dce : BooleanFFlag<"tree-dce">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm tree_loop_im : BooleanFFlag<"tree_loop_im">,  Group<clang_ignored_gcc_optimization_f_Group>;
++defm tree_loop_ivcanon : BooleanFFlag<"tree_loop_ivcanon">,  Group<clang_ignored_gcc_optimization_f_Group>;
++defm tree_loop_linear : BooleanFFlag<"tree_loop_linear">,  Group<clang_ignored_gcc_optimization_f_Group>;
+ defm tree_salias : BooleanFFlag<"tree-salias">, Group<clang_ignored_f_Group>;
++defm tree_ter : BooleanFFlag<"tree-ter">, Group<clang_ignored_gcc_optimization_f_Group>;
+ defm tree_vectorizer_verbose : BooleanFFlag<"tree-vectorizer-verbose">, Group<clang_ignored_f_Group>;
++defm tree_vrp : BooleanFFlag<"tree-vrp">, Group<clang_ignored_gcc_optimization_f_Group>;
+ defm unroll_all_loops : BooleanFFlag<"unroll-all-loops">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm unsafe_loop_optimizations : BooleanFFlag<"unsafe-loop-optimizations">,
++    Group<clang_ignored_gcc_optimization_f_Group>;
+ defm unswitch_loops : BooleanFFlag<"unswitch-loops">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm use_linker_plugin : BooleanFFlag<"use-linker-plugin">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm vect_cost_model : BooleanFFlag<"vect-cost-model">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm variable_expansion_in_unroller : BooleanFFlag<"variable-expansion-in-unroller">,
++    Group<clang_ignored_gcc_optimization_f_Group>;
++defm web : BooleanFFlag<"web">, Group<clang_ignored_gcc_optimization_f_Group>;
++defm whole_program : BooleanFFlag<"whole-program">, Group<clang_ignored_gcc_optimization_f_Group>;
+ 
+-
+ // gfortran options that we recognize in the driver and pass along when
+ // invoking GCC to compile Fortran code.
+ def gfortran_Group : OptionGroup<"gfortran Group">;

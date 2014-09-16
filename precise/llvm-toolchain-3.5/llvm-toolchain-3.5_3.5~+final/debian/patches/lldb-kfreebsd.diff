@@ -1,0 +1,24 @@
+%diff --git llvm-toolchain-snapshot_3.5~svn201241.orig/lldllvm-toolchain-snapshot_3.5~svn201241/lldb/source/Host/freebsd/Host.cpp llvm-toolchain-snapshot_3.5~svn201241/lldb/source/Host/freebsd/Host.cpp
+index 4f6af67..47cbb25 100644
+--- llvm-toolchain-snapshot_3.5~svn201241.orig/lldllvm-toolchain-snapshot_3.5~svn201241/lldb/source/Host/freebsd/Host.cpp
++++ llvm-toolchain-snapshot_3.5~svn201241/lldb/source/Host/freebsd/Host.cpp
+@@ -83,6 +83,18 @@ Host::ThreadCreated (const char *thread_name)
+     Host::SetShortThreadName (LLDB_INVALID_PROCESS_ID, LLDB_INVALID_THREAD_ID, thread_name, 16);
+ }
+
++// Debian kFreeBSD uses the FreeBSD kernel with a GNU libc
++#ifdef __GLIBC__
++static inline void *
++reallocf(void *ptr, size_t size)
++{
++    void *rv = realloc(ptr, size);
++    if (rv == NULL)
++        free(ptr);
++    return rv;
++}
++#endif
++
+ std::string
+ Host::GetThreadName (lldb::pid_t pid, lldb::tid_t tid)
+ {
+
