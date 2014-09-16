@@ -1,7 +1,5 @@
-usr/share/man/man1/clang-@LLVM_VERSION@.1.gz		usr/share/man/man1/llvm-clang-@LLVM_VERSION@.1.gz
-usr/share/man/man1/clang-@LLVM_VERSION@.1.gz		usr/share/man/man1/clang++-@LLVM_VERSION@.1.gz
-usr/lib/llvm-@LLVM_VERSION@/share/scan-build/scan-build	usr/bin/scan-build-@LLVM_VERSION@
-usr/lib/llvm-@LLVM_VERSION@/share/scan-view/scan-view	usr/bin/scan-view-@LLVM_VERSION@
-usr/lib/llvm-@LLVM_VERSION@/bin/clang			usr/bin/llvm-clang-@LLVM_VERSION@
-usr/lib/llvm-@LLVM_VERSION@/bin/pollycc			usr/bin/pollycc-@LLVM_VERSION@
-usr/lib/llvm-@LLVM_VERSION@/bin/asan_symbolize.py		usr/bin/asan_symbolize-@LLVM_VERSION@
+usr/share/man/man1/clang-@LLVM_VERSION@.1.gz          usr/share/man/man1/clang++-@LLVM_VERSION@.1.gz
+usr/share/clang/scan-build-@LLVM_VERSION@/scan-build  usr/bin/scan-build-@LLVM_VERSION@
+usr/share/clang/scan-view-@LLVM_VERSION@/scan-view    usr/bin/scan-view-@LLVM_VERSION@
+usr/lib/llvm-@LLVM_VERSION@/bin/pollycc               usr/bin/pollycc-@LLVM_VERSION@
+usr/lib/llvm-@LLVM_VERSION@/bin/asan_symbolize.py     usr/bin/asan_symbolize-@LLVM_VERSION@

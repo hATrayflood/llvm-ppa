@@ -254,7 +254,6 @@ build_doc:
 		cd $$d && rm -f underscore.js && ln -s /usr/share/javascript/underscore/underscore.js; \
 	done
 
-	cp clang/tools/scan-build/scan-build.1 debian/man/scan-build-$(LLVM_VERSION).1
 	help2man --version-string=$(LLVM_VERSION) clang/tools/scan-view/scan-view > debian/man/scan-view-$(LLVM_VERSION).1
 
 	for f in clang clang-tblgen clang-check; do \
@@ -309,13 +308,19 @@ override_dh_auto_install:
 	done
 
 # Rename some stuff with the version name
-	mv $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang.1 $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang-$(LLVM_VERSION).1
-
+	cp $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang.1 $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang-$(LLVM_VERSION).1
+	
+	cp $(CURDIR)/clang/tools/scan-build/scan-build.1 $(CURDIR)/clang/tools/scan-build/scan-build-$(LLVM_VERSION).1
+		
 	cp -f $(CURDIR)/utils/vim/llvm.vim $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim
 
 	cp -f $(CURDIR)/utils/vim/tablegen.vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
 
 	cp -f $(CURDIR)/clang/tools/clang-format/clang-format.py clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
+
+	cp -fR $(CURDIR)/clang/tools/scan-build clang/tools/scan-build-$(LLVM_VERSION)
+
+	cp -fR $(CURDIR)/clang/tools/scan-view clang/tools/scan-view-$(LLVM_VERSION)
 
 	cp -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
 
@@ -449,8 +454,10 @@ override_dh_auto_clean:
 	rm -rf tools/clang/tools/extra clang/tools/extra/
 	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
 	rm -f $(CURDIR)/clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
-	rm -f debian/man/scan-build-$(LLVM_VERSION).1
 	rm -f debian/man/scan-view-$(LLVM_VERSION).1
+	rm -f  clang/tools/scan-build/scan-build-$(LLVM_VERSION).1
+	rm -rf clang/tools/scan-build-$(LLVM_VERSION)
+	rm -rf clang/tools/scan-view-$(LLVM_VERSION)
 	for f in clang clang-tblgen clang-check; do \
 		rm -f debian/man/$$f-$(LLVM_VERSION).1; \
 	done

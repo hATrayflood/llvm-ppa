@@ -1,1 +1,1 @@
-usr/lib/llvm-@LLVM_VERSION@/bin/clang-format-diff.py	usr/bin/clang-format-diff-@LLVM_VERSION@
+usr/lib/llvm-@LLVM_VERSION@/bin/clang-format-diff.py usr/bin/clang-format-diff-@LLVM_VERSION@
