@@ -13,38 +13,40 @@ diff -urN ../../llvm-toolchain-3.3/debian/changelog llvm-toolchain-snapshot_3.3~
    * Make lldb-3.3-dev dependencies matches lldb-3.3.
 diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3-relaxng.install llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3-relaxng.install
 --- ../../llvm-toolchain-3.3/debian/clang-3.3-relaxng.install	1970-01-01 09:00:00.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3-relaxng.install	2014-05-09 17:45:31.784076558 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3-relaxng.install	2014-09-18 16:35:42.912378366 +0900
 @@ -0,0 +1 @@
-+clang/bindings/xml/comment-xml-schema.rng	/usr/share/xml/clang-3.3-relaxng/
++clang/bindings/xml/comment-xml-schema.rng	usr/share/xml/clang-3.3-relaxng/
 diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.install llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.install
 --- ../../llvm-toolchain-3.3/debian/clang-3.3.install	2013-11-05 21:23:55.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.install	2014-07-22 22:13:45.430562891 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.install	2014-09-18 16:37:04.264785731 +0900
 @@ -1,10 +1,15 @@
 -usr/lib/llvm-3.3/bin/clang			/usr/bin/
 -usr/lib/llvm-3.3/bin/clang++			/usr/bin/
 -usr/lib/llvm-3.3/bin/clang-check			/usr/bin/
 -usr/lib/llvm-3.3/bin/clang-tblgen			/usr/bin/
+-usr/lib/llvm-3.3/bin/c-index-test*
+-usr/bin/c-index-test*
+-tools/clang/tools/scan-build			/usr/share/clang/
+-tools/clang/tools/scan-view			/usr/share/clang/
 +usr/lib/llvm-3.3/bin/clang
 +usr/lib/llvm-3.3/bin/clang++
 +usr/lib/llvm-3.3/bin/clang-check
 +usr/lib/llvm-3.3/bin/clang-tblgen
++usr/lib/llvm-3.3/bin/c-index-test
 +usr/bin/clang-3.3
 +usr/bin/clang++-3.3
 +usr/bin/clang-check-3.3
 +usr/bin/clang-tblgen-3.3
- usr/lib/llvm-3.3/bin/c-index-test*
- usr/bin/c-index-test*
--tools/clang/tools/scan-build			/usr/share/clang/
--tools/clang/tools/scan-view			/usr/share/clang/
-+compiler-rt/lib/asan/scripts/asan_symbolize.py	/usr/lib/llvm-3.3/bin/
-+clang/tools/scan-build			/usr/lib/llvm-3.3/share/
-+clang/tools/scan-view			/usr/lib/llvm-3.3/share/
++usr/bin/c-index-test-3.3
++tools/clang/tools/scan-build-3.3		usr/share/clang/
++tools/clang/tools/scan-view-3.3			usr/share/clang/
  #usr/share/man/man1/clang.1	usr/share/man/man1/
 -debian/pollycc		/usr/bin/
-+debian/pollycc				/usr/lib/llvm-3.3/bin/
++debian/pollycc					usr/lib/llvm-3.3/bin/
++compiler-rt/lib/asan/scripts/asan_symbolize.py	usr/lib/llvm-3.3/bin/
 diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.links llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.links
 --- ../../llvm-toolchain-3.3/debian/clang-3.3.links	2013-10-14 19:49:12.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.links	2014-05-09 17:45:31.784076558 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.links	2014-09-18 16:35:27.172305329 +0900
 @@ -1,5 +1,7 @@
 -usr/share/man/man1/clang-3.3.1.gz		usr/share/man/man1/llvm-clang.1.gz
 -usr/share/man/man1/clang-3.3.1.gz		usr/share/man/man1/clang++.1.gz
@@ -53,21 +55,21 @@ diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.links llvm-toolchain-snapsho
 -/usr/bin/clang				/usr/bin/llvm-clang
 +usr/share/man/man1/clang-3.3.1.gz		usr/share/man/man1/llvm-clang-3.3.1.gz
 +usr/share/man/man1/clang-3.3.1.gz		usr/share/man/man1/clang++-3.3.1.gz
-+usr/lib/llvm-3.3/share/scan-build/scan-build	usr/bin/scan-build-3.3
-+usr/lib/llvm-3.3/share/scan-view/scan-view	usr/bin/scan-view-3.3
++usr/share/clang/scan-build-3.3/scan-build	usr/bin/scan-build-3.3
++usr/share/clang/scan-view-3.3/scan-view		usr/bin/scan-view-3.3
 +usr/lib/llvm-3.3/bin/clang			usr/bin/llvm-clang-3.3
 +usr/lib/llvm-3.3/bin/pollycc			usr/bin/pollycc-3.3
 +usr/lib/llvm-3.3/bin/asan_symbolize.py		usr/bin/asan_symbolize-3.3
 diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.manpages llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.manpages
 --- ../../llvm-toolchain-3.3/debian/clang-3.3.manpages	2013-10-14 19:49:12.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.manpages	2014-05-09 17:45:31.784076558 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.manpages	2014-09-18 16:32:34.139446495 +0900
 @@ -1,5 +1,5 @@
  build-llvm/tools/clang/docs/tools/clang-3.3.1
 -clang/tools/scan-build/scan-build.1
 -debian/man/clang-check.1
 -debian/man/clang-tblgen.1
 -debian/man/scan-view.1
-+debian/man/scan-build-3.3.1
++clang/tools/scan-build/scan-build-3.3.1
 +debian/man/clang-check-3.3.1
 +debian/man/clang-tblgen-3.3.1
 +debian/man/scan-view-3.3.1
@@ -126,19 +128,19 @@ diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.prerm llvm-toolchain-snapsho
 -exit 0
 diff -urN ../../llvm-toolchain-3.3/debian/clang-format-3.3.install llvm-toolchain-snapshot_3.3~svn183554/debian/clang-format-3.3.install
 --- ../../llvm-toolchain-3.3/debian/clang-format-3.3.install	2013-10-14 19:49:12.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-format-3.3.install	2014-05-09 17:45:31.784076558 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-format-3.3.install	2014-09-18 16:24:27.537033093 +0900
 @@ -1,5 +1,5 @@
  clang/tools/clang-format/clang-format-3.3.py usr/share/vim/addons/syntax/
 -clang/tools/clang-format/clang-format-diff-3.3 /usr/bin/
-+clang/tools/clang-format/clang-format-diff.py	/usr/lib/llvm-3.3/bin/
++clang/tools/clang-format/clang-format-diff.py usr/lib/llvm-3.3/bin/
  clang/tools/clang-format/clang-format.el usr/share/emacs/site-lisp/clang-format-3.3/
  usr/bin/clang-format-3.3
  usr/lib/llvm-3.3/bin/clang-format
 diff -urN ../../llvm-toolchain-3.3/debian/clang-format-3.3.links llvm-toolchain-snapshot_3.3~svn183554/debian/clang-format-3.3.links
 --- ../../llvm-toolchain-3.3/debian/clang-format-3.3.links	1970-01-01 09:00:00.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-format-3.3.links	2014-05-09 17:45:31.784076558 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-format-3.3.links	2014-09-18 16:25:01.601204526 +0900
 @@ -0,0 +1 @@
-+usr/lib/llvm-3.3/bin/clang-format-diff.py	usr/bin/clang-format-diff-3.3
++usr/lib/llvm-3.3/bin/clang-format-diff.py usr/bin/clang-format-diff-3.3
 diff -urN ../../llvm-toolchain-3.3/debian/control llvm-toolchain-snapshot_3.3~svn183554/debian/control
 --- ../../llvm-toolchain-3.3/debian/control	2013-12-18 19:33:46.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/control	2014-07-21 10:08:41.400046405 +0900
@@ -689,6 +691,18 @@ diff -urN ../../llvm-toolchain-3.3/debian/patches/python-clangpath.diff llvm-too
   
           if Config.library_path:
               file = Config.library_path + '/' + file
+diff -urN ../../llvm-toolchain-3.3/debian/patches/scan-build-clang-path.diff llvm-toolchain-snapshot_3.3~svn183554/debian/patches/scan-build-clang-path.diff
+--- ../../llvm-toolchain-3.3/debian/patches/scan-build-clang-path.diff	2013-10-14 23:22:49.000000000 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/patches/scan-build-clang-path.diff	2014-09-18 16:11:35.953207830 +0900
+@@ -7,7 +7,7 @@
+  # Find 'clang'
+  if (!defined $AnalyzerDiscoveryMethod) {
+ -  $Clang = Cwd::realpath("$RealBin/bin/clang");
+-+  $Clang = Cwd::realpath("/usr/bin/clang");
+++  $Clang = Cwd::realpath("/usr/lib/llvm-3.3/bin/clang");
+    if (!defined $Clang || ! -x $Clang) {
+      $Clang = Cwd::realpath("$RealBin/clang");
+    }
 diff -urN ../../llvm-toolchain-3.3/debian/patches/series llvm-toolchain-snapshot_3.3~svn183554/debian/patches/series
 --- ../../llvm-toolchain-3.3/debian/patches/series	2013-12-01 00:37:53.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/patches/series	2014-05-09 17:45:31.788891940 +0900
@@ -716,16 +730,16 @@ diff -urN ../../llvm-toolchain-3.3/debian/pollycc.in llvm-toolchain-snapshot_3.3
 +clang-@LLVM_VERSION@ -Xclang -load -Xclang /usr/lib/llvm-@LLVM_VERSION@/lib/LLVMPolly.so $@
 diff -urN ../../llvm-toolchain-3.3/debian/python-clang-3.3.install llvm-toolchain-snapshot_3.3~svn183554/debian/python-clang-3.3.install
 --- ../../llvm-toolchain-3.3/debian/python-clang-3.3.install	2013-10-14 19:49:12.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/python-clang-3.3.install	2014-05-09 17:45:31.788891940 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/python-clang-3.3.install	2014-09-18 16:35:55.120440744 +0900
 @@ -1 +1,4 @@
 -tools/clang/bindings/python/clang/ /usr/lib/python2.7/dist-packages/
-+clang/bindings/python/clang/*		/usr/lib/python2.7/dist-packages/clang33/
-+clang/bindings/python/README.txt	/usr/share/doc/python-clang-3.3/
-+clang/bindings/python/examples		/usr/share/doc/python-clang-3.3/
-+clang/bindings/python/tests		/usr/share/doc/python-clang-3.3/
++clang/bindings/python/clang/*		usr/lib/python2.7/dist-packages/clang33/
++clang/bindings/python/README.txt	usr/share/doc/python-clang-3.3/
++clang/bindings/python/examples		usr/share/doc/python-clang-3.3/
++clang/bindings/python/tests		usr/share/doc/python-clang-3.3/
 diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn183554/debian/rules
 --- ../../llvm-toolchain-3.3/debian/rules	2013-12-05 01:51:37.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/rules	2014-07-21 10:44:31.110699978 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/rules	2014-09-18 18:00:40.117658140 +0900
 @@ -1,15 +1,19 @@
  #!/usr/bin/make -f
  
@@ -779,13 +793,12 @@ diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn1
  	echo "Using gcc: "
  	$(CC) -v
  	mkdir -p $(TARGET_BUILD)
-@@ -176,11 +183,11 @@
+@@ -176,11 +183,10 @@
  		cd $$d && rm -f underscore.js && ln -s /usr/share/javascript/underscore/underscore.js; \
  	done
  
 -	help2man --version-string=$(LLVM_VERSION) clang/tools/scan-view/scan-view > debian/man/scan-view.1
 -	help2man --version-string=$(LLVM_VERSION) clang/tools/clang-format/clang-format-diff.py > debian/man/clang-format-diff-$(LLVM_VERSION).1
-+	cp clang/tools/scan-build/scan-build.1 debian/man/scan-build-$(LLVM_VERSION).1
 +	help2man --version-string=$(LLVM_VERSION) clang/tools/scan-view/scan-view > debian/man/scan-view-$(LLVM_VERSION).1
  
  	for f in clang clang-tblgen clang-check; do \
@@ -794,7 +807,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn1
  	done
  
  	for f in llvm-dwarfdump llvm-mc llvm-mcmarkup llvm-objdump llvm-rtdyld llvm-size llvm-tblgen macho-dump lldb clang-format cpp11-migrate; do \
-@@ -207,9 +214,6 @@
+@@ -207,9 +213,6 @@
  
  #	cd $(TARGET_BUILD)/tools/clang/runtime/compiler-rt/ && rm -rf $$(find . -iname "SubDir.lib*" -o -iname .dir) && rm -rf $$(find -empty)
  
@@ -804,7 +817,13 @@ diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn1
  # Create this fake directory to make the install libclang-common-dev happy
  # under the unsupported archs of compiler-rt
  	mkdir -p $(CURDIR)/debian/tmp/usr/lib/clang/$(LLVM_VERSION)/lib
-@@ -231,10 +235,10 @@
+@@ -227,14 +230,20 @@
+ # Rename some stuff with the version name
+ 	mv $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang.1 $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang-$(LLVM_VERSION).1
+ 
++	cp $(CURDIR)/clang/tools/scan-build/scan-build.1 $(CURDIR)/clang/tools/scan-build/scan-build-$(LLVM_VERSION).1
++
+ 	cp -f $(CURDIR)/utils/vim/llvm.vim $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim
  
  	cp -f $(CURDIR)/utils/vim/tablegen.vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
  
@@ -812,12 +831,16 @@ diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn1
 -
  	cp -f $(CURDIR)/clang/tools/clang-format/clang-format.py clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
  
++	cp -fR $(CURDIR)/clang/tools/scan-build clang/tools/scan-build-$(LLVM_VERSION)
++
++	cp -fR $(CURDIR)/clang/tools/scan-view clang/tools/scan-view-$(LLVM_VERSION)
++
 +	cp -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
 +
  # Remove some license files
  	rm -f $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/include/llvm/Support/LICENSE.TXT \
  	$(CURDIR)/debian/llvm-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/build/autoconf/LICENSE.TXT
-@@ -250,8 +254,6 @@
+@@ -250,8 +259,6 @@
  
  .PHONY: override_dh_strip
  override_dh_strip:
@@ -826,7 +849,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn1
  	dh_strip -a
  
  override_dh_shlibdeps:
-@@ -264,6 +266,11 @@
+@@ -264,6 +271,11 @@
  	rm -f $(CURDIR)/debian/lldb-$(LLVM_VERSION)/usr/lib/python*/dist-packages/lldb/__init__.pyc
  	rm -f $(CURDIR)/debian/clang-$(LLVM_VERSION)-examples/usr/share/doc/clang-$(LLVM_VERSION)-examples/examples/*Make*
  
@@ -838,14 +861,16 @@ diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn1
  
  
  ifeq (,$(filter nocheck, $(DEB_BUILD_OPTIONS)))
-@@ -315,6 +322,13 @@
+@@ -315,6 +327,15 @@
  	rm -f tools/clang tools/polly tools/lldb projects/compiler-rt
  	rm -rf tools/clang/tools/extra clang/tools/extra/
  	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
 -	rm -f $(CURDIR)/clang/tools/clang-format/clang-format-diff-$(LLVM_VERSION)
  	rm -f $(CURDIR)/clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
-+	rm -f debian/man/scan-build-$(LLVM_VERSION).1
 +	rm -f debian/man/scan-view-$(LLVM_VERSION).1
++	rm -f  clang/tools/scan-build/scan-build-$(LLVM_VERSION).1
++	rm -rf clang/tools/scan-build-$(LLVM_VERSION)
++	rm -rf clang/tools/scan-view-$(LLVM_VERSION)
 +	for f in clang clang-tblgen clang-check; do \
 +		rm -f debian/man/$$f-$(LLVM_VERSION).1; \
 +	done

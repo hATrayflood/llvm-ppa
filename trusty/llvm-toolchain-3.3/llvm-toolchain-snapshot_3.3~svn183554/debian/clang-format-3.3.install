@@ -1,5 +1,5 @@
 clang/tools/clang-format/clang-format-3.3.py usr/share/vim/addons/syntax/
-clang/tools/clang-format/clang-format-diff.py	/usr/lib/llvm-3.3/bin/
+clang/tools/clang-format/clang-format-diff.py usr/lib/llvm-3.3/bin/
 clang/tools/clang-format/clang-format.el usr/share/emacs/site-lisp/clang-format-3.3/
 usr/bin/clang-format-3.3
 usr/lib/llvm-3.3/bin/clang-format
