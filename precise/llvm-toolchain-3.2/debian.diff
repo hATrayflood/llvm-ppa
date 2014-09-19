@@ -18,8 +18,8 @@ diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2-relaxng.install llvm-3.2.src
 +clang/bindings/xml/comment-xml-schema.rng	/usr/share/xml/clang-3.2-relaxng/
 diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.install llvm-3.2.src/debian/clang-3.2.install
 --- ../../llvm-toolchain-3.2/debian/clang-3.2.install	2013-03-03 01:33:25.000000000 +0900
-+++ llvm-3.2.src/debian/clang-3.2.install	2014-07-23 13:02:39.404771963 +0900
-@@ -1,9 +1,14 @@
++++ llvm-3.2.src/debian/clang-3.2.install	2014-09-19 18:16:04.097957586 +0900
+@@ -1,9 +1,16 @@
 -usr/lib/llvm-3.2/bin/clang			/usr/bin/
 -usr/lib/llvm-3.2/bin/clang++			/usr/bin/
 -usr/lib/llvm-3.2/bin/clang-check			/usr/bin/
@@ -30,20 +30,22 @@ diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.install llvm-3.2.src/debian/
 +usr/lib/llvm-3.2/bin/clang++
 +usr/lib/llvm-3.2/bin/clang-check
 +usr/lib/llvm-3.2/bin/clang-tblgen
++usr/lib/llvm-3.2/bin/c-index-test
 +usr/bin/clang-3.2
 +usr/bin/clang++-3.2
 +usr/bin/clang-check-3.2
 +usr/bin/clang-tblgen-3.2
-+compiler-rt/lib/asan/scripts/asan_symbolize.py	/usr/lib/llvm-3.2/bin/
-+clang/tools/scan-build			/usr/lib/llvm-3.2/share/
-+clang/tools/scan-view			/usr/lib/llvm-3.2/share/
++usr/bin/c-index-test-3.2
++tools/clang/tools/scan-build-3.2		usr/share/clang/
++tools/clang/tools/scan-view-3.2			usr/share/clang/
  #usr/share/man/man1/clang.1	usr/share/man/man1/
 -debian/pollycc		/usr/bin/
-+debian/pollycc				/usr/lib/llvm-3.2/bin/
++debian/pollycc					usr/lib/llvm-3.2/bin/
++compiler-rt/lib/asan/scripts/asan_symbolize.py	usr/lib/llvm-3.2/bin/
  
 diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.links llvm-3.2.src/debian/clang-3.2.links
 --- ../../llvm-toolchain-3.2/debian/clang-3.2.links	2013-05-17 19:28:05.000000000 +0900
-+++ llvm-3.2.src/debian/clang-3.2.links	2014-05-09 17:45:31.648103894 +0900
++++ llvm-3.2.src/debian/clang-3.2.links	2014-09-19 17:13:06.612894992 +0900
 @@ -1,5 +1,7 @@
 -usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/llvm-clang.1.gz
 -usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/clang++.1.gz
@@ -52,8 +54,8 @@ diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.links llvm-3.2.src/debian/cl
 -/usr/bin/clang				/usr/bin/llvm-clang
 +usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/llvm-clang-3.2.1.gz
 +usr/share/man/man1/clang-3.2.1.gz		usr/share/man/man1/clang++-3.2.1.gz
-+usr/lib/llvm-3.2/share/scan-build/scan-build	usr/bin/scan-build-3.2
-+usr/lib/llvm-3.2/share/scan-view/scan-view	usr/bin/scan-view-3.2
++usr/share/clang/scan-build-3.2/scan-build	usr/bin/scan-build-3.2
++usr/share/clang/scan-view-3.2/scan-view		usr/bin/scan-view-3.2
 +usr/lib/llvm-3.2/bin/clang			usr/bin/llvm-clang-3.2
 +usr/lib/llvm-3.2/bin/pollycc			usr/bin/pollycc-3.2
 +usr/lib/llvm-3.2/bin/asan_symbolize.py		usr/bin/asan_symbolize-3.2
@@ -120,7 +122,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.prerm llvm-3.2.src/debian/cl
 -exit 0
 diff -urN ../../llvm-toolchain-3.2/debian/control llvm-3.2.src/debian/control
 --- ../../llvm-toolchain-3.2/debian/control	2013-08-23 20:23:50.000000000 +0900
-+++ llvm-3.2.src/debian/control	2014-07-23 13:06:18.503351889 +0900
++++ llvm-3.2.src/debian/control	2014-09-19 17:15:40.756549722 +0900
 @@ -1,30 +1,24 @@
  Source: llvm-toolchain-3.2
  Section: devel
@@ -137,8 +139,8 @@ diff -urN ../../llvm-toolchain-3.2/debian/control llvm-3.2.src/debian/control
 -    libisl-dev (>= 0.11.1), binutils-gold [amd64 armhf i386 x32],
 -    gcc-4.7, g++-4.7, libjsoncpp-dev
 +    libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev-lts,
-+    libisl-dev-lts, dh-ocaml,
-+    libjsoncpp-dev
++    libisl-dev-lts, libjsoncpp-dev,
++    dh-ocaml
  Build-Conflicts: oprofile, ocaml
  Standards-Version: 3.9.4
 -Homepage: http://www.llvm.org/
@@ -908,6 +910,18 @@ diff -urN ../../llvm-toolchain-3.2/debian/patches/python-clangpath.diff llvm-3.2
 + 
 +         if Config.library_path:
 +             file = Config.library_path + '/' + file
+diff -urN ../../llvm-toolchain-3.2/debian/patches/scan-build-clang-path.diff llvm-3.2.src/debian/patches/scan-build-clang-path.diff
+--- ../../llvm-toolchain-3.2/debian/patches/scan-build-clang-path.diff	2013-03-10 03:04:04.000000000 +0900
++++ llvm-3.2.src/debian/patches/scan-build-clang-path.diff	2014-09-19 17:25:14.352455194 +0900
+@@ -7,7 +7,7 @@
+  # Find 'clang'
+  if (!defined $AnalyzerDiscoveryMethod) {
+ -  $Clang = Cwd::realpath("$RealBin/bin/clang");
+-+  $Clang = Cwd::realpath("/usr/bin/clang");
+++  $Clang = Cwd::realpath("/usr/lib/llvm-3.2/bin/clang");
+    if (!defined $Clang || ! -x $Clang) {
+      $Clang = Cwd::realpath("$RealBin/clang");
+    }
 diff -urN ../../llvm-toolchain-3.2/debian/patches/series llvm-3.2.src/debian/patches/series
 --- ../../llvm-toolchain-3.2/debian/patches/series	2013-08-23 20:23:50.000000000 +0900
 +++ llvm-3.2.src/debian/patches/series	2014-05-09 17:45:31.652568220 +0900
@@ -927,15 +941,15 @@ diff -urN ../../llvm-toolchain-3.2/debian/pollycc llvm-3.2.src/debian/pollycc
 +clang-3.2 -Xclang -load -Xclang /usr/lib/llvm-3.2/lib/LLVMPolly.so $@
 diff -urN ../../llvm-toolchain-3.2/debian/python-clang-3.2.install llvm-3.2.src/debian/python-clang-3.2.install
 --- ../../llvm-toolchain-3.2/debian/python-clang-3.2.install	1970-01-01 09:00:00.000000000 +0900
-+++ llvm-3.2.src/debian/python-clang-3.2.install	2014-05-09 17:45:31.652568220 +0900
++++ llvm-3.2.src/debian/python-clang-3.2.install	2014-09-19 17:25:58.950366989 +0900
 @@ -0,0 +1,4 @@
-+clang/bindings/python/clang/*		/usr/lib/python2.7/dist-packages/clang32/
-+clang/bindings/python/README.txt	/usr/share/doc/python-clang-3.2/
-+clang/bindings/python/examples		/usr/share/doc/python-clang-3.2/
-+clang/bindings/python/tests		/usr/share/doc/python-clang-3.2/
++clang/bindings/python/clang/*		usr/lib/python2.7/dist-packages/clang32/
++clang/bindings/python/README.txt	usr/share/doc/python-clang-3.2/
++clang/bindings/python/examples		usr/share/doc/python-clang-3.2/
++clang/bindings/python/tests		usr/share/doc/python-clang-3.2/
 diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
 --- ../../llvm-toolchain-3.2/debian/rules	2013-08-23 20:23:50.000000000 +0900
-+++ llvm-3.2.src/debian/rules	2014-07-23 13:07:05.423032410 +0900
++++ llvm-3.2.src/debian/rules	2014-09-19 19:09:17.382562844 +0900
 @@ -1,15 +1,19 @@
  #!/usr/bin/make -f
  
@@ -958,7 +972,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
  
  DEB_HOST_MULTIARCH  = $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
  DEB_HOST_GNU_TYPE   = $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-@@ -41,13 +45,20 @@
+@@ -41,13 +45,22 @@
  	LLDB_ENABLE=yes
  endif
  
@@ -979,10 +993,12 @@ diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
 +
 +
 +override_dh_auto_configure: debian/lldb-$(LLVM_VERSION).install debian/lldb-$(LLVM_VERSION).links debian/libllvm$(LLVM_VERSION).install debian/llvm-$(LLVM_VERSION)-dev.links debian/libllvm-$(LLVM_VERSION)-ocaml-dev.install debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs debian/llvm-$(LLVM_VERSION)-runtime.binfmt debian/libclang1-$(LLVM_VERSION).links debian/libclang-$(LLVM_VERSION)-dev.links debian/libclang1-$(LLVM_VERSION).install
++	chmod +x debian/pollycc
++	chmod +x compiler-rt/lib/asan/scripts/asan_symbolize.py
  	echo "Using gcc: "
  	$(CC) -v
  	mkdir -p $(TARGET_BUILD)
-@@ -126,12 +137,13 @@
+@@ -126,12 +139,13 @@
  		mv $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/liblldb.so $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/liblldb.so.$(SONAME_EXT); \
  	fi
  
@@ -1000,22 +1016,28 @@ diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
  # Create this fake directory to make the install libclang-common-dev happy
  # under the unsupported archs of compiler-rt
  	mkdir -p $(CURDIR)/debian/tmp/usr/lib/clang/$(LLVM_VERSION)/lib
-@@ -153,6 +165,14 @@
- 	done
+@@ -154,6 +168,20 @@
  
  	mv $(CURDIR)/build-llvm/tools/clang/docs/tools/clang.1 $(CURDIR)/build-llvm/tools/clang/docs/tools/clang-$(LLVM_VERSION).1
+ 
 +	cp $(CURDIR)/debian/man/scan-build.1 $(CURDIR)/debian/man/scan-build-$(LLVM_VERSION).1
++
 +	cp $(CURDIR)/debian/man/scan-view.1 $(CURDIR)/debian/man/scan-view-$(LLVM_VERSION).1
 +
 +	cp -f $(CURDIR)/utils/vim/llvm.vim $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim
 +
 +	cp -f $(CURDIR)/utils/vim/tablegen.vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
 +
++	cp -fR $(CURDIR)/clang/tools/scan-build clang/tools/scan-build-$(LLVM_VERSION)
++
++	cp -fR $(CURDIR)/clang/tools/scan-view clang/tools/scan-view-$(LLVM_VERSION)
++
 +	cp -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
- 
++
  # Remove some license files
  	rm $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/include/llvm/Support/LICENSE.TXT
-@@ -172,13 +192,18 @@
+ 
+@@ -172,13 +200,18 @@
  
  .PHONY: override_dh_strip
  override_dh_strip:
@@ -1036,11 +1058,13 @@ diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
  override_dh_auto_test:
  	$(MAKE) -C $(TARGET_BUILD) check || true
  
-@@ -188,4 +213,7 @@
+@@ -188,4 +221,9 @@
  	find utils -name '*.pyc' | xargs -r rm -f
  	find test -name '*.pyc' -o -name '*.o' -o -name '*.cm[ix]' | xargs -r rm -f
  	rm -f tools/clang tools/polly tools/lldb projects/compiler-rt
 +	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
 +	rm -f debian/man/scan-build-$(LLVM_VERSION).1
 +	rm -f debian/man/scan-view-$(LLVM_VERSION).1
++	rm -rf clang/tools/scan-build-$(LLVM_VERSION)
++	rm -rf clang/tools/scan-view-$(LLVM_VERSION)
  

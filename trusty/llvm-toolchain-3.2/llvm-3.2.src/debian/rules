@@ -59,6 +59,8 @@ override_dh_ocamlclean:
 
 
 override_dh_auto_configure: debian/lldb-$(LLVM_VERSION).install debian/lldb-$(LLVM_VERSION).links debian/libllvm$(LLVM_VERSION).install debian/llvm-$(LLVM_VERSION)-dev.links debian/libllvm-$(LLVM_VERSION)-ocaml-dev.install debian/libllvm-$(LLVM_VERSION)-ocaml-dev.dirs debian/llvm-$(LLVM_VERSION)-runtime.binfmt debian/libclang1-$(LLVM_VERSION).links debian/libclang-$(LLVM_VERSION)-dev.links debian/libclang1-$(LLVM_VERSION).install
+	chmod +x debian/pollycc
+	chmod +x compiler-rt/lib/asan/scripts/asan_symbolize.py
 	echo "Using gcc: "
 	$(CC) -v
 	mkdir -p $(TARGET_BUILD)
@@ -165,12 +167,18 @@ override_dh_auto_install:
 	done
 
 	mv $(CURDIR)/build-llvm/tools/clang/docs/tools/clang.1 $(CURDIR)/build-llvm/tools/clang/docs/tools/clang-$(LLVM_VERSION).1
+
 	cp $(CURDIR)/debian/man/scan-build.1 $(CURDIR)/debian/man/scan-build-$(LLVM_VERSION).1
+
 	cp $(CURDIR)/debian/man/scan-view.1 $(CURDIR)/debian/man/scan-view-$(LLVM_VERSION).1
 
 	cp -f $(CURDIR)/utils/vim/llvm.vim $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim
 
 	cp -f $(CURDIR)/utils/vim/tablegen.vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
+
+	cp -fR $(CURDIR)/clang/tools/scan-build clang/tools/scan-build-$(LLVM_VERSION)
+
+	cp -fR $(CURDIR)/clang/tools/scan-view clang/tools/scan-view-$(LLVM_VERSION)
 
 	cp -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
 
@@ -216,4 +224,6 @@ override_dh_auto_clean:
 	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
 	rm -f debian/man/scan-build-$(LLVM_VERSION).1
 	rm -f debian/man/scan-view-$(LLVM_VERSION).1
+	rm -rf clang/tools/scan-build-$(LLVM_VERSION)
+	rm -rf clang/tools/scan-view-$(LLVM_VERSION)
 
