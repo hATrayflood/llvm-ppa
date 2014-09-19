@@ -454,8 +454,8 @@ override_dh_auto_clean:
 	rm -rf tools/clang/tools/extra clang/tools/extra/
 	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
 	rm -f $(CURDIR)/clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
+	rm -f clang/tools/scan-build/scan-build-$(LLVM_VERSION).1
 	rm -f debian/man/scan-view-$(LLVM_VERSION).1
-	rm -f  clang/tools/scan-build/scan-build-$(LLVM_VERSION).1
 	rm -rf clang/tools/scan-build-$(LLVM_VERSION)
 	rm -rf clang/tools/scan-view-$(LLVM_VERSION)
 	for f in clang clang-tblgen clang-check; do \

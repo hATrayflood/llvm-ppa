@@ -8,10 +8,10 @@ usr/lib/llvm-@LLVM_VERSION@/bin/clang-tidy
 usr/lib/llvm-@LLVM_VERSION@/bin/pp-trace
 usr/lib/llvm-@LLVM_VERSION@/bin/clang-query
 
-compiler-rt/lib/asan/scripts/asan_symbolize.py   usr/lib/llvm-@LLVM_VERSION@/bin/
-debian/pollycc                                   usr/lib/llvm-@LLVM_VERSION@/bin/
 tools/clang/tools/scan-build-@LLVM_VERSION@      usr/share/clang/
 tools/clang/tools/scan-view-@LLVM_VERSION@       usr/share/clang/
+debian/pollycc                                   usr/lib/llvm-@LLVM_VERSION@/bin/
+compiler-rt/lib/asan/scripts/asan_symbolize.py   usr/lib/llvm-@LLVM_VERSION@/bin/
 #usr/share/man/man1/clang.1     usr/share/man/man1/
 
 usr/bin/clang-@LLVM_VERSION@

@@ -62,7 +62,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.links llvm-toolchain-snapsho
 +usr/lib/llvm-3.3/bin/asan_symbolize.py		usr/bin/asan_symbolize-3.3
 diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.manpages llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.manpages
 --- ../../llvm-toolchain-3.3/debian/clang-3.3.manpages	2013-10-14 19:49:12.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.manpages	2014-09-18 16:32:34.139446000 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.manpages	2014-09-19 20:50:13.702562000 +0900
 @@ -1,5 +1,5 @@
  build-llvm/tools/clang/docs/tools/clang-3.3.1
 -clang/tools/scan-build/scan-build.1
@@ -70,9 +70,9 @@ diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.manpages llvm-toolchain-snap
 -debian/man/clang-tblgen.1
 -debian/man/scan-view.1
 +clang/tools/scan-build/scan-build-3.3.1
++debian/man/scan-view-3.3.1
 +debian/man/clang-check-3.3.1
 +debian/man/clang-tblgen-3.3.1
-+debian/man/scan-view-3.3.1
 diff -urN ../../llvm-toolchain-3.3/debian/clang-3.3.postinst llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.postinst
 --- ../../llvm-toolchain-3.3/debian/clang-3.3.postinst	2013-10-14 19:49:12.000000000 +0900
 +++ llvm-toolchain-snapshot_3.3~svn183554/debian/clang-3.3.postinst	1970-01-01 09:00:00.000000000 +0900
@@ -743,7 +743,7 @@ diff -urN ../../llvm-toolchain-3.3/debian/python-clang-3.3.install llvm-toolchai
 +clang/bindings/python/tests		usr/share/doc/python-clang-3.3/
 diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn183554/debian/rules
 --- ../../llvm-toolchain-3.3/debian/rules	2013-12-05 01:51:37.000000000 +0900
-+++ llvm-toolchain-snapshot_3.3~svn183554/debian/rules	2014-09-18 20:21:34.472638048 +0900
++++ llvm-toolchain-snapshot_3.3~svn183554/debian/rules	2014-09-19 20:55:11.710962360 +0900
 @@ -1,15 +1,19 @@
  #!/usr/bin/make -f
  
@@ -871,8 +871,8 @@ diff -urN ../../llvm-toolchain-3.3/debian/rules llvm-toolchain-snapshot_3.3~svn1
  	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
 -	rm -f $(CURDIR)/clang/tools/clang-format/clang-format-diff-$(LLVM_VERSION)
  	rm -f $(CURDIR)/clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
++	rm -f clang/tools/scan-build/scan-build-$(LLVM_VERSION).1
 +	rm -f debian/man/scan-view-$(LLVM_VERSION).1
-+	rm -f  clang/tools/scan-build/scan-build-$(LLVM_VERSION).1
 +	rm -rf clang/tools/scan-build-$(LLVM_VERSION)
 +	rm -rf clang/tools/scan-view-$(LLVM_VERSION)
 +	for f in clang clang-tblgen clang-check; do \

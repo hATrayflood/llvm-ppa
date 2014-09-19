@@ -9,7 +9,7 @@ Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl, expect,
     libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev,
     libisl-dev (>= 0.11.1), libjsoncpp-dev,
     lcov, procps, help2man, dh-ocaml, zlib1g-dev
-Build-Conflicts: oprofile, ocaml, libllvm-3.4-ocaml-dev, libllvm-3.5-ocaml-dev
+Build-Conflicts: oprofile, ocaml, libclang-common-3.5-dev, libllvm-3.4-ocaml-dev, libllvm-3.5-ocaml-dev
 Standards-Version: 3.9.5
 Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
 Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
