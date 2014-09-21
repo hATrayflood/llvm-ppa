@@ -5,5 +5,3 @@ usr/share/clang/scan-view-@UVERSION@/scan-view		usr/bin/scan-view-@UVERSION@
 usr/lib/llvm-@UVERSION@/bin/clang			usr/bin/llvm-clang-@UVERSION@
 usr/lib/llvm-@UVERSION@/bin/clang			usr/bin/clang-@UVERSION@
 usr/lib/llvm-@UVERSION@/bin/clang++			usr/bin/clang++-@UVERSION@
-usr/lib/llvm-@UVERSION@/bin/clang-tblgen		usr/bin/clang-tblgen-@UVERSION@
-usr/lib/llvm-@UVERSION@/bin/c-index-test		usr/bin/c-index-test-@UVERSION@

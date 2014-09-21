@@ -1,6 +1,6 @@
 diff -urN ../../clang-3.0/debian/changelog clang-3.0/debian/changelog
 --- ../../clang-3.0/debian/changelog	2013-03-29 03:03:16.000000000 +0900
-+++ clang-3.0/debian/changelog	2014-07-25 16:03:46.064640440 +0900
++++ clang-3.0/debian/changelog	2014-09-21 20:05:26.235362253 +0900
 @@ -1,3 +1,9 @@
 +clang-3.0 (1:3.0-debian6.2precise0) precise; urgency=low
 +
@@ -13,7 +13,7 @@ diff -urN ../../clang-3.0/debian/changelog clang-3.0/debian/changelog
    * Non-maintainer upload with maintainer's approval.
 diff -urN ../../clang-3.0/debian/control clang-3.0/debian/control
 --- ../../clang-3.0/debian/control	2013-03-31 10:15:22.000000000 +0900
-+++ clang-3.0/debian/control	2014-09-21 13:15:44.129487565 +0900
++++ clang-3.0/debian/control	2014-09-21 19:54:20.696994421 +0900
 @@ -1,24 +1,22 @@
 -Source: clang
 +Source: clang-3.0
@@ -185,8 +185,8 @@ diff -urN ../../clang-3.0/debian/control.in/source clang-3.0/debian/control.in/s
  
 diff -urN ../../clang-3.0/debian/debhelper.in/clang.install clang-3.0/debian/debhelper.in/clang.install
 --- ../../clang-3.0/debian/debhelper.in/clang.install	2011-09-23 05:02:23.000000000 +0900
-+++ clang-3.0/debian/debhelper.in/clang.install	2014-09-21 00:00:55.418622000 +0900
-@@ -1,5 +1,6 @@
++++ clang-3.0/debian/debhelper.in/clang.install	2014-09-21 19:53:36.954659294 +0900
+@@ -1,5 +1,4 @@
 -debian/@TMP@/@PF@/bin/clang			@PF@/bin/
 -debian/@TMP@/@PF@/bin/clang++			@PF@/bin/
 -tools/clang/tools/scan-build			@PF@/share/clang/
@@ -194,14 +194,12 @@ diff -urN ../../clang-3.0/debian/debhelper.in/clang.install clang-3.0/debian/deb
 -debian/@TMP@/@PF@/share/man/man1/clang.1	usr/share/man/man1/
 +debian/@TMP@/@PF@/bin/clang			@PF@/lib/llvm-@UVERSION@/bin/
 +debian/@TMP@/@PF@/bin/clang++			@PF@/lib/llvm-@UVERSION@/bin/
-+debian/@TMP@/@PF@/bin/clang-tblgen		@PF@/lib/llvm-@UVERSION@/bin/
-+debian/@TMP@/@PF@/bin/c-index-test		@PF@/lib/llvm-@UVERSION@/bin/
 +tools/clang/tools/scan-build-@UVERSION@		usr/share/clang/
 +tools/clang/tools/scan-view-@UVERSION@		usr/share/clang/
 diff -urN ../../clang-3.0/debian/debhelper.in/clang.links clang-3.0/debian/debhelper.in/clang.links
 --- ../../clang-3.0/debian/debhelper.in/clang.links	2011-06-27 17:12:38.000000000 +0900
-+++ clang-3.0/debian/debhelper.in/clang.links	2014-09-21 00:01:20.894004000 +0900
-@@ -1,5 +1,9 @@
++++ clang-3.0/debian/debhelper.in/clang.links	2014-09-21 19:53:43.863237013 +0900
+@@ -1,5 +1,7 @@
 -usr/share/man/man1/clang.1.gz		usr/share/man/man1/llvm-clang.1.gz
 -usr/share/man/man1/clang.1.gz		usr/share/man/man1/clang++.1.gz
 -@PF@/share/clang/scan-build/scan-build	@PF@/bin/scan-build
@@ -214,8 +212,6 @@ diff -urN ../../clang-3.0/debian/debhelper.in/clang.links clang-3.0/debian/debhe
 +usr/lib/llvm-@UVERSION@/bin/clang			usr/bin/llvm-clang-@UVERSION@
 +usr/lib/llvm-@UVERSION@/bin/clang			usr/bin/clang-@UVERSION@
 +usr/lib/llvm-@UVERSION@/bin/clang++			usr/bin/clang++-@UVERSION@
-+usr/lib/llvm-@UVERSION@/bin/clang-tblgen		usr/bin/clang-tblgen-@UVERSION@
-+usr/lib/llvm-@UVERSION@/bin/c-index-test		usr/bin/c-index-test-@UVERSION@
 diff -urN ../../clang-3.0/debian/debhelper.in/clang.manpages clang-3.0/debian/debhelper.in/clang.manpages
 --- ../../clang-3.0/debian/debhelper.in/clang.manpages	2011-06-27 17:12:38.000000000 +0900
 +++ clang-3.0/debian/debhelper.in/clang.manpages	2014-09-21 00:02:03.644827000 +0900
