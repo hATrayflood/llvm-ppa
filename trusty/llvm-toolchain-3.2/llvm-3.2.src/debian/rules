@@ -39,6 +39,14 @@ ifneq (,$(findstring $(DEB_HOST_ARCH),armel))
   opt_flags += -marm
 endif
 
+ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' g++-$(GCC_VERSION)) ge 4.8-20121128-1~ ; echo $$?),0)
+	control_vars = '-Vdep:devlibs=libstdc++-$(GCC_VERSION)-dev, libgcc-$(GCC_VERSION)-dev'
+else ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' g++-$(GCC_VERSION)) ge 4.7.2-10~ ; echo $$?),0)
+	control_vars = '-Vdep:devlibs=libstdc++6-$(GCC_VERSION)-dev, libgcc-$(GCC_VERSION)-dev'
+else
+	control_vars = '-Vdep:devlibs=libstdc++6-$(GCC_VERSION)-dev'
+endif
+
 LLDB_ARCHS :=
 LLDB_ENABLE=no
 ifneq (,$(findstring $(DEB_HOST_ARCH),$(LLDB_ARCHS)))
@@ -214,6 +222,9 @@ override_dh_installdeb:
 
 override_dh_auto_test:
 	$(MAKE) -C $(TARGET_BUILD) check || true
+
+override_dh_gencontrol:
+	dh_gencontrol -- $(control_vars)
 
 override_dh_auto_clean:
 	rm -rf $(TARGET_BUILD) tools/clang/include/clang/Debian/debian_path.h docs/_build/

@@ -65,7 +65,7 @@ diff -urN ../../llvm-toolchain-3.5/debian/clang-format-X.Y.manpages.in llvm-tool
  
 diff -urN ../../llvm-toolchain-3.5/debian/control llvm-toolchain-3.5_3.5~+final/debian/control
 --- ../../llvm-toolchain-3.5/debian/control	2014-08-17 19:47:13.000000000 +0900
-+++ llvm-toolchain-3.5_3.5~+final/debian/control	2014-09-20 02:02:21.402142770 +0900
++++ llvm-toolchain-3.5_3.5~+final/debian/control	2014-09-22 00:17:17.397866392 +0900
 @@ -1,20 +1,18 @@
  Source: llvm-toolchain-3.5
  Section: devel
@@ -81,7 +81,7 @@ diff -urN ../../llvm-toolchain-3.5/debian/control llvm-toolchain-3.5_3.5~+final/
 -    libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev,
 -    libisl-dev (>= 0.11.1), libjsoncpp-dev,
 +    libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev-lts,
-+    libisl-dev-lts, libjsoncpp-dev, gcc-4.8, g++-4.8,
++    libisl-dev-lts (>= 0.11.1), libjsoncpp-dev, gcc-4.8, g++-4.8,
      lcov, procps, help2man, dh-ocaml, zlib1g-dev
 -Build-Conflicts: oprofile, ocaml, libllvm-3.4-ocaml-dev, libllvm-3.5-ocaml-dev
 +Build-Conflicts: oprofile, ocaml, libclang-common-3.5-dev, libllvm-3.4-ocaml-dev, libllvm-3.5-ocaml-dev

@@ -122,7 +122,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/clang-3.2.prerm llvm-3.2.src/debian/cl
 -exit 0
 diff -urN ../../llvm-toolchain-3.2/debian/control llvm-3.2.src/debian/control
 --- ../../llvm-toolchain-3.2/debian/control	2013-08-23 20:23:50.000000000 +0900
-+++ llvm-3.2.src/debian/control	2014-09-19 19:07:37.843863059 +0900
++++ llvm-3.2.src/debian/control	2014-09-21 20:51:10.108359194 +0900
 @@ -1,30 +1,24 @@
  Source: llvm-toolchain-3.2
  Section: devel
@@ -150,10 +150,11 @@ diff -urN ../../llvm-toolchain-3.2/debian/control llvm-3.2.src/debian/control
  
  Package: clang-3.2
  Architecture: any
- Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++-4.8-dev,
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++-4.8-dev,
 - libclang-common-dev (= ${binary:Version}),
 - libobjc-4.8-dev, libgcc-4.8-dev
 -Provides: c-compiler, objc-compiler, c++-compiler
++Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs},
 + libclang-common-3.2-dev (= ${binary:Version})
  Recommends: llvm-3.2-dev, python
 -Replaces: clang (<< 1:3.1), clang-3.1, compiler-rt
@@ -161,15 +162,18 @@ diff -urN ../../llvm-toolchain-3.2/debian/control llvm-3.2.src/debian/control
  Description: C, C++ and Objective-C compiler (LLVM based)
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -81,7 +75,7 @@
+@@ -81,9 +75,9 @@
   .
   This package contains the documentation.
  
 -Package: libclang1
 +Package: libclang1-3.2
  Architecture: any
- Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++-4.8-dev,
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++-4.8-dev,
++Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs}
  Description: clang library
+  Clang project is a C, C++, Objective C and Objective C++ front-end
+  for the LLVM compiler. Some of its goals include the following:
 @@ -111,12 +105,10 @@
   .
   This package contains the clang library.
@@ -198,8 +202,9 @@ diff -urN ../../llvm-toolchain-3.2/debian/control llvm-3.2.src/debian/control
 +Package: libclang-3.2-dev
  Architecture: any
  Section: libdevel
- Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++-4.8-dev,
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++-4.8-dev,
 - libclang1 (= ${binary:Version}), libclang-common-dev (= ${binary:Version})
++Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs},
 + libclang1-3.2 (= ${binary:Version}), libclang-common-3.2-dev (= ${binary:Version})
  Description: clang library - Development package
   Clang project is a C, C++, Objective C and Objective C++ front-end
@@ -943,7 +948,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/python-clang-3.2.install llvm-3.2.src/
 +clang/bindings/python/tests		usr/share/doc/python-clang-3.2/
 diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
 --- ../../llvm-toolchain-3.2/debian/rules	2013-08-23 20:23:50.000000000 +0900
-+++ llvm-3.2.src/debian/rules	2014-09-19 19:08:47.221501437 +0900
++++ llvm-3.2.src/debian/rules	2014-09-21 20:49:17.664051376 +0900
 @@ -1,15 +1,19 @@
  #!/usr/bin/make -f
  
@@ -966,7 +971,21 @@ diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
  
  DEB_HOST_MULTIARCH  = $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
  DEB_HOST_GNU_TYPE   = $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-@@ -41,13 +45,22 @@
+@@ -35,19 +39,36 @@
+   opt_flags += -marm
+ endif
+ 
++ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' g++-$(GCC_VERSION)) ge 4.8-20121128-1~ ; echo $$?),0)
++	control_vars = '-Vdep:devlibs=libstdc++-$(GCC_VERSION)-dev, libgcc-$(GCC_VERSION)-dev'
++else ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' g++-$(GCC_VERSION)) ge 4.7.2-10~ ; echo $$?),0)
++	control_vars = '-Vdep:devlibs=libstdc++6-$(GCC_VERSION)-dev, libgcc-$(GCC_VERSION)-dev'
++else
++	control_vars = '-Vdep:devlibs=libstdc++6-$(GCC_VERSION)-dev'
++endif
++
+ LLDB_ARCHS :=
+ LLDB_ENABLE=no
+ ifneq (,$(findstring $(DEB_HOST_ARCH),$(LLDB_ARCHS)))
  	LLDB_ENABLE=yes
  endif
  
@@ -992,7 +1011,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
  	echo "Using gcc: "
  	$(CC) -v
  	mkdir -p $(TARGET_BUILD)
-@@ -126,12 +139,13 @@
+@@ -126,12 +147,13 @@
  		mv $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/liblldb.so $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/liblldb.so.$(SONAME_EXT); \
  	fi
  
@@ -1010,7 +1029,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
  # Create this fake directory to make the install libclang-common-dev happy
  # under the unsupported archs of compiler-rt
  	mkdir -p $(CURDIR)/debian/tmp/usr/lib/clang/$(LLVM_VERSION)/lib
-@@ -154,6 +168,20 @@
+@@ -154,6 +176,20 @@
  
  	mv $(CURDIR)/build-llvm/tools/clang/docs/tools/clang.1 $(CURDIR)/build-llvm/tools/clang/docs/tools/clang-$(LLVM_VERSION).1
  
@@ -1031,7 +1050,7 @@ diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
  # Remove some license files
  	rm $(CURDIR)/debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/include/llvm/Support/LICENSE.TXT
  
-@@ -172,13 +200,18 @@
+@@ -172,20 +208,33 @@
  
  .PHONY: override_dh_strip
  override_dh_strip:
@@ -1052,7 +1071,12 @@ diff -urN ../../llvm-toolchain-3.2/debian/rules llvm-3.2.src/debian/rules
  override_dh_auto_test:
  	$(MAKE) -C $(TARGET_BUILD) check || true
  
-@@ -188,4 +221,9 @@
++override_dh_gencontrol:
++	dh_gencontrol -- $(control_vars)
++
+ override_dh_auto_clean:
+ 	rm -rf $(TARGET_BUILD) tools/clang/include/clang/Debian/debian_path.h docs/_build/
+ 	rm -f `ls debian/*.in|sed -e "s|.in$$||g"`
  	find utils -name '*.pyc' | xargs -r rm -f
  	find test -name '*.pyc' -o -name '*.o' -o -name '*.cm[ix]' | xargs -r rm -f
  	rm -f tools/clang tools/polly tools/lldb projects/compiler-rt
