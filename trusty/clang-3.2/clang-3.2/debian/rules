@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 TARGET_BUILD	:= build-clang
-GCC_VERSION     := 4.7
+GCC_VERSION     := 4.6
 LLVM_VERSION	:= 3.2
 SONAME_EXT      := 1
 DEBIAN_REVISION := $(shell dpkg-parsechangelog | sed -rne 's,^Version: .*-(.*),\1,p')

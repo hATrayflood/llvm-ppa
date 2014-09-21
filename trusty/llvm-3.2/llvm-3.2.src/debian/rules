@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 TARGET_BUILD	:= $(CURDIR)/build-llvm
-GCC_VERSION     := 4.7
+GCC_VERSION     := 4.6
 SONAME_EXT      := 1
 LLVM_FULL_VERSION :=$(shell dpkg-parsechangelog | sed -rne 's,^Version: (.*),\1,p')
 LLVM_VERSION	:= $(shell dpkg-parsechangelog | sed -rne 's,^Version: ([^-+~]+).*,\1,p')

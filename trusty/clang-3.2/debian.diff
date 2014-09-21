@@ -125,7 +125,7 @@ diff -urN ../../clang-3.2/debian/compiler-rt-3.2.install clang-3.2/debian/compil
 +build-clang/tools/clang/runtime/compiler-rt/clang_linux/full-*/ /usr/lib/clang/3.2/
 diff -urN ../../clang-3.2/debian/control clang-3.2/debian/control
 --- ../../clang-3.2/debian/control	2013-04-03 02:43:05.000000000 +0900
-+++ clang-3.2/debian/control	2014-07-24 16:05:11.495527940 +0900
++++ clang-3.2/debian/control	2014-09-21 12:16:55.409549355 +0900
 @@ -1,56 +1,23 @@
 -Source: clang
 +Source: clang-3.2
@@ -142,7 +142,7 @@ diff -urN ../../clang-3.2/debian/control clang-3.2/debian/control
 -    llvm-3.2-source (>= 3.2), chrpath, python, 
 -    binutils-gold [amd64 armel armhf i386 powerpc powerpcspe ppc64 sparc sparc64 x32]
 +    llvm-3.2-source (>= 3.2), chrpath, python,
-+    gcc-4.7, g++-4.7
++    gcc-4.6, g++-4.6
  Build-Conflicts: oprofile, ocaml
  Standards-Version: 3.9.3
 -Homepage: http://clang.llvm.org/
@@ -184,7 +184,7 @@ diff -urN ../../clang-3.2/debian/control clang-3.2/debian/control
 -Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev, libgcc-4.7-dev,
 - libobjc-4.7-dev, libclang-common-dev (= ${binary:Version}), compiler-rt (= ${binary:Version}) [amd64 i386]
 -Provides: c-compiler, objc-compiler, c++-compiler
-+Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev,
++Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
 + libclang-common-3.2-dev (= ${binary:Version}), compiler-rt-3.2 (= ${binary:Version}) [amd64 i386]
  Recommends: llvm-3.2-dev, python
 -Replaces: clang (<< 1:3.1), clang-3.1
@@ -192,15 +192,18 @@ diff -urN ../../clang-3.2/debian/control clang-3.2/debian/control
  Description: C, C++ and Objective-C compiler (LLVM based)
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Some of its goals include the following:
-@@ -107,7 +74,7 @@
+@@ -107,9 +74,9 @@
   .
   This package contains the documentation.
  
 -Package: libclang1
 +Package: libclang1-3.2
  Architecture: any
- Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev
++Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev
  Description: clang library
+  Clang project is a C, C++, Objective C and Objective C++ front-end
+  for the LLVM compiler. Some of its goals include the following:
 @@ -137,12 +104,10 @@
   .
   This package contains the clang library.
@@ -229,8 +232,9 @@ diff -urN ../../clang-3.2/debian/control clang-3.2/debian/control
 +Package: libclang-3.2-dev
  Architecture: any
  Section: libdevel
- Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev,
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev,
 - libclang1 (= ${binary:Version}), libclang-common-dev
++Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
 + libclang1-3.2 (= ${binary:Version}), libclang-common-3.2-dev (= ${binary:Version})
  Description: clang library - Development package
   Clang project is a C, C++, Objective C and Objective C++ front-end
@@ -586,8 +590,15 @@ diff -urN ../../clang-3.2/debian/python-clang-3.2.install clang-3.2/debian/pytho
 +tools/clang/bindings/python/tests	usr/share/doc/python-clang-3.2/
 diff -urN ../../clang-3.2/debian/rules clang-3.2/debian/rules
 --- ../../clang-3.2/debian/rules	2013-03-15 22:45:44.000000000 +0900
-+++ clang-3.2/debian/rules	2014-09-20 17:25:00.564079694 +0900
-@@ -7,8 +7,12 @@
++++ clang-3.2/debian/rules	2014-09-21 12:17:04.473060324 +0900
+@@ -1,14 +1,18 @@
+ #!/usr/bin/make -f
+ 
+ TARGET_BUILD	:= build-clang
+-GCC_VERSION     := 4.7
++GCC_VERSION     := 4.6
+ LLVM_VERSION	:= 3.2
+ SONAME_EXT      := 1
  DEBIAN_REVISION := $(shell dpkg-parsechangelog | sed -rne 's,^Version: .*-(.*),\1,p')
  ifneq (,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
    NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))

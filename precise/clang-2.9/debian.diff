@@ -13,8 +13,8 @@ diff -urN ../../clang-2.9/debian/changelog clang-2.9/debian/changelog
    * Fix one more path issues under i386 ... (Closes: #643959)
 diff -urN ../../clang-2.9/debian/control clang-2.9/debian/control
 --- ../../clang-2.9/debian/control	2011-10-13 20:37:00.000000000 +0900
-+++ clang-2.9/debian/control	2014-09-21 01:47:07.055730608 +0900
-@@ -1,22 +1,20 @@
++++ clang-2.9/debian/control	2014-09-21 13:16:40.501567238 +0900
+@@ -1,22 +1,21 @@
 -Source: clang
 +Source: clang-2.9
  Section: devel
@@ -30,6 +30,7 @@ diff -urN ../../clang-2.9/debian/control clang-2.9/debian/control
 -    lsb-release, patchutils, diffstat, xz-utils, llvm-2.9-dev (>= 2.9), llvm-2.9-source (>= 2.9)
 -Build-Conflicts: oprofile, ocaml, ocaml-nox
 +    lsb-release, patchutils, diffstat, xz-utils, llvm-2.9-dev (>= 2.9), llvm-2.9-source (>= 2.9), python,
++    gcc-4.6, g++-4.6
 +Build-Conflicts: oprofile, ocaml
  Standards-Version: 3.9.2
 -Homepage: http://www.llvm.org/
@@ -47,7 +48,7 @@ diff -urN ../../clang-2.9/debian/control clang-2.9/debian/control
  Recommends: llvm-2.9-dev, python
  Description: Low-Level Virtual Machine (LLVM), C language family frontend
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
-@@ -54,7 +52,7 @@
+@@ -54,7 +53,7 @@
      * A single unified parser for C, Objective C, C++, and Objective C++
      * Conformance with C/C++/ObjC and their variants
  
@@ -56,7 +57,7 @@ diff -urN ../../clang-2.9/debian/control clang-2.9/debian/control
  Architecture: any
  Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev
  Description: clang library
-@@ -95,11 +93,11 @@
+@@ -95,11 +94,11 @@
   .
   This package contains the clang library.
  
@@ -70,7 +71,7 @@ diff -urN ../../clang-2.9/debian/control clang-2.9/debian/control
  Description: clang library - Development package
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
-@@ -137,3 +135,52 @@
+@@ -137,3 +136,52 @@
      * Conformance with C/C++/ObjC and their variants
   .
   This package contains the clang headers.
@@ -219,8 +220,8 @@ diff -urN ../../clang-2.9/debian/control.in/python-clang clang-2.9/debian/contro
 + This binding package provides access to the Clang compiler and libraries.
 diff -urN ../../clang-2.9/debian/control.in/source clang-2.9/debian/control.in/source
 --- ../../clang-2.9/debian/control.in/source	2011-06-27 17:12:38.000000000 +0900
-+++ clang-2.9/debian/control.in/source	2014-07-26 09:27:55.510043952 +0900
-@@ -1,16 +1,13 @@
++++ clang-2.9/debian/control.in/source	2014-09-21 12:33:14.396670321 +0900
+@@ -1,16 +1,14 @@
  Source: @PKGSOURCE@
  Section: devel
 -Priority: optional
@@ -234,6 +235,7 @@ diff -urN ../../clang-2.9/debian/control.in/source clang-2.9/debian/control.in/s
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
 -    lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@
 +    lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@, python,
++    gcc-4.6, g++-4.6
  Build-Conflicts: oprofile @BUILDCONFLICTS@
  Standards-Version: 3.9.2
 -Homepage: http://www.llvm.org/

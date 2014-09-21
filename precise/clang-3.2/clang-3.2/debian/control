@@ -6,7 +6,8 @@ Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl8.5, expect,
     autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
     lsb-release, patchutils, diffstat, xz-utils, llvm-3.2-dev (>= 3.2),
-    llvm-3.2-source (>= 3.2), chrpath, python
+    llvm-3.2-source (>= 3.2), chrpath, python,
+    gcc-4.6, g++-4.6
 Build-Conflicts: oprofile, ocaml
 Standards-Version: 3.9.3
 Homepage: https://launchpad.net/~h-rayflood/+archive/llvm

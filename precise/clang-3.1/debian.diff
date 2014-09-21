@@ -13,8 +13,8 @@ diff -urN ../../clang-3.1/debian/changelog clang-3.1/debian/changelog
    * Also ship clang static libraries for the plugin developments
 diff -urN ../../clang-3.1/debian/control clang-3.1/debian/control
 --- ../../clang-3.1/debian/control	2012-06-28 07:12:08.000000000 +0900
-+++ clang-3.1/debian/control	2014-09-21 01:40:45.560679945 +0900
-@@ -1,26 +1,21 @@
++++ clang-3.1/debian/control	2014-09-21 13:14:36.407029589 +0900
+@@ -1,26 +1,22 @@
 -Source: clang
 +Source: clang-3.1
  Section: devel
@@ -28,8 +28,8 @@ diff -urN ../../clang-3.1/debian/control clang-3.1/debian/control
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
 -    lsb-release, patchutils, diffstat, xz-utils, llvm-3.1-dev (>= 3.1), llvm-3.1-source (>= 3.1),
--    gcc-4.6, g++-4.6
 +    lsb-release, patchutils, diffstat, xz-utils, llvm-3.1-dev (>= 3.1), llvm-3.1-source (>= 3.1), python,
+     gcc-4.6, g++-4.6
  Build-Conflicts: oprofile, ocaml
  Standards-Version: 3.9.3
 -Homepage: http://www.llvm.org/
@@ -49,7 +49,7 @@ diff -urN ../../clang-3.1/debian/control clang-3.1/debian/control
  Recommends: llvm-3.1-dev, python
  Description: Low-Level Virtual Machine (LLVM), C language family frontend
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
-@@ -58,7 +53,7 @@
+@@ -58,7 +54,7 @@
      * A single unified parser for C, Objective C, C++, and Objective C++
      * Conformance with C/C++/ObjC and their variants
  
@@ -58,7 +58,7 @@ diff -urN ../../clang-3.1/debian/control clang-3.1/debian/control
  Architecture: any
  Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev
  Description: clang library
-@@ -99,11 +94,11 @@
+@@ -99,11 +95,11 @@
   .
   This package contains the clang library.
  
@@ -72,7 +72,7 @@ diff -urN ../../clang-3.1/debian/control clang-3.1/debian/control
  Description: clang library - Development package
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
   tools that make it easy to build compilers, optimizers, Just-In-Time
-@@ -142,9 +137,9 @@
+@@ -142,9 +138,9 @@
   .
   This package contains the clang headers to develop extensions over libclang.
  
@@ -84,7 +84,7 @@ diff -urN ../../clang-3.1/debian/control clang-3.1/debian/control
  Section: libdevel
  Description: clang library - Common development package
   The Low-Level Virtual Machine (LLVM) is a collection of libraries and
-@@ -183,3 +178,10 @@
+@@ -183,3 +179,10 @@
      * Conformance with C/C++/ObjC and their variants
   .
   This package contains the clang generic headers.
@@ -159,8 +159,8 @@ diff -urN ../../clang-3.1/debian/control.in/python-clang clang-3.1/debian/contro
 + This binding package provides access to the Clang compiler and libraries.
 diff -urN ../../clang-3.1/debian/control.in/source clang-3.1/debian/control.in/source
 --- ../../clang-3.1/debian/control.in/source	2012-06-21 18:03:51.000000000 +0900
-+++ clang-3.1/debian/control.in/source	2014-07-26 09:31:23.047253496 +0900
-@@ -1,18 +1,14 @@
++++ clang-3.1/debian/control.in/source	2014-09-21 12:30:46.042148301 +0900
+@@ -1,18 +1,15 @@
  Source: @PKGSOURCE@
  Section: devel
 -Priority: optional
@@ -173,8 +173,8 @@ diff -urN ../../clang-3.1/debian/control.in/source clang-3.1/debian/control.in/s
      autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
 -    lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@,
--    gcc-4.6, g++-4.6
 +    lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@, python,
+     gcc-4.6, g++-4.6
  Build-Conflicts: oprofile @BUILDCONFLICTS@
  Standards-Version: 3.9.3
 -Homepage: http://www.llvm.org/

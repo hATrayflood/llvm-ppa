@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl8.5, expect,
     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
     lsb-release, patchutils, diffstat, xz-utils, llvm-3.2-dev (>= 3.2),
     llvm-3.2-source (>= 3.2), chrpath, python,
-    gcc-4.7, g++-4.7
+    gcc-4.6, g++-4.6
 Build-Conflicts: oprofile, ocaml
 Standards-Version: 3.9.3
 Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
@@ -15,7 +15,7 @@ Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
 
 Package: clang-3.2
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev,
+Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
  libclang-common-3.2-dev (= ${binary:Version}), compiler-rt-3.2 (= ${binary:Version}) [amd64 i386]
 Recommends: llvm-3.2-dev, python
 Description: C, C++ and Objective-C compiler (LLVM based)
@@ -76,7 +76,7 @@ Description: C, C++ and Objective-C compiler (LLVM based) - Documentation
 
 Package: libclang1-3.2
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev
+Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev
 Description: clang library
  Clang project is a C, C++, Objective C and Objective C++ front-end
  for the LLVM compiler. Some of its goals include the following:
@@ -137,7 +137,7 @@ Description: clang Relax NG schema for the XML
 Package: libclang-3.2-dev
 Architecture: any
 Section: libdevel
-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.7-dev,
+Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
  libclang1-3.2 (= ${binary:Version}), libclang-common-3.2-dev (= ${binary:Version})
 Description: clang library - Development package
  Clang project is a C, C++, Objective C and Objective C++ front-end

@@ -13,7 +13,7 @@ diff -urN ../../llvm-3.2/debian/changelog llvm-3.2.src/debian/changelog
    * Fixes a segfault in the exception table of the JIT code emitter.
 diff -urN ../../llvm-3.2/debian/control llvm-3.2.src/debian/control
 --- ../../llvm-3.2/debian/control	2012-12-26 21:37:58.000000000 +0900
-+++ llvm-3.2.src/debian/control	2014-07-24 15:48:54.250681693 +0900
++++ llvm-3.2.src/debian/control	2014-09-21 12:09:18.084057897 +0900
 @@ -1,18 +1,17 @@
  Source: llvm-3.2
  Section: devel
@@ -29,7 +29,7 @@ diff -urN ../../llvm-3.2/debian/control llvm-3.2.src/debian/control
 -    binutils-dev (>= 2.20.51.20100222-1~), ocaml-nox (>= 3.11.2), ocaml-best-compilers | ocaml-nox, dh-ocaml (>= 0.9.1)
 +    lsb-release, xz-utils, python, python-sphinx,
 +    binutils-dev (>= 2.20.51.20100222-1~), ocaml-nox (>= 3.11.2), ocaml-best-compilers | ocaml-nox, dh-ocaml (>= 0.9.1),
-+    gcc-4.7, g++-4.7
++    gcc-4.6, g++-4.6
  Build-Conflicts: oprofile
  Standards-Version: 3.9.3
 -Homepage: http://www.llvm.org/
@@ -141,12 +141,12 @@ diff -urN ../../llvm-3.2/debian/llvm-3.2-runtime.prerm.in llvm-3.2.src/debian/ll
 -
 diff -urN ../../llvm-3.2/debian/rules llvm-3.2.src/debian/rules
 --- ../../llvm-3.2/debian/rules	2013-03-22 17:06:52.000000000 +0900
-+++ llvm-3.2.src/debian/rules	2014-07-24 15:45:54.533790772 +0900
++++ llvm-3.2.src/debian/rules	2014-09-21 12:09:05.662208921 +0900
 @@ -1,19 +1,28 @@
  #!/usr/bin/make -f
  
  TARGET_BUILD	:= $(CURDIR)/build-llvm
-+GCC_VERSION     := 4.7
++GCC_VERSION     := 4.6
  SONAME_EXT      := 1
  LLVM_FULL_VERSION :=$(shell dpkg-parsechangelog | sed -rne 's,^Version: (.*),\1,p')
  LLVM_VERSION	:= $(shell dpkg-parsechangelog | sed -rne 's,^Version: ([^-+~]+).*,\1,p')
