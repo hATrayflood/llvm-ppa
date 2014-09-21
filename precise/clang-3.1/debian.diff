@@ -13,7 +13,7 @@ diff -urN ../../clang-3.1/debian/changelog clang-3.1/debian/changelog
    * Also ship clang static libraries for the plugin developments
 diff -urN ../../clang-3.1/debian/control clang-3.1/debian/control
 --- ../../clang-3.1/debian/control	2012-06-28 07:12:08.000000000 +0900
-+++ clang-3.1/debian/control	2014-07-26 09:31:27.133229852 +0900
++++ clang-3.1/debian/control	2014-09-21 01:40:45.560679945 +0900
 @@ -1,26 +1,21 @@
 -Source: clang
 +Source: clang-3.1
@@ -186,39 +186,43 @@ diff -urN ../../clang-3.1/debian/control.in/source clang-3.1/debian/control.in/s
  
 diff -urN ../../clang-3.1/debian/debhelper.in/clang.install clang-3.1/debian/debhelper.in/clang.install
 --- ../../clang-3.1/debian/debhelper.in/clang.install	2012-06-01 21:50:18.000000000 +0900
-+++ clang-3.1/debian/debhelper.in/clang.install	2014-05-09 17:45:31.476094327 +0900
-@@ -1,5 +1,4 @@
++++ clang-3.1/debian/debhelper.in/clang.install	2014-09-20 22:31:44.724748000 +0900
+@@ -1,5 +1,6 @@
 -debian/@TMP@/@PF@/bin/clang			@PF@/bin/
 -debian/@TMP@/@PF@/bin/clang++			@PF@/bin/
 -tools/clang/tools/scan-build			@PF@/share/clang/
 -tools/clang/tools/scan-view			@PF@/share/clang/
 -debian/@TMP@/@PF@/share/man/man1/clang.1	usr/share/man/man1/
-+debian/@TMP@/@PF@/bin/clang			@PF@/lib/llvm-3.1/bin/
-+debian/@TMP@/@PF@/bin/clang++			@PF@/lib/llvm-3.1/bin/
-+tools/clang/tools/scan-build			@PF@/lib/llvm-3.1/share/
-+tools/clang/tools/scan-view			@PF@/lib/llvm-3.1/share/
++debian/@TMP@/@PF@/bin/clang			@PF@/lib/llvm-@UVERSION@/bin/
++debian/@TMP@/@PF@/bin/clang++			@PF@/lib/llvm-@UVERSION@/bin/
++debian/@TMP@/@PF@/bin/clang-tblgen		@PF@/lib/llvm-@UVERSION@/bin/
++debian/@TMP@/@PF@/bin/c-index-test		@PF@/lib/llvm-@UVERSION@/bin/
++tools/clang/tools/scan-build-@UVERSION@		usr/share/clang/
++tools/clang/tools/scan-view-@UVERSION@		usr/share/clang/
 diff -urN ../../clang-3.1/debian/debhelper.in/clang.links clang-3.1/debian/debhelper.in/clang.links
 --- ../../clang-3.1/debian/debhelper.in/clang.links	2012-06-01 21:50:18.000000000 +0900
-+++ clang-3.1/debian/debhelper.in/clang.links	2014-05-09 17:45:31.476094327 +0900
-@@ -1,5 +1,7 @@
++++ clang-3.1/debian/debhelper.in/clang.links	2014-09-20 23:03:04.665638000 +0900
+@@ -1,5 +1,9 @@
 -usr/share/man/man1/clang.1.gz		usr/share/man/man1/llvm-clang.1.gz
 -usr/share/man/man1/clang.1.gz		usr/share/man/man1/clang++.1.gz
 -@PF@/share/clang/scan-build/scan-build	@PF@/bin/scan-build
 -@PF@/share/clang/scan-view/scan-view	@PF@/bin/scan-view
 -@PF@/bin/clang				@PF@/bin/llvm-clang
-+usr/share/man/man1/clang-3.1.1.gz		usr/share/man/man1/llvm-clang-3.1.1.gz
-+usr/share/man/man1/clang-3.1.1.gz		usr/share/man/man1/clang++-3.1.1.gz
-+usr/lib/llvm-3.1/share/scan-build/scan-build	usr/bin/scan-build-3.1
-+usr/lib/llvm-3.1/share/scan-view/scan-view	usr/bin/scan-view-3.1
-+usr/lib/llvm-3.1/bin/clang			usr/bin/llvm-clang-3.1
-+usr/lib/llvm-3.1/bin/clang			usr/bin/clang-3.1
-+usr/lib/llvm-3.1/bin/clang++			usr/bin/clang++-3.1
++usr/share/man/man1/clang-@UVERSION@.1.gz		usr/share/man/man1/llvm-clang-@UVERSION@.1.gz
++usr/share/man/man1/clang-@UVERSION@.1.gz		usr/share/man/man1/clang++-@UVERSION@.1.gz
++usr/share/clang/scan-build-@UVERSION@/scan-build	usr/bin/scan-build-@UVERSION@
++usr/share/clang/scan-view-@UVERSION@/scan-view		usr/bin/scan-view-@UVERSION@
++usr/lib/llvm-@UVERSION@/bin/clang			usr/bin/llvm-clang-@UVERSION@
++usr/lib/llvm-@UVERSION@/bin/clang			usr/bin/clang-@UVERSION@
++usr/lib/llvm-@UVERSION@/bin/clang++			usr/bin/clang++-@UVERSION@
++usr/lib/llvm-@UVERSION@/bin/clang-tblgen		usr/bin/clang-tblgen-@UVERSION@
++usr/lib/llvm-@UVERSION@/bin/c-index-test		usr/bin/c-index-test-@UVERSION@
 diff -urN ../../clang-3.1/debian/debhelper.in/clang.manpages clang-3.1/debian/debhelper.in/clang.manpages
 --- ../../clang-3.1/debian/debhelper.in/clang.manpages	2012-06-01 21:50:18.000000000 +0900
-+++ clang-3.1/debian/debhelper.in/clang.manpages	2014-05-09 17:45:31.476094327 +0900
++++ clang-3.1/debian/debhelper.in/clang.manpages	2014-09-20 22:47:49.934692000 +0900
 @@ -1 +1,3 @@
 -debian/man/scan*.1
-+debian/@TMP@/@PF@/share/man/man1/clang.1
++build-clang/tools/clang/docs/tools/clang.1
 +debian/man/scan-build.1
 +debian/man/scan-view.1
 diff -urN ../../clang-3.1/debian/debhelper.in/clang.postinst clang-3.1/debian/debhelper.in/clang.postinst
@@ -262,41 +266,41 @@ diff -urN ../../clang-3.1/debian/debhelper.in/clang.prerm clang-3.1/debian/debhe
 -exit 0
 diff -urN ../../clang-3.1/debian/debhelper.in/libclang-dev.install clang-3.1/debian/debhelper.in/libclang-dev.install
 --- ../../clang-3.1/debian/debhelper.in/libclang-dev.install	2012-06-28 07:10:09.000000000 +0900
-+++ clang-3.1/debian/debhelper.in/libclang-dev.install	2014-05-09 17:45:31.476094327 +0900
++++ clang-3.1/debian/debhelper.in/libclang-dev.install	2014-09-20 23:03:52.170110000 +0900
 @@ -1,4 +1,3 @@
 -debian/@TMP@/@PF@/include/clang                  @PF@/include/
 -debian/@TMP@/@PF@/include/clang-c                @PF@/include/
 -debian/@TMP@/@PF@/lib/libclang.so                @PF@/lib/
 -debian/@TMP@/@PF@/lib/libclang*a                 @PF@/lib/
-+debian/@TMP@/@PF@/include/clang                  @PF@/lib/llvm-3.1/include/
-+debian/@TMP@/@PF@/include/clang-c                @PF@/lib/llvm-3.1/include/
-+debian/@TMP@/@PF@/lib/libclang*a                 @PF@/lib/llvm-3.1/lib/
++debian/@TMP@/@PF@/include/clang                  @PF@/lib/llvm-@UVERSION@/include/
++debian/@TMP@/@PF@/include/clang-c                @PF@/lib/llvm-@UVERSION@/include/
++debian/@TMP@/@PF@/lib/libclang*a                 @PF@/lib/llvm-@UVERSION@/lib/
 diff -urN ../../clang-3.1/debian/debhelper.in/libclang-dev.links clang-3.1/debian/debhelper.in/libclang-dev.links
 --- ../../clang-3.1/debian/debhelper.in/libclang-dev.links	1970-01-01 09:00:00.000000000 +0900
-+++ clang-3.1/debian/debhelper.in/libclang-dev.links	2014-05-09 17:45:31.476094327 +0900
++++ clang-3.1/debian/debhelper.in/libclang-dev.links	2014-09-20 23:04:41.697577000 +0900
 @@ -0,0 +1,3 @@
-+usr/lib/@DEB_HOST_MULTIARCH@/libclang-3.1.so.1 usr/lib/@DEB_HOST_MULTIARCH@/libclang-3.1.so
-+usr/lib/@DEB_HOST_MULTIARCH@/libclang-3.1.so.1 usr/lib/llvm-3.1/lib/libclang-3.1.so
-+usr/lib/@DEB_HOST_MULTIARCH@/libclang-3.1.so.1 usr/lib/llvm-3.1/lib/libclang.so
++usr/lib/@DEB_HOST_MULTIARCH@/libclang-@UVERSION@.so.1 usr/lib/@DEB_HOST_MULTIARCH@/libclang-@UVERSION@.so
++usr/lib/@DEB_HOST_MULTIARCH@/libclang-@UVERSION@.so.1 usr/lib/llvm-@UVERSION@/lib/libclang-@UVERSION@.so
++usr/lib/@DEB_HOST_MULTIARCH@/libclang-@UVERSION@.so.1 usr/lib/llvm-@UVERSION@/lib/libclang.so
 diff -urN ../../clang-3.1/debian/debhelper.in/libclang1.install clang-3.1/debian/debhelper.in/libclang1.install
 --- ../../clang-3.1/debian/debhelper.in/libclang1.install	2012-06-01 21:50:18.000000000 +0900
-+++ clang-3.1/debian/debhelper.in/libclang1.install	2014-05-09 17:45:31.476094327 +0900
++++ clang-3.1/debian/debhelper.in/libclang1.install	2014-09-20 23:04:59.740645000 +0900
 @@ -1 +1 @@
 -debian/@TMP@/@PF@/lib/libclang.so.1                       @PF@/lib/
-+debian/@TMP@/@PF@/lib/libclang-3.1.so.1 /usr/lib/@DEB_HOST_MULTIARCH@/
++debian/@TMP@/@PF@/lib/libclang-@UVERSION@.so.1 /usr/lib/@DEB_HOST_MULTIARCH@/
 diff -urN ../../clang-3.1/debian/debhelper.in/libclang1.links clang-3.1/debian/debhelper.in/libclang1.links
 --- ../../clang-3.1/debian/debhelper.in/libclang1.links	1970-01-01 09:00:00.000000000 +0900
-+++ clang-3.1/debian/debhelper.in/libclang1.links	2014-05-09 17:45:31.476094327 +0900
++++ clang-3.1/debian/debhelper.in/libclang1.links	2014-09-20 23:05:22.161537000 +0900
 @@ -0,0 +1 @@
-+usr/lib/@DEB_HOST_MULTIARCH@/libclang-3.1.so.1 usr/lib/llvm-3.1/lib/libclang.so.1
++usr/lib/@DEB_HOST_MULTIARCH@/libclang-@UVERSION@.so.1 usr/lib/llvm-@UVERSION@/lib/libclang.so.1
 diff -urN ../../clang-3.1/debian/debhelper.in/python-clang.install clang-3.1/debian/debhelper.in/python-clang.install
 --- ../../clang-3.1/debian/debhelper.in/python-clang.install	1970-01-01 09:00:00.000000000 +0900
-+++ clang-3.1/debian/debhelper.in/python-clang.install	2014-05-09 17:45:31.476094327 +0900
++++ clang-3.1/debian/debhelper.in/python-clang.install	2014-09-20 23:05:45.497980000 +0900
 @@ -0,0 +1,4 @@
 +tools/clang/bindings/python/clang/*	@PF@/lib/python2.7/dist-packages/clang31/
-+tools/clang/bindings/python/README.txt	@PF@/share/doc/python-clang-3.1/
-+tools/clang/bindings/python/examples	@PF@/share/doc/python-clang-3.1/
-+tools/clang/bindings/python/tests	@PF@/share/doc/python-clang-3.1/
++tools/clang/bindings/python/README.txt	@PF@/share/doc/python-clang-@UVERSION@/
++tools/clang/bindings/python/examples	@PF@/share/doc/python-clang-@UVERSION@/
++tools/clang/bindings/python/tests	@PF@/share/doc/python-clang-@UVERSION@/
 diff -urN ../../clang-3.1/debian/patches/28-gcc-4.7-paths-clang-3.1.diff clang-3.1/debian/patches/28-gcc-4.7-paths-clang-3.1.diff
 --- ../../clang-3.1/debian/patches/28-gcc-4.7-paths-clang-3.1.diff	1970-01-01 09:00:00.000000000 +0900
 +++ clang-3.1/debian/patches/28-gcc-4.7-paths-clang-3.1.diff	2014-05-09 17:45:31.476094327 +0900
@@ -351,6 +355,21 @@ diff -urN ../../clang-3.1/debian/patches/28-gcc-4.7-paths-clang-3.1.diff clang-3
 +   }
 + }
 + 
+diff -urN ../../clang-3.1/debian/patches/32-scan-build-path.diff clang-3.1/debian/patches/32-scan-build-path.diff
+--- ../../clang-3.1/debian/patches/32-scan-build-path.diff	1970-01-01 09:00:00.000000000 +0900
++++ clang-3.1/debian/patches/32-scan-build-path.diff	2014-09-20 22:36:20.680072000 +0900
+@@ -0,0 +1,11 @@
++--- clang-3.1-3.1.orig/tools/clang/tools/scan-build/scan-build
+++++ clang-3.1-3.1/tools/clang/tools/scan-build/scan-build
++@@ -81,7 +81,7 @@ sub DieDiag {
++ ##----------------------------------------------------------------------------##
++ 
++ # Find 'clang'
++-my $ClangSB = Cwd::realpath("$RealBin/bin/clang");
+++my $ClangSB = Cwd::realpath("/usr/lib/llvm-3.1/bin/clang");
++ if (!defined $ClangSB || ! -x $ClangSB) {
++   $ClangSB = Cwd::realpath("$RealBin/clang");
++ }
 diff -urN ../../clang-3.1/debian/patches/99-python-bindings.patch clang-3.1/debian/patches/99-python-bindings.patch
 --- ../../clang-3.1/debian/patches/99-python-bindings.patch	1970-01-01 09:00:00.000000000 +0900
 +++ clang-3.1/debian/patches/99-python-bindings.patch	2014-05-09 17:45:31.476094327 +0900
@@ -510,17 +529,18 @@ diff -urN ../../clang-3.1/debian/patches/python-clangpath.diff clang-3.1/debian/
 + # object. This is a problem, because it means that from_parameter will see an
 diff -urN ../../clang-3.1/debian/patches/series clang-3.1/debian/patches/series
 --- ../../clang-3.1/debian/patches/series	2012-06-26 06:31:47.000000000 +0900
-+++ clang-3.1/debian/patches/series	2014-05-09 17:45:31.476094327 +0900
-@@ -4,3 +4,6 @@
++++ clang-3.1/debian/patches/series	2014-09-20 22:36:41.353830000 +0900
+@@ -4,3 +4,7 @@
  21-searchPathHeaders.diff
  23-strlcpy_strlcat_warning_removed.diff
  26-disable_SplitsOnSpaces.diff
 +28-gcc-4.7-paths-clang-3.1.diff
++32-scan-build-path.diff
 +python-clangpath.diff
 +99-python-bindings.patch
 diff -urN ../../clang-3.1/debian/rules clang-3.1/debian/rules
 --- ../../clang-3.1/debian/rules	2012-06-01 21:50:18.000000000 +0900
-+++ clang-3.1/debian/rules	2014-05-09 17:45:31.476094327 +0900
++++ clang-3.1/debian/rules	2014-09-20 22:35:19.894175000 +0900
 @@ -17,7 +17,7 @@
  
  define pkgname
@@ -530,16 +550,18 @@ diff -urN ../../clang-3.1/debian/rules clang-3.1/debian/rules
  endef
  
  define buildof
-@@ -36,5 +36,6 @@
+@@ -36,5 +36,8 @@
  endif
  	$(RM) -r $(D)/debian/ccache
  	find utils -name '*.py[co]' | xargs rm -f
 +	$(RM) tools/clang/include/clang/Debian/debian_path.h
++	rm -rf tools/clang/tools/scan-build-$(UVERSION)
++	rm -rf tools/clang/tools/scan-view-$(UVERSION)
  
  .PHONY: clean
 diff -urN ../../clang-3.1/debian/rules.d/binary.mk clang-3.1/debian/rules.d/binary.mk
 --- ../../clang-3.1/debian/rules.d/binary.mk	2012-06-01 21:50:18.000000000 +0900
-+++ clang-3.1/debian/rules.d/binary.mk	2014-05-09 17:45:31.476094327 +0900
++++ clang-3.1/debian/rules.d/binary.mk	2014-09-20 22:24:38.199999000 +0900
 @@ -17,6 +17,7 @@
  		-e "s/@PKG_VERSION@/$(pkg_version)/g" \
  		-e "s/@SHLIB_NAME@/$(shlib_name)/g" \
@@ -548,11 +570,22 @@ diff -urN ../../clang-3.1/debian/rules.d/binary.mk clang-3.1/debian/rules.d/bina
  		$(D)/debian/debhelper.in/$f > \
  		$(D)/debian/$(strip $(call pkgname,$*))$(strip $(suffix $(f))) \
  	&&) :
-@@ -73,6 +74,10 @@
+@@ -39,6 +40,10 @@
+ 	@echo Building package: $(call pkgname,$*)
+ 	dh_testdir
+ 	dh_testroot
++	if test $* = clang ; then \
++		cp -fR $(D)/tools/clang/tools/scan-build tools/clang/tools/scan-build-$(UVERSION) ; \
++		cp -fR $(D)/tools/clang/tools/scan-view tools/clang/tools/scan-view-$(UVERSION) ; \
++	fi
+ 	dh_installchangelogs -p$(call pkgname,$*)
+ 	dh_installdocs -p$(call pkgname,$*)
+ 	dh_installexamples -p$(call pkgname,$*)
+@@ -73,6 +78,10 @@
  	dh_fixperms -p$(call pkgname,$*)
  	DH_VERBOSE=1 dh_makeshlibs -p$(call pkgname,$*)
  	DH_VERBOSE=1 dh_shlibdeps -p$(call pkgname,$*)
-+	if test $(call pkgname,$*) = python-clang-$(UVERSION) ; then \
++	if test $* = python-clang ; then \
 +		find $(D)/debian/python-clang-$(UVERSION)/usr/share/doc/python-clang-$(UVERSION)/examples -name "*.gz" -exec gzip -d {} \; ; \
 +		find $(D)/debian/python-clang-$(UVERSION)/usr/share/doc/python-clang-$(UVERSION)/tests    -name "*.gz" -exec gzip -d {} \; ; \
 +	fi

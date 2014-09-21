@@ -1,0 +1,11 @@
+--- clang-3.1-3.1.orig/tools/clang/tools/scan-build/scan-build
++++ clang-3.1-3.1/tools/clang/tools/scan-build/scan-build
+@@ -81,7 +81,7 @@ sub DieDiag {
+ ##----------------------------------------------------------------------------##
+ 
+ # Find 'clang'
+-my $ClangSB = Cwd::realpath("$RealBin/bin/clang");
++my $ClangSB = Cwd::realpath("/usr/lib/llvm-3.1/bin/clang");
+ if (!defined $ClangSB || ! -x $ClangSB) {
+   $ClangSB = Cwd::realpath("$RealBin/clang");
+ }

@@ -40,6 +40,10 @@ $(binary-stamp)-%: dependency-% debhelper-%
 	@echo Building package: $(call pkgname,$*)
 	dh_testdir
 	dh_testroot
+	if test $* = clang ; then \
+		cp -fR $(D)/tools/clang/tools/scan-build tools/clang/tools/scan-build-$(UVERSION) ; \
+		cp -fR $(D)/tools/clang/tools/scan-view tools/clang/tools/scan-view-$(UVERSION) ; \
+	fi
 	dh_installchangelogs -p$(call pkgname,$*)
 	dh_installdocs -p$(call pkgname,$*)
 	dh_installexamples -p$(call pkgname,$*)
@@ -74,7 +78,7 @@ $(binary-stamp)-%: dependency-% debhelper-%
 	dh_fixperms -p$(call pkgname,$*)
 	DH_VERBOSE=1 dh_makeshlibs -p$(call pkgname,$*)
 	DH_VERBOSE=1 dh_shlibdeps -p$(call pkgname,$*)
-	if test $(call pkgname,$*) = python-clang-$(UVERSION) ; then \
+	if test $* = python-clang ; then \
 		find $(D)/debian/python-clang-$(UVERSION)/usr/share/doc/python-clang-$(UVERSION)/examples -name "*.gz" -exec gzip -d {} \; ; \
 		find $(D)/debian/python-clang-$(UVERSION)/usr/share/doc/python-clang-$(UVERSION)/tests    -name "*.gz" -exec gzip -d {} \; ; \
 	fi

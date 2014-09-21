@@ -1,4 +1,4 @@
-debian/@TMP@/@PF@/bin/clang			@PF@/lib/llvm-2.9/bin/
-debian/@TMP@/@PF@/bin/clang++			@PF@/lib/llvm-2.9/bin/
-tools/clang/tools/scan-build			@PF@/lib/llvm-2.9/share/
-tools/clang/tools/scan-view			@PF@/lib/llvm-2.9/share/
+debian/@TMP@/@PF@/bin/clang			@PF@/lib/llvm-@UVERSION@/bin/
+debian/@TMP@/@PF@/bin/clang++			@PF@/lib/llvm-@UVERSION@/bin/
+tools/clang/tools/scan-build-@UVERSION@		usr/share/clang/
+tools/clang/tools/scan-view-@UVERSION@		usr/share/clang/

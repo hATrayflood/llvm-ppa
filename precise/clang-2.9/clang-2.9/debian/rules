@@ -37,5 +37,7 @@ endif
 	$(RM) -r $(D)/debian/ccache
 	find utils -name '*.py[co]' | xargs rm -f
 	$(RM) tools/clang/include/clang/Debian/debian_path.h
+	rm -rf tools/clang/tools/scan-build-$(UVERSION)
+	rm -rf tools/clang/tools/scan-view-$(UVERSION)
 
 .PHONY: clean

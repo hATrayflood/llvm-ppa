@@ -1,4 +1,4 @@
 tools/clang/bindings/python/clang/*	@PF@/lib/python2.7/dist-packages/clang29/
-tools/clang/bindings/python/README.txt	@PF@/share/doc/python-clang-2.9/
-tools/clang/bindings/python/examples	@PF@/share/doc/python-clang-2.9/
-tools/clang/bindings/python/tests	@PF@/share/doc/python-clang-2.9/
+tools/clang/bindings/python/README.txt	@PF@/share/doc/python-clang-@UVERSION@/
+tools/clang/bindings/python/examples	@PF@/share/doc/python-clang-@UVERSION@/
+tools/clang/bindings/python/tests	@PF@/share/doc/python-clang-@UVERSION@/

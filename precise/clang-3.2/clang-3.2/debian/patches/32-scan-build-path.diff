@@ -7,7 +7,7 @@ Index: clang-3.2/tools/clang/tools/scan-build/scan-build
  # Find 'clang'
  if (!defined $AnalyzerDiscoveryMethod) {
 -  $Clang = Cwd::realpath("$RealBin/bin/clang");
-+  $Clang = Cwd::realpath("/usr/bin/clang");
++  $Clang = Cwd::realpath("/usr/lib/llvm-3.2/bin/clang");
    if (!defined $Clang || ! -x $Clang) {
      $Clang = Cwd::realpath("$RealBin/clang");
    }

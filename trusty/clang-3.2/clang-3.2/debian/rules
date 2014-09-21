@@ -101,9 +101,16 @@ override_dh_auto_install:
 # Create this fake directory to make the install libclang-common-dev happy
 # under the unsupported archs of compiler-rt
 	mkdir -p $(CURDIR)/debian/tmp/usr/lib/clang/$(LLVM_VERSION)/lib
-	mv $(CURDIR)/debian/tmp/usr/share/man/man1/clang.1 $(CURDIR)/debian/tmp/usr/share/man/man1/clang-$(LLVM_VERSION).1
-	cp -p $(CURDIR)/debian/man/scan-build.1 $(CURDIR)/debian/tmp/usr/share/man/man1/scan-build-$(LLVM_VERSION).1
-	cp -p $(CURDIR)/debian/man/scan-view.1  $(CURDIR)/debian/tmp/usr/share/man/man1/scan-view-$(LLVM_VERSION).1
+
+	mv $(CURDIR)/build-clang/tools/clang/docs/tools/clang.1 $(CURDIR)/build-clang/tools/clang/docs/tools/clang-$(LLVM_VERSION).1
+
+	cp $(CURDIR)/debian/man/scan-build.1 $(CURDIR)/debian/man/scan-build-$(LLVM_VERSION).1
+
+	cp $(CURDIR)/debian/man/scan-view.1 $(CURDIR)/debian/man/scan-view-$(LLVM_VERSION).1
+
+	cp -fR $(CURDIR)/tools/clang/tools/scan-build tools/clang/tools/scan-build-$(LLVM_VERSION)
+
+	cp -fR $(CURDIR)/tools/clang/tools/scan-view tools/clang/tools/scan-view-$(LLVM_VERSION)
 
 override_dh_installdeb:
 	find $(CURDIR)/debian/python-clang-$(LLVM_VERSION)/usr/share/doc/python-clang-$(LLVM_VERSION)/examples -name "*.gz" -exec gzip -d {} \;
@@ -118,3 +125,7 @@ override_dh_auto_test:
 override_dh_auto_clean:
 	rm -rf build-clang llvm-$(LLVM_VERSION) tools/clang/include/clang/Debian/debian_path.h
 	rm -f `ls debian/*.in|sed -e "s|.in$$||g"`
+	rm -f debian/man/scan-build-$(LLVM_VERSION).1
+	rm -f debian/man/scan-view-$(LLVM_VERSION).1
+	rm -rf tools/clang/tools/scan-build-$(LLVM_VERSION)
+	rm -rf tools/clang/tools/scan-view-$(LLVM_VERSION)
