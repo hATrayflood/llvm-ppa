@@ -1,19 +1,19 @@
 diff -urN ../../clang-2.9/debian/changelog clang-2.9/debian/changelog
 --- ../../clang-2.9/debian/changelog	2011-10-13 20:31:48.000000000 +0900
-+++ clang-2.9/debian/changelog	2014-07-25 16:28:28.661017296 +0900
++++ clang-2.9/debian/changelog	2014-09-22 18:21:07.588807105 +0900
 @@ -1,3 +1,9 @@
-+clang-2.9 (2.9-debian16precise0) precise; urgency=low
++clang-2.9 (2.9-debian16precise1) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 25 Jul 2014 16:30:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Mon, 22 Sep 2014 18:20:00 +0900
 +
  clang (2.9-16) unstable; urgency=low
  
    * Fix one more path issues under i386 ... (Closes: #643959)
 diff -urN ../../clang-2.9/debian/control clang-2.9/debian/control
 --- ../../clang-2.9/debian/control	2011-10-13 20:37:00.000000000 +0900
-+++ clang-2.9/debian/control	2014-09-21 13:16:40.501567238 +0900
++++ clang-2.9/debian/control	2014-09-21 19:56:30.280813328 +0900
 @@ -1,22 +1,21 @@
 -Source: clang
 +Source: clang-2.9

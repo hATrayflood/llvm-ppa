@@ -1,12 +1,12 @@
 diff -urN ../../llvm-3.0/debian/changelog llvm-3.0.src/debian/changelog
 --- ../../llvm-3.0/debian/changelog	2012-07-13 20:35:29.000000000 +0900
-+++ llvm-3.0.src/debian/changelog	2014-07-25 15:53:30.461540128 +0900
++++ llvm-3.0.src/debian/changelog	2014-09-22 18:18:14.894340644 +0900
 @@ -1,3 +1,9 @@
-+llvm-3.0 (3.0-debian10precise0) precise; urgency=low
++llvm-3.0 (3.0-debian10precise1) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 25 Jul 2014 15:55:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Mon, 22 Sep 2014 18:20:00 +0900
 +
  llvm-3.0 (3.0-10) unstable; urgency=low
  

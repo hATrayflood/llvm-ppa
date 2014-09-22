@@ -1,8 +1,8 @@
-llvm-2.9 (2.9+dfsg-debian7trusty0) trusty; urgency=low
+llvm-2.9 (2.9+dfsg-debian7trusty1) trusty; urgency=low
 
   * ppa for trusty
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Wed, 16 Jul 2014 23:30:00 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Mon, 22 Sep 2014 18:20:00 +0900
 
 llvm-2.9 (2.9+dfsg-7) unstable; urgency=low
 

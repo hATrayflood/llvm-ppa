@@ -1,12 +1,12 @@
 diff -urN ../../llvm-2.9/debian/changelog llvm-2.9/debian/changelog
 --- ../../llvm-2.9/debian/changelog	2012-05-20 23:21:30.000000000 +0900
-+++ llvm-2.9/debian/changelog	2014-07-25 16:20:24.774617792 +0900
++++ llvm-2.9/debian/changelog	2014-09-22 18:17:39.080079111 +0900
 @@ -1,3 +1,9 @@
-+llvm-2.9 (2.9+dfsg-debian7precise0) precise; urgency=low
++llvm-2.9 (2.9+dfsg-debian7precise1) precise; urgency=low
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 25 Jul 2014 16:20:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Mon, 22 Sep 2014 18:20:00 +0900
 +
  llvm-2.9 (2.9+dfsg-7) unstable; urgency=low
  

@@ -1,8 +1,8 @@
-clang-2.9 (2.9-debian16trusty0) trusty; urgency=low
+clang-2.9 (2.9-debian16trusty1) trusty; urgency=low
 
   * ppa for trusty
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Wed, 16 Jul 2014 23:45:00 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Mon, 22 Sep 2014 18:20:00 +0900
 
 clang (2.9-16) unstable; urgency=low
 

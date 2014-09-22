@@ -1,12 +1,12 @@
 diff -urN ../../clang-3.1/debian/changelog clang-3.1/debian/changelog
 --- ../../clang-3.1/debian/changelog	2012-06-28 07:10:09.000000000 +0900
-+++ clang-3.1/debian/changelog	2014-09-21 19:49:31.600180093 +0900
++++ clang-3.1/debian/changelog	2014-09-22 18:27:27.132824494 +0900
 @@ -1,3 +1,9 @@
-+clang-3.1 (3.1-debian8trusty0) trusty; urgency=low
++clang-3.1 (3.1-debian8trusty1) trusty; urgency=low
 +
 +  * ppa for trusty
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 18 Jul 2014 23:10:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Mon, 22 Sep 2014 18:20:00 +0900
 +
  clang (3.1-8) unstable; urgency=low
  

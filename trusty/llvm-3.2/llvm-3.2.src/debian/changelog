@@ -1,8 +1,8 @@
-llvm-3.2 (3.2-debian5trusty0) trusty; urgency=low
+llvm-3.2 (3.2-debian5trusty1) trusty; urgency=low
 
   * ppa for trusty
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sun, 20 Jul 2014 17:50:00 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Mon, 22 Sep 2014 18:20:00 +0900
 
 llvm-3.2 (3.2-5) unstable; urgency=low
 

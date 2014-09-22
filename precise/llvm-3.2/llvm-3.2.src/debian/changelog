@@ -1,8 +1,8 @@
-llvm-3.2 (3.2-debian5precise0) precise; urgency=low
+llvm-3.2 (3.2-debian5precise1) precise; urgency=low
 
   * ppa for precise
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 25 Jul 2014 14:45:00 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Mon, 22 Sep 2014 18:20:00 +0900
 
 llvm-3.2 (3.2-5) unstable; urgency=low
 

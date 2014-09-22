@@ -1,12 +1,12 @@
 diff -urN ../../llvm-toolchain-3.4/debian/changelog llvm-toolchain-3.4_3.4+210930/debian/changelog
 --- ../../llvm-toolchain-3.4/debian/changelog	2014-08-17 19:47:13.000000000 +0900
-+++ llvm-toolchain-3.4_3.4+210930/debian/changelog	2014-08-22 16:06:27.710889992 +0900
++++ llvm-toolchain-3.4_3.4+210930/debian/changelog	2014-09-22 18:29:50.313908809 +0900
 @@ -1,3 +1,9 @@
-+llvm-toolchain-3.4 (1:3.4.2-debian8trusty0) trusty; urgency=medium
++llvm-toolchain-3.4 (1:3.4.2-debian8trusty1) trusty; urgency=medium
 +
 +  * ppa for trusty
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 22 Aug 2014 16:00:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Mon, 22 Sep 2014 18:20:00 +0900
 +
  llvm-toolchain-3.4 (1:3.4.2-8) unstable; urgency=medium
  

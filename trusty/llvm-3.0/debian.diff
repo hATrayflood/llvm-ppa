@@ -1,19 +1,19 @@
 diff -urN ../../llvm-3.0/debian/changelog llvm-3.0.src/debian/changelog
 --- ../../llvm-3.0/debian/changelog	2012-07-13 20:35:29.000000000 +0900
-+++ llvm-3.0.src/debian/changelog	2014-07-18 18:54:10.217909542 +0900
++++ llvm-3.0.src/debian/changelog	2014-09-22 18:28:19.946666463 +0900
 @@ -1,3 +1,9 @@
-+llvm-3.0 (3.0-debian10trusty0) trusty; urgency=low
++llvm-3.0 (3.0-debian10trusty1) trusty; urgency=low
 +
 +  * ppa for trusty
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 18 Jul 2014 19:00:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Mon, 22 Sep 2014 18:20:00 +0900
 +
  llvm-3.0 (3.0-10) unstable; urgency=low
  
    * Rebuild package to fix symbol issues (Closes: #680326, #681109)
 diff -urN ../../llvm-3.0/debian/control llvm-3.0.src/debian/control
 --- ../../llvm-3.0/debian/control	2012-07-13 20:36:21.000000000 +0900
-+++ llvm-3.0.src/debian/control	2014-07-26 09:13:14.089107021 +0900
++++ llvm-3.0.src/debian/control	2014-07-26 09:38:33.878685920 +0900
 @@ -1,18 +1,17 @@
  Source: llvm-3.0
  Section: devel

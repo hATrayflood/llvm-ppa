@@ -1,8 +1,8 @@
-llvm-toolchain-3.4 (1:3.4.2-debian8trusty0) trusty; urgency=medium
+llvm-toolchain-3.4 (1:3.4.2-debian8trusty1) trusty; urgency=medium
 
   * ppa for trusty
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 22 Aug 2014 16:00:00 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Mon, 22 Sep 2014 18:20:00 +0900
 
 llvm-toolchain-3.4 (1:3.4.2-8) unstable; urgency=medium
 
