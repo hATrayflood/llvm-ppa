@@ -2,12 +2,10 @@ usr/lib/llvm-3.2/bin/clang
 usr/lib/llvm-3.2/bin/clang++
 usr/lib/llvm-3.2/bin/clang-check
 usr/lib/llvm-3.2/bin/clang-tblgen
-usr/lib/llvm-3.2/bin/c-index-test
 usr/bin/clang-3.2
 usr/bin/clang++-3.2
 usr/bin/clang-check-3.2
 usr/bin/clang-tblgen-3.2
-usr/bin/c-index-test-3.2
 tools/clang/tools/scan-build-3.2		usr/share/clang/
 tools/clang/tools/scan-view-3.2			usr/share/clang/
 #usr/share/man/man1/clang.1	usr/share/man/man1/
