@@ -2,12 +2,13 @@ Index: llvm-toolchain-3.4-3.4.2/clang/lib/Driver/ToolChains.cpp
 ===================================================================
 --- llvm-toolchain-3.4-3.4.2.orig/clang/lib/Driver/ToolChains.cpp
 +++ llvm-toolchain-3.4-3.4.2/clang/lib/Driver/ToolChains.cpp
-@@ -1131,7 +1131,7 @@ void Generic_GCC::GCCInstallationDetecto
+@@ -1132,7 +1132,8 @@ void Generic_GCC::GCCInstallationDetecto
      "i686-linux-gnu", "i686-pc-linux-gnu", "i486-linux-gnu", "i386-linux-gnu",
      "i386-redhat-linux6E", "i686-redhat-linux", "i586-redhat-linux",
      "i386-redhat-linux", "i586-suse-linux", "i486-slackware-linux",
--    "i686-montavista-linux"
-+    "i686-montavista-linux", "i586-linux-gnu"
+-    "i686-montavista-linux", "i486-kfreebsd-gnu", "i586-kfreebsd-gnu"
++    "i686-montavista-linux", "i486-kfreebsd-gnu", "i586-kfreebsd-gnu",
++    "i586-linux-gnu"
    };
  
    static const char *const MIPSLibDirs[] = { "/lib" };

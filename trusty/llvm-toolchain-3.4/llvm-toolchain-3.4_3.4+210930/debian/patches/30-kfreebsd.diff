@@ -1,8 +1,26 @@
-Index: llvm-toolchain-3.4-3.4.1/clang/lib/Driver/ToolChains.cpp
+Index: llvm-toolchain-3.4-3.4.2/clang/lib/Driver/ToolChains.cpp
 ===================================================================
---- llvm-toolchain-3.4-3.4.1.orig/clang/lib/Driver/ToolChains.cpp	2014-04-26 01:38:13.000000000 +0200
-+++ llvm-toolchain-3.4-3.4.1/clang/lib/Driver/ToolChains.cpp	2014-05-10 12:34:16.374471699 +0200
-@@ -2588,6 +2588,10 @@
+--- llvm-toolchain-3.4-3.4.2.orig/clang/lib/Driver/ToolChains.cpp
++++ llvm-toolchain-3.4-3.4.2/clang/lib/Driver/ToolChains.cpp
+@@ -1124,14 +1124,15 @@ void Generic_GCC::GCCInstallationDetecto
+   static const char *const X86_64Triples[] = {
+     "x86_64-linux-gnu", "x86_64-unknown-linux-gnu", "x86_64-pc-linux-gnu",
+     "x86_64-redhat-linux6E", "x86_64-redhat-linux", "x86_64-suse-linux",
+-    "x86_64-manbo-linux-gnu", "x86_64-linux-gnu", "x86_64-slackware-linux"
++    "x86_64-manbo-linux-gnu", "x86_64-linux-gnu", "x86_64-slackware-linux",
++    "x86_64-kfreebsd-gnu"
+   };
+   static const char *const X86LibDirs[] = { "/lib32", "/lib" };
+   static const char *const X86Triples[] = {
+     "i686-linux-gnu", "i686-pc-linux-gnu", "i486-linux-gnu", "i386-linux-gnu",
+     "i386-redhat-linux6E", "i686-redhat-linux", "i586-redhat-linux",
+     "i386-redhat-linux", "i586-suse-linux", "i486-slackware-linux",
+-    "i686-montavista-linux"
++    "i686-montavista-linux", "i486-kfreebsd-gnu", "i586-kfreebsd-gnu"
+   };
+ 
+   static const char *const MIPSLibDirs[] = { "/lib" };
+@@ -2588,6 +2589,10 @@ void Linux::AddClangSystemIncludeArgs(co
    if (DriverArgs.hasArg(options::OPT_nostdinc))
      return;
  
@@ -13,11 +31,11 @@ Index: llvm-toolchain-3.4-3.4.1/clang/lib/Driver/ToolChains.cpp
    if (!DriverArgs.hasArg(options::OPT_nostdlibinc))
      addSystemInclude(DriverArgs, CC1Args, SysRoot + "/usr/local/include");
  
-Index: llvm-toolchain-3.4-3.4.1/lldb/source/Host/common/Host.cpp
+Index: llvm-toolchain-3.4-3.4.2/lldb/source/Host/common/Host.cpp
 ===================================================================
---- llvm-toolchain-3.4-3.4.1.orig/lldb/source/Host/common/Host.cpp	2013-12-16 10:49:51.000000000 +0100
-+++ llvm-toolchain-3.4-3.4.1/lldb/source/Host/common/Host.cpp	2014-05-10 12:33:20.000000000 +0200
-@@ -1586,7 +1586,7 @@
+--- llvm-toolchain-3.4-3.4.2.orig/lldb/source/Host/common/Host.cpp
++++ llvm-toolchain-3.4-3.4.2/lldb/source/Host/common/Host.cpp
+@@ -1586,7 +1586,7 @@ Host::RunShellCommand (const char *comma
      return error;
  }
  

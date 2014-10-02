@@ -1,8 +1,52 @@
-llvm-toolchain-3.4 (1:3.4.2-debian8trusty1) trusty; urgency=medium
+llvm-toolchain-3.4 (1:3.4.2-debian10trusty1) trusty; urgency=medium
 
   * ppa for trusty
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Mon, 22 Sep 2014 18:20:00 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 02 Oct 2014 23:30:00 +0900
+
+llvm-toolchain-3.4 (1:3.4.2-10) unstable; urgency=medium
+
+  * Fix my screw up. Add .1 to the libclang soname to make
+    dpkg-shlibdeps happy
+  * python-lldb-3.4 and lldb-3.3: error when trying to install together
+    (Closes: #762902)
+  * Remove useless dependency on doxygen
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Fri, 26 Sep 2014 17:03:47 +0200
+
+llvm-toolchain-3.4 (1:3.4.2-9) unstable; urgency=medium
+
+  * Upload in unstable
+  * Disable the co-instability of lldb & python-lldb
+    (Python stuff conflicts)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Wed, 24 Sep 2014 10:42:03 +0200
+
+llvm-toolchain-3.4 (1:3.4.2-9~exp2) experimental; urgency=medium
+
+  * Remove the useless dependency lldb-3.4 => liblldb-3.4. Should be
+    transparently managed by Debian tools
+  * Does not have multiarch include paths on !linux (Closes: #759303)
+  * Fails to find C++ include paths under Kfreebsd (Closes: #731711)
+    Thanks to Steven Chamberlain for the help on the two previous fixes
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Thu, 18 Sep 2014 17:29:08 +0200
+
+llvm-toolchain-3.4 (1:3.4.2-9~exp1) experimental; urgency=medium
+
+  * libclang-3.4.so should be used instead libclang.so. Update the soname
+    to match the new lib name (Closes: #759538)
+  * Rename liblldb.so to liblldb-3.4.so + update of the soname.
+  * python-clang-3.4 description updated
+  * liblldb-3.4 and python-lldb-3.4 added
+  * lldb-3.4-dev renamed to liblldb-3.4-dev to match the previous changes
+  * Manpages for llvm-ranlib, clang-apply-replacements, pp-trace and clang-tidy
+    added
+  * clang-3.4 should depends on binutils (for ld, at least)
+    (Closes: #751030)
+  * clang/www/analyzer/scripts/dbtree.js removed
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Sat, 30 Aug 2014 18:09:20 +0200
 
 llvm-toolchain-3.4 (1:3.4.2-8) unstable; urgency=medium
 

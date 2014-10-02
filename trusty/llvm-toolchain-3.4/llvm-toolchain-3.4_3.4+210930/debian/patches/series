@@ -43,4 +43,7 @@ follow-parallel-var.diff
 scan-build-search-path.diff
 gcc-4.9-i586-linux-gnu.diff
 hurd-EIEIO-undef.diff
+lldb-libname.diff
+remove-dbtree.diff
+kfreebsd-path.diff
 99-python-bindings.patch

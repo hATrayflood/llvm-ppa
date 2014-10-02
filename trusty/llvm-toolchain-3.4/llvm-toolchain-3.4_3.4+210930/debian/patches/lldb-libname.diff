@@ -1,0 +1,13 @@
+Index: llvm-toolchain-3.4-3.4.2/lldb/lib/Makefile
+===================================================================
+--- llvm-toolchain-3.4-3.4.2.orig/lldb/lib/Makefile
++++ llvm-toolchain-3.4-3.4.2/lldb/lib/Makefile
+@@ -153,7 +153,7 @@ ifeq ($(HOST_OS), $(filter $(HOST_OS), L
+     # Link GCC atomic helper library
+     LLVMLibsOptions += -latomic
+     endif
+-    LLVMLibsOptions += -Wl,--soname,lib$(LIBRARYNAME)$(SHLIBEXT).$(SONAME_EXTENSION)
++    LLVMLibsOptions += -Wl,--soname,lib$(LIBRARYNAME)-$(LLVM_VERSION_MAJOR).$(LLVM_VERSION_MINOR)$(SHLIBEXT)
+ endif
+ 
+ ifeq ($(HOST_OS),FreeBSD)

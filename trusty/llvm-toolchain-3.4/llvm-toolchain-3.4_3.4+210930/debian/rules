@@ -122,7 +122,7 @@ LLDB_DISABLE_ARCHS += i386 amd64
 # mips* fails with "undefined references to `__atomic_load_8'"
 ifeq (,$(filter-out $(LLDB_DISABLE_ARCHS), $(DEB_HOST_ARCH)))
 # Disable LLDB for this arch.
-        LLDB_ENABLE=no
+		LLDB_ENABLE=no
 endif
 
 
@@ -158,25 +158,25 @@ override_dh_auto_configure: preconfigure
 
 # Remove some old symlinks
 	cd tools/ && \
-	if test -h clang; then \
-		rm clang; \
-	fi; \
-    ln -s ../clang .; \
+		if test -h clang; then \
+			rm clang; \
+		fi; \
+		ln -s ../clang .; \
 	readlink clang
 
 	if test $(POLLY_ENABLE) = yes; then \
-	cd tools/ && \
-    if test -h polly; then \
-        rm polly; \
-    fi; \
-    ln -s ../polly .; \
+		cd tools/ && \
+		if test -h polly; then \
+			rm polly; \
+		fi; \
+		ln -s ../polly .; \
 	fi
 
 	if test $(LLDB_ENABLE) = yes; then \
-	    cd tools/ && \
-	    if test -h lldb; then \
+		cd tools/ && \
+		if test -h lldb; then \
 		   rm lldb; \
-	    fi; \
+		fi; \
 		ln -s ../lldb .; \
 	fi
 
@@ -256,36 +256,33 @@ build_doc:
 
 	help2man --version-string=$(LLVM_VERSION) clang/tools/scan-view/scan-view > debian/man/scan-view-$(LLVM_VERSION).1
 
-	for f in clang clang-tblgen clang-check; do \
-		help2man --version-string=$(LLVM_VERSION) $(TARGET_BUILD)/Release/bin/$$f > debian/man/$$f-$(LLVM_VERSION).1; \
+	CMDS="llvm-dwarfdump llvm-mc llvm-mcmarkup llvm-objdump llvm-rtdyld llvm-size llvm-tblgen llvm-ranlib macho-dump lldb clang-format clang-modernize clang clang-tblgen clang-check clang-tidy clang-apply-replacements pp-trace"; \
+	for f in $$CMDS; do \
+		echo "Generating manpage of $$f"; \
+		LD_LIBRARY_PATH=$(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/lib/ help2man --version-string=$(LLVM_VERSION) $(TARGET_BUILD)/Release/bin/$$f > debian/man/$$f-$(LLVM_VERSION).1; \
 	done
-
-	for f in llvm-dwarfdump llvm-mc llvm-mcmarkup llvm-objdump llvm-rtdyld llvm-size llvm-tblgen macho-dump lldb clang-format clang-modernize; do \
-		help2man --version-string=$(LLVM_VERSION) $(TARGET_BUILD)/Release/bin/$$f > debian/man/$$f-$(LLVM_VERSION).1; \
-	done
-
 
 override_dh_auto_install:
 	$(MAKE) -C $(TARGET_BUILD) VERBOSE=1 install DESTDIR=$(DEB_INST)/
 
 	chrpath -d $(TARGET_BUILD)/Release/bin/clang
 	chrpath -d `find $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/bin/ -type f -executable`
+	if test $(POLLY_ENABLE) = yes; then \
+		chmod -x $(TARGET_BUILD)/tools/polly/Release/lib/libpolly*.a; \
+	fi
 
 # Add the trailing soname
 	mv $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/lib/libLLVM-$(LLVM_VERSION).so $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/lib/libLLVM-$(LLVM_VERSION).so.$(SONAME_EXT)
 
-
-	if test $(LLDB_ENABLE) = yes; then \
-		mv $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/lib/liblldb.so $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/lib/liblldb.so.$(SONAME_EXT); \
-	fi
-
 	cd debian/tmp/usr/lib/llvm-$(LLVM_VERSION)/lib/ && \
-	if test ! -f libclang-$(LLVM_VERSION).so.$(SONAME_EXT); then \
-		mv libclang.so libclang-$(LLVM_VERSION).so.$(SONAME_EXT) && \
-		ln -s libclang-$(LLVM_VERSION).so.$(SONAME_EXT) libclang.so.$(SONAME_EXT); \
+	mv libclang.so libclang-$(LLVM_VERSION).so.$(SONAME_EXT) && \
+	ln -s libclang-$(LLVM_VERSION).so.$(SONAME_EXT) libclang.so.$(SONAME_EXT); \
+        ln -s libclang-$(LLVM_VERSION).so.$(SONAME_EXT) libclang-$(LLVM_VERSION).so; \
+	if test $(LLDB_ENABLE) = yes; then \
+		mv liblldb.so liblldb-$(LLVM_VERSION).so.$(SONAME_EXT) && \
+		ln -s liblldb-$(LLVM_VERSION).so.$(SONAME_EXT) liblldb.so.$(SONAME_EXT); \
 	fi; \
-	rm -f libLLVM-$(LLVM_VERSION_FULL).so; \
-	rm -f libclang.so
+	rm -f libLLVM-$(LLVM_VERSION_FULL).so
 
 # Remove artefact (where compiler-rt is built)
 	if test -d $(TARGET_BUILD)/tools/clang/runtime/compiler-rt/clang_linux; then \
@@ -309,17 +306,19 @@ override_dh_auto_install:
 
 # Rename some stuff with the version name
 	cp $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang.1 $(CURDIR)/$(TARGET_BUILD)/tools/clang/docs/tools/clang-$(LLVM_VERSION).1
-	
+
 	cp $(CURDIR)/clang/tools/scan-build/scan-build.1 $(CURDIR)/clang/tools/scan-build/scan-build-$(LLVM_VERSION).1
-		
+
 	cp -f $(CURDIR)/utils/vim/llvm.vim $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim
 
 	cp -f $(CURDIR)/utils/vim/tablegen.vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
 
 	cp -f $(CURDIR)/clang/tools/clang-format/clang-format.py clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
 
+	rm -rf clang/tools/scan-build-$(LLVM_VERSION)
 	cp -fR $(CURDIR)/clang/tools/scan-build clang/tools/scan-build-$(LLVM_VERSION)
 
+	rm -rf clang/tools/scan-view-$(LLVM_VERSION)
 	cp -fR $(CURDIR)/clang/tools/scan-view clang/tools/scan-view-$(LLVM_VERSION)
 
 	cp -f $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev.META $(CURDIR)/debian/libllvm-$(LLVM_VERSION)-ocaml-dev/$(OCAML_STDLIB_DIR)/METAS/META.llvm-$(subst .,_,$(LLVM_VERSION))
@@ -458,10 +457,10 @@ override_dh_auto_clean:
 	rm -f debian/man/scan-view-$(LLVM_VERSION).1
 	rm -rf clang/tools/scan-build-$(LLVM_VERSION)
 	rm -rf clang/tools/scan-view-$(LLVM_VERSION)
-	for f in clang clang-tblgen clang-check; do \
+	for f in clang clang-tblgen clang-check clang-apply-replacements clang-tidy pp-trace; do \
 		rm -f debian/man/$$f-$(LLVM_VERSION).1; \
 	done
-	for f in llvm-dwarfdump llvm-mc llvm-mcmarkup llvm-objdump llvm-rtdyld llvm-size llvm-tblgen macho-dump lldb clang-format clang-modernize; do \
+	for f in llvm-dwarfdump llvm-mc llvm-mcmarkup llvm-objdump llvm-rtdyld llvm-size llvm-tblgen macho-dump lldb clang-format clang-modernize llvm-ranlib; do \
 		rm -f debian/man/$$f-$(LLVM_VERSION).1; \
 	done
 	for f in debian/*.in; do \
