@@ -1,12 +1,10 @@
 usr/bin/lldb-@LLVM_VERSION@
 usr/lib/llvm-@LLVM_VERSION@/bin/lldb
 usr/lib/llvm-@LLVM_VERSION@/bin/lldb-platform
-usr/lib/llvm-@LLVM_VERSION@/bin/lldb-gdbserver
 usr/lib/llvm-@LLVM_VERSION@/bin/lldb-mi
-usr/lib/llvm-@LLVM_VERSION@/lib/liblldb.so.1 /usr/lib/@DEB_HOST_MULTIARCH@/
-usr/lib/llvm-@LLVM_VERSION@/lib/python2.7/site-packages/lldb/
-usr/lib/llvm-@LLVM_VERSION@/lib/python2.7/site-packages/readline.so
+usr/lib/llvm-@LLVM_VERSION@/bin/lldb-gdbserver
 
 usr/bin/lldb-platform-@LLVM_VERSION@
 usr/bin/lldb-gdbserver-@LLVM_VERSION@
 usr/bin/lldb-mi-@LLVM_VERSION@
+

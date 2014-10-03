@@ -1,14 +1,93 @@
-llvm-toolchain-3.5 (1:3.5-debian1precise1) precise; urgency=medium
+llvm-toolchain-3.5 (1:3.5-debian4precise1) trusty; urgency=medium
 
   * ppa for precise
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Mon, 22 Sep 2014 18:20:00 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 03 Oct 2014 12:45:00 +0900
+
+llvm-toolchain-3.5 (1:3.5-4) unstable; urgency=medium
+
+  * scan-build could not find clang binary (Closes: #758998)
+  * Fix the ABI issues by installing a symlink (Closes: #762959, #763058).
+    This should fix the doxygen breakage. Many thanks to Andreas Barth.
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Sun, 28 Sep 2014 10:13:22 +0200
+
+llvm-toolchain-3.5 (1:3.5-3) unstable; urgency=medium
+
+  * Fix my screw up. Add .1 to the libclang & liblldb sonames
+    to make dpkg-shlibdeps happy
+  * python-clang-3.6 and python-clang-3.5: error when trying to install
+    together (Closes: #762901)
+  * Remove useless dependency on doxygen
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Fri, 26 Sep 2014 17:04:53 +0200
+
+llvm-toolchain-3.5 (1:3.5-2) unstable; urgency=medium
+
+  * Upload in unstable
+  * Disable the co-instability of lldb & python-lldb
+    (Python stuff conflicts)
+  * Fix the FTBFs under kfreebsd (kfreebsd-readline.diff)
+  * Really apply patch kfreebsd-path.diff (oups)
+  * Further improvement on lldb-mi
+    Once more, thanks to Steven Chamberlain for the kfreebsd patches.
+  * Try to workaround the FTBFS under ppc64el (create an empty directory)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Wed, 24 Sep 2014 10:47:37 +0200
+
+llvm-toolchain-3.5 (1:3.5-2~exp1) experimental; urgency=medium
+
+  * Build lldb-mi under kfreebsd (Closes: #761650)
+  * Fix a bad dependency from lldb-3.5
+  * Does not have multiarch include paths on !linux (Closes: #759303)
+  * Fails to find C++ include paths under Kfreebsd (Closes: #731711)
+    Thanks to Steven Chamberlain for the help on the two previous fixes
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Thu, 18 Sep 2014 17:42:04 +0200
 
 llvm-toolchain-3.5 (1:3.5-1) unstable; urgency=medium
 
   * New stable release
 
  -- Sylvestre Ledru <sylvestre@debian.org>  Tue, 02 Sep 2014 23:54:47 +0200
+
+llvm-toolchain-3.5 (1:3.5~+rc4-2~exp1) experimental; urgency=medium
+
+  * sync from 1:3.4.2-9~exp1
+  * libclang-3.5.so should be used instead libclang.so. Update the soname
+    to match the new lib name (Closes: #759538)
+  * Rename liblldb.so to liblldb-3.5.so + update of the soname.
+  * python-clang-3.5 description updated
+  * liblldb-3.5 and python-lldb-3.5 added
+  * lldb-3.5-dev renamed to liblldb-3.5-dev to match the previous changes
+  * Manpages for llvm-ranlib, clang-apply-replacements, pp-trace and clang-tidy
+    added
+  * clang-3.5 should depends on binutils (for ld, at least)
+    (Closes: #751030)
+  * clang/www/analyzer/scripts/dbtree.js removed
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Sat, 30 Aug 2014 18:09:20 +0200
+
+llvm-toolchain-3.5 (1:3.5-1) unstable; urgency=medium
+
+  * New stable release
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Tue, 02 Sep 2014 23:54:47 +0200
+
+llvm-toolchain-3.4 (1:3.4.2-8) unstable; urgency=medium
+
+  * Try to bring back lldb-3.4-dev on mips & mipsel (Closes: #758314)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Sat, 16 Aug 2014 22:39:13 +0200
+
+llvm-toolchain-3.4 (1:3.4.2-7) unstable; urgency=medium
+
+  * Upload in unstable
+  * Try to bring back lldb on mips & mipsel
+  * Force scan-build to use the same version of clang
+  * Try to fix hurd (hurd-EIEIO-undef.diff)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Tue, 05 Aug 2014 14:40:05 +0200
 
 llvm-toolchain-3.5 (1:3.5~+rc4-1) unstable; urgency=medium
 

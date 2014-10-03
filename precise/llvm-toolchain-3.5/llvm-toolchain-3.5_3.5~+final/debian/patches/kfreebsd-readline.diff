@@ -1,0 +1,11 @@
+--- a/lldb/scripts/Python/modules/Makefile
++++ b/lldb/scripts/Python/modules/Makefile
+@@ -13,7 +13,7 @@ include $(LLDB_LEVEL)/../../Makefile.con
+ DIRS:=
+ 
+ # only build the readline suppression module on Linux
+-ifeq ($(HOST_OS), Linux)
++ifeq ($(HOST_OS), $(filter $(HOST_OS), Linux GNU GNU/kFreeBSD))
+ DIRS += readline
+ endif
+ 

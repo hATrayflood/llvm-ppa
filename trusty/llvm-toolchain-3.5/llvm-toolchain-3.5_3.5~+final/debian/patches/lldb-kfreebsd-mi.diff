@@ -1,0 +1,33 @@
+--- a/lldb/tools/Makefile
++++ b/lldb/tools/Makefile
+@@ -25,7 +25,7 @@ ifeq ($(HOST_OS),Darwin)
+ DIRS += debugserver
+ endif
+ 
+-ifeq ($(HOST_OS),Linux)
++ifneq (,$(strip $(filter $(HOST_OS), Linux GNU GNU/kFreeBSD)))
+ DIRS += lldb-mi
+ endif
+ 
+--- a/lldb/tools/lldb-mi/MICmnLogMediumFile.cpp
++++ b/lldb/tools/lldb-mi/MICmnLogMediumFile.cpp
+@@ -28,7 +28,7 @@
+ 
+ #if defined( _MSC_VER )
+ 	#include "MIUtilSystemWindows.h"
+-#elif defined( __FreeBSD__ ) || defined( __linux__ )
++#elif defined( __FreeBSD_kernel__ ) || defined( __linux__ )
+ 	#include "MIUtilSystemLinux.h"
+ #elif defined( __APPLE__ )
+ 	#include "MIUtilSystemOsx.h"
+--- a/lldb/tools/lldb-mi/MIUtilSystemLinux.h
++++ b/lldb/tools/lldb-mi/MIUtilSystemLinux.h
+@@ -24,7 +24,7 @@
+ // Include compiler configuration
+ #include "MICmnConfig.h"
+ 
+-#if defined( __FreeBSD__ ) || defined( __linux__ )
++#if defined( __FreeBSD_kernel__ ) || defined( __linux__ )
+ 
+ // In-house headers:
+ #include "MIUtilString.h"  

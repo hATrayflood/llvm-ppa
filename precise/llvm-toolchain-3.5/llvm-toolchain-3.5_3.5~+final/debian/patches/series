@@ -9,7 +9,7 @@
 0021-shared-lib-debian.patch
 0023-link-libopagent.patch
 0044-soname.diff
-#scan-build-clang-path.diff
+scan-build-clang-path.diff
 0050-powerpcspe-fp.diff
 declare_clear_cache.diff
 31-powerpcspe.diff
@@ -44,4 +44,7 @@ kfreebsd-lldb-gdbserver.diff
 #fix-lldb-3.5-rc2.diff
 gcc-compat-1.diff
 gcc-compat-2.diff
+kfreebsd-readline.diff
+kfreebsd-path.diff
+lldb-kfreebsd-mi.diff
 99-python-bindings.patch

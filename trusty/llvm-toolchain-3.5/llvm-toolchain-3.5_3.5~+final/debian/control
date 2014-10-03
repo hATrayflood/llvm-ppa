@@ -3,7 +3,7 @@ Section: devel
 Priority: extra
 Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
 Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl, expect,
-    autoconf, automake, perl, libtool, doxygen, chrpath, texinfo,
+    autoconf, automake, perl, libtool, chrpath, texinfo,
     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
     lsb-release, patchutils, diffstat, xz-utils, chrpath, python-dev,
     libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev,
@@ -20,7 +20,7 @@ Package: clang-3.5
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs},
  libclang-common-3.5-dev (= ${binary:Version}),
- libclang1-3.5 (= ${binary:Version}), libc6-dev
+ libclang1-3.5 (= ${binary:Version}), libc6-dev, binutils
 Recommends: llvm-3.5-dev, python
 Suggests: gnustep, gnustep-devel, clang-3.5-doc
 Description: C, C++ and Objective-C compiler (LLVM based)
@@ -156,6 +156,13 @@ Section: python
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-3.5 (= ${binary:Version}), python2.7
 Description: Clang Python Bindings
+ Clang project is a C, C++, Objective C and Objective C++ front-end
+ for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
+ Collection (GCC).
+ .
+ Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
+ a partial support of C++1y.
+ .
  This binding package provides access to the Clang compiler and libraries.
 
 
