@@ -139,7 +139,6 @@ Package: libclang-common-3.4-dev
 Architecture: any
 Section: libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Replaces: libclang-3.4-dev
 Description: clang library - Common development package
  Clang project is a C, C++, Objective C and Objective C++ front-end
  for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler

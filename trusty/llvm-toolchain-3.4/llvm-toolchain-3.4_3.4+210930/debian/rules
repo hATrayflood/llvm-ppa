@@ -267,7 +267,7 @@ override_dh_auto_install:
 
 	chrpath -d $(TARGET_BUILD)/Release/bin/clang
 	chrpath -d `find $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/bin/ -type f -executable`
-	if test $(POLLY_ENABLE) = yes; then \
+	if build-llvm/tools/polly/Release/lib/libpolly*a; then \
 		chmod -x $(TARGET_BUILD)/tools/polly/Release/lib/libpolly*.a; \
 	fi
 
@@ -419,7 +419,9 @@ endif
 # Managed by debian build system
 	rm -f $(CURDIR)/$(TARGET_BUILD)/Release/lib/python*/site-packages/lldb/_lldb.so
 # polly tests
-	cd $(TARGET_BUILD)/ && $(MAKE) -C tools/polly/test/ check-polly || true
+	if test $(POLLY_ENABLE) = yes; then \
+		cd $(TARGET_BUILD)/ && $(MAKE) -C tools/polly/test/ check-polly || true; \
+    fi
 
 # The compression of the code coverage report is done in the
 # hook B21GetCoverageResults on the server
