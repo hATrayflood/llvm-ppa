@@ -28,9 +28,11 @@ DEB_HOST_ARCH       = $(shell dpkg-architecture -qDEB_HOST_ARCH)
 OCAML_STDLIB_DIR    ?= $(shell ocamlc -where)
 
 
-LDFLAGS_EXTRA=
-CXXFLAGS_EXTRA=
-CONFIGURE_EXTRA=
+LDFLAGS_EXTRA =
+# avoid to ARMScheduleA9.td:2463:1: error: No matching instruction opcodes
+#CXXFLAGS_EXTRA = -D_FILE_OFFSET_BITS=64 -std=c++0x
+CXXFLAGS_EXTRA = -std=c++0x
+CONFIGURE_EXTRA =
 
 ifneq (,$(filter $(DEB_HOST_ARCH),powerpc powerpcspe))
 LDFLAGS_EXTRA += -latomic
@@ -223,7 +225,7 @@ override_dh_auto_configure: preconfigure
 
 
 override_dh_auto_build:
-	$(PRE_PROCESS) $(MAKE) $(NJOBS) -C $(TARGET_BUILD) VERBOSE=1 CLANG_VENDOR=$(VENDOR) CXXFLAGS="$(CXXFLAGS_EXTRA) -std=c++0x"  LDFLAGS="$(LDFLAGS_EXTRA)" REQUIRES_RTTI=1 DEBUGMAKE=1
+	$(PRE_PROCESS) $(MAKE) $(NJOBS) -C $(TARGET_BUILD) VERBOSE=1 CLANG_VENDOR=$(VENDOR) CXXFLAGS="$(CXXFLAGS_EXTRA)"  LDFLAGS="$(LDFLAGS_EXTRA)" REQUIRES_RTTI=1 DEBUGMAKE=1
 
 # We run the build with the Asserts, new directory, make a symlink to make
 # sure the rest still work
@@ -296,6 +298,9 @@ override_dh_auto_install:
 	mkdir -p $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/lib/clang/$(LLVM_VERSION)/lib/clang_linux/
 	mkdir -p $(TARGET_BUILD)/tools/clang/runtime/compiler-rt/clang_linux/
 
+# idem for the lldb python binding
+	mkdir -p $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/lib/python2.7/site-packages/lldb/
+
 # Rename binaries
 	mkdir -p $(DEB_INST)/usr/bin/
 	cd $(DEB_INST)/usr/bin/; rm -f *; \
@@ -365,7 +370,8 @@ override_dh_installdeb:
 # Managed by the package
 	dh_installdeb -a
 
-	rm -f $(CURDIR)/debian/lldb-$(LLVM_VERSION)/usr/lib/python*/dist-packages/lldb/__init__.pyc
+	rm -f $(CURDIR)/debian/lldb-$(LLVM_VERSION)/usr/lib/python*/dist-packages/lldb/__init__.pyc \
+		$(CURDIR)/debian/python-lldb-$(LLVM_VERSION)/usr/lib/python*/dist-packages/lldb/__init__.pyc
 	rm -f $(CURDIR)/debian/clang-$(LLVM_VERSION)-examples/usr/share/doc/clang-$(LLVM_VERSION)-examples/examples/*Make*
 	rm -f $(CURDIR)//debian/llvm-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/build/autoconf/LICENSE.TXT
 
@@ -395,9 +401,9 @@ endif
 
 # clang tests
 # setup the env
-	cd $(TARGET_BUILD)/Release/lib/ && ln -s libclang.so libclang.so.1
+	cd $(TARGET_BUILD)/Release/lib/ && ln -s libclang.so libclang.so.1 && ln -s libclang.so libclang-$(LLVM_VERSION).so.1
 	cd $(TARGET_BUILD)/ && $(MAKE) -C tools/clang/ test || true
-	rm -f $(TARGET_BUILD)/Release/lib/libclang.so.1
+	rm -f $(TARGET_BUILD)/Release/lib/libclang.so.1 $(TARGET_BUILD)/Release/lib/libclang-$(LLVM_VERSION).so.1
 
 # lldb tests
 ifeq (,$(filter $(DEB_HOST_ARCH), $(LLDB_DISABLE_ARCHS) armhf armel))
@@ -410,6 +416,11 @@ ifeq (,$(filter $(DEB_HOST_ARCH), $(LLDB_DISABLE_ARCHS) armhf armel))
 		ln -s ../../../libLLVM-$(LLVM_VERSION_FULL).so libLLVM-$(LLVM_VERSION_FULL).so.$(SONAME_EXT); \
 	fi; \
 	fi
+
+	cd $(TARGET_BUILD)/Release/lib && \
+	rm -f liblldb-$(LLVM_VERSION).so && \
+	ln -s liblldb.so liblldb-$(LLVM_VERSION).so
+
 	cd $(TARGET_BUILD)/ && $(MAKE) -C tools/lldb/test || true
 	if test -d $(TARGET_BUILD)/tools/lldb/test/lldb-test-traces/; then \
 		cat $(TARGET_BUILD)/tools/lldb/test/lldb-test-traces/*; \
@@ -417,7 +428,7 @@ ifeq (,$(filter $(DEB_HOST_ARCH), $(LLDB_DISABLE_ARCHS) armhf armel))
 endif
 
 # Managed by debian build system
-	rm -f $(CURDIR)/$(TARGET_BUILD)/Release/lib/python*/site-packages/lldb/_lldb.so
+	rm -f $(CURDIR)/$(TARGET_BUILD)/Release/lib/python*/site-packages/lldb/_lldb.so $(TARGET_BUILD)/Release/lib/liblldb-$(LLVM_VERSION).so
 # polly tests
 	if test $(POLLY_ENABLE) = yes; then \
 		cd $(TARGET_BUILD)/ && $(MAKE) -C tools/polly/test/ check-polly || true; \

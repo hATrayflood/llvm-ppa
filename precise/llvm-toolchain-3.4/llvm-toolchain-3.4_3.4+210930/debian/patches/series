@@ -1,6 +1,5 @@
 18-soname.patch
 19-clang_debian_version.patch
-#20-vendor.patch
 23-strlcpy_strlcat_warning_removed.diff
 27-fix_clang_stdint.diff
 26-set-correct-float-abi.diff

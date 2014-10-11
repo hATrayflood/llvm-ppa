@@ -1,16 +1,16 @@
 diff -urN ../../llvm-toolchain-3.4/debian/changelog llvm-toolchain-3.4_3.4+210930/debian/changelog
---- ../../llvm-toolchain-3.4/debian/changelog	2014-09-27 06:41:22.000000000 +0900
-+++ llvm-toolchain-3.4_3.4+210930/debian/changelog	2014-10-03 01:47:35.606020190 +0900
+--- ../../llvm-toolchain-3.4/debian/changelog	2014-10-09 19:02:43.000000000 +0900
++++ llvm-toolchain-3.4_3.4+210930/debian/changelog	2014-10-11 02:15:21.320135187 +0900
 @@ -1,3 +1,9 @@
-+llvm-toolchain-3.4 (1:3.4.2-debian10trusty1) trusty; urgency=medium
++llvm-toolchain-3.4 (1:3.4.2-debian11trusty1.1) trusty; urgency=medium
 +
 +  * ppa for trusty
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 02 Oct 2014 23:30:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 10 Oct 2014 21:40:00 +0900
 +
- llvm-toolchain-3.4 (1:3.4.2-10) unstable; urgency=medium
+ llvm-toolchain-3.4 (1:3.4.2-11) unstable; urgency=medium
  
-   * Fix my screw up. Add .1 to the libclang soname to make
+   * Fix some issues in the testsuite
 diff -urN ../../llvm-toolchain-3.4/debian/clang-X.Y-relaxng.install.in llvm-toolchain-3.4_3.4+210930/debian/clang-X.Y-relaxng.install.in
 --- ../../llvm-toolchain-3.4/debian/clang-X.Y-relaxng.install.in	1970-01-01 09:00:00.000000000 +0900
 +++ llvm-toolchain-3.4_3.4+210930/debian/clang-X.Y-relaxng.install.in	2014-08-02 02:55:10.704199464 +0900
@@ -592,9 +592,9 @@ diff -urN ../../llvm-toolchain-3.4/debian/patches/python-clangpath.diff llvm-too
           if Config.library_path:
               file = Config.library_path + '/' + file
 diff -urN ../../llvm-toolchain-3.4/debian/patches/series llvm-toolchain-3.4_3.4+210930/debian/patches/series
---- ../../llvm-toolchain-3.4/debian/patches/series	2014-09-19 00:31:59.000000000 +0900
-+++ llvm-toolchain-3.4_3.4+210930/debian/patches/series	2014-10-02 23:42:19.903010000 +0900
-@@ -46,3 +46,4 @@
+--- ../../llvm-toolchain-3.4/debian/patches/series	2014-10-09 16:09:41.000000000 +0900
++++ llvm-toolchain-3.4_3.4+210930/debian/patches/series	2014-10-10 21:42:02.897374000 +0900
+@@ -45,3 +45,4 @@
  lldb-libname.diff
  remove-dbtree.diff
  kfreebsd-path.diff
@@ -617,8 +617,8 @@ diff -urN ../../llvm-toolchain-3.4/debian/python-clang-X.Y.install.in llvm-toolc
 +clang/bindings/python/examples		usr/share/doc/python-clang-@LLVM_VERSION@/
 +clang/bindings/python/tests		usr/share/doc/python-clang-@LLVM_VERSION@/
 diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/debian/rules
---- ../../llvm-toolchain-3.4/debian/rules	2014-09-01 20:36:08.000000000 +0900
-+++ llvm-toolchain-3.4_3.4+210930/debian/rules	2014-10-03 17:17:51.255397755 +0900
+--- ../../llvm-toolchain-3.4/debian/rules	2014-10-10 01:24:49.000000000 +0900
++++ llvm-toolchain-3.4_3.4+210930/debian/rules	2014-10-11 02:14:52.831996437 +0900
 @@ -4,7 +4,7 @@
  DEB_INST		:= $(CURDIR)/debian/tmp/
  # Force the version of gcc. Some archs are still using gcc 4.6
@@ -643,7 +643,17 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  
  DEB_HOST_MULTIARCH  = $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
  DEB_HOST_GNU_TYPE   = $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-@@ -32,11 +36,6 @@
+@@ -25,18 +29,15 @@
+ 
+ 
+ LDFLAGS_EXTRA =
+-CXXFLAGS_EXTRA = -D_FILE_OFFSET_BITS=64 -std=c++0x
++# avoid to ARMScheduleA9.td:2463:1: error: No matching instruction opcodes
++#CXXFLAGS_EXTRA = -D_FILE_OFFSET_BITS=64 -std=c++0x
++CXXFLAGS_EXTRA = -std=c++0x
+ CONFIGURE_EXTRA =
+ 
+ ifneq (,$(filter $(DEB_HOST_ARCH),powerpc powerpcspe))
  LDFLAGS_EXTRA += -latomic
  endif
  
@@ -655,7 +665,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  export CC=gcc-$(GCC_VERSION)
  export CXX=g++-$(GCC_VERSION)
  
-@@ -55,9 +54,9 @@
+@@ -55,9 +56,9 @@
  endif
  
  ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' g++-$(GCC_VERSION)) ge 4.8-20121128-1~ ; echo $$?),0)
@@ -667,7 +677,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  else
  	control_vars = '-Vdep:devlibs=libstdc++6-$(GCC_VERSION)-dev'
  endif
-@@ -118,6 +117,7 @@
+@@ -118,6 +119,7 @@
  
  LLDB_ENABLE=yes
  LLDB_DISABLE_ARCHS := arm64 hurd-i386 ia64
@@ -675,7 +685,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  # hurd has threading issues
  # mips* fails with "undefined references to `__atomic_load_8'"
  ifeq (,$(filter-out $(LLDB_DISABLE_ARCHS), $(DEB_HOST_ARCH)))
-@@ -147,6 +147,8 @@
+@@ -147,6 +149,8 @@
  
  
  override_dh_auto_configure: preconfigure
@@ -684,7 +694,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  	echo "Using gcc: "
  	$(CC) -v
  	mkdir -p $(TARGET_BUILD)
-@@ -253,7 +255,6 @@
+@@ -253,7 +257,6 @@
  	done
  
  	help2man --version-string=$(LLVM_VERSION) clang/tools/scan-view/scan-view > debian/man/scan-view-$(LLVM_VERSION).1
@@ -692,7 +702,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  
  	CMDS="llvm-dwarfdump llvm-mc llvm-mcmarkup llvm-objdump llvm-rtdyld llvm-size llvm-tblgen llvm-ranlib macho-dump lldb clang-format clang-modernize clang clang-tblgen clang-check clang-tidy clang-apply-replacements pp-trace"; \
  	for f in $$CMDS; do \
-@@ -266,7 +267,9 @@
+@@ -266,7 +269,9 @@
  
  	chrpath -d $(TARGET_BUILD)/Release/bin/clang
  	chrpath -d `find $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/bin/ -type f -executable`
@@ -703,7 +713,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  
  # Add the trailing soname
  	mv $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/lib/libLLVM-$(LLVM_VERSION).so $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/lib/libLLVM-$(LLVM_VERSION).so.$(SONAME_EXT)
-@@ -286,9 +289,6 @@
+@@ -286,9 +291,6 @@
  	cd $(TARGET_BUILD)/tools/clang/runtime/compiler-rt/clang_linux && rm -rf $$(find . -mindepth 2 -maxdepth 2 -type d) && rm -rf $$(find -empty) && rm -rf */.dir; \
  	fi
  
@@ -713,7 +723,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  # Create this fake directory to make the install libclang-common-dev happy
  # under the unsupported archs of compiler-rt
  	mkdir -p $(DEB_INST)/usr/lib/clang/$(LLVM_VERSION)/lib
-@@ -313,8 +313,6 @@
+@@ -316,8 +318,6 @@
  
  	cp -f $(CURDIR)/utils/vim/tablegen.vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
  
@@ -722,7 +732,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  	cp -f $(CURDIR)/clang/tools/clang-format/clang-format.py clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
  
  	rm -rf clang/tools/scan-build-$(LLVM_VERSION)
-@@ -323,6 +321,8 @@
+@@ -326,6 +326,8 @@
  	rm -rf clang/tools/scan-view-$(LLVM_VERSION)
  	cp -fR $(CURDIR)/clang/tools/scan-view clang/tools/scan-view-$(LLVM_VERSION)
  
@@ -731,7 +741,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  # Remove some license files
  	rm -f $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/include/llvm/Support/LICENSE.TXT \
  	$(CURDIR)/debian/llvm-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/build/autoconf/LICENSE.TXT
-@@ -355,8 +355,6 @@
+@@ -358,8 +360,6 @@
  
  
  override_dh_strip:
@@ -740,7 +750,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  	dh_strip -a
  
  
-@@ -374,6 +372,11 @@
+@@ -378,6 +378,11 @@
  # Remove auto generated python pyc
  	find $(CURDIR)/debian/llvm-$(LLVM_VERSION)-tools/usr/lib/llvm-$(LLVM_VERSION)/ -name '*.pyc' | xargs -r rm -f
  
@@ -752,9 +762,9 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  
  
  
-@@ -416,7 +419,9 @@
+@@ -425,7 +430,9 @@
  # Managed by debian build system
- 	rm -f $(CURDIR)/$(TARGET_BUILD)/Release/lib/python*/site-packages/lldb/_lldb.so
+ 	rm -f $(CURDIR)/$(TARGET_BUILD)/Release/lib/python*/site-packages/lldb/_lldb.so $(TARGET_BUILD)/Release/lib/liblldb-$(LLVM_VERSION).so
  # polly tests
 -	cd $(TARGET_BUILD)/ && $(MAKE) -C tools/polly/test/ check-polly || true
 +	if test $(POLLY_ENABLE) = yes; then \
@@ -763,7 +773,7 @@ diff -urN ../../llvm-toolchain-3.4/debian/rules llvm-toolchain-3.4_3.4+210930/de
  
  # The compression of the code coverage report is done in the
  # hook B21GetCoverageResults on the server
-@@ -449,8 +454,20 @@
+@@ -458,8 +465,20 @@
  	rm -f tools/clang tools/polly tools/lldb projects/compiler-rt
  	rm -rf tools/clang/tools/extra clang/tools/extra/
  	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
