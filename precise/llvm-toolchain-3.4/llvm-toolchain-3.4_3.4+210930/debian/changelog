@@ -1,8 +1,14 @@
-llvm-toolchain-3.4 (1:3.4.2-debian11precise1.1) precise; urgency=medium
+llvm-toolchain-3.4 (1:3.4.2-debian12precise1) precise; urgency=medium
 
   * ppa for precise
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Fri, 10 Oct 2014 21:40:00 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Tue, 14 Oct 2014 02:00:00 +0900
+
+llvm-toolchain-3.4 (1:3.4.2-12) unstable; urgency=medium
+
+  * Drop the LFS changes. FTBFS on most of the archs
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Fri, 10 Oct 2014 20:03:12 +0200
 
 llvm-toolchain-3.4 (1:3.4.2-11) unstable; urgency=medium
 

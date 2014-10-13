@@ -29,8 +29,6 @@ OCAML_STDLIB_DIR    ?= $(shell ocamlc -where)
 
 
 LDFLAGS_EXTRA =
-# avoid to ARMScheduleA9.td:2463:1: error: No matching instruction opcodes
-#CXXFLAGS_EXTRA = -D_FILE_OFFSET_BITS=64 -std=c++0x
 CXXFLAGS_EXTRA = -std=c++0x
 CONFIGURE_EXTRA =
 
