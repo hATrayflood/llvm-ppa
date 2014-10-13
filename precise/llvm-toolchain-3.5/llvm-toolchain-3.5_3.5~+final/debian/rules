@@ -26,9 +26,9 @@ DEB_HOST_ARCH       = $(shell dpkg-architecture -qDEB_HOST_ARCH)
 
 OCAML_STDLIB_DIR    ?= $(shell ocamlc -where)
 
-LDFLAGS_EXTRA=
-CXXFLAGS_EXTRA=
-CONFIGURE_EXTRA=
+LDFLAGS_EXTRA =
+CXXFLAGS_EXTRA = -std=c++0x
+CONFIGURE_EXTRA =
 
 ifneq (,$(filter $(DEB_HOST_ARCH),powerpc powerpcspe))
 LDFLAGS_EXTRA += -latomic
@@ -221,7 +221,7 @@ override_dh_auto_configure: preconfigure
 
 
 override_dh_auto_build:
-	$(PRE_PROCESS) $(MAKE) $(NJOBS) -C $(TARGET_BUILD) VERBOSE=1 CLANG_VENDOR=$(VENDOR) CXXFLAGS="$(CXXFLAGS_EXTRA) -std=c++0x"  LDFLAGS="$(LDFLAGS_EXTRA)" REQUIRES_RTTI=1 DEBUGMAKE=1
+	$(PRE_PROCESS) $(MAKE) $(NJOBS) -C $(TARGET_BUILD) VERBOSE=1 CLANG_VENDOR=$(VENDOR) CXXFLAGS="$(CXXFLAGS_EXTRA)"  LDFLAGS="$(LDFLAGS_EXTRA)" REQUIRES_RTTI=1 DEBUGMAKE=1
 
 # We run the build with the Asserts, new directory, make a symlink to make
 # sure the rest still work
@@ -394,9 +394,10 @@ endif
 
 # clang tests
 # setup the env
-	cd $(TARGET_BUILD)/Release/lib/ && ln -s libclang.so libclang.so.1
+	cd $(TARGET_BUILD)/Release/lib/ && ln -s libclang.so libclang.so.1 && ln -s libclang.so libclang-3.6.so.1
 	cd $(TARGET_BUILD)/ && $(MAKE) -C tools/clang/ test || true
-	rm -f $(TARGET_BUILD)/Release/lib/libclang.so.1
+	rm -f $(TARGET_BUILD)/Release/lib/libclang.so.1 $(TARGET_BUILD)/Release/lib/libclang-$(LLVM_VERSION).so.1
+
 
 # lldb tests
 ifeq (,$(filter $(DEB_HOST_ARCH), $(LLDB_DISABLE_ARCHS) armhf armel))
@@ -409,6 +410,10 @@ ifeq (,$(filter $(DEB_HOST_ARCH), $(LLDB_DISABLE_ARCHS) armhf armel))
 		ln -s ../../../libLLVM-$(LLVM_VERSION_FULL).so libLLVM-$(LLVM_VERSION_FULL).so.$(SONAME_EXT); \
 	fi; \
 	fi
+	cd $(TARGET_BUILD)/Release/lib && \
+	rm -f liblldb-$(LLVM_VERSION).so && \
+	ln -s liblldb.so liblldb-$(LLVM_VERSION).so
+
 	cd $(TARGET_BUILD)/ && $(MAKE) -C tools/lldb/test || true
 	if test -d $(TARGET_BUILD)/tools/lldb/test/lldb-test-traces/; then \
 		cat $(TARGET_BUILD)/tools/lldb/test/lldb-test-traces/*; \

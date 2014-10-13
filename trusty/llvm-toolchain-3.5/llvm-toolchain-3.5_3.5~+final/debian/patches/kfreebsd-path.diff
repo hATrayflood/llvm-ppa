@@ -1,8 +1,6 @@
-Index: llvm-toolchain-3.5-3.5/clang/lib/Driver/Driver.cpp
-===================================================================
---- llvm-toolchain-3.5-3.5.orig/clang/lib/Driver/Driver.cpp
-+++ llvm-toolchain-3.5-3.5/clang/lib/Driver/Driver.cpp
-@@ -1974,6 +1974,8 @@ const ToolChain &Driver::getToolChain(co
+--- a/clang/lib/Driver/Driver.cpp
++++ b/clang/lib/Driver/Driver.cpp
+@@ -1974,6 +1974,8 @@
        TC = new toolchains::Minix(*this, Target, Args);
        break;
      case llvm::Triple::Linux:
@@ -11,21 +9,28 @@ Index: llvm-toolchain-3.5-3.5/clang/lib/Driver/Driver.cpp
        if (Target.getArch() == llvm::Triple::hexagon)
          TC = new toolchains::Hexagon_TC(*this, Target, Args);
        else
-Index: llvm-toolchain-3.5-3.5/clang/lib/Driver/ToolChains.cpp
-===================================================================
---- llvm-toolchain-3.5-3.5.orig/clang/lib/Driver/ToolChains.cpp
-+++ llvm-toolchain-3.5-3.5/clang/lib/Driver/ToolChains.cpp
-@@ -1344,7 +1344,8 @@ bool Generic_GCC::GCCInstallationDetecto
+--- a/clang/lib/Driver/ToolChains.cpp
++++ b/clang/lib/Driver/ToolChains.cpp
+@@ -1336,7 +1336,7 @@
+     "x86_64-linux-gnu", "x86_64-unknown-linux-gnu", "x86_64-pc-linux-gnu",
+     "x86_64-redhat-linux6E", "x86_64-redhat-linux", "x86_64-suse-linux",
+     "x86_64-manbo-linux-gnu", "x86_64-linux-gnu", "x86_64-slackware-linux",
+-    "x86_64-linux-android", "x86_64-unknown-linux"
++    "x86_64-linux-android", "x86_64-unknown-linux", "x86_64-kfreebsd-gnu"
+   };
+   static const char *const X32LibDirs[] = { "/libx32" };
+   static const char *const X86LibDirs[] = { "/lib32", "/lib" };
+@@ -1344,7 +1344,8 @@
      "i686-linux-gnu", "i686-pc-linux-gnu", "i486-linux-gnu", "i386-linux-gnu",
      "i386-redhat-linux6E", "i686-redhat-linux", "i586-redhat-linux",
      "i386-redhat-linux", "i586-suse-linux", "i486-slackware-linux",
 -    "i686-montavista-linux", "i686-linux-android", "i586-linux-gnu"
 +    "i686-montavista-linux", "i686-linux-android", "i586-linux-gnu",
-+    "i486-kfreebsd-gnu", "i586-kfreebsd-gnu", "i386-kfreebsd-gnu"
++    "i386-kfreebsd-gnu", "i486-kfreebsd-gnu", "i586-kfreebsd-gnu"
    };
  
    static const char *const MIPSLibDirs[] = { "/lib" };
-@@ -2934,12 +2935,17 @@ static std::string getMultiarchTriple(co
+@@ -2934,12 +2935,17 @@
    case llvm::Triple::x86:
      if (llvm::sys::fs::exists(SysRoot + "/lib/i386-linux-gnu"))
        return "i386-linux-gnu";
@@ -43,7 +48,18 @@ Index: llvm-toolchain-3.5-3.5/clang/lib/Driver/ToolChains.cpp
      return TargetTriple.str();
    case llvm::Triple::arm64:
    case llvm::Triple::aarch64:
-@@ -3299,6 +3305,9 @@ void Linux::AddClangSystemIncludeArgs(co
+@@ -3247,6 +3253,10 @@
+   if (DriverArgs.hasArg(options::OPT_nostdinc))
+     return;
+ 
++  // Under Debian, clang headers are installed into
++  // '/usr/include/clang/VERSION/include/'
++  addSystemInclude(DriverArgs, CC1Args, "/usr/include/clang/" + std::string(CLANG_VERSION_STRING) + "/include/");
++
+   if (!DriverArgs.hasArg(options::OPT_nostdlibinc))
+     addSystemInclude(DriverArgs, CC1Args, SysRoot + "/usr/local/include");
+ 
+@@ -3299,6 +3309,9 @@
    const StringRef X86_64MultiarchIncludeDirs[] = {
      "/usr/include/x86_64-linux-gnu",
  
@@ -53,7 +69,7 @@ Index: llvm-toolchain-3.5-3.5/clang/lib/Driver/ToolChains.cpp
      // FIXME: These are older forms of multiarch. It's not clear that they're
      // in use in any released version of Debian, so we should consider
      // removing them.
-@@ -3307,6 +3316,9 @@ void Linux::AddClangSystemIncludeArgs(co
+@@ -3307,6 +3320,9 @@
    const StringRef X86MultiarchIncludeDirs[] = {
      "/usr/include/i386-linux-gnu",
  
@@ -63,11 +79,9 @@ Index: llvm-toolchain-3.5-3.5/clang/lib/Driver/ToolChains.cpp
      // FIXME: These are older forms of multiarch. It's not clear that they're
      // in use in any released version of Debian, so we should consider
      // removing them.
-Index: llvm-toolchain-3.5-3.5/clang/lib/Driver/Tools.cpp
-===================================================================
---- llvm-toolchain-3.5-3.5.orig/clang/lib/Driver/Tools.cpp
-+++ llvm-toolchain-3.5-3.5/clang/lib/Driver/Tools.cpp
-@@ -7177,6 +7177,12 @@ static void AddLibgcc(const llvm::Triple
+--- a/clang/lib/Driver/Tools.cpp
++++ b/clang/lib/Driver/Tools.cpp
+@@ -7177,6 +7177,12 @@
  
  static StringRef getLinuxDynamicLinker(const ArgList &Args,
                                         const toolchains::Linux &ToolChain) {
@@ -80,7 +94,7 @@ Index: llvm-toolchain-3.5-3.5/clang/lib/Driver/Tools.cpp
    if (ToolChain.getTriple().getEnvironment() == llvm::Triple::Android) {
      if (ToolChain.getTriple().isArch64Bit())
        return "/system/bin/linker64";
-@@ -7229,6 +7235,7 @@ static StringRef getLinuxDynamicLinker(c
+@@ -7229,6 +7235,7 @@
      return "/libx32/ld-linux-x32.so.2";
    else
      return "/lib64/ld-linux-x86-64.so.2";
@@ -88,7 +102,7 @@ Index: llvm-toolchain-3.5-3.5/clang/lib/Driver/Tools.cpp
  }
  
  static void AddRunTimeLibs(const ToolChain &TC, const Driver &D,
-@@ -7296,6 +7303,11 @@ void gnutools::Link::ConstructJob(Compil
+@@ -7296,6 +7303,11 @@
  
    CmdArgs.push_back("-m");
    if (ToolChain.getArch() == llvm::Triple::x86)
@@ -100,7 +114,7 @@ Index: llvm-toolchain-3.5-3.5/clang/lib/Driver/Tools.cpp
      CmdArgs.push_back("elf_i386");
    else if (ToolChain.getArch() == llvm::Triple::aarch64 ||
             ToolChain.getArch() == llvm::Triple::arm64)
-@@ -7342,6 +7354,7 @@ void gnutools::Link::ConstructJob(Compil
+@@ -7342,6 +7354,7 @@
      CmdArgs.push_back("elf32_x86_64");
    else
      CmdArgs.push_back("elf_x86_64");
