@@ -1,16 +1,16 @@
 diff -urN ../../llvm-toolchain-3.5/debian/changelog llvm-toolchain-3.5_3.5~+final/debian/changelog
---- ../../llvm-toolchain-3.5/debian/changelog	2014-10-11 16:46:43.000000000 +0900
-+++ llvm-toolchain-3.5_3.5~+final/debian/changelog	2014-10-14 02:20:34.196101605 +0900
+--- ../../llvm-toolchain-3.5/debian/changelog	2014-10-16 01:16:59.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/debian/changelog	2014-10-16 20:29:09.304689103 +0900
 @@ -1,3 +1,9 @@
-+llvm-toolchain-3.5 (1:3.5-debian5trusty1) trusty; urgency=medium
++llvm-toolchain-3.5 (1:3.5-debian6trusty1) trusty; urgency=medium
 +
 +  * ppa for trusty
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Tue, 14 Oct 2014 02:20:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 16 Oct 2014 20:30:00 +0900
 +
- llvm-toolchain-3.5 (1:3.5-5) unstable; urgency=medium
+ llvm-toolchain-3.5 (1:3.5-6) unstable; urgency=medium
  
-   * Fix various issues under Kfreebsd. Thanks to Steven Chamberlain
+   * Ignore a test failing under i386.
 diff -urN ../../llvm-toolchain-3.5/debian/clang-X.Y-relaxng.install.in llvm-toolchain-3.5_3.5~+final/debian/clang-X.Y-relaxng.install.in
 --- ../../llvm-toolchain-3.5/debian/clang-X.Y-relaxng.install.in	1970-01-01 09:00:00.000000000 +0900
 +++ llvm-toolchain-3.5_3.5~+final/debian/clang-X.Y-relaxng.install.in	2014-08-02 02:55:10.704199000 +0900
@@ -596,12 +596,12 @@ diff -urN ../../llvm-toolchain-3.5/debian/patches/python-clangpath.diff llvm-too
           if Config.library_path:
               file = Config.library_path + '/' + file
 diff -urN ../../llvm-toolchain-3.5/debian/patches/series llvm-toolchain-3.5_3.5~+final/debian/patches/series
---- ../../llvm-toolchain-3.5/debian/patches/series	2014-10-04 23:38:07.000000000 +0900
-+++ llvm-toolchain-3.5_3.5~+final/debian/patches/series	2014-10-14 02:22:28.547463930 +0900
-@@ -43,3 +43,4 @@
- kfreebsd-readline.diff
+--- ../../llvm-toolchain-3.5/debian/patches/series	2014-10-14 18:43:41.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/debian/patches/series	2014-10-16 20:30:14.185435141 +0900
+@@ -44,3 +44,4 @@
  kfreebsd-path.diff
  lldb-kfreebsd-mi.diff
+ ignore-ifcvt3.ll.diff
 +99-python-bindings.patch
 diff -urN ../../llvm-toolchain-3.5/debian/pollycc.in llvm-toolchain-3.5_3.5~+final/debian/pollycc.in
 --- ../../llvm-toolchain-3.5/debian/pollycc.in	2014-08-02 20:59:36.000000000 +0900
@@ -621,8 +621,8 @@ diff -urN ../../llvm-toolchain-3.5/debian/python-clang-X.Y.install.in llvm-toolc
 +clang/bindings/python/examples		usr/share/doc/python-clang-@LLVM_VERSION@/
 +clang/bindings/python/tests		usr/share/doc/python-clang-@LLVM_VERSION@/
 diff -urN ../../llvm-toolchain-3.5/debian/rules llvm-toolchain-3.5_3.5~+final/debian/rules
---- ../../llvm-toolchain-3.5/debian/rules	2014-10-11 16:46:43.000000000 +0900
-+++ llvm-toolchain-3.5_3.5~+final/debian/rules	2014-10-14 02:25:20.174459229 +0900
+--- ../../llvm-toolchain-3.5/debian/rules	2014-10-14 20:46:34.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/debian/rules	2014-10-16 20:31:39.144313979 +0900
 @@ -3,7 +3,7 @@
  TARGET_BUILD	:= build-llvm
  DEB_INST		:= $(CURDIR)/debian/tmp/

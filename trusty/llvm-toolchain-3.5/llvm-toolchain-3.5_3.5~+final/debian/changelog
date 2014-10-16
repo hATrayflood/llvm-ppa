@@ -1,8 +1,15 @@
-llvm-toolchain-3.5 (1:3.5-debian5trusty1) trusty; urgency=medium
+llvm-toolchain-3.5 (1:3.5-debian6trusty1) trusty; urgency=medium
 
   * ppa for trusty
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Tue, 14 Oct 2014 02:20:00 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 16 Oct 2014 20:30:00 +0900
+
+llvm-toolchain-3.5 (1:3.5-6) unstable; urgency=medium
+
+  * Ignore a test failing under i386.
+    Forwaded: http://llvm.org/bugs/show_bug.cgi?id=21257
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Mon, 13 Oct 2014 13:01:46 +0200
 
 llvm-toolchain-3.5 (1:3.5-5) unstable; urgency=medium
 

@@ -43,4 +43,5 @@ gcc-compat-2.diff
 kfreebsd-readline.diff
 kfreebsd-path.diff
 lldb-kfreebsd-mi.diff
+ignore-ifcvt3.ll.diff
 99-python-bindings.patch

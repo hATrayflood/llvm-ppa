@@ -1,3 +1,7 @@
+Description: Ignore a bunch of tests
+
+Forwarded: http://llvm.org/bugs/show_bug.cgi?id=20586
+
 Index: llvm-toolchain-snapshot_3.5~svn211445/test/ExecutionEngine/MCJIT/cross-module-sm-pic-a.ll
 ===================================================================
 --- llvm-toolchain-snapshot_3.5~svn211445.orig/test/ExecutionEngine/MCJIT/cross-module-sm-pic-a.ll	2014-06-21 15:54:22.049147179 -0700

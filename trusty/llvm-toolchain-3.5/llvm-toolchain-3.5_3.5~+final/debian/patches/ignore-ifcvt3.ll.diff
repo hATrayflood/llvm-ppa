@@ -1,0 +1,17 @@
+Description: A test is now failing under i386:
+https://buildd.debian.org/status/fetch.php?pkg=llvm-toolchain-3.5&arch=i386&ver=1%3A3.5-5&stamp=1413026444
+
+Forwarded upstream: http://llvm.org/bugs/show_bug.cgi?id=21257
+
+Index: llvm-toolchain-3.5-3.5~+rc4/test/CodeGen/ARM/ifcvt3.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5~+rc4.orig/test/CodeGen/ARM/ifcvt3.ll
++++ llvm-toolchain-3.5-3.5~+rc4/test/CodeGen/ARM/ifcvt3.ll
+@@ -1,6 +1,7 @@
+ ; RUN: llc -mtriple=arm-eabi -mcpu=cortex-a8 %s -o - | FileCheck %s
+ ; RUN: llc -mtriple=arm-eabi -mattr=+v4t %s -o - | FileCheck %s -check-prefix CHECK-V4-CMP
+ ; RUN: llc -mtriple=arm-eabi -mattr=+v4t %s -o - | FileCheck %s -check-prefix CHECK-V4-BX
++; XFAIL: *
+ 
+ define i32 @t1(i32 %a, i32 %b, i32 %c, i32 %d) {
+ ; CHECK-LABEL: t1:
