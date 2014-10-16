@@ -1,8 +1,14 @@
-llvm-toolchain-3.4 (1:3.4.2-debian12precise1) precise; urgency=medium
+llvm-toolchain-3.4 (1:3.4.2-debian13precise1) precise; urgency=medium
 
   * ppa for precise
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Tue, 14 Oct 2014 02:00:00 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 16 Oct 2014 18:30:00 +0900
+
+llvm-toolchain-3.4 (1:3.4.2-13) unstable; urgency=medium
+
+  * Try again to fix the arm64 FTBFS (Closes: #764530)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Wed, 15 Oct 2014 15:53:50 +0200
 
 llvm-toolchain-3.4 (1:3.4.2-12) unstable; urgency=medium
 

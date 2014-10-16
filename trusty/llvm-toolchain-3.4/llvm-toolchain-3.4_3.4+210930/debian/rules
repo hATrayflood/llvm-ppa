@@ -297,7 +297,7 @@ override_dh_auto_install:
 	mkdir -p $(TARGET_BUILD)/tools/clang/runtime/compiler-rt/clang_linux/
 
 # idem for the lldb python binding
-	mkdir -p $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/lib/python2.7/site-packages/lldb/
+	mkdir -p $(TARGET_BUILD)/Release/lib/python2.7/site-packages/lldb/
 
 # Rename binaries
 	mkdir -p $(DEB_INST)/usr/bin/
