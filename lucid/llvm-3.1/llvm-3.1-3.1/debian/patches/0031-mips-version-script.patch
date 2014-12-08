@@ -1,0 +1,28 @@
+--- 3.0.orig/configure	(révision 144213)
++++ 3.0/configure	(copie de travail)
+@@ -5041,6 +5041,7 @@
+         alpha)    TARGETS_TO_BUILD="Alpha $TARGETS_TO_BUILD" ;;
+         arm)      TARGETS_TO_BUILD="ARM $TARGETS_TO_BUILD" ;;
+         mips)     TARGETS_TO_BUILD="Mips $TARGETS_TO_BUILD" ;;
++        mipsel)   TARGETS_TO_BUILD="Mips $TARGETS_TO_BUILD" ;;
+         spu)      TARGETS_TO_BUILD="CellSPU $TARGETS_TO_BUILD" ;;
+         xcore)    TARGETS_TO_BUILD="XCore $TARGETS_TO_BUILD" ;;
+         msp430)   TARGETS_TO_BUILD="MSP430 $TARGETS_TO_BUILD" ;;
+--- 3.0.orig/autoconf/configure.ac	(révision 144213)
++++ 3.0/autoconf/configure.ac	(copie de travail)
+@@ -355,6 +355,7 @@
+   alpha*-*)               llvm_cv_target_arch="Alpha" ;;
+   arm*-*)                 llvm_cv_target_arch="ARM" ;;
+   mips-*)                 llvm_cv_target_arch="Mips" ;;
++  mipsel-*)                 llvm_cv_target_arch="Mips" ;;
+   xcore-*)                llvm_cv_target_arch="XCore" ;;
+   msp430-*)               llvm_cv_target_arch="MSP430" ;;
+   s390x-*)                llvm_cv_target_arch="SystemZ" ;;
+@@ -624,6 +625,7 @@
+         alpha)    TARGETS_TO_BUILD="Alpha $TARGETS_TO_BUILD" ;;
+         arm)      TARGETS_TO_BUILD="ARM $TARGETS_TO_BUILD" ;;
+         mips)     TARGETS_TO_BUILD="Mips $TARGETS_TO_BUILD" ;;
++        mipsel)     TARGETS_TO_BUILD="Mips $TARGETS_TO_BUILD" ;;
+         spu)      TARGETS_TO_BUILD="CellSPU $TARGETS_TO_BUILD" ;;
+         xcore)    TARGETS_TO_BUILD="XCore $TARGETS_TO_BUILD" ;;
+         msp430)   TARGETS_TO_BUILD="MSP430 $TARGETS_TO_BUILD" ;;

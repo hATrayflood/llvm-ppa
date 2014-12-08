@@ -1,0 +1,31 @@
+Index: llvm-3.1-3.1~+rc3/tools/llvm-ld/llvm-ld.cpp
+===================================================================
+--- llvm-3.1-3.1~+rc3.orig/tools/llvm-ld/llvm-ld.cpp	2012-05-20 16:17:38.818257532 +0200
++++ llvm-3.1-3.1~+rc3/tools/llvm-ld/llvm-ld.cpp	2012-05-20 16:17:55.794257317 +0200
+@@ -37,6 +37,7 @@
+ #include "llvm/Support/SystemUtils.h"
+ #include "llvm/Support/ToolOutputFile.h"
+ #include "llvm/Support/Signals.h"
++#include "llvm/Config/config.h"
+ #include <memory>
+ #include <cstring>
+ using namespace llvm;
+@@ -433,7 +434,17 @@
+ 
+   Out2.os() << "#!/bin/sh\n";
+   // Allow user to setenv LLVMINTERP if lli is not in their PATH.
+-  Out2.os() << "lli=${LLVMINTERP-lli}\n";
++  Out2.os() << "lli=${LLVMINTERP-lli-" << PACKAGE_VERSION << "}\n";
++  Out2.os() << "command -v $lli >/dev/null 2>&1\n";
++  Out2.os() << "if test $? -ne 0; then \n";
++  Out2.os() << "    lli=${LLVMINTERP-lli}\n";
++  Out2.os() << "    command -v $lli >/dev/null 2>&1\n";
++  Out2.os() << "    if test $? -ne 0; then \n";
++  Out2.os() << "        echo 'Could not find either lli-" << PACKAGE_VERSION << " or lli'\n";
++  Out2.os() << "        exit 42\n";
++  Out2.os() << "    fi\n";
++  Out2.os() << "fi\n";
++
+   Out2.os() << "exec $lli \\\n";
+   // gcc accepts -l<lib> and implicitly searches /lib and /usr/lib.
+   LibPaths.push_back("/lib");

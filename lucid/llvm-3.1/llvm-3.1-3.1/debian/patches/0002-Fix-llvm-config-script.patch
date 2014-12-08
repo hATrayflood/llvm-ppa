@@ -1,0 +1,36 @@
+Index: llvm.svn.test/autoconf/configure.ac
+===================================================================
+--- llvm.svn.test.orig/tools/llvm-config/llvm-config.in.in
++++ llvm.svn.test/tools/llvm-config/llvm-config.in.in
+@@ -65,7 +65,7 @@
+ chomp($ABS_OBJ_ROOT);
+ 
+ my $INCLUDEDIR = "$ABS_RUN_DIR/include";
+-my $INCLUDEOPTION = "-I$INCLUDEDIR";
++my $INCLUDEOPTION = "-I/usr/lib/llvm-$VERSION/include";
+ my $LIBDIR     = "$ABS_RUN_DIR/lib";
+ my $BINDIR     = "$ABS_RUN_DIR/bin";
+ if ($ABS_RUN_DIR eq $ABS_OBJ_ROOT) {
+@@ -76,8 +76,11 @@
+   $INCLUDEOPTION = "-I$INCLUDEDIR -I$LLVM_OBJ_ROOT/include"
+ } else {
+   # If installed, ignore the prefix the tree was configured with, use the
+-  # current prefix.
+-  $PREFIX = $ABS_RUN_DIR;
++  # Debian dirs.
++  $INCLUDEDIR = "/usr/lib/llvm-$VERSION/include";
++  $PREFIX     = "/usr/lib/llvm-$VERSION";
++  $LIBDIR     = "/usr/lib/llvm-$VERSION/lib";
++  $BINDIR     = "/usr/lib/llvm-$VERSION/bin";
+ }
+ 
+ sub usage;
+@@ -154,7 +157,7 @@
+ # Handle any arguments which require building our dependency graph.
+ if ($want_libs || $want_libnames || $want_libfiles) {
+     my @libs = expand_dependencies(@components);
+-    print join(' ', fix_library_names(@libs)), "\n" if ($want_libs);
++    print join(' ', fix_library_names(@libs)), " -L$LIBDIR\n" if ($want_libs);
+     print join(' ',  @libs), "\n" if ($want_libnames);
+     print join(' ', fix_library_files(@libs)), "\n" if ($want_libfiles);
+ }

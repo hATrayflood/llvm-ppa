@@ -1,0 +1,33 @@
+Index: llvm-3.1-3.1~+rc3/configure
+===================================================================
+--- llvm-3.1-3.1~+rc3.orig/configure	2012-05-20 16:17:44.654257458 +0200
++++ llvm-3.1-3.1~+rc3/configure	2012-05-20 16:17:54.350257336 +0200
+@@ -13274,7 +13274,7 @@
+       case $llvm_cv_os_type in
+         Linux)
+           if test -n "$llvm_cv_oppath" ; then
+-            LIBS="$LIBS -lopagent -L${llvm_cv_oppath} -Wl,-rpath,${llvm_cv_oppath}"
++            #LIBS="$LIBS -lopagent -L${llvm_cv_oppath} -Wl,-rpath,${llvm_cv_oppath}"
+                                                             { echo "$as_me:$LINENO: checking for library containing bfd_init" >&5
+ echo $ECHO_N "checking for library containing bfd_init... $ECHO_C" >&6; }
+ if test "${ac_cv_search_bfd_init+set}" = set; then
+@@ -13370,7 +13370,7 @@
+ echo "${ECHO_T}$ac_cv_search_bfd_init" >&6; }
+ ac_res=$ac_cv_search_bfd_init
+ if test "$ac_res" != no; then
+-  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
++  test "$ac_res" = "none required" || true
+ 
+ fi
+ 
+@@ -13406,8 +13406,8 @@
+   if test -z "$ac_lib"; then
+     ac_res="none required"
+   else
+-    ac_res=-l$ac_lib
+-    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
++    ac_res="-Wl,--as-needed -l$ac_lib -Wl,--no-as-needed"
++    LIBS="-Wl,--as-needed -l$ac_lib -Wl,--no-as-needed $ac_func_search_save_LIBS"
+   fi
+   rm -f conftest.$ac_objext conftest$ac_exeext
+ if { (ac_try="$ac_link"
