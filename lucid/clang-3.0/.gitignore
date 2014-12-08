@@ -1,0 +1,4 @@
+*.deb
+clang-3.0_3.0-*
+clang-3.0/*
+!clang-3.0/debian
