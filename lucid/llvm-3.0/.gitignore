@@ -1,0 +1,4 @@
+*.deb
+llvm-3.0_3.0-*
+llvm-3.0.src/*
+!llvm-3.0.src/debian
