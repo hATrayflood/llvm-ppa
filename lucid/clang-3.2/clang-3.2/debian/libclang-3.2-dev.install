@@ -1,0 +1,3 @@
+usr/include/clang                  /usr/include/clang-3.2/
+usr/include/clang-c                /usr/include/clang-c-3.2/
+usr/lib/libclang*a                 /usr/lib/llvm-3.2/lib/
