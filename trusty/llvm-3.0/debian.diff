@@ -13,7 +13,7 @@ diff -urN ../../llvm-3.0/debian/changelog llvm-3.0.src/debian/changelog
    * Rebuild package to fix symbol issues (Closes: #680326, #681109)
 diff -urN ../../llvm-3.0/debian/control llvm-3.0.src/debian/control
 --- ../../llvm-3.0/debian/control	2012-07-13 20:36:21.000000000 +0900
-+++ llvm-3.0.src/debian/control	2014-07-26 09:38:33.878685920 +0900
++++ llvm-3.0.src/debian/control	2014-09-22 19:19:22.075154378 +0900
 @@ -1,18 +1,17 @@
  Source: llvm-3.0
  Section: devel
@@ -185,7 +185,7 @@ diff -urN ../../llvm-3.0/debian/packages.d/llvm.mk llvm-3.0.src/debian/packages.
  define llvm-runtime_extra_binary
 diff -urN ../../llvm-3.0/debian/rules llvm-3.0.src/debian/rules
 --- ../../llvm-3.0/debian/rules	2012-04-06 19:54:36.000000000 +0900
-+++ llvm-3.0.src/debian/rules	2014-05-09 17:45:31.552132996 +0900
++++ llvm-3.0.src/debian/rules	2014-12-08 13:04:46.483171083 +0900
 @@ -16,7 +16,7 @@
  
  define pkgname
@@ -195,10 +195,11 @@ diff -urN ../../llvm-3.0/debian/rules llvm-3.0.src/debian/rules
  endef
  
  define buildof
-@@ -35,5 +35,6 @@
+@@ -35,5 +35,7 @@
  endif
  	$(RM) -r $(D)/debian/ccache
  	find utils -name '*.py[co]' | xargs rm -f
++	find test  -name '*.py[co]' | xargs rm -f
 +	rm -f $(D)/utils/vim/llvm-$(UVERSION).vim $(D)/utils/vim/tablegen-$(UVERSION).vim
  
  .PHONY: clean

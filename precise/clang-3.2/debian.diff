@@ -588,7 +588,7 @@ diff -urN ../../clang-3.2/debian/python-clang-3.2.install clang-3.2/debian/pytho
 +tools/clang/bindings/python/tests	usr/share/doc/python-clang-3.2/
 diff -urN ../../clang-3.2/debian/rules clang-3.2/debian/rules
 --- ../../clang-3.2/debian/rules	2013-03-15 22:45:44.000000000 +0900
-+++ clang-3.2/debian/rules	2014-09-21 01:36:24.354052031 +0900
++++ clang-3.2/debian/rules	2014-12-08 11:27:39.057991847 +0900
 @@ -1,14 +1,18 @@
  #!/usr/bin/make -f
  
@@ -631,7 +631,7 @@ diff -urN ../../clang-3.2/debian/rules clang-3.2/debian/rules
  	xzcat /usr/src/llvm-$(LLVM_VERSION)/llvm-$(LLVM_VERSION).tar.xz|tar -x -f -
  	mkdir -p tools/clang/include/clang/Debian
  	mkdir -p $(TARGET_BUILD)
-@@ -83,20 +92,40 @@
+@@ -83,20 +92,42 @@
  override_dh_auto_install:
  	chrpath -d build-clang/Release/bin/clang build-clang/Release/bin/clang-check build-clang/Release/bin/clang-tblgen
  	$(MAKE) -C $(TARGET_BUILD)  VERBOSE=1  ONLY_TOOLS="clang" install DESTDIR=$(CURDIR)/debian/tmp/
@@ -667,6 +667,8 @@ diff -urN ../../clang-3.2/debian/rules clang-3.2/debian/rules
 +	if test -d $(CURDIR)/debian/clang-$(LLVM_VERSION)-relaxng/usr/share/xml/clang-$(LLVM_VERSION)-relaxng ; then \
 +		find $(CURDIR)/debian/clang-$(LLVM_VERSION)-relaxng/usr/share/xml/clang-$(LLVM_VERSION)-relaxng -name "*.gz" -exec gzip -d {} \; ; \
 +	fi
++
++override_dh_pysupport:
  
  override_dh_auto_test:
  	$(MAKE) -C $(TARGET_BUILD)  check || true

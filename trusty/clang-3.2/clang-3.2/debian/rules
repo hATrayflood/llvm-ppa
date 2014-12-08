@@ -119,6 +119,8 @@ override_dh_installdeb:
 		find $(CURDIR)/debian/clang-$(LLVM_VERSION)-relaxng/usr/share/xml/clang-$(LLVM_VERSION)-relaxng -name "*.gz" -exec gzip -d {} \; ; \
 	fi
 
+override_dh_pysupport:
+
 override_dh_auto_test:
 	$(MAKE) -C $(TARGET_BUILD)  check || true
 
