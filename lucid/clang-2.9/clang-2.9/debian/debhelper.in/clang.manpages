@@ -1,0 +1,3 @@
+build-clang/tools/clang/docs/tools/clang.1
+debian/man/scan-build.1
+debian/man/scan-view.1
