@@ -1,0 +1,3 @@
+debian/@TMP@/@PF@/include/clang                  @PF@/lib/llvm-@UVERSION@/include/
+debian/@TMP@/@PF@/include/clang-c                @PF@/lib/llvm-@UVERSION@/include/
+debian/@TMP@/@PF@/lib/libclang*a                 @PF@/lib/llvm-@UVERSION@/lib/

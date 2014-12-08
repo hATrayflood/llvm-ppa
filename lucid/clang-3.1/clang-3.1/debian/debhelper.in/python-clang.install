@@ -1,0 +1,4 @@
+tools/clang/bindings/python/clang/*	@PF@/lib/python2.6/dist-packages/clang31/
+tools/clang/bindings/python/README.txt	@PF@/share/doc/python-clang-@UVERSION@/
+tools/clang/bindings/python/examples	@PF@/share/doc/python-clang-@UVERSION@/
+tools/clang/bindings/python/tests	@PF@/share/doc/python-clang-@UVERSION@/

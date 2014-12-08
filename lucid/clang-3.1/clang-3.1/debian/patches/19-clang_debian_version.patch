@@ -1,0 +1,30 @@
+Index: clang-3.1~+rc3/tools/clang/lib/Basic/Version.cpp
+===================================================================
+--- clang-3.1~+rc3.orig/tools/clang/lib/Basic/Version.cpp	2012-05-20 16:58:57.118226253 +0200
++++ clang-3.1~+rc3/tools/clang/lib/Basic/Version.cpp	2012-05-20 16:59:05.314226149 +0200
+@@ -15,6 +15,7 @@
+ #include "clang/Basic/LLVM.h"
+ #include "llvm/Support/raw_ostream.h"
+ #include "llvm/Config/config.h"
++#include "clang/Debian/debian_path.h"
+ #include <cstring>
+ #include <cstdlib>
+ 
+@@ -117,7 +118,7 @@
+ #ifdef CLANG_VENDOR
+   OS << CLANG_VENDOR;
+ #endif
+-  OS << "clang version " CLANG_VERSION_STRING " "
++  OS << "clang version " CLANG_VERSION_STRING "-" DEB_PATCHSETVERSION " "
+      << getClangFullRepositoryVersion();
+ 
+   // If vendor supplied, include the base LLVM version as well.
+@@ -136,7 +137,7 @@
+ #ifdef CLANG_VENDOR
+   OS << CLANG_VENDOR;
+ #endif
+-  OS << "Clang " CLANG_VERSION_STRING " ("
++  OS << "Clang " CLANG_VERSION_STRING "-" DEB_PATCHSETVERSION " ("
+      << getClangFullRepositoryVersion() << ')';
+   return OS.str();
+ }

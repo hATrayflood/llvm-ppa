@@ -1,0 +1,654 @@
+diff -urN ../../clang-3.1/debian/changelog clang-3.1/debian/changelog
+--- ../../clang-3.1/debian/changelog	2012-06-28 07:10:09.000000000 +0900
++++ clang-3.1/debian/changelog	2014-12-08 08:33:17.926700945 +0900
+@@ -1,3 +1,9 @@
++clang-3.1 (3.1-debian8lucid1) lucid; urgency=low
++
++  * ppa for lucid
++
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Mon, 08 Dec 2014 08:20:00 +0900
++
+ clang (3.1-8) unstable; urgency=low
+ 
+   * Also ship clang static libraries for the plugin developments
+diff -urN ../../clang-3.1/debian/control clang-3.1/debian/control
+--- ../../clang-3.1/debian/control	2012-06-28 07:12:08.000000000 +0900
++++ clang-3.1/debian/control	2014-12-08 08:33:20.515338570 +0900
+@@ -1,26 +1,22 @@
+-Source: clang
++Source: clang-3.1
+ Section: devel
+-Priority: optional
+-Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
+-Uploaders: Arthur Loiret <aloiret@debian.org>,
+- Sylvestre Ledru <sylvestre@debian.org>
++Priority: extra
++Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
+ Build-Depends: debhelper (>= 6.0.0), flex, bison, dejagnu, tcl8.5, expect,
+     autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
+     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
+-    lsb-release, patchutils, diffstat, xz-utils, llvm-3.1-dev (>= 3.1), llvm-3.1-source (>= 3.1),
+-    gcc-4.6, g++-4.6
++    lsb-release, patchutils, diffstat, xz-utils, llvm-3.1-dev (>= 3.1), llvm-3.1-source (>= 3.1), python,
++    gcc-4.4, g++-4.4
+ Build-Conflicts: oprofile, ocaml
+ Standards-Version: 3.9.3
+-Homepage: http://www.llvm.org/
+-Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/clang/trunk/
+-Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/clang/trunk/
++Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
++Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
+ 
+ 
+-Package: clang
++Package: clang-3.1
+ Architecture: any
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
+- libclang-common-dev (= ${binary:Version})
+-Provides: clang-3.1, c-compiler
++Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.4-dev,
++ libclang-common-3.1-dev (= ${binary:Version})
+ Recommends: llvm-3.1-dev, python
+ Description: Low-Level Virtual Machine (LLVM), C language family frontend
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+@@ -58,9 +54,9 @@
+     * A single unified parser for C, Objective C, C++, and Objective C++
+     * Conformance with C/C++/ObjC and their variants
+ 
+-Package: libclang1
++Package: libclang1-3.1
+ Architecture: any
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev
++Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.4-dev
+ Description: clang library
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+@@ -99,11 +95,11 @@
+  .
+  This package contains the clang library.
+ 
+-Package: libclang-dev
++Package: libclang-3.1-dev
+ Architecture: any
+ Section: libdevel
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
+- libclang1 (= ${binary:Version}), libclang-common-dev
++Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.4-dev,
++ libclang1-3.1 (= ${binary:Version}), libclang-common-3.1-dev (= ${binary:Version})
+ Description: clang library - Development package
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+@@ -142,9 +138,9 @@
+  .
+  This package contains the clang headers to develop extensions over libclang.
+ 
+-Package: libclang-common-dev
++Package: libclang-common-3.1-dev
+ Architecture: any
+-Replaces: libclang-dev
++Replaces: libclang-3.1-dev
+ Section: libdevel
+ Description: clang library - Common development package
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+@@ -183,3 +179,10 @@
+     * Conformance with C/C++/ObjC and their variants
+  .
+  This package contains the clang generic headers.
++
++Package: python-clang-3.1
++Architecture: any
++Section: python
++Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-3.1 (= ${binary:Version}), python2.6
++Description: Clang Python Bindings
++ This binding package provides access to the Clang compiler and libraries.
+diff -urN ../../clang-3.1/debian/control.in/clang clang-3.1/debian/control.in/clang
+--- ../../clang-3.1/debian/control.in/clang	2012-06-21 18:03:51.000000000 +0900
++++ clang-3.1/debian/control.in/clang	2014-12-07 14:23:37.015247926 +0900
+@@ -1,8 +1,7 @@
+-Package: clang
++Package: clang-@UVERSION@
+ Architecture: any
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
+- libclang-common-dev (= ${binary:Version})
+-Provides: clang-@UVERSION@, c-compiler
++Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.4-dev,
++ libclang-common-@UVERSION@-dev (= ${binary:Version})
+ Recommends: llvm-@UVERSION@-dev, python
+ Description: Low-Level Virtual Machine (LLVM), C language family frontend
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+diff -urN ../../clang-3.1/debian/control.in/libclang-common-dev clang-3.1/debian/control.in/libclang-common-dev
+--- ../../clang-3.1/debian/control.in/libclang-common-dev	2012-06-01 21:50:18.000000000 +0900
++++ clang-3.1/debian/control.in/libclang-common-dev	2014-05-09 17:45:31.476094327 +0900
+@@ -1,7 +1,7 @@
+ 
+-Package: libclang-common-dev
++Package: libclang-common-@UVERSION@-dev
+ Architecture: any
+-Replaces: libclang-dev
++Replaces: libclang-@UVERSION@-dev
+ Section: libdevel
+ Description: clang library - Common development package
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+diff -urN ../../clang-3.1/debian/control.in/libclang-dev clang-3.1/debian/control.in/libclang-dev
+--- ../../clang-3.1/debian/control.in/libclang-dev	2012-06-01 21:50:18.000000000 +0900
++++ clang-3.1/debian/control.in/libclang-dev	2014-12-07 14:23:17.591174616 +0900
+@@ -1,9 +1,9 @@
+ 
+-Package: libclang-dev
++Package: libclang-@UVERSION@-dev
+ Architecture: any
+ Section: libdevel
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev,
+- libclang1 (= ${binary:Version}), libclang-common-dev
++Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.4-dev,
++ libclang1-@UVERSION@ (= ${binary:Version}), libclang-common-@UVERSION@-dev (= ${binary:Version})
+ Description: clang library - Development package
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+diff -urN ../../clang-3.1/debian/control.in/libclang1 clang-3.1/debian/control.in/libclang1
+--- ../../clang-3.1/debian/control.in/libclang1	2012-06-01 21:50:18.000000000 +0900
++++ clang-3.1/debian/control.in/libclang1	2014-12-07 14:23:26.609057088 +0900
+@@ -1,6 +1,6 @@
+-Package: libclang1
++Package: libclang1-@UVERSION@
+ Architecture: any
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.6-dev
++Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6-4.4-dev
+ Description: clang library
+  The Low-Level Virtual Machine (LLVM) is a collection of libraries and
+  tools that make it easy to build compilers, optimizers, Just-In-Time
+diff -urN ../../clang-3.1/debian/control.in/python-clang clang-3.1/debian/control.in/python-clang
+--- ../../clang-3.1/debian/control.in/python-clang	1970-01-01 09:00:00.000000000 +0900
++++ clang-3.1/debian/control.in/python-clang	2014-12-07 14:24:09.542595065 +0900
+@@ -0,0 +1,7 @@
++
++Package: python-clang-@UVERSION@
++Architecture: any
++Section: python
++Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-@UVERSION@ (= ${binary:Version}), python2.6
++Description: Clang Python Bindings
++ This binding package provides access to the Clang compiler and libraries.
+diff -urN ../../clang-3.1/debian/control.in/source clang-3.1/debian/control.in/source
+--- ../../clang-3.1/debian/control.in/source	2012-06-21 18:03:51.000000000 +0900
++++ clang-3.1/debian/control.in/source	2014-12-07 14:22:54.593048497 +0900
+@@ -1,18 +1,15 @@
+ Source: @PKGSOURCE@
+ Section: devel
+-Priority: optional
+-Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
+-Uploaders: Arthur Loiret <aloiret@debian.org>,
+- Sylvestre Ledru <sylvestre@debian.org>
++Priority: extra
++Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
+ Build-Depends: debhelper (>= 6.0.0), flex, bison, dejagnu, tcl8.5, expect,
+     autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
+     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
+-    lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@,
+-    gcc-4.6, g++-4.6
++    lsb-release, patchutils, diffstat, xz-utils @BUILDDEPS@, python,
++    gcc-4.4, g++-4.4
+ Build-Conflicts: oprofile @BUILDCONFLICTS@
+ Standards-Version: 3.9.3
+-Homepage: http://www.llvm.org/
+-Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/clang/trunk/
+-Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/clang/trunk/
++Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
++Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
+ 
+ 
+diff -urN ../../clang-3.1/debian/debhelper.in/clang.install clang-3.1/debian/debhelper.in/clang.install
+--- ../../clang-3.1/debian/debhelper.in/clang.install	2012-06-01 21:50:18.000000000 +0900
++++ clang-3.1/debian/debhelper.in/clang.install	2014-09-21 19:50:01.721260155 +0900
+@@ -1,5 +1,4 @@
+-debian/@TMP@/@PF@/bin/clang			@PF@/bin/
+-debian/@TMP@/@PF@/bin/clang++			@PF@/bin/
+-tools/clang/tools/scan-build			@PF@/share/clang/
+-tools/clang/tools/scan-view			@PF@/share/clang/
+-debian/@TMP@/@PF@/share/man/man1/clang.1	usr/share/man/man1/
++debian/@TMP@/@PF@/bin/clang			@PF@/lib/llvm-@UVERSION@/bin/
++debian/@TMP@/@PF@/bin/clang++			@PF@/lib/llvm-@UVERSION@/bin/
++tools/clang/tools/scan-build-@UVERSION@		usr/share/clang/
++tools/clang/tools/scan-view-@UVERSION@		usr/share/clang/
+diff -urN ../../clang-3.1/debian/debhelper.in/clang.links clang-3.1/debian/debhelper.in/clang.links
+--- ../../clang-3.1/debian/debhelper.in/clang.links	2012-06-01 21:50:18.000000000 +0900
++++ clang-3.1/debian/debhelper.in/clang.links	2014-09-21 19:50:09.189563395 +0900
+@@ -1,5 +1,7 @@
+-usr/share/man/man1/clang.1.gz		usr/share/man/man1/llvm-clang.1.gz
+-usr/share/man/man1/clang.1.gz		usr/share/man/man1/clang++.1.gz
+-@PF@/share/clang/scan-build/scan-build	@PF@/bin/scan-build
+-@PF@/share/clang/scan-view/scan-view	@PF@/bin/scan-view
+-@PF@/bin/clang				@PF@/bin/llvm-clang
++usr/share/man/man1/clang-@UVERSION@.1.gz		usr/share/man/man1/llvm-clang-@UVERSION@.1.gz
++usr/share/man/man1/clang-@UVERSION@.1.gz		usr/share/man/man1/clang++-@UVERSION@.1.gz
++usr/share/clang/scan-build-@UVERSION@/scan-build	usr/bin/scan-build-@UVERSION@
++usr/share/clang/scan-view-@UVERSION@/scan-view		usr/bin/scan-view-@UVERSION@
++usr/lib/llvm-@UVERSION@/bin/clang			usr/bin/llvm-clang-@UVERSION@
++usr/lib/llvm-@UVERSION@/bin/clang			usr/bin/clang-@UVERSION@
++usr/lib/llvm-@UVERSION@/bin/clang++			usr/bin/clang++-@UVERSION@
+diff -urN ../../clang-3.1/debian/debhelper.in/clang.manpages clang-3.1/debian/debhelper.in/clang.manpages
+--- ../../clang-3.1/debian/debhelper.in/clang.manpages	2012-06-01 21:50:18.000000000 +0900
++++ clang-3.1/debian/debhelper.in/clang.manpages	2014-09-20 22:47:49.934692000 +0900
+@@ -1 +1,3 @@
+-debian/man/scan*.1
++build-clang/tools/clang/docs/tools/clang.1
++debian/man/scan-build.1
++debian/man/scan-view.1
+diff -urN ../../clang-3.1/debian/debhelper.in/clang.postinst clang-3.1/debian/debhelper.in/clang.postinst
+--- ../../clang-3.1/debian/debhelper.in/clang.postinst	2012-06-01 21:50:18.000000000 +0900
++++ clang-3.1/debian/debhelper.in/clang.postinst	1970-01-01 09:00:00.000000000 +0900
+@@ -1,19 +0,0 @@
+-#! /bin/sh -e
+-
+-prio=10
+-
+-update-alternatives --quiet \
+-	--install /usr/bin/c++ \
+-		c++ \
+-		/usr/bin/clang++ \
+-		$prio
+-
+-update-alternatives --quiet \
+-	--install /usr/bin/cc \
+-		cc \
+-		/usr/bin/clang \
+-		$prio
+-
+-#DEBHELPER#
+-
+-exit 0
+diff -urN ../../clang-3.1/debian/debhelper.in/clang.prerm clang-3.1/debian/debhelper.in/clang.prerm
+--- ../../clang-3.1/debian/debhelper.in/clang.prerm	2012-06-01 21:50:18.000000000 +0900
++++ clang-3.1/debian/debhelper.in/clang.prerm	1970-01-01 09:00:00.000000000 +0900
+@@ -1,12 +0,0 @@
+-#!/bin/sh
+-
+-set -e
+-
+-if [ "$1" = "remove" ] || [ "$1" = "deconfigure" ]; then
+-    update-alternatives --quiet --remove cc /usr/bin/clang
+-    update-alternatives --quiet --remove c++ /usr/bin/clang++
+-fi
+-
+-#DEBHELPER#
+-
+-exit 0
+diff -urN ../../clang-3.1/debian/debhelper.in/libclang-dev.install clang-3.1/debian/debhelper.in/libclang-dev.install
+--- ../../clang-3.1/debian/debhelper.in/libclang-dev.install	2012-06-28 07:10:09.000000000 +0900
++++ clang-3.1/debian/debhelper.in/libclang-dev.install	2014-09-20 23:03:52.170110000 +0900
+@@ -1,4 +1,3 @@
+-debian/@TMP@/@PF@/include/clang                  @PF@/include/
+-debian/@TMP@/@PF@/include/clang-c                @PF@/include/
+-debian/@TMP@/@PF@/lib/libclang.so                @PF@/lib/
+-debian/@TMP@/@PF@/lib/libclang*a                 @PF@/lib/
++debian/@TMP@/@PF@/include/clang                  @PF@/lib/llvm-@UVERSION@/include/
++debian/@TMP@/@PF@/include/clang-c                @PF@/lib/llvm-@UVERSION@/include/
++debian/@TMP@/@PF@/lib/libclang*a                 @PF@/lib/llvm-@UVERSION@/lib/
+diff -urN ../../clang-3.1/debian/debhelper.in/libclang-dev.links clang-3.1/debian/debhelper.in/libclang-dev.links
+--- ../../clang-3.1/debian/debhelper.in/libclang-dev.links	1970-01-01 09:00:00.000000000 +0900
++++ clang-3.1/debian/debhelper.in/libclang-dev.links	2014-09-20 23:04:41.697577000 +0900
+@@ -0,0 +1,3 @@
++usr/lib/@DEB_HOST_MULTIARCH@/libclang-@UVERSION@.so.1 usr/lib/@DEB_HOST_MULTIARCH@/libclang-@UVERSION@.so
++usr/lib/@DEB_HOST_MULTIARCH@/libclang-@UVERSION@.so.1 usr/lib/llvm-@UVERSION@/lib/libclang-@UVERSION@.so
++usr/lib/@DEB_HOST_MULTIARCH@/libclang-@UVERSION@.so.1 usr/lib/llvm-@UVERSION@/lib/libclang.so
+diff -urN ../../clang-3.1/debian/debhelper.in/libclang1.install clang-3.1/debian/debhelper.in/libclang1.install
+--- ../../clang-3.1/debian/debhelper.in/libclang1.install	2012-06-01 21:50:18.000000000 +0900
++++ clang-3.1/debian/debhelper.in/libclang1.install	2014-09-20 23:04:59.740645000 +0900
+@@ -1 +1 @@
+-debian/@TMP@/@PF@/lib/libclang.so.1                       @PF@/lib/
++debian/@TMP@/@PF@/lib/libclang-@UVERSION@.so.1 /usr/lib/@DEB_HOST_MULTIARCH@/
+diff -urN ../../clang-3.1/debian/debhelper.in/libclang1.links clang-3.1/debian/debhelper.in/libclang1.links
+--- ../../clang-3.1/debian/debhelper.in/libclang1.links	1970-01-01 09:00:00.000000000 +0900
++++ clang-3.1/debian/debhelper.in/libclang1.links	2014-09-20 23:05:22.161537000 +0900
+@@ -0,0 +1 @@
++usr/lib/@DEB_HOST_MULTIARCH@/libclang-@UVERSION@.so.1 usr/lib/llvm-@UVERSION@/lib/libclang.so.1
+diff -urN ../../clang-3.1/debian/debhelper.in/python-clang.install clang-3.1/debian/debhelper.in/python-clang.install
+--- ../../clang-3.1/debian/debhelper.in/python-clang.install	1970-01-01 09:00:00.000000000 +0900
++++ clang-3.1/debian/debhelper.in/python-clang.install	2014-12-07 14:24:24.367467452 +0900
+@@ -0,0 +1,4 @@
++tools/clang/bindings/python/clang/*	@PF@/lib/python2.6/dist-packages/clang31/
++tools/clang/bindings/python/README.txt	@PF@/share/doc/python-clang-@UVERSION@/
++tools/clang/bindings/python/examples	@PF@/share/doc/python-clang-@UVERSION@/
++tools/clang/bindings/python/tests	@PF@/share/doc/python-clang-@UVERSION@/
+diff -urN ../../clang-3.1/debian/patches/28-gcc-4.7-paths-clang-3.1.diff clang-3.1/debian/patches/28-gcc-4.7-paths-clang-3.1.diff
+--- ../../clang-3.1/debian/patches/28-gcc-4.7-paths-clang-3.1.diff	1970-01-01 09:00:00.000000000 +0900
++++ clang-3.1/debian/patches/28-gcc-4.7-paths-clang-3.1.diff	2014-05-09 17:45:31.476094327 +0900
+@@ -0,0 +1,50 @@
++--- clang-3.1-3.1.orig/tools/clang/lib/Driver/ToolChains.cpp
+++++ clang-3.1-3.1/tools/clang/lib/Driver/ToolChains.cpp
++@@ -34,6 +34,9 @@
++ #include <cstdlib> // ::getenv
++ 
++ #include "clang/Config/config.h" // for GCC_INSTALL_PREFIX
+++#include "clang/Debian/debian_path.h"
+++
+++#include <iostream>
++ 
++ using namespace clang::driver;
++ using namespace clang::driver::toolchains;
++@@ -2287,16 +2290,29 @@ void Linux::AddClangCXXStdlibIncludeArgs
++   StringRef LibDir = GCCInstallation.getParentLibPath();
++   StringRef InstallDir = GCCInstallation.getInstallPath();
++   StringRef Version = GCCInstallation.getVersion();
++-  if (!addLibStdCXXIncludePaths(LibDir + "/../include/c++/" + Version,
++-                                (GCCInstallation.getTriple().str() +
++-                                 GCCInstallation.getMultiarchSuffix()),
++-                                DriverArgs, CC1Args)) {
+++  StringRef TripleStr = GCCInstallation.getTriple().str();
+++
+++  const std::string IncludePathCandidates[] = {
+++    LibDir.str() + "/../include/c++/" + Version.str(),
+++    // Once more, Debian headers locations changed (since gcc version 4.7.2-5)
+++    // See Debian bug tracker #693240
+++    LibDir.str() + "/../include/"+ TripleStr.str() +"/c++/" + Version.str(),
+++    LibDir.str() + "/../include/" + DEB_HOST_MULTIARCH_TRIPLET + "/c++/" + Version.str(),
++     // Gentoo is weird and places its headers inside the GCC install, so if the
++     // first attempt to find the headers fails, try this pattern.
++-    addLibStdCXXIncludePaths(InstallDir + "/include/g++-v4",
++-                             (GCCInstallation.getTriple().str() +
++-                              GCCInstallation.getMultiarchSuffix()),
++-                             DriverArgs, CC1Args);
+++    InstallDir.str() + "/include/g++-v4",
+++    // Android standalone toolchain has C++ headers in yet another place.
+++    LibDir.str() + "/../" + TripleStr.str() + "/include/c++/" + Version.str(),
+++    // Freescale SDK C++ headers are directly in <sysroot>/usr/include/c++,
+++    // without a subdirectory corresponding to the gcc version.
+++    LibDir.str() + "/../include/c++",
+++  };
+++
+++  for (unsigned i = 0; i < llvm::array_lengthof(IncludePathCandidates); ++i) {
+++      addLibStdCXXIncludePaths(IncludePathCandidates[i], (TripleStr +
+++                GCCInstallation.getMultiarchSuffix()),
+++                               DriverArgs, CC1Args);
+++
++   }
++ }
++ 
+diff -urN ../../clang-3.1/debian/patches/32-scan-build-path.diff clang-3.1/debian/patches/32-scan-build-path.diff
+--- ../../clang-3.1/debian/patches/32-scan-build-path.diff	1970-01-01 09:00:00.000000000 +0900
++++ clang-3.1/debian/patches/32-scan-build-path.diff	2014-09-20 22:36:20.680072000 +0900
+@@ -0,0 +1,11 @@
++--- clang-3.1-3.1.orig/tools/clang/tools/scan-build/scan-build
+++++ clang-3.1-3.1/tools/clang/tools/scan-build/scan-build
++@@ -81,7 +81,7 @@ sub DieDiag {
++ ##----------------------------------------------------------------------------##
++ 
++ # Find 'clang'
++-my $ClangSB = Cwd::realpath("$RealBin/bin/clang");
+++my $ClangSB = Cwd::realpath("/usr/lib/llvm-3.1/bin/clang");
++ if (!defined $ClangSB || ! -x $ClangSB) {
++   $ClangSB = Cwd::realpath("$RealBin/clang");
++ }
+diff -urN ../../clang-3.1/debian/patches/99-python-bindings.patch clang-3.1/debian/patches/99-python-bindings.patch
+--- ../../clang-3.1/debian/patches/99-python-bindings.patch	1970-01-01 09:00:00.000000000 +0900
++++ clang-3.1/debian/patches/99-python-bindings.patch	2014-05-09 17:45:31.476094327 +0900
+@@ -0,0 +1,137 @@
++diff -urN clang-3.1.orig/tools/clang/bindings/python/README.txt clang-3.1/tools/clang/bindings/python/README.txt
++--- clang-3.1.orig/tools/clang/bindings/python/README.txt	2010-05-01 06:51:10.000000000 +0900
+++++ clang-3.1/tools/clang/bindings/python/README.txt	2013-06-23 12:37:19.028211350 +0900
++@@ -4,12 +4,9 @@
++ 
++ This directory implements Python bindings for Clang.
++ 
++-You may need to alter LD_LIBRARY_PATH so that the Clang library can be
++-found. The unit tests are designed to be run with 'nosetests'. For example:
+++The unit tests are designed to be run with 'nosetests'. For example:
++ --
++-$ env PYTHONPATH=$(echo ~/llvm/tools/clang/bindings/python/) \
++-      LD_LIBRARY_PATH=$(llvm-config --libdir) \
++-  nosetests -v
+++$ nosetests -v
++ tests.cindex.test_index.test_create ... ok
++ ...
++ 
++diff -urN clang-3.1.orig/tools/clang/bindings/python/examples/cindex/cindex-dump.py clang-3.1/tools/clang/bindings/python/examples/cindex/cindex-dump.py
++--- clang-3.1.orig/tools/clang/bindings/python/examples/cindex/cindex-dump.py	2010-02-14 03:33:28.000000000 +0900
+++++ clang-3.1/tools/clang/bindings/python/examples/cindex/cindex-dump.py	2013-06-23 12:37:48.156355790 +0900
++@@ -54,7 +54,7 @@
++              'children' : children }
++ 
++ def main():
++-    from clang.cindex import Index
+++    from clang31.cindex import Index
++     from pprint import pprint
++ 
++     from optparse import OptionParser, OptionGroup
++diff -urN clang-3.1.orig/tools/clang/bindings/python/examples/cindex/cindex-includes.py clang-3.1/tools/clang/bindings/python/examples/cindex/cindex-includes.py
++--- clang-3.1.orig/tools/clang/bindings/python/examples/cindex/cindex-includes.py	2010-02-14 03:33:28.000000000 +0900
+++++ clang-3.1/tools/clang/bindings/python/examples/cindex/cindex-includes.py	2013-06-23 12:37:59.980414432 +0900
++@@ -16,7 +16,7 @@
++ 
++ def main():
++     import sys
++-    from clang.cindex import Index
+++    from clang31.cindex import Index
++ 
++     from optparse import OptionParser, OptionGroup
++ 
++diff -urN clang-3.1.orig/tools/clang/bindings/python/tests/cindex/test_cursor.py clang-3.1/tools/clang/bindings/python/tests/cindex/test_cursor.py
++--- clang-3.1.orig/tools/clang/bindings/python/tests/cindex/test_cursor.py	2012-03-11 07:23:27.000000000 +0900
+++++ clang-3.1/tools/clang/bindings/python/tests/cindex/test_cursor.py	2013-06-23 12:39:15.172787294 +0900
++@@ -1,5 +1,5 @@
++-from clang.cindex import CursorKind
++-from clang.cindex import TypeKind
+++from clang31.cindex import CursorKind
+++from clang31.cindex import TypeKind
++ from .util import get_cursor
++ from .util import get_tu
++ 
++diff -urN clang-3.1.orig/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py clang-3.1/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py
++--- clang-3.1.orig/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py	2012-02-05 20:42:09.000000000 +0900
+++++ clang-3.1/tools/clang/bindings/python/tests/cindex/test_cursor_kind.py	2013-06-23 12:38:14.772487787 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import CursorKind
+++from clang31.cindex import CursorKind
++ 
++ def test_name():
++     assert CursorKind.UNEXPOSED_DECL.name is 'UNEXPOSED_DECL'
++diff -urN clang-3.1.orig/tools/clang/bindings/python/tests/cindex/test_diagnostics.py clang-3.1/tools/clang/bindings/python/tests/cindex/test_diagnostics.py
++--- clang-3.1.orig/tools/clang/bindings/python/tests/cindex/test_diagnostics.py	2012-03-11 07:19:05.000000000 +0900
+++++ clang-3.1/tools/clang/bindings/python/tests/cindex/test_diagnostics.py	2013-06-23 12:39:03.356728676 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import *
+++from clang31.cindex import *
++ from .util import get_tu
++ 
++ # FIXME: We need support for invalid translation units to test better.
++diff -urN clang-3.1.orig/tools/clang/bindings/python/tests/cindex/test_file.py clang-3.1/tools/clang/bindings/python/tests/cindex/test_file.py
++--- clang-3.1.orig/tools/clang/bindings/python/tests/cindex/test_file.py	2011-10-31 09:07:19.000000000 +0900
+++++ clang-3.1/tools/clang/bindings/python/tests/cindex/test_file.py	2013-06-23 12:39:27.436848105 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import Index, File
+++from clang31.cindex import Index, File
++ 
++ def test_file():
++   index = Index.create()
++diff -urN clang-3.1.orig/tools/clang/bindings/python/tests/cindex/test_index.py clang-3.1/tools/clang/bindings/python/tests/cindex/test_index.py
++--- clang-3.1.orig/tools/clang/bindings/python/tests/cindex/test_index.py	2010-01-24 11:02:07.000000000 +0900
+++++ clang-3.1/tools/clang/bindings/python/tests/cindex/test_index.py	2013-06-23 12:38:51.524670030 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import *
+++from clang31.cindex import *
++ import os
++ 
++ kInputsDir = os.path.join(os.path.dirname(__file__), 'INPUTS')
++diff -urN clang-3.1.orig/tools/clang/bindings/python/tests/cindex/test_location.py clang-3.1/tools/clang/bindings/python/tests/cindex/test_location.py
++--- clang-3.1.orig/tools/clang/bindings/python/tests/cindex/test_location.py	2012-03-11 07:19:05.000000000 +0900
+++++ clang-3.1/tools/clang/bindings/python/tests/cindex/test_location.py	2013-06-23 12:38:28.228554488 +0900
++@@ -1,7 +1,7 @@
++-from clang.cindex import Cursor
++-from clang.cindex import File
++-from clang.cindex import SourceLocation
++-from clang.cindex import SourceRange
+++from clang31.cindex import Cursor
+++from clang31.cindex import File
+++from clang31.cindex import SourceLocation
+++from clang31.cindex import SourceRange
++ from .util import get_cursor
++ from .util import get_tu
++ 
++diff -urN clang-3.1.orig/tools/clang/bindings/python/tests/cindex/test_translation_unit.py clang-3.1/tools/clang/bindings/python/tests/cindex/test_translation_unit.py
++--- clang-3.1.orig/tools/clang/bindings/python/tests/cindex/test_translation_unit.py	2011-07-06 12:00:34.000000000 +0900
+++++ clang-3.1/tools/clang/bindings/python/tests/cindex/test_translation_unit.py	2013-06-23 12:39:50.340961675 +0900
++@@ -1,4 +1,4 @@
++-from clang.cindex import *
+++from clang31.cindex import *
++ import os
++ 
++ kInputsDir = os.path.join(os.path.dirname(__file__), 'INPUTS')
++diff -urN clang-3.1.orig/tools/clang/bindings/python/tests/cindex/test_type.py clang-3.1/tools/clang/bindings/python/tests/cindex/test_type.py
++--- clang-3.1.orig/tools/clang/bindings/python/tests/cindex/test_type.py	2012-04-16 03:51:10.000000000 +0900
+++++ clang-3.1/tools/clang/bindings/python/tests/cindex/test_type.py	2013-06-23 12:39:38.620903555 +0900
++@@ -1,5 +1,5 @@
++-from clang.cindex import CursorKind
++-from clang.cindex import TypeKind
+++from clang31.cindex import CursorKind
+++from clang31.cindex import TypeKind
++ from nose.tools import raises
++ from .util import get_cursor
++ from .util import get_tu
++diff -urN clang-3.1.orig/tools/clang/bindings/python/tests/cindex/util.py clang-3.1/tools/clang/bindings/python/tests/cindex/util.py
++--- clang-3.1.orig/tools/clang/bindings/python/tests/cindex/util.py	2012-03-11 07:19:05.000000000 +0900
+++++ clang-3.1/tools/clang/bindings/python/tests/cindex/util.py	2013-06-23 12:38:41.956622576 +0900
++@@ -1,7 +1,7 @@
++ # This file provides common utility functions for the test suite.
++ 
++-from clang.cindex import Cursor
++-from clang.cindex import Index
+++from clang31.cindex import Cursor
+++from clang31.cindex import Index
++ 
++ def get_tu(source, lang='c', all_warnings=False):
++     """Obtain a translation unit from source and language.
+diff -urN ../../clang-3.1/debian/patches/python-clangpath.diff clang-3.1/debian/patches/python-clangpath.diff
+--- ../../clang-3.1/debian/patches/python-clangpath.diff	1970-01-01 09:00:00.000000000 +0900
++++ clang-3.1/debian/patches/python-clangpath.diff	2014-05-09 17:45:31.476094327 +0900
+@@ -0,0 +1,12 @@
++diff -urN clang-3.1.orig/tools/clang/bindings/python/clang/cindex.py clang-3.1/tools/clang/bindings/python/clang/cindex.py
++--- clang-3.1.orig/tools/clang/bindings/python/clang/cindex.py	2012-04-16 03:51:10.000000000 +0900
+++++ clang-3.1/tools/clang/bindings/python/clang/cindex.py	2013-06-23 12:41:27.673444311 +0900
++@@ -76,7 +76,7 @@
++     elif name == 'Windows':
++         return cdll.LoadLibrary('libclang.dll')
++     else:
++-        return cdll.LoadLibrary('libclang.so')
+++        return cdll.LoadLibrary('libclang-3.1.so.1')
++ 
++ # ctypes doesn't implicitly convert c_void_p to the appropriate wrapper
++ # object. This is a problem, because it means that from_parameter will see an
+diff -urN ../../clang-3.1/debian/patches/series clang-3.1/debian/patches/series
+--- ../../clang-3.1/debian/patches/series	2012-06-26 06:31:47.000000000 +0900
++++ clang-3.1/debian/patches/series	2014-09-20 22:36:41.353830000 +0900
+@@ -4,3 +4,7 @@
+ 21-searchPathHeaders.diff
+ 23-strlcpy_strlcat_warning_removed.diff
+ 26-disable_SplitsOnSpaces.diff
++28-gcc-4.7-paths-clang-3.1.diff
++32-scan-build-path.diff
++python-clangpath.diff
++99-python-bindings.patch
+diff -urN ../../clang-3.1/debian/rules clang-3.1/debian/rules
+--- ../../clang-3.1/debian/rules	2012-06-01 21:50:18.000000000 +0900
++++ clang-3.1/debian/rules	2014-09-20 22:35:19.894175000 +0900
+@@ -17,7 +17,7 @@
+ 
+ define pkgname
+   $(shell cat $(D)/debian/control.in/$1 | awk '/^Package: / {print $$2}' | \
+-  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(gcc_version)/;s/@PKG_VERSION@/$(pkg_version)/')
++  sed -e 's/@UVERSION@/$(UVERSION)/;s/@GCC_VERSION@/$(GCC_VERSION)/;s/@PKG_VERSION@/$(pkg_version)/')
+ endef
+ 
+ define buildof
+@@ -36,5 +36,8 @@
+ endif
+ 	$(RM) -r $(D)/debian/ccache
+ 	find utils -name '*.py[co]' | xargs rm -f
++	$(RM) tools/clang/include/clang/Debian/debian_path.h
++	rm -rf tools/clang/tools/scan-build-$(UVERSION)
++	rm -rf tools/clang/tools/scan-view-$(UVERSION)
+ 
+ .PHONY: clean
+diff -urN ../../clang-3.1/debian/rules.d/binary.mk clang-3.1/debian/rules.d/binary.mk
+--- ../../clang-3.1/debian/rules.d/binary.mk	2012-06-01 21:50:18.000000000 +0900
++++ clang-3.1/debian/rules.d/binary.mk	2014-09-20 22:24:38.199999000 +0900
+@@ -17,6 +17,7 @@
+ 		-e "s/@PKG_VERSION@/$(pkg_version)/g" \
+ 		-e "s/@SHLIB_NAME@/$(shlib_name)/g" \
+ 		-e "s;@OCAML_STDLIB_DIR@;$(OCAML_STDLIB_DIR);g" \
++		-e "s;@DEB_HOST_MULTIARCH@;$(DEB_HOST_MULTIARCH);g" \
+ 		$(D)/debian/debhelper.in/$f > \
+ 		$(D)/debian/$(strip $(call pkgname,$*))$(strip $(suffix $(f))) \
+ 	&&) :
+@@ -39,6 +40,10 @@
+ 	@echo Building package: $(call pkgname,$*)
+ 	dh_testdir
+ 	dh_testroot
++	if test $* = clang ; then \
++		cp -fR $(D)/tools/clang/tools/scan-build tools/clang/tools/scan-build-$(UVERSION) ; \
++		cp -fR $(D)/tools/clang/tools/scan-view tools/clang/tools/scan-view-$(UVERSION) ; \
++	fi
+ 	dh_installchangelogs -p$(call pkgname,$*)
+ 	dh_installdocs -p$(call pkgname,$*)
+ 	dh_installexamples -p$(call pkgname,$*)
+@@ -73,6 +78,10 @@
+ 	dh_fixperms -p$(call pkgname,$*)
+ 	DH_VERBOSE=1 dh_makeshlibs -p$(call pkgname,$*)
+ 	DH_VERBOSE=1 dh_shlibdeps -p$(call pkgname,$*)
++	if test $* = python-clang ; then \
++		find $(D)/debian/python-clang-$(UVERSION)/usr/share/doc/python-clang-$(UVERSION)/examples -name "*.gz" -exec gzip -d {} \; ; \
++		find $(D)/debian/python-clang-$(UVERSION)/usr/share/doc/python-clang-$(UVERSION)/tests    -name "*.gz" -exec gzip -d {} \; ; \
++	fi
+ 	dh_installdeb -p$(call pkgname,$*)
+ 	dh_gencontrol -p$(call pkgname,$*)
+ 	dh_md5sums -p$(call pkgname,$*)
+diff -urN ../../clang-3.1/debian/rules.d/build.mk clang-3.1/debian/rules.d/build.mk
+--- ../../clang-3.1/debian/rules.d/build.mk	2012-06-26 06:31:47.000000000 +0900
++++ clang-3.1/debian/rules.d/build.mk	2014-05-09 17:45:31.476094327 +0900
+@@ -86,10 +86,11 @@
+ 	    L=$${L##$(D)/debian/tmp-$*} ; \
+ 	    ln -sf $$L $$i ; \
+ 	  done
+-	(cd $(D)/debian/tmp-clang/usr/lib/; \
+-		if test ! -h libclang.so; then \
+-			ln -s libclang.so.$(SONAME_EXT) libclang.so; \
+-	fi)
++	cd $(D)/debian/tmp-clang/usr/lib/ && \
++	if test ! -f libclang-$(UVERSION).so.$(SONAME_EXT); then \
++		mv libclang.so.$(SONAME_EXT) libclang-$(UVERSION).so.$(SONAME_EXT) && \
++		ln -s libclang-$(UVERSION).so.$(SONAME_EXT) libclang.so.$(SONAME_EXT); \
++	fi
+ 	chrpath -d $(D)/debian/tmp-clang/usr/bin/clang
+ 	$(call $*_extra_install)
+ 	touch $@
+diff -urN ../../clang-3.1/debian/rules.d/control.mk clang-3.1/debian/rules.d/control.mk
+--- ../../clang-3.1/debian/rules.d/control.mk	2012-06-01 21:50:18.000000000 +0900
++++ clang-3.1/debian/rules.d/control.mk	2014-05-09 17:45:31.476094327 +0900
+@@ -1,7 +1,7 @@
+ $(foreach var,BUILDDEPS BUILDCONFLICTS,$(eval \
+   $(if $(strip $($(var))),$(eval $(var) :=, $($(var))),$(eval $(var) :=))))
+ 
+-extra_packages:=libclang1 libclang-dev libclang-common-dev
++extra_packages:=libclang1 libclang-dev libclang-common-dev python-clang
+ packages := $(foreach build,$(builds),$($(build)_packages))
+ packages += $(extra_packages) 
+ 
+@@ -11,7 +11,7 @@
+ 	    -e "s/ *@BUILDDEPS@/$(BUILDDEPS)/g"			\
+ 	    -e "s/ *@BUILDCONFLICTS@/$(BUILDCONFLICTS)/g"	\
+ 	    -e "s/@UVERSION@/$(UVERSION)/g"			\
+-	    -e "s/@GCC_VERSION@/$(gcc_version)/g"		\
++	    -e "s/@GCC_VERSION@/$(GCC_VERSION)/g"		\
+ 	    -e "s/@PKG_VERSION@/$(pkg_version)/g"		\
+ 	    -e "s/ , /, /g"					\
+ 	    $@.in/source $(addprefix $@.in/,$(packages)) > $@
+diff -urN ../../clang-3.1/debian/rules.d/vars.mk clang-3.1/debian/rules.d/vars.mk
+--- ../../clang-3.1/debian/rules.d/vars.mk	2012-06-01 21:59:57.000000000 +0900
++++ clang-3.1/debian/rules.d/vars.mk	2014-12-07 14:23:51.591347206 +0900
+@@ -5,7 +5,7 @@
+ PATCHSETVERSION	:= $(shell echo $(VERSION) | cut -d'-' -f2)
+ UVERSION	:= 3.1
+ SONAME_EXT      := 1
+-GCC_VERSION	:= 4.6
++GCC_VERSION	:= 4.4
+ OS		:= $(shell lsb_release -is)
+ PF		:= /usr/lib/llvm-$(UVERSION)
+ D		:= $(CURDIR)
