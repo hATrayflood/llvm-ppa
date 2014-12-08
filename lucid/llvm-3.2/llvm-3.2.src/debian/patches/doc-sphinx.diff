@@ -1,0 +1,14 @@
+--- llvm-3.2-3.2.orig/docs/Makefile.sphinx
++++ llvm-3.2-3.2/docs/Makefile.sphinx
+@@ -120,7 +120,10 @@ text:
+ 	@echo "Build finished. The text files are in $(BUILDDIR)/text."
+ 
+ man:
+-	$(SPHINXBUILD) -b man $(ALLSPHINXOPTS) $(BUILDDIR)/man
++	mkdir -p _build/man
++	for f in CommandGuide/*.rst ; do \
++		rst2man $$f _build/man/`basename $$f|sed "s|\.rst$$|.1|"` ; \
++	done
+ 	@echo
+ 	@echo "Build finished. The manual pages are in $(BUILDDIR)/man."
+ 
