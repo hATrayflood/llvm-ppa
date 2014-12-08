@@ -1,0 +1,27 @@
+---
+ Makefile |    7 +++++++
+ 1 file changed, 7 insertions(+)
+
+--- a/tools/llvm-shlib/Makefile
++++ b/tools/llvm-shlib/Makefile
+@@ -26,6 +26,12 @@
+ LLVMLibsPaths   := $(IncludeInLibLlvm)
+ 
+ $(LibName.SO): $(LLVMLibsPaths)
++	$(Echo) Linking $(BuildMode) $(SharedLibKindMessage) \
++	  $(LIBRARYNAME)$(SHLIBEXT)
++	$(Verb) $(Link) $(SharedLinkOptions) -o $@ $(ObjectsO) \
++	  $(ProjLibsOptions) $(LLVMLibsOptions) $(LIBS)
++	mv $(LibName.SO) $(LibName.SO).1
++	ln -s $(notdir $(LibName.SO)).1 $(LibName.SO)
+ 
+ ifeq ($(HOST_OS),Darwin)
+     # set dylib internal version number to llvmCore submission number
+@@ -72,6 +72,7 @@
+     # Include everything from the .a's into the shared library.
+     LLVMLibsOptions := -Wl,--whole-archive $(LLVMLibsOptions) \
+                        -Wl,--no-whole-archive
++    LLVMLibsOptions += -Wl,--soname=$(notdir $(LibName.SO)).1 -Wl,-Bsymbolic-functions
+ endif
+ 
+ ifeq ($(HOST_OS),Linux)

@@ -1,0 +1,16 @@
+Source: @PKGSOURCE@
+Section: devel
+Priority: extra
+Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
+Build-Depends: debhelper (>= 7.4.15), flex, bison, dejagnu, tcl8.5, expect,
+    autoconf, automake1.9, perl, libtool, doxygen, chrpath, texinfo,
+    sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
+    lsb-release, patchutils, diffstat, xz-utils, python,
+    binutils-dev (>= 2.20.1) @BUILDDEPS@,
+    gcc-4.4, g++-4.4
+Build-Conflicts: oprofile @BUILDCONFLICTS@
+Standards-Version: 3.9.3
+Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
+Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
+
+

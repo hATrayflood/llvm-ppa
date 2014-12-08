@@ -1,0 +1,22 @@
+---
+ configure |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/configure
++++ b/configure
+@@ -2334,6 +2334,7 @@
+   alpha*-*)               llvm_cv_target_arch="Alpha" ;;
+   arm*-*)                 llvm_cv_target_arch="ARM" ;;
+   mips-*)                 llvm_cv_target_arch="Mips" ;;
++  mipsel-*)               llvm_cv_target_arch="Mips" ;;
+   xcore-*)                llvm_cv_target_arch="XCore" ;;
+   msp430-*)               llvm_cv_target_arch="MSP430" ;;
+   s390x-*)                llvm_cv_target_arch="SystemZ" ;;
+@@ -4920,6 +4921,7 @@
+         alpha)    TARGETS_TO_BUILD="Alpha $TARGETS_TO_BUILD" ;;
+         arm)      TARGETS_TO_BUILD="ARM $TARGETS_TO_BUILD" ;;
+         mips)     TARGETS_TO_BUILD="Mips $TARGETS_TO_BUILD" ;;
++        mipsel)   TARGETS_TO_BUILD="Mips $TARGETS_TO_BUILD" ;;
+         spu)      TARGETS_TO_BUILD="CellSPU $TARGETS_TO_BUILD" ;;
+         pic16)    TARGETS_TO_BUILD="PIC16 $TARGETS_TO_BUILD" ;;
+         xcore)    TARGETS_TO_BUILD="XCore $TARGETS_TO_BUILD" ;;
