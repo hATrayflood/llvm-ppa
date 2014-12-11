@@ -15,7 +15,7 @@ Index: llvm-toolchain-snapshot_3.5~svn211089/lldb/lib/Makefile
      # Link in python
      LLVMLibsOptions += $(PYTHON_BUILD_FLAGS) -lrt -ledit -lncurses -lpanel
 -    LLVMLibsOptions += -Wl,--soname,lib$(LIBRARYNAME)$(SHLIBEXT)
-+    LLVMLibsOptions += -Wl,--soname,lib$(LIBRARYNAME)$(SHLIBEXT).$(SONAME_EXTENSION)
++    LLVMLibsOptions += -Wl,--soname,lib$(LIBRARYNAME)-$(LLVM_VERSION_MAJOR).$(LLVM_VERSION_MINOR)$(SHLIBEXT).$(SONAME_EXTENSION)
      ifneq (,$(filter $(shell dpkg-architecture -qDEB_HOST_ARCH), mips mipsel powerpc powerpcspe))
       # Link GCC atomic helper library
       LLVMLibsOptions += -latomic

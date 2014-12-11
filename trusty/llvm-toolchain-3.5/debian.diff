@@ -1,16 +1,16 @@
 diff -urN ../../llvm-toolchain-3.5/debian/changelog llvm-toolchain-3.5_3.5~+final/debian/changelog
---- ../../llvm-toolchain-3.5/debian/changelog	2014-10-16 01:16:59.000000000 +0900
-+++ llvm-toolchain-3.5_3.5~+final/debian/changelog	2014-10-16 20:29:09.304689103 +0900
+--- ../../llvm-toolchain-3.5/debian/changelog	2014-12-09 04:10:27.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/debian/changelog	2014-12-11 09:19:08.641690979 +0900
 @@ -1,3 +1,9 @@
-+llvm-toolchain-3.5 (1:3.5-debian6trusty1) trusty; urgency=medium
++llvm-toolchain-3.5 (1:3.5-debian8trusty1) trusty; urgency=medium
 +
 +  * ppa for trusty
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Thu, 16 Oct 2014 20:30:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Wed, 10 Dec 2014 21:00:00 +0900
 +
- llvm-toolchain-3.5 (1:3.5-6) unstable; urgency=medium
+ llvm-toolchain-3.5 (1:3.5-8) unstable; urgency=medium
  
-   * Ignore a test failing under i386.
+   * Bring back some patches (kfreebsd-path.diff, kfreebsd-readline.diff
 diff -urN ../../llvm-toolchain-3.5/debian/clang-X.Y-relaxng.install.in llvm-toolchain-3.5_3.5~+final/debian/clang-X.Y-relaxng.install.in
 --- ../../llvm-toolchain-3.5/debian/clang-X.Y-relaxng.install.in	1970-01-01 09:00:00.000000000 +0900
 +++ llvm-toolchain-3.5_3.5~+final/debian/clang-X.Y-relaxng.install.in	2014-08-02 02:55:10.704199000 +0900
@@ -57,7 +57,7 @@ diff -urN ../../llvm-toolchain-3.5/debian/clang-format-X.Y.links.in llvm-toolcha
 @@ -0,0 +1 @@
 +usr/lib/llvm-@LLVM_VERSION@/bin/clang-format-diff.py usr/bin/clang-format-diff-@LLVM_VERSION@
 diff -urN ../../llvm-toolchain-3.5/debian/control llvm-toolchain-3.5_3.5~+final/debian/control
---- ../../llvm-toolchain-3.5/debian/control	2014-10-05 00:35:18.000000000 +0900
+--- ../../llvm-toolchain-3.5/debian/control	2014-12-06 10:59:54.000000000 +0900
 +++ llvm-toolchain-3.5_3.5~+final/debian/control	2014-10-03 12:45:40.612813400 +0900
 @@ -1,8 +1,7 @@
  Source: llvm-toolchain-3.5
@@ -222,7 +222,7 @@ diff -urN ../../llvm-toolchain-3.5/debian/control llvm-toolchain-3.5_3.5~+final/
 -Architecture: amd64 armel armhf i386  kfreebsd-amd64 kfreebsd-i386 s390 s390x sparc alpha hppa m68k powerpcspe ppc64 sh4 sparc64 x32 powerpc mips mipsel
 -# ia64 mips mipsel hurd ppc64el have been removed
 -Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.5 (= ${binary:Version}), python, llvm-3.5-dev, python-lldb-3.5
--Conflicts: lldb-3.4, lldb-3.6
+-Conflicts: lldb-3.3, lldb-3.4, lldb-3.6
 -Pre-Depends: ${misc:Pre-Depends}
 -Description: Next generation, high-performance debugger
 - LLDB is a next generation, high-performance debugger. It is built as a set of
@@ -235,8 +235,8 @@ diff -urN ../../llvm-toolchain-3.5/debian/control llvm-toolchain-3.5_3.5~+final/
 -Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.5 (= ${binary:Version})
 -Pre-Depends: ${misc:Pre-Depends}
 -Section: libs
--Replaces: lldb-3.5 (<< 1:3.5~+rc4-2~)
--Breaks: lldb-3.5 (<< 1:3.5~+rc4-2~)
+-Replaces: lldb-3.5 (<< 1:3.5~+rc4-2~), lldb-3.3
+-Breaks: lldb-3.5 (<< 1:3.5~+rc4-2~), lldb-3.3
 -Description: Next generation, high-performance debugger, library
 - LLDB is a next generation, high-performance debugger. It is built as a set of
 - reusable components which highly leverage existing libraries in the larger LLVM
@@ -596,11 +596,19 @@ diff -urN ../../llvm-toolchain-3.5/debian/patches/python-clangpath.diff llvm-too
           if Config.library_path:
               file = Config.library_path + '/' + file
 diff -urN ../../llvm-toolchain-3.5/debian/patches/series llvm-toolchain-3.5_3.5~+final/debian/patches/series
---- ../../llvm-toolchain-3.5/debian/patches/series	2014-10-14 18:43:41.000000000 +0900
-+++ llvm-toolchain-3.5_3.5~+final/debian/patches/series	2014-10-16 20:30:14.185435141 +0900
-@@ -44,3 +44,4 @@
+--- ../../llvm-toolchain-3.5/debian/patches/series	2014-12-09 04:10:27.000000000 +0900
++++ llvm-toolchain-3.5_3.5~+final/debian/patches/series	2014-12-10 21:52:17.872662000 +0900
+@@ -10,6 +10,7 @@
+ 0023-link-libopagent.patch
+ 0044-soname.diff
+ #scan-build-clang-path.diff
++scan-build-clang-path.diff
+ 0050-powerpcspe-fp.diff
+ declare_clear_cache.diff
+ 31-powerpcspe.diff
+@@ -49,3 +50,4 @@
  kfreebsd-path.diff
- lldb-kfreebsd-mi.diff
+ kfreebsd-readline.diff
  ignore-ifcvt3.ll.diff
 +99-python-bindings.patch
 diff -urN ../../llvm-toolchain-3.5/debian/pollycc.in llvm-toolchain-3.5_3.5~+final/debian/pollycc.in
