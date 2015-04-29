@@ -1,0 +1,255 @@
+Index: llvm-toolchain-snapshot_3.5~svn204005/include/llvm/Transforms/Utils/Local.h
+===================================================================
+--- llvm-toolchain-snapshot_3.5~svn204005.orig/include/llvm/Transforms/Utils/Local.h
++++ llvm-toolchain-snapshot_3.5~svn204005/include/llvm/Transforms/Utils/Local.h
+@@ -275,6 +275,11 @@
+ /// Returns true if any basic block was removed.
+ bool removeUnreachableBlocks(Function &F);
+ 
++/// \brief Combine the metadata of two instructions so that K can replace J
++///
++/// Metadata not listed as known via KnownIDs is removed
++void combineMetadata(Instruction *K, const Instruction *J, ArrayRef<unsigned> KnownIDs);
++
+ } // End llvm namespace
+ 
+ #endif
+Index: llvm-toolchain-snapshot_3.5~svn204005/lib/Transforms/Scalar/GVN.cpp
+===================================================================
+--- llvm-toolchain-snapshot_3.5~svn204005.orig/lib/Transforms/Scalar/GVN.cpp
++++ llvm-toolchain-snapshot_3.5~svn204005/lib/Transforms/Scalar/GVN.cpp
+@@ -45,6 +45,7 @@
+ #include "llvm/Support/Debug.h"
+ #include "llvm/Target/TargetLibraryInfo.h"
+ #include "llvm/Transforms/Utils/BasicBlockUtils.h"
++#include "llvm/Transforms/Utils/Local.h"
+ #include "llvm/Transforms/Utils/SSAUpdater.h"
+ #include <vector>
+ using namespace llvm;
+@@ -1776,49 +1777,24 @@
+       ReplOp->setHasNoUnsignedWrap(false);
+   }
+   if (Instruction *ReplInst = dyn_cast<Instruction>(Repl)) {
+-    SmallVector<std::pair<unsigned, MDNode*>, 4> Metadata;
+-    ReplInst->getAllMetadataOtherThanDebugLoc(Metadata);
+-    for (int i = 0, n = Metadata.size(); i < n; ++i) {
+-      unsigned Kind = Metadata[i].first;
+-      MDNode *IMD = I->getMetadata(Kind);
+-      MDNode *ReplMD = Metadata[i].second;
+-      switch(Kind) {
+-      default:
+-        ReplInst->setMetadata(Kind, nullptr); // Remove unknown metadata
+-        break;
+-      case LLVMContext::MD_dbg:
+-        llvm_unreachable("getAllMetadataOtherThanDebugLoc returned a MD_dbg");
+-      case LLVMContext::MD_tbaa:
+-        ReplInst->setMetadata(Kind, MDNode::getMostGenericTBAA(IMD, ReplMD));
+-        break;
+-      case LLVMContext::MD_alias_scope:
+-      case LLVMContext::MD_noalias:
+-        // FIXME: If both the original and replacement value are part of the
+-        // same control-flow region (meaning that the execution of one
+-        // guarentees the executation of the other), then we can combine the
+-        // noalias scopes here and do better than the general conservative
+-        // answer.
+-
+-        // In general, GVN unifies expressions over different control-flow
+-        // regions, and so we need a conservative combination of the noalias
+-        // scopes.
+-        ReplInst->setMetadata(Kind, MDNode::intersect(IMD, ReplMD));
+-        break;
+-      case LLVMContext::MD_range:
+-        ReplInst->setMetadata(Kind, MDNode::getMostGenericRange(IMD, ReplMD));
+-        break;
+-      case LLVMContext::MD_prof:
+-        llvm_unreachable("MD_prof in a non-terminator instruction");
+-        break;
+-      case LLVMContext::MD_fpmath:
+-        ReplInst->setMetadata(Kind, MDNode::getMostGenericFPMath(IMD, ReplMD));
+-        break;
+-      case LLVMContext::MD_invariant_load:
+-        // Only set the !invariant.load if it is present in both instructions.
+-        ReplInst->setMetadata(Kind, IMD);
+-        break;
+-      }
+-    }
++    // FIXME: If both the original and replacement value are part of the
++    // same control-flow region (meaning that the execution of one
++    // guarentees the executation of the other), then we can combine the
++    // noalias scopes here and do better than the general conservative
++    // answer used in combineMetadata().
++
++    // In general, GVN unifies expressions over different control-flow
++    // regions, and so we need a conservative combination of the noalias
++    // scopes.
++    unsigned KnownIDs[] = {
++      LLVMContext::MD_tbaa,
++      LLVMContext::MD_alias_scope,
++      LLVMContext::MD_noalias,
++      LLVMContext::MD_range,
++      LLVMContext::MD_fpmath,
++      LLVMContext::MD_invariant_load,
++    };
++    combineMetadata(ReplInst, I, KnownIDs);
+   }
+ }
+ 
+Index: llvm-toolchain-snapshot_3.5~svn204005/lib/Transforms/Utils/Local.cpp
+===================================================================
+--- llvm-toolchain-snapshot_3.5~svn204005.orig/lib/Transforms/Utils/Local.cpp
++++ llvm-toolchain-snapshot_3.5~svn204005/lib/Transforms/Utils/Local.cpp
+@@ -1305,3 +1305,39 @@
+ 
+   return true;
+ }
++
++void llvm::combineMetadata(Instruction *K, const Instruction *J, ArrayRef<unsigned> KnownIDs) {
++  SmallVector<std::pair<unsigned, MDNode*>, 4> Metadata;
++  K->dropUnknownMetadata(KnownIDs);
++  K->getAllMetadataOtherThanDebugLoc(Metadata);
++  for (unsigned i = 0, n = Metadata.size(); i < n; ++i) {
++    unsigned Kind = Metadata[i].first;
++    MDNode *JMD = J->getMetadata(Kind);
++    MDNode *KMD = Metadata[i].second;
++
++    switch (Kind) {
++      default:
++        K->setMetadata(Kind, nullptr); // Remove unknown metadata
++        break;
++      case LLVMContext::MD_dbg:
++        llvm_unreachable("getAllMetadataOtherThanDebugLoc returned a MD_dbg");
++      case LLVMContext::MD_tbaa:
++        K->setMetadata(Kind, MDNode::getMostGenericTBAA(JMD, KMD));
++        break;
++      case LLVMContext::MD_alias_scope:
++      case LLVMContext::MD_noalias:
++        K->setMetadata(Kind, MDNode::intersect(JMD, KMD));
++        break;
++      case LLVMContext::MD_range:
++        K->setMetadata(Kind, MDNode::getMostGenericRange(JMD, KMD));
++        break;
++      case LLVMContext::MD_fpmath:
++        K->setMetadata(Kind, MDNode::getMostGenericFPMath(JMD, KMD));
++        break;
++      case LLVMContext::MD_invariant_load:
++        // Only set the !invariant.load if it is present in both instructions.
++        K->setMetadata(Kind, JMD);
++        break;
++    }
++  }
++}
+Index: llvm-toolchain-snapshot_3.5~svn204005/lib/Transforms/Utils/SimplifyCFG.cpp
+===================================================================
+--- llvm-toolchain-snapshot_3.5~svn204005.orig/lib/Transforms/Utils/SimplifyCFG.cpp
++++ llvm-toolchain-snapshot_3.5~svn204005/lib/Transforms/Utils/SimplifyCFG.cpp
+@@ -43,6 +43,7 @@
+ #include "llvm/Support/Debug.h"
+ #include "llvm/Support/raw_ostream.h"
+ #include "llvm/Transforms/Utils/BasicBlockUtils.h"
++#include "llvm/Transforms/Utils/Local.h"
+ #include <algorithm>
+ #include <map>
+ #include <set>
+@@ -1040,6 +1041,13 @@
+     if (!I2->use_empty())
+       I2->replaceAllUsesWith(I1);
+     I1->intersectOptionalDataWith(I2);
++    unsigned KnownIDs[] = {
++      LLVMContext::MD_tbaa,
++      LLVMContext::MD_range,
++      LLVMContext::MD_fpmath,
++      LLVMContext::MD_invariant_load
++    };
++    combineMetadata(I1, I2, KnownIDs);
+     I2->eraseFromParent();
+     Changed = true;
+ 
+Index: llvm-toolchain-snapshot_3.5~svn204005/lib/Transforms/Vectorize/BBVectorize.cpp
+===================================================================
+--- llvm-toolchain-snapshot_3.5~svn204005.orig/lib/Transforms/Vectorize/BBVectorize.cpp
++++ llvm-toolchain-snapshot_3.5~svn204005/lib/Transforms/Vectorize/BBVectorize.cpp
+@@ -391,8 +391,6 @@
+                      Instruction *&InsertionPt,
+                      Instruction *I, Instruction *J);
+ 
+-    void combineMetadata(Instruction *K, const Instruction *J);
+-
+     bool vectorizeBB(BasicBlock &BB) {
+       if (skipOptnoneFunction(BB))
+         return false;
+@@ -2964,35 +2962,6 @@
+     }
+   }
+ 
+-  // When the first instruction in each pair is cloned, it will inherit its
+-  // parent's metadata. This metadata must be combined with that of the other
+-  // instruction in a safe way.
+-  void BBVectorize::combineMetadata(Instruction *K, const Instruction *J) {
+-    SmallVector<std::pair<unsigned, MDNode*>, 4> Metadata;
+-    K->getAllMetadataOtherThanDebugLoc(Metadata);
+-    for (unsigned i = 0, n = Metadata.size(); i < n; ++i) {
+-      unsigned Kind = Metadata[i].first;
+-      MDNode *JMD = J->getMetadata(Kind);
+-      MDNode *KMD = Metadata[i].second;
+-
+-      switch (Kind) {
+-      default:
+-        K->setMetadata(Kind, nullptr); // Remove unknown metadata
+-        break;
+-      case LLVMContext::MD_tbaa:
+-        K->setMetadata(Kind, MDNode::getMostGenericTBAA(JMD, KMD));
+-        break;
+-      case LLVMContext::MD_alias_scope:
+-      case LLVMContext::MD_noalias:
+-        K->setMetadata(Kind, MDNode::intersect(JMD, KMD));
+-        break;
+-      case LLVMContext::MD_fpmath:
+-        K->setMetadata(Kind, MDNode::getMostGenericFPMath(JMD, KMD));
+-        break;
+-      }
+-    }
+-  }
+-
+   // This function fuses the chosen instruction pairs into vector instructions,
+   // taking care preserve any needed scalar outputs and, then, it reorders the
+   // remaining instructions as needed (users of the first member of the pair
+@@ -3142,7 +3111,13 @@
+       if (!isa<StoreInst>(K))
+         K->mutateType(getVecTypeForPair(L->getType(), H->getType()));
+ 
+-      combineMetadata(K, H);
++      unsigned KnownIDs[] = {
++        LLVMContext::MD_tbaa,
++        LLVMContext::MD_alias_scope,
++        LLVMContext::MD_noalias,
++        LLVMContext::MD_fpmath
++      };
++      combineMetadata(K, H, KnownIDs);
+       K->intersectOptionalDataWith(H);
+ 
+       for (unsigned o = 0; o < NumOperands; ++o)
+Index: llvm-toolchain-snapshot_3.5~svn204005/test/Transforms/SimplifyCFG/hoist-with-range.ll
+===================================================================
+--- /dev/null
++++ llvm-toolchain-snapshot_3.5~svn204005/test/Transforms/SimplifyCFG/hoist-with-range.ll
+@@ -0,0 +1,20 @@
++; RUN: opt < %s -simplifycfg -S | FileCheck %s
++
++define void @foo(i1 %c, i8* %p) {
++; CHECK: if:
++; CHECK-NEXT: load i8* %p, !range !0
++; CHECK: !0 = metadata !{i8 0, i8 1, i8 3, i8 5}
++if:
++  br i1 %c, label %then, label %else
++then:
++  %t = load i8* %p, !range !0
++  br label %out
++else:
++  %e = load i8* %p, !range !1
++  br label %out
++out:
++  ret void
++}
++
++!0 = metadata !{ i8 0, i8 1 }
++!1 = metadata !{ i8 3, i8 5 }
