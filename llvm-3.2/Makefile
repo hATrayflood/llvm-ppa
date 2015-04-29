@@ -1,4 +1,3 @@
-BASE_URL   = https://launchpad.net/debian/sid/+source/llvm-3.2/3.2-5/+files
 DEBIAN_TAR = llvm-3.2_3.2-5.debian.tar.gz
 ORIG_TARS  = llvm-3.2_3.2.orig.tar.bz2
 

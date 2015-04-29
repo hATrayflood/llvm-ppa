@@ -1,3 +1,5 @@
+BASE_URL = https://launchpad.net/debian/+archive/primary/+files
+
 all: $(ORIG_TARS)
 
 clean:

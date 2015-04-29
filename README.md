@@ -43,9 +43,9 @@ https://launchpad.net/debian/+source/llvm-3.0
 https://launchpad.net/debian/+source/llvm-3.1  
 https://launchpad.net/debian/+source/llvm-3.2  
 https://launchpad.net/debian/+source/llvm-toolchain-3.2  
-https://tracker.debian.org/pkg/llvm-toolchain-3.3  
-https://tracker.debian.org/pkg/llvm-toolchain-3.4  
-https://tracker.debian.org/pkg/llvm-toolchain-3.5  
+https://launchpad.net/debian/+source/llvm-toolchain-3.3  
+https://launchpad.net/debian/+source/llvm-toolchain-3.4  
+https://launchpad.net/debian/+source/llvm-toolchain-3.5  
 
 launchpad
 ---------
