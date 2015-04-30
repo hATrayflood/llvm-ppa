@@ -1,0 +1,32 @@
+Index: llvm-toolchain-snapshot_3.5~svn204005/lib/Transforms/Utils/SimplifyCFG.cpp
+===================================================================
+--- llvm-toolchain-snapshot_3.5~svn204005.orig/lib/Transforms/Utils/SimplifyCFG.cpp
++++ llvm-toolchain-snapshot_3.5~svn204005/lib/Transforms/Utils/SimplifyCFG.cpp
+@@ -4008,7 +4008,7 @@
+     return true;
+ 
+   // If the Terminator is the only non-phi instruction, simplify the block.
+-  BasicBlock::iterator I = BB->getFirstNonPHIOrDbgOrLifetime();
++  BasicBlock::iterator I = BB->getFirstNonPHIOrDbg();
+   if (I->isTerminator() && BB != &BB->getParent()->getEntryBlock() &&
+       TryToSimplifyUncondBranchFromEmptyBlock(BB))
+     return true;
+Index: llvm-toolchain-snapshot_3.5~svn204005/test/Transforms/SimplifyCFG/lifetime.ll
+===================================================================
+--- llvm-toolchain-snapshot_3.5~svn204005.orig/test/Transforms/SimplifyCFG/lifetime.ll
++++ llvm-toolchain-snapshot_3.5~svn204005/test/Transforms/SimplifyCFG/lifetime.ll
+@@ -1,11 +1,11 @@
+ ; RUN: opt < %s -simplifycfg -S | FileCheck %s
+ 
+-; Test that a lifetime intrinsic doesn't prevent us from simplifying this.
++; Test that a lifetime intrinsic isn't removed because that would change semantics
+ 
+ ; CHECK: foo
+ ; CHECK: entry:
+-; CHECK-NOT: bb0:
+-; CHECK-NOT: bb1:
++; CHECK: bb0:
++; CHECK: bb1:
+ ; CHECK: ret
+ define void @foo(i1 %x) {
+ entry:
