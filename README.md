@@ -21,6 +21,8 @@ provides
     /usr/bin/clang++-3.4
     /usr/bin/clang-3.5
     /usr/bin/clang++-3.5
+    /usr/bin/clang-3.6
+    /usr/bin/clang++-3.6
 
 usage
 -----
@@ -34,6 +36,7 @@ usage
     sudo apt-get install clang-3.3
     sudo apt-get install clang-3.4
     sudo apt-get install clang-3.5
+    sudo apt-get install clang-3.6
 
 upstream
 --------
@@ -46,6 +49,7 @@ https://launchpad.net/debian/+source/llvm-toolchain-3.2
 https://launchpad.net/debian/+source/llvm-toolchain-3.3  
 https://launchpad.net/debian/+source/llvm-toolchain-3.4  
 https://launchpad.net/debian/+source/llvm-toolchain-3.5  
+https://launchpad.net/debian/+source/llvm-toolchain-3.6  
 
 launchpad
 ---------
