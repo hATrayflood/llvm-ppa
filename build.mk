@@ -1,3 +1,4 @@
+export LANG=C
 PPA = llvm
 PKGNAME = $(notdir $(PWD))
 
