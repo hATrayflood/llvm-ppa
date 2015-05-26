@@ -5,7 +5,7 @@ DEB_INST		:= $(CURDIR)/debian/tmp/
 #GCC_VERSION     := 4.8
 GCC_VERSION     := 4.8
 LLVM_VERSION	:= 3.6
-LLVM_VERSION_FULL := $(LLVM_VERSION).0
+LLVM_VERSION_FULL := $(LLVM_VERSION).1
 SONAME_EXT      := 1
 # Manage the case when the version is 1:3.5~svn213052-1~exp1 or 1:3.4.2-1
 DEBIAN_REVISION := $(shell dpkg-parsechangelog |  sed -rne "s,^Version: 1:([0-9.]+)(~|-)(.*),\3,p")
