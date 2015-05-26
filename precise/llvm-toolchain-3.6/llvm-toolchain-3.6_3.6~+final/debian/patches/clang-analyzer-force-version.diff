@@ -1,0 +1,25 @@
+# Force the version of clang in the analyzer
+# This was causing the static analyzer to fail silently if the clang & clang++ are
+# not installed
+Index: llvm-toolchain-3.6-3.6/clang/tools/scan-build/ccc-analyzer
+===================================================================
+--- llvm-toolchain-3.6-3.6.orig/clang/tools/scan-build/ccc-analyzer
++++ llvm-toolchain-3.6-3.6/clang/tools/scan-build/ccc-analyzer
+@@ -63,7 +63,7 @@ if ($FindBin::Script =~ /c\+\+-analyzer/
+   if (!defined $Compiler || (! -x $Compiler && ! SearchInPath($Compiler))) { $Compiler = $DefaultCXXCompiler; }
+ 
+   $Clang = $ENV{'CLANG_CXX'};
+-  if (!defined $Clang || ! -x $Clang) { $Clang = 'clang++'; }
++  if (!defined $Clang || ! -x $Clang) { $Clang = 'clang++-3.6'; }
+ 
+   $IsCXX = 1
+ }
+@@ -72,7 +72,7 @@ else {
+   if (!defined $Compiler || (! -x $Compiler && ! SearchInPath($Compiler))) { $Compiler = $DefaultCCompiler; }
+ 
+   $Clang = $ENV{'CLANG'};
+-  if (!defined $Clang || ! -x $Clang) { $Clang = 'clang'; }
++  if (!defined $Clang || ! -x $Clang) { $Clang = 'clang-3.6'; }
+ 
+   $IsCXX = 0
+ }
