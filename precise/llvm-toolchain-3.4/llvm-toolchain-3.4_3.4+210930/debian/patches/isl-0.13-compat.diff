@@ -1,0 +1,24 @@
+Description: Ensure compatibility with newer isl
+
+--- llvm-toolchain-3.4-3.4.2.orig/polly/lib/ScheduleOptimizer.cpp
++++ llvm-toolchain-3.4-3.4.2/polly/lib/ScheduleOptimizer.cpp
+@@ -396,7 +396,7 @@ IslScheduleOptimizer::getScheduleForBand
+       isl_band_list_free(Children);
+     } else if (PollyVectorizerChoice != VECTORIZER_NONE) {
+       for (int j = 0; j < isl_band_n_member(Band); j++) {
+-        if (isl_band_member_is_zero_distance(Band, j)) {
++        if (isl_band_member_is_coincident(Band, j)) {
+           isl_map *TileMap;
+           isl_union_map *TileUMap;
+ 
+--- llvm-toolchain-3.4-3.4.2.orig/polly/lib/CodeGen/CodeGeneration.cpp
++++ llvm-toolchain-3.4-3.4.2/polly/lib/CodeGen/CodeGeneration.cpp
+@@ -51,6 +51,7 @@
+ #include "cloog/isl/cloog.h"
+
+ #include "isl/aff.h"
++#include "isl/deprecated/int.h"
+
+ #include <vector>
+ #include <utility>
+

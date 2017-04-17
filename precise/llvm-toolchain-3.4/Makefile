@@ -3,6 +3,8 @@ DEL = llvm-toolchain-3.4_3.4.2-*
 
 include ../../build.mk
 
+PPA = buildtest
+
 extract:
 	$(MAKE) -C ../../$(PKGNAME)
 	tar jxf llvm-toolchain-3.4_3.4.2.orig.tar.bz2

@@ -45,4 +45,6 @@ hurd-EIEIO-undef.diff
 lldb-libname.diff
 remove-dbtree.diff
 kfreebsd-path.diff
+isl-0.13-compat.diff
+fix-ftbfs-ocaml-4.02
 99-python-bindings.patch
