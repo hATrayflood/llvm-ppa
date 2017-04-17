@@ -3,7 +3,7 @@
 TARGET_BUILD	:= build-llvm
 DEB_INST		:= $(CURDIR)/debian/tmp/
 #GCC_VERSION     := 4.8
-GCC_VERSION     := 4.8
+GCC_VERSION     := 4.7
 LLVM_VERSION	:= 3.5
 LLVM_VERSION_FULL := $(LLVM_VERSION).2
 SONAME_EXT      := 1
@@ -59,9 +59,9 @@ else
 	control_vars = '-Vdep:devlibs=libstdc++6-$(GCC_VERSION)-dev'
 endif
 
-BINUTILS_GOLD_ARCHS := amd64 armhf i386 powerpc powerpcspe ppc64 ppc64el sparc sparc64 x32
+BINUTILS_GOLD_ARCHS := amd64 armhf i386 powerpcspe ppc64 ppc64el sparc sparc64 x32
 ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' binutils) ge 2.23.1-1~exp3 ; echo $$?),0)
-ifneq (,$(findstring $(DEB_HOST_ARCH),$(BINUTILS_GOLD_ARCHS)))
+ifneq (,$(filter $(DEB_HOST_ARCH),$(BINUTILS_GOLD_ARCHS)))
 # -fused-ld=gold enables the gold linker (but is not supported by all archs / distro)
 	LDFLAGS_EXTRA += -fuse-ld=gold
 endif
@@ -329,6 +329,9 @@ override_dh_auto_install:
 # Remove some license files
 	rm -f $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/include/llvm/Support/LICENSE.TXT \
 	$(CURDIR)/debian/llvm-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/build/autoconf/LICENSE.TXT
+
+# Change CMake module dir
+	sed -i 's|LLVM_CMAKE_DIR "/usr/lib/llvm-$(LLVM_VERSION)/share/llvm/cmake"|LLVM_CMAKE_DIR "/usr/share/llvm-$(LLVM_VERSION)/cmake"|' $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/share/llvm/cmake/LLVMConfig.cmake
 
 # Managed in lldb-X.Y.links.in
 	rm -f $(CURDIR)/$(TARGET_BUILD)/Release/lib/python*/site-packages/lldb/_lldb.so

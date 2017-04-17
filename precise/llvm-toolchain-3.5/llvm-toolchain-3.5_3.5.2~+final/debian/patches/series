@@ -50,4 +50,10 @@ kfreebsd-path.diff
 kfreebsd-readline.diff
 ignore-ifcvt3.ll.diff
 scan-build-clang-path.diff
+0001-fix-ftbs-with-gcc-5.patch
+bug783205.patch
+bug-24472.diff
+CVE-2015-2305.patch
+fix-ftbfs-ocaml-4.02
+no-version-script-for-executables.diff
 99-python-bindings.patch

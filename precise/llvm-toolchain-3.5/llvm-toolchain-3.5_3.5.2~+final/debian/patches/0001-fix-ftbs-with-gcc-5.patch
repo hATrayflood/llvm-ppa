@@ -1,0 +1,16 @@
+Description:
+http://llvm.org/viewvc/llvm-project/llvm/trunk/include/llvm/ADT/IntrusiveRefCntPtr.h?r1=218295&r2=218294&pathrev=218295
+
+diff --git a/include/llvm/ADT/IntrusiveRefCntPtr.h b/include/llvm/ADT/IntrusiveRefCntPtr.h
+--- a/include/llvm/ADT/IntrusiveRefCntPtr.h
++++ b/include/llvm/ADT/IntrusiveRefCntPtr.h
+@@ -197,6 +197,9 @@ public:
+   private:
+     void retain() { if (Obj) IntrusiveRefCntPtrInfo<T>::retain(Obj); }
+     void release() { if (Obj) IntrusiveRefCntPtrInfo<T>::release(Obj); }
++
++    template <typename X>
++    friend class IntrusiveRefCntPtr;
+   };
+ 
+   template<class T, class U>

@@ -1,0 +1,146 @@
+Description: Fix compilation with OCaml 4.02
+Author: Stéphane Glondu <glondu@debian.org>
+
+--- llvm-toolchain-3.5-3.5.2.orig/test/Bindings/Ocaml/analysis.ml
++++ llvm-toolchain-3.5-3.5.2/test/Bindings/Ocaml/analysis.ml
+@@ -1,7 +1,7 @@
+ (* RUN: rm -rf %t.builddir
+  * RUN: mkdir -p %t.builddir
+  * RUN: cp %s %t.builddir
+- * RUN: %ocamlopt -warn-error A llvm.cmxa llvm_analysis.cmxa %t.builddir/analysis.ml -o %t
++ * RUN: %ocamlopt  llvm.cmxa llvm_analysis.cmxa %t.builddir/analysis.ml -o %t
+  * RUN: %t
+  * XFAIL: vg_leak
+  *)
+--- llvm-toolchain-3.5-3.5.2.orig/test/Bindings/Ocaml/bitreader.ml
++++ llvm-toolchain-3.5-3.5.2/test/Bindings/Ocaml/bitreader.ml
+@@ -1,7 +1,7 @@
+ (* RUN: rm -rf %t.builddir
+  * RUN: mkdir -p %t.builddir
+  * RUN: cp %s %t.builddir
+- * RUN: %ocamlopt -warn-error A llvm.cmxa llvm_bitreader.cmxa llvm_bitwriter.cmxa %t.builddir/bitreader.ml -o %t
++ * RUN: %ocamlopt  llvm.cmxa llvm_bitreader.cmxa llvm_bitwriter.cmxa %t.builddir/bitreader.ml -o %t
+  * RUN: %t %t.bc
+  * RUN: llvm-dis < %t.bc
+  * XFAIL: vg_leak
+--- llvm-toolchain-3.5-3.5.2.orig/test/Bindings/Ocaml/bitwriter.ml
++++ llvm-toolchain-3.5-3.5.2/test/Bindings/Ocaml/bitwriter.ml
+@@ -1,7 +1,7 @@
+ (* RUN: rm -rf %t.builddir
+  * RUN: mkdir -p %t.builddir
+  * RUN: cp %s %t.builddir
+- * RUN: %ocamlopt -warn-error A unix.cmxa llvm.cmxa llvm_bitwriter.cmxa %t.builddir/bitwriter.ml -o %t
++ * RUN: %ocamlopt  unix.cmxa llvm.cmxa llvm_bitwriter.cmxa %t.builddir/bitwriter.ml -o %t
+  * RUN: %t %t.bc
+  * RUN: llvm-dis < %t.bc
+  * XFAIL: vg_leak
+--- llvm-toolchain-3.5-3.5.2.orig/test/Bindings/Ocaml/executionengine.ml
++++ llvm-toolchain-3.5-3.5.2/test/Bindings/Ocaml/executionengine.ml
+@@ -1,7 +1,7 @@
+ (* RUN: rm -rf %t.builddir
+  * RUN: mkdir -p %t.builddir
+  * RUN: cp %s %t.builddir
+- * RUN: %ocamlopt -warn-error A llvm.cmxa llvm_target.cmxa llvm_executionengine.cmxa %t.builddir/executionengine.ml -o %t
++ * RUN: %ocamlopt  llvm.cmxa llvm_target.cmxa llvm_executionengine.cmxa %t.builddir/executionengine.ml -o %t
+  * RUN: %t
+  * XFAIL: vg_leak
+  *)
+--- llvm-toolchain-3.5-3.5.2.orig/test/Bindings/Ocaml/ext_exc.ml
++++ llvm-toolchain-3.5-3.5.2/test/Bindings/Ocaml/ext_exc.ml
+@@ -1,7 +1,7 @@
+ (* RUN: rm -rf %t.builddir
+  * RUN: mkdir -p %t.builddir
+  * RUN: cp %s %t.builddir
+- * RUN: %ocamlopt -warn-error A llvm.cmxa llvm_bitreader.cmxa llvm_executionengine.cmxa %t.builddir/ext_exc.ml -o %t
++ * RUN: %ocamlopt  llvm.cmxa llvm_bitreader.cmxa llvm_executionengine.cmxa %t.builddir/ext_exc.ml -o %t
+  * RUN: %t </dev/null
+  * XFAIL: vg_leak
+  *)
+--- llvm-toolchain-3.5-3.5.2.orig/test/Bindings/Ocaml/ipo_opts.ml
++++ llvm-toolchain-3.5-3.5.2/test/Bindings/Ocaml/ipo_opts.ml
+@@ -1,7 +1,7 @@
+ (* RUN: rm -rf %t.builddir
+  * RUN: mkdir -p %t.builddir
+  * RUN: cp %s %t.builddir
+- * RUN: %ocamlopt -warn-error A llvm.cmxa llvm_ipo.cmxa llvm_target.cmxa %t.builddir/ipo_opts.ml -o %t
++ * RUN: %ocamlopt  llvm.cmxa llvm_ipo.cmxa llvm_target.cmxa %t.builddir/ipo_opts.ml -o %t
+  * RUN: %t %t.bc
+  * XFAIL: vg_leak
+  *)
+--- llvm-toolchain-3.5-3.5.2.orig/test/Bindings/Ocaml/irreader.ml
++++ llvm-toolchain-3.5-3.5.2/test/Bindings/Ocaml/irreader.ml
+@@ -1,7 +1,7 @@
+ (* RUN: rm -rf %t.builddir
+  * RUN: mkdir -p %t.builddir
+  * RUN: cp %s %t.builddir
+- * RUN: %ocamlopt -g -warn-error A llvm.cmxa llvm_irreader.cmxa %t.builddir/irreader.ml -o %t
++ * RUN: %ocamlopt -g  llvm.cmxa llvm_irreader.cmxa %t.builddir/irreader.ml -o %t
+  * RUN: %t
+  * XFAIL: vg_leak
+  *)
+--- llvm-toolchain-3.5-3.5.2.orig/test/Bindings/Ocaml/linker.ml
++++ llvm-toolchain-3.5-3.5.2/test/Bindings/Ocaml/linker.ml
+@@ -1,7 +1,7 @@
+ (* RUN: rm -rf %t.builddir
+  * RUN: mkdir -p %t.builddir
+  * RUN: cp %s %t.builddir
+- * RUN: %ocamlopt -warn-error A llvm.cmxa llvm_linker.cmxa %t.builddir/linker.ml -o %t
++ * RUN: %ocamlopt  llvm.cmxa llvm_linker.cmxa %t.builddir/linker.ml -o %t
+  * RUN: %t
+  * XFAIL: vg_leak
+  *)
+--- llvm-toolchain-3.5-3.5.2.orig/test/Bindings/Ocaml/passmgr_builder.ml
++++ llvm-toolchain-3.5-3.5.2/test/Bindings/Ocaml/passmgr_builder.ml
+@@ -1,7 +1,7 @@
+ (* RUN: rm -rf %t.builddir
+  * RUN: mkdir -p %t.builddir
+  * RUN: cp %s %t.builddir
+- * RUN: %ocamlopt -warn-error A llvm.cmxa llvm_passmgr_builder.cmxa %t.builddir/passmgr_builder.ml -o %t
++ * RUN: %ocamlopt  llvm.cmxa llvm_passmgr_builder.cmxa %t.builddir/passmgr_builder.ml -o %t
+  * RUN: %t %t.bc
+  * XFAIL: vg_leak
+  *)
+--- llvm-toolchain-3.5-3.5.2.orig/test/Bindings/Ocaml/scalar_opts.ml
++++ llvm-toolchain-3.5-3.5.2/test/Bindings/Ocaml/scalar_opts.ml
+@@ -1,7 +1,7 @@
+ (* RUN: rm -rf %t.builddir
+  * RUN: mkdir -p %t.builddir
+  * RUN: cp %s %t.builddir
+- * RUN: %ocamlopt -warn-error A llvm.cmxa llvm_scalar_opts.cmxa llvm_target.cmxa %t.builddir/scalar_opts.ml -o %t
++ * RUN: %ocamlopt  llvm.cmxa llvm_scalar_opts.cmxa llvm_target.cmxa %t.builddir/scalar_opts.ml -o %t
+  * RUN: %t %t.bc
+  * XFAIL: vg_leak
+  *)
+--- llvm-toolchain-3.5-3.5.2.orig/test/Bindings/Ocaml/target.ml
++++ llvm-toolchain-3.5-3.5.2/test/Bindings/Ocaml/target.ml
+@@ -1,7 +1,7 @@
+ (* RUN: rm -rf %t.builddir
+  * RUN: mkdir -p %t.builddir
+  * RUN: cp %s %t.builddir
+- * RUN: %ocamlopt -g -warn-error A llvm.cmxa llvm_target.cmxa llvm_executionengine.cmxa %t.builddir/target.ml -o %t
++ * RUN: %ocamlopt -g  llvm.cmxa llvm_target.cmxa llvm_executionengine.cmxa %t.builddir/target.ml -o %t
+  * RUN: %t %t.bc
+  * REQUIRES: native, object-emission
+  * XFAIL: vg_leak
+--- llvm-toolchain-3.5-3.5.2.orig/test/Bindings/Ocaml/vectorize_opts.ml
++++ llvm-toolchain-3.5-3.5.2/test/Bindings/Ocaml/vectorize_opts.ml
+@@ -1,7 +1,7 @@
+ (* RUN: rm -rf %t.builddir
+  * RUN: mkdir -p %t.builddir
+  * RUN: cp %s %t.builddir
+- * RUN: %ocamlopt -warn-error A llvm.cmxa llvm_vectorize.cmxa llvm_target.cmxa %t.builddir/vectorize_opts.ml -o %t
++ * RUN: %ocamlopt  llvm.cmxa llvm_vectorize.cmxa llvm_target.cmxa %t.builddir/vectorize_opts.ml -o %t
+  * RUN: %t %t.bc
+  * XFAIL: vg_leak
+  *)
+--- llvm-toolchain-3.5-3.5.2.orig/test/Bindings/Ocaml/vmcore.ml
++++ llvm-toolchain-3.5-3.5.2/test/Bindings/Ocaml/vmcore.ml
+@@ -1,7 +1,7 @@
+ (* RUN: rm -rf %t.builddir
+  * RUN: mkdir -p %t.builddir
+  * RUN: cp %s %t.builddir
+- * RUN: %ocamlopt -warn-error A llvm.cmxa llvm_analysis.cmxa llvm_bitwriter.cmxa %t.builddir/vmcore.ml -o %t
++ * RUN: %ocamlopt  llvm.cmxa llvm_analysis.cmxa llvm_bitwriter.cmxa %t.builddir/vmcore.ml -o %t
+  * RUN: %t %t.bc
+  * RUN: llvm-dis < %t.bc > %t.ll
+  * RUN: FileCheck %s < %t.ll

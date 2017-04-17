@@ -1,0 +1,28 @@
+Index: b/Makefile.rules
+===================================================================
+--- a/Makefile.rules
++++ b/Makefile.rules
+@@ -1411,12 +1411,13 @@ else
+ $(ToolBuildPath): $(ToolDir)/.dir
+ endif
+ 
++COMMA = ,
+ ifdef CODESIGN_TOOLS
+ TOOL_CODESIGN_IDENTITY ?= -
+ 
+ $(ToolBuildPath): $(ObjectsO) $(ProjLibsPaths) $(LLVMLibsPaths)
+ 	$(Echo) Linking $(BuildMode) executable $(TOOLNAME) $(StripWarnMsg)
+-	$(Verb) $(Link) -o $@ $(TOOLLINKOPTS) $(ObjectsO) $(ProjLibsOptions) \
++	$(Verb) $(filter-out -Wl$(COMMA)--version-script=%,$(Link)) -o $@ $(TOOLLINKOPTS) $(ObjectsO) $(ProjLibsOptions) \
+ 	$(LLVMLibsOptions) $(ExtraLibs) $(TOOLLINKOPTSB) $(LIBS)
+ 	$(Echo) ======= Finished Linking $(BuildMode) Executable $(TOOLNAME) \
+           $(StripWarnMsg)
+@@ -1425,7 +1426,7 @@ $(ToolBuildPath): $(ObjectsO) $(ProjLibs
+ else
+ $(ToolBuildPath): $(ObjectsO) $(ProjLibsPaths) $(LLVMLibsPaths)
+ 	$(Echo) Linking $(BuildMode) executable $(TOOLNAME) $(StripWarnMsg)
+-	$(Verb) $(Link) -o $@ $(TOOLLINKOPTS) $(ObjectsO) $(ProjLibsOptions) \
++	$(Verb) $(filter-out -Wl$(COMMA)--version-script=%,$(Link)) -o $@ $(TOOLLINKOPTS) $(ObjectsO) $(ProjLibsOptions) \
+ 	$(LLVMLibsOptions) $(ExtraLibs) $(TOOLLINKOPTSB) $(LIBS)
+ 	$(Echo) ======= Finished Linking $(BuildMode) Executable $(TOOLNAME) \
+           $(StripWarnMsg)

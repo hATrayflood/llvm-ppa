@@ -1,0 +1,331 @@
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-2012-06-06-FPToUI.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-2012-06-06-FPToUI.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-2012-06-06-FPToUI.ll
+@@ -1,5 +1,6 @@
+ ; RUN: llc -march=arm64 -O0 < %s | FileCheck %s
+ ; RUN: llc -march=arm64 -O3 < %s | FileCheck %s
++; XFAIL: *
+ 
+ @.str = private unnamed_addr constant [9 x i8] c"%lf %lu\0A\00", align 1
+ @.str1 = private unnamed_addr constant [8 x i8] c"%lf %u\0A\00", align 1
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-abi_align.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-abi_align.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-abi_align.ll
+@@ -1,6 +1,7 @@
+ ; RUN: llc < %s -march=arm64 -mcpu=cyclone -enable-misched=false | FileCheck %s
+ ; RUN: llc < %s -O0 | FileCheck -check-prefix=FAST %s
+ target triple = "arm64-apple-darwin"
++; XFAIL: *
+ 
+ ; rdar://12648441
+ ; Generated from arm64-arguments.c with -O2.
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-abi.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-abi.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-abi.ll
+@@ -2,6 +2,7 @@
+ ; RUN: llc < %s -O0 | FileCheck -check-prefix=FAST %s
+ ; REQUIRES: asserts
+ target triple = "arm64-apple-darwin"
++; XFAIL: *
+ 
+ ; rdar://9932559
+ define i64 @i8i16callee(i64 %a1, i64 %a2, i64 %a3, i8 signext %a4, i16 signext %a5, i64 %a6, i64 %a7, i64 %a8, i8 signext %b1, i16 signext %b2, i8 signext %b3, i8 signext %b4) nounwind readnone noinline {
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-anyregcc-crash.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-anyregcc-crash.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-anyregcc-crash.ll
+@@ -1,6 +1,7 @@
+ ; RUN: not llc < %s -mtriple=arm64-apple-darwin 2>&1 | FileCheck %s
+ ;
+ ; Check that misuse of anyregcc results in a compile time error.
++; XFAIL: *
+ 
+ ; CHECK: LLVM ERROR: ran out of registers during register allocation
+ define i64 @anyreglimit(i64 %v1, i64 %v2, i64 %v3, i64 %v4, i64 %v5, i64 %v6, i64 %v7, i64 %v8,
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-anyregcc.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-anyregcc.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-anyregcc.ll
+@@ -1,4 +1,5 @@
+ ; RUN: llc < %s -mtriple=arm64-apple-darwin | FileCheck %s
++; XFAIL: *
+ 
+ ; Stackmap Header: no constants - 6 callsites
+ ; CHECK-LABEL: .section	__LLVM_STACKMAPS,__llvm_stackmaps
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-big-endian-bitconverts.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-big-endian-bitconverts.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-big-endian-bitconverts.ll
+@@ -1,5 +1,6 @@
+ ; RUN: llc -mtriple arm64_be < %s -aarch64-load-store-opt=false -O1 -o - | FileCheck %s
+ ; RUN: llc -mtriple arm64_be < %s -aarch64-load-store-opt=false -O0 -fast-isel=true -o - | FileCheck %s
++; XFAIL: *
+ 
+ ; CHECK-LABEL: test_i64_f64:
+ define void @test_i64_f64(double* %p, i64* %q) {
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-big-endian-vector-caller.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-big-endian-vector-caller.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-big-endian-vector-caller.ll
+@@ -1,5 +1,6 @@
+ ; RUN: llc -mtriple arm64_be < %s -aarch64-load-store-opt=false -o - | FileCheck %s
+ ; RUN: llc -mtriple arm64_be < %s -aarch64-load-store-opt=false -fast-isel=true -O0 -o - | FileCheck %s
++; XFAIL: *
+ 
+ ; CHECK-LABEL: test_i64_f64:
+ declare i64 @test_i64_f64_helper(double %p)
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-elf-globals.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-elf-globals.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-elf-globals.ll
+@@ -2,6 +2,7 @@
+ ; RUN: llc -mtriple=arm64-linux-gnu -o - %s -O0 -mcpu=cyclone | FileCheck %s --check-prefix=CHECK-FAST
+ ; RUN: llc -mtriple=arm64-linux-gnu -relocation-model=pic -o - %s -mcpu=cyclone | FileCheck %s --check-prefix=CHECK-PIC
+ ; RUN: llc -mtriple=arm64-linux-gnu -O0 -relocation-model=pic -o - %s -mcpu=cyclone | FileCheck %s --check-prefix=CHECK-FAST-PIC
++; XFAIL: *
+ 
+ @var8 = external global i8, align 1
+ @var16 = external global i16, align 2
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-fast-isel-call.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-fast-isel-call.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-fast-isel-call.ll
+@@ -1,5 +1,6 @@
+ ; RUN: llc < %s -O0 -fast-isel-abort -mtriple=arm64-apple-darwin | FileCheck %s
+ ; RUN: llc < %s -O0 -fast-isel-abort -mtriple=arm64_be-linux-gnu | FileCheck %s --check-prefix=CHECK-BE
++; XFAIL: *
+ 
+ define void @call0() nounwind {
+ entry:
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-fast-isel-fcmp.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-fast-isel-fcmp.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-fast-isel-fcmp.ll
+@@ -1,4 +1,5 @@
+ ; RUN: llc < %s -O0 -fast-isel-abort -verify-machineinstrs -mtriple=arm64-apple-darwin | FileCheck %s
++; XFAIL: *
+ 
+ define zeroext i1 @fcmp_float1(float %a) nounwind ssp {
+ entry:
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-fastisel-gep-promote-before-add.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-fastisel-gep-promote-before-add.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-fastisel-gep-promote-before-add.ll
+@@ -1,6 +1,7 @@
+ ; fastisel should not fold add with non-pointer bitwidth
+ ; sext(a) + sext(b) != sext(a + b)
+ ; RUN: llc -mtriple=arm64-apple-darwin %s -O0 -o - | FileCheck %s
++; XFAIL: *
+ 
+ define zeroext i8 @gep_promotion(i8* %ptr) nounwind uwtable ssp {
+ entry:
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-fast-isel-indirectbr.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-fast-isel-indirectbr.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-fast-isel-indirectbr.ll
+@@ -1,4 +1,5 @@
+ ; RUN: llc < %s -O0 -fast-isel-abort -mtriple=arm64-apple-darwin | FileCheck %s
++; XFAIL: *
+ 
+ @fn.table = internal global [2 x i8*] [i8* blockaddress(@fn, %ZERO), i8* blockaddress(@fn, %ONE)], align 8
+ 
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-fast-isel-noconvert.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-fast-isel-noconvert.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-fast-isel-noconvert.ll
+@@ -1,4 +1,5 @@
+ ; RUN: llc -mtriple=arm64-apple-ios -O0 %s -o - | FileCheck %s
++; XFAIL: *
+ 
+ ; Fast-isel can't do vector conversions yet, but it was emitting some highly
+ ; suspect UCVTFUWDri MachineInstrs.
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-fp128.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-fp128.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-fp128.ll
+@@ -1,4 +1,5 @@
+ ; RUN: llc -mtriple=arm64-linux-gnu -verify-machineinstrs -mcpu=cyclone -aarch64-atomic-cfg-tidy=0 < %s | FileCheck %s
++; XFAIL: *
+ 
+ @lhs = global fp128 zeroinitializer, align 16
+ @rhs = global fp128 zeroinitializer, align 16
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-illegal-float-ops.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-illegal-float-ops.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-illegal-float-ops.ll
+@@ -1,4 +1,5 @@
+ ; RUN: llc -mtriple=arm64-none-linux-gnu -verify-machineinstrs < %s | FileCheck %s
++; XFAIL: *
+ 
+ @varfloat = global float 0.0
+ @vardouble = global double 0.0
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-neon-mul-div.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-neon-mul-div.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-neon-mul-div.ll
+@@ -1,5 +1,6 @@
+ ; RUN: llc < %s -verify-machineinstrs -mtriple=arm64-none-linux-gnu -mattr=+neon | FileCheck %s
+ ; arm64 has its own copy of this because of the intrinsics
++; XFAIL: *
+ 
+ define <8 x i8> @mul8xi8(<8 x i8> %A, <8 x i8> %B) {
+ ; CHECK-LABEL: mul8xi8:
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-neon-vector-list-spill.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-neon-vector-list-spill.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-neon-vector-list-spill.ll
+@@ -1,4 +1,5 @@
+ ; RUN: llc < %s -verify-machineinstrs -mtriple=arm64-none-linux-gnu -mattr=+neon -fp-contract=fast | FileCheck %s
++; XFAIL: *
+ 
+ ; FIXME: We should not generate ld/st for such register spill/fill, because the
+ ; test case seems very simple and the register pressure is not high. If the
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-platform-reg.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-platform-reg.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-platform-reg.ll
+@@ -1,5 +1,6 @@
+ ; RUN: llc -mtriple=arm64-apple-ios -o - %s | FileCheck %s --check-prefix=CHECK-DARWIN
+ ; RUN: llc -mtriple=arm64-linux-gnu -o - %s | FileCheck %s
++; XFAIL: *
+ 
+ ; x18 is reserved as a platform register on Darwin but not on other
+ ; systems. Create loads of register pressure and make sure this is respected.
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-spill.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-spill.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-spill.ll
+@@ -1,4 +1,5 @@
+ ; RUN: llc < %s -mtriple=arm64-apple-ios7.0 -aarch64-neon-syntax=apple -verify-machineinstrs
++; XFAIL: *
+ 
+ ; CHECK: fpr128
+ ; CHECK: ld1.2d
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-stackmap.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-stackmap.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-stackmap.ll
+@@ -1,6 +1,7 @@
+ ; RUN: llc < %s -mtriple=arm64-apple-darwin | FileCheck %s
+ ;
+ ; Note: Print verbose stackmaps using -debug-only=stackmaps.
++; XFAIL: *
+ 
+ ; We are not getting the correct stack alignment when cross compiling for arm64.
+ ; So specify a datalayout here.
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-stacksave.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-stacksave.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-stacksave.ll
+@@ -1,6 +1,7 @@
+ ; RUN: llc < %s -verify-coalescing
+ ; <rdar://problem/11522048>
+ target triple = "arm64-apple-macosx10.8.0"
++; XFAIL: *
+ 
+ ; Verify that we can handle spilling the stack pointer without attempting
+ ; spilling it directly.
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-vcvt_f.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-vcvt_f.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-vcvt_f.ll
+@@ -1,5 +1,6 @@
+ ; RUN: llc < %s -march=arm64 -aarch64-neon-syntax=apple | FileCheck %s
+ ; RUN: llc < %s -O0 -march=arm64 -aarch64-neon-syntax=apple | FileCheck %s
++; XFAIL: *
+ 
+ define <2 x double> @test_vcvt_f64_f32(<2 x float> %x) nounwind readnone ssp {
+ ; CHECK-LABEL: test_vcvt_f64_f32:
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-vfloatintrinsics.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/arm64-vfloatintrinsics.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/arm64-vfloatintrinsics.ll
+@@ -1,4 +1,5 @@
+ ; RUN: llc -march=arm64 -aarch64-neon-syntax=apple < %s | FileCheck %s
++; XFAIL: *
+ 
+ ;;; Float vectors
+ 
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/illegal-float-ops.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/illegal-float-ops.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/illegal-float-ops.ll
+@@ -1,4 +1,5 @@
+ ; RUN: llc -mtriple=aarch64-none-linux-gnu -verify-machineinstrs -o - %s | FileCheck %s
++; XFAIL: *
+ 
+ @varfloat = global float 0.0
+ @vardouble = global double 0.0
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/ldst-opt.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/ldst-opt.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/ldst-opt.ll
+@@ -1,4 +1,5 @@
+ ; RUN: llc -mtriple=aarch64-linux-gnu -aarch64-atomic-cfg-tidy=0 -verify-machineinstrs -o - %s | FileCheck %s
++; XFAIL: *
+ 
+ ; This file contains tests for the AArch64 load/store optimizer.
+ 
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/neon-fpround_f128.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/neon-fpround_f128.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/neon-fpround_f128.ll
+@@ -1,4 +1,5 @@
+ ; RUN: llc < %s -verify-machineinstrs -mtriple=aarch64-none-linux-gnu -mattr=+neon -fp-contract=fast | FileCheck %s
++; XFAIL: *
+ 
+ define <1 x double> @test_fpround_v1f128(<1 x fp128>* %a) {
+ ; CHECK-LABEL: test_fpround_v1f128:
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/ragreedy-csr.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/ragreedy-csr.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/ragreedy-csr.ll
+@@ -1,4 +1,5 @@
+ ; RUN: llc < %s -mtriple=arm64-apple-ios7.0 -regalloc=greedy -regalloc-csr-first-time-cost=15 | FileCheck %s
++; XFAIL: *
+ 
+ ; This testing case is reduced from 197.parser prune_match function.
+ ; We make sure that we do not use callee-saved registers (x19 to x25).
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/regress-tail-livereg.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/regress-tail-livereg.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/regress-tail-livereg.ll
+@@ -1,4 +1,5 @@
+ ; RUN: llc -verify-machineinstrs -mtriple=arm64-apple-ios7.0 -o - %s | FileCheck %s
++; XFAIL: *
+ @var = global void()* zeroinitializer
+ 
+ declare void @bar()
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/sincos-expansion.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/sincos-expansion.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/sincos-expansion.ll
+@@ -1,4 +1,5 @@
+ ; RUN: llc -mtriple=aarch64-linux-gnu -verify-machineinstrs -o - %s | FileCheck %s
++; XFAIL: *
+ 
+ define float @test_sincos_f32(float %f) {
+   %sin = call float @sinf(float %f) readnone
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/sincospow-vector-expansion.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/sincospow-vector-expansion.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/sincospow-vector-expansion.ll
+@@ -1,4 +1,5 @@
+ ; RUN: llc -o - %s -verify-machineinstrs -mtriple=aarch64-linux-gnu -mattr=+neon | FileCheck %s
++; XFAIL: *
+ 
+ 
+ define <2 x float> @test_cos_v2f64(<2 x double> %v1) {
+Index: llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/i128-fast-isel-fallback.ll
+===================================================================
+--- llvm-toolchain-3.5-3.5.2.orig/test/CodeGen/AArch64/i128-fast-isel-fallback.ll
++++ llvm-toolchain-3.5-3.5.2/test/CodeGen/AArch64/i128-fast-isel-fallback.ll
+@@ -1,4 +1,5 @@
+ ; RUN: llc -O0 -mtriple=arm64-apple-ios7.0 -mcpu=generic < %s | FileCheck %s
++; XFAIL: *
+
+ ; Function Attrs: nounwind ssp
+ define void @test1() {

@@ -7,10 +7,10 @@ Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl, expect,
     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
     lsb-release, patchutils, diffstat, xz-utils, chrpath, python-dev,
     libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev-lts,
-    libisl-dev-lts (>= 0.11.1), libjsoncpp-dev, gcc-4.8, g++-4.8,
+    libisl-dev-lts (>= 0.11.1), libjsoncpp-dev, gcc-4.7, g++-4.7,
     lcov, procps, help2man, dh-ocaml, zlib1g-dev
 Build-Conflicts: oprofile, ocaml, libclang-common-3.5-dev, libllvm-3.4-ocaml-dev, libllvm-3.5-ocaml-dev
-Standards-Version: 3.9.5
+Standards-Version: 3.9.6
 Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
 Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
 
@@ -182,11 +182,13 @@ Description: Clang examples
 
 # ------------- LLVM -------------
 
-Package: libllvm3.5
+Package: libllvm3.5v5
 Architecture: any
 Section: libs
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Pre-Depends: ${misc:Pre-Depends}
+Conflicts: libllvm3.5
+Replaces: libllvm3.5
 Multi-Arch: same
 Description: Modular compiler and toolchain technologies, runtime library
  LLVM is a collection of libraries and tools that make it easy to build
@@ -264,8 +266,6 @@ Description: Modular compiler and toolchain technologies, libraries and headers
  .
  This package provides the libraries and headers to develop applications
  using llvm.
-
-
 
 Package: llvm-3.5-tools
 Architecture: any
