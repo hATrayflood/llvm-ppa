@@ -1,12 +1,82 @@
-llvm-toolchain-3.6 (1:3.6.1-debian1precise1) precise; urgency=medium
+llvm-toolchain-3.6 (1:3.6.2-debian4precise0) precise; urgency=medium
 
   * ppa for precise
 
- -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Tue, 26 May 2015 09:50:00 +0900
+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sun, 16 Apr 2017 14:00:00 +0900
+
+llvm-toolchain-3.6 (1:3.6.2-4) unstable; urgency=medium
+
+  * Team upload
+
+  [ Gianfranco Costamagna ]
+  * Import some changes from Ubuntu.
+  * Fix powerpc sadness by not using gold linker.
+
+  [ Matthias Klose ]
+  * d/p/rL235088.diff:
+    - [AArch64] Fix invalid use of references to BuildMI, taken from the trunk.
+  * d/p/no-version-script-for-executables.diff:
+    - Do not link executables with a version script.
+
+  [ Louis Bouchard ]
+  * d/rules: Fix the regex for the GCC_VERSION so it takes version 6
+    into account. Otherwise, this causes an FTBS (Closes: #835582)
+
+ -- Gianfranco Costamagna <locutusofborg@debian.org>  Fri, 07 Oct 2016 08:21:03 +0200
+
+llvm-toolchain-3.6 (1:3.6.2-3) unstable; urgency=medium
+
+  * Add a Break/Replaces clang-3.6 (<< 1:3.6.2-2) from clang-tidy-3.6
+    to simplify the transition (Closes: #802456)
+  * Remove some warnings in the manpages generation (Closes: #795310)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Tue, 20 Oct 2015 09:28:00 +0200
+
+llvm-toolchain-3.6 (1:3.6.2-2) unstable; urgency=medium
+
+  * Fix the warning "duplicate-short-description cpp11-migrate-3.6
+      clang-modernize-3.6". cpp11-migrate is the old name of clang-modernize
+  * Bring back the build-id (Closes: #790686)
+  * Introduce clang-tidy-3.6 as a new package
+
+  [ Gianfranco Costamagna ]
+  * Fix many lintian warning/errors
+    - copyright fixes
+    - updated overrides for v5 switch
+    - d/control fixes on VCS fields and multiarch.
+    - disabled ocaml documentation
+  * d/p/bug783205.patch: rebase to 3.6.
+  * d/control: Add more conflicting packages (python-clang and python-lldb)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Mon, 21 Sep 2015 11:14:28 +0200
+
+llvm-toolchain-3.6 (1:3.6.2-1) unstable; urgency=medium
+
+  [ Sylvestre Ledru ]
+  * New upstream release
+  * Upload in unstable
+  * Add a workaround to build against g++ 5.2 (which does not provide
+    the binary g++-5.2)
+  * Transition to gcc 5. Thanks to Matthias Klose for the patch.
+    For this, we had to rename libllvm3.6 to libllvm3.6v5
+    (Closes: #793899)
+  * bug-24472.diff: Silent some aarch64/arm64 tests which started to fail
+    probably during the gcc 5 migration
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Mon, 17 Aug 2015 11:23:35 +0200
+
+llvm-toolchain-3.6 (1:3.6.2~+rc1-1~exp1) experimental; urgency=medium
+
+  * Preparation of the new stable release
+  * Disable the patch force-gcc-header-obj.diff. Seems to cause bug #23556
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Wed, 24 Jun 2015 02:54:16 +0200
 
 llvm-toolchain-3.6 (1:3.6.1-1) unstable; urgency=medium
 
   * New upstream release
+  * Fix the CMake build. thanks to Paweł Bylica for the fix.
+    Fix upstream bug #23352
 
  -- Sylvestre Ledru <sylvestre@debian.org>  Wed, 20 May 2015 08:56:00 +0200
 

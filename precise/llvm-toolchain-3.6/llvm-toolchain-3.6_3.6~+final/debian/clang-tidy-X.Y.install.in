@@ -1,0 +1,2 @@
+usr/lib/llvm-@LLVM_VERSION@/bin/clang-tidy
+usr/bin/clang-tidy-@LLVM_VERSION@

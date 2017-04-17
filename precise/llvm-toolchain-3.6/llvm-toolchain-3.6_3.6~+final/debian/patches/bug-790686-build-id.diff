@@ -1,0 +1,40 @@
+Index: llvm-toolchain-3.6-3.6.2/clang/lib/Driver/ToolChains.cpp
+===================================================================
+--- llvm-toolchain-3.6-3.6.2.orig/clang/lib/Driver/ToolChains.cpp
++++ llvm-toolchain-3.6-3.6.2/clang/lib/Driver/ToolChains.cpp
+@@ -2683,6 +2683,7 @@ enum Distro {
+   DebianSqueeze,
+   DebianWheezy,
+   DebianJessie,
++  DebianStretch,
+   Exherbo,
+   RHEL4,
+   RHEL5,
+@@ -2714,7 +2715,7 @@ static bool IsOpenSUSE(enum Distro Distr
+ }
+ 
+ static bool IsDebian(enum Distro Distro) {
+-  return Distro >= DebianLenny && Distro <= DebianJessie;
++  return Distro >= DebianLenny && Distro <= DebianStretch;
+ }
+ 
+ static bool IsUbuntu(enum Distro Distro) {
+@@ -2777,6 +2778,8 @@ static Distro DetectDistro(llvm::Triple:
+       return DebianWheezy;
+     else if (Data.startswith("jessie/sid")  || Data[0] == '8')
+       return DebianJessie;
++    else if (Data.startswith("stretch/sid")  || Data[0] == '8')
++      return DebianStretch;
+     return UnknownDistro;
+   }
+ 
+@@ -2978,7 +2981,8 @@ Linux::Linux(const Driver &D, const llvm
+     ExtraOpts.push_back("--no-add-needed");
+ 
+   if (Distro == DebianSqueeze || Distro == DebianWheezy ||
+-      Distro == DebianJessie || IsOpenSUSE(Distro) ||
++      Distro == DebianJessie || Distro == DebianStretch ||
++      IsOpenSUSE(Distro) ||
+       (IsRedhat(Distro) && Distro != RHEL4 && Distro != RHEL5) ||
+       (IsUbuntu(Distro) && Distro >= UbuntuKarmic))
+     ExtraOpts.push_back("--build-id");

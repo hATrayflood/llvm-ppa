@@ -1,25 +1,25 @@
 diff -urN ../../llvm-toolchain-3.6/debian/changelog llvm-toolchain-3.6_3.6~+final/debian/changelog
---- ../../llvm-toolchain-3.6/debian/changelog	2015-05-20 16:00:39.000000000 +0900
-+++ llvm-toolchain-3.6_3.6~+final/debian/changelog	2015-05-26 09:48:56.642469631 +0900
+--- ../../llvm-toolchain-3.6/debian/changelog	2016-10-08 03:18:00.000000000 +0900
++++ llvm-toolchain-3.6_3.6~+final/debian/changelog	2017-04-16 13:58:20.625608825 +0900
 @@ -1,3 +1,9 @@
-+llvm-toolchain-3.6 (1:3.6.1-debian1precise1) precise; urgency=medium
++llvm-toolchain-3.6 (1:3.6.2-debian4precise0) precise; urgency=medium
 +
 +  * ppa for precise
 +
-+ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Tue, 26 May 2015 09:50:00 +0900
++ -- ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>  Sun, 16 Apr 2017 14:00:00 +0900
 +
- llvm-toolchain-3.6 (1:3.6.1-1) unstable; urgency=medium
+ llvm-toolchain-3.6 (1:3.6.2-4) unstable; urgency=medium
  
-   * New upstream release
+   * Team upload
 diff -urN ../../llvm-toolchain-3.6/debian/clang-X.Y-relaxng.install.in llvm-toolchain-3.6_3.6~+final/debian/clang-X.Y-relaxng.install.in
 --- ../../llvm-toolchain-3.6/debian/clang-X.Y-relaxng.install.in	1970-01-01 09:00:00.000000000 +0900
 +++ llvm-toolchain-3.6_3.6~+final/debian/clang-X.Y-relaxng.install.in	2014-08-02 02:55:10.704199000 +0900
 @@ -0,0 +1 @@
 +clang/bindings/xml/comment-xml-schema.rng	/usr/share/xml/clang-@LLVM_VERSION@-relaxng/
 diff -urN ../../llvm-toolchain-3.6/debian/clang-X.Y.install.in llvm-toolchain-3.6_3.6~+final/debian/clang-X.Y.install.in
---- ../../llvm-toolchain-3.6/debian/clang-X.Y.install.in	2015-01-15 03:45:58.000000000 +0900
-+++ llvm-toolchain-3.6_3.6~+final/debian/clang-X.Y.install.in	2015-05-01 11:21:35.012607493 +0900
-@@ -9,9 +9,10 @@
+--- ../../llvm-toolchain-3.6/debian/clang-X.Y.install.in	2016-10-07 15:17:49.000000000 +0900
++++ llvm-toolchain-3.6_3.6~+final/debian/clang-X.Y.install.in	2017-04-16 14:00:24.689605445 +0900
+@@ -8,9 +8,10 @@
  usr/lib/llvm-@LLVM_VERSION@/bin/clang-query
  usr/lib/llvm-@LLVM_VERSION@/bin/clang-rename
  
@@ -32,7 +32,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/clang-X.Y.install.in llvm-toolchain-3.
  
  usr/bin/clang-@LLVM_VERSION@
 diff -urN ../../llvm-toolchain-3.6/debian/clang-X.Y.links.in llvm-toolchain-3.6_3.6~+final/debian/clang-X.Y.links.in
---- ../../llvm-toolchain-3.6/debian/clang-X.Y.links.in	2015-01-15 03:45:58.000000000 +0900
+--- ../../llvm-toolchain-3.6/debian/clang-X.Y.links.in	2016-10-07 15:17:49.000000000 +0900
 +++ llvm-toolchain-3.6_3.6~+final/debian/clang-X.Y.links.in	2015-05-01 11:22:08.924606489 +0900
 @@ -1,3 +1,6 @@
 +usr/share/man/man1/clang-@LLVM_VERSION@.1.gz          usr/share/man/man1/clang++-@LLVM_VERSION@.1.gz
@@ -42,7 +42,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/clang-X.Y.links.in llvm-toolchain-3.6_
 +usr/lib/llvm-@LLVM_VERSION@/bin/asan_symbolize.py     usr/bin/asan_symbolize-@LLVM_VERSION@
  
 diff -urN ../../llvm-toolchain-3.6/debian/clang-format-X.Y.install.in llvm-toolchain-3.6_3.6~+final/debian/clang-format-X.Y.install.in
---- ../../llvm-toolchain-3.6/debian/clang-format-X.Y.install.in	2015-01-15 03:45:58.000000000 +0900
+--- ../../llvm-toolchain-3.6/debian/clang-format-X.Y.install.in	2016-10-07 15:17:49.000000000 +0900
 +++ llvm-toolchain-3.6_3.6~+final/debian/clang-format-X.Y.install.in	2014-09-13 19:26:27.743982000 +0900
 @@ -1,5 +1,5 @@
  clang/tools/clang-format/clang-format-@LLVM_VERSION@.py usr/share/vim/addons/syntax/
@@ -57,8 +57,8 @@ diff -urN ../../llvm-toolchain-3.6/debian/clang-format-X.Y.links.in llvm-toolcha
 @@ -0,0 +1 @@
 +usr/lib/llvm-@LLVM_VERSION@/bin/clang-format-diff.py usr/bin/clang-format-diff-@LLVM_VERSION@
 diff -urN ../../llvm-toolchain-3.6/debian/control llvm-toolchain-3.6_3.6~+final/debian/control
---- ../../llvm-toolchain-3.6/debian/control	2015-03-26 20:13:55.000000000 +0900
-+++ llvm-toolchain-3.6_3.6~+final/debian/control	2015-05-01 11:27:40.724596666 +0900
+--- ../../llvm-toolchain-3.6/debian/control	2016-10-08 03:14:30.000000000 +0900
++++ llvm-toolchain-3.6_3.6~+final/debian/control	2017-04-16 14:19:25.233571667 +0900
 @@ -1,21 +1,19 @@
  Source: llvm-toolchain-3.6
  Section: devel
@@ -70,18 +70,18 @@ diff -urN ../../llvm-toolchain-3.6/debian/control llvm-toolchain-3.6_3.6~+final/
  Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl, expect,
      autoconf, automake, perl, libtool, chrpath, texinfo,
      sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
-     lsb-release, patchutils, diffstat, xz-utils, chrpath, python-dev,
+     lsb-release, patchutils, diffstat, xz-utils, python-dev,
 -    libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev,
 -    libisl-dev (>= 0.11.1), libjsoncpp-dev,
 +    libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev-lts,
-+    libisl-dev-lts (>= 0.11.1), libjsoncpp-dev, gcc-4.8, g++-4.8,
++    libisl-dev-lts (>= 0.11.1), libjsoncpp-dev, gcc-4.7, g++-4.7,
      lcov, procps, help2man, dh-ocaml, zlib1g-dev
 -Build-Conflicts: oprofile, ocaml, libllvm-3.4-ocaml-dev, libllvm-3.5-ocaml-dev,
 +Build-Conflicts: oprofile, ocaml, libclang-common-3.6-dev, libllvm-3.4-ocaml-dev, libllvm-3.5-ocaml-dev,
   libllvm-3.6-ocaml-dev
  Standards-Version: 3.9.6
 -Homepage: http://www.llvm.org/
--Vcs-Svn: svn://svn.debian.org/svn/pkg-llvm/llvm-toolchain/branches/3.6/
+-Vcs-Svn: svn://anonscm.debian.org/pkg-llvm/llvm-toolchain/branches/3.6/
 -Vcs-Browser: http://svn.debian.org/viewsvn/pkg-llvm/llvm-toolchain/branches/3.6/
 +Homepage: https://launchpad.net/~h-rayflood/+archive/llvm
 +Vcs-Browser: https://github.com/hATrayflood/llvm-ppa
@@ -117,7 +117,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/control llvm-toolchain-3.6_3.6~+final/
  Depends: ${shlibs:Depends}, ${misc:Depends}, clang-modernize-3.6
 -Replaces: cpp11-migrate-3.3
 -Breaks: cpp11-migrate-3.3
- Description: Tool to convert C++98 and C++03 code to C++11
+ Description: Tool to convert C++98 and C++03 code to C++11 - transition package
   The purpose of the C++11 Migrator is to do source-to-source translation to
   migrate existing C++ code to use C++11 features to enhance
 @@ -74,8 +63,6 @@
@@ -129,15 +129,16 @@ diff -urN ../../llvm-toolchain-3.6/debian/control llvm-toolchain-3.6_3.6~+final/
  Description: Tool to convert C++98 and C++03 code to C++11
   The purpose of the C++11 Migrator is to do source-to-source translation to
   migrate existing C++ code to use C++11 features to enhance
-@@ -120,12 +107,10 @@
+@@ -131,13 +118,10 @@
   locations with elements within the AST, and other facilities that support
   Clang-based development tools.
  
 -Package: libclang1-3.6-dbg
 -Architecture: any
+-Multi-Arch: same
 -Section: debug
 -Priority: extra
--Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs}, libclang1-3.6
+-Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs}, libclang1-3.6 (= ${binary:Version})
 -Description: clang library
 +Package: clang-3.6-relaxng
 +Architecture: all
@@ -146,7 +147,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/control llvm-toolchain-3.6_3.6~+final/
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
   Collection (GCC).
-@@ -133,7 +118,7 @@
+@@ -145,7 +129,7 @@
   Clang implements all of the ISO C++ 1998 and 2001 standards and also provides
   a partial support of C++1y.
   .
@@ -155,27 +156,27 @@ diff -urN ../../llvm-toolchain-3.6/debian/control llvm-toolchain-3.6_3.6~+final/
  
  Package: libclang-3.6-dev
  Architecture: any
-@@ -154,7 +139,7 @@
+@@ -166,7 +150,7 @@
  Package: libclang-common-3.6-dev
  Architecture: any
  Section: libdevel
--Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.6 (= ${binary:Version})
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.6v5 (= ${binary:Version})
 +Depends: ${shlibs:Depends}, ${misc:Depends}
  Description: clang library - Common development package
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
-@@ -170,9 +155,7 @@
+@@ -182,9 +166,7 @@
  Package: python-clang-3.6
  Section: python
  Architecture: any
 -Depends: ${shlibs:Depends}, ${misc:Depends}, python
--Replaces: python-clang-3.3, python-clang-3.4
--Breaks: python-clang-3.3, python-clang-3.4
+-Replaces: python-clang-3.3, python-clang-3.4, python-clang-3.5, python-clang-3.7, python-clang-3.8
+-Breaks: python-clang-3.3, python-clang-3.4, python-clang-3.5, python-clang-3.7, python-clang-3.8
 +Depends: ${shlibs:Depends}, ${misc:Depends}, libclang1-3.6 (= ${binary:Version}), python2.7
  Description: Clang Python Bindings
   Clang project is a C, C++, Objective C and Objective C++ front-end
   for the LLVM compiler. Its goal is to offer a replacement to the GNU Compiler
-@@ -213,20 +196,6 @@
+@@ -227,20 +209,6 @@
   .
   This package contains the LLVM runtime library.
  
@@ -183,7 +184,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/control llvm-toolchain-3.6_3.6~+final/
 -Architecture: any
 -Section: debug
 -Priority: extra
--Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.6
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.6v5 (= ${binary:Version})
 -Pre-Depends: ${misc:Pre-Depends}
 -Multi-Arch: same
 -Description: Modular compiler and toolchain technologies, debugging libraries
@@ -196,7 +197,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/control llvm-toolchain-3.6_3.6~+final/
  Package: llvm-3.6
  Architecture: any
  Suggests: llvm-3.6-doc
-@@ -261,8 +230,6 @@
+@@ -275,8 +243,6 @@
  Package: llvm-3.6-runtime
  Architecture: any
  Depends: binfmt-support, ${shlibs:Depends}, ${misc:Depends}
@@ -205,7 +206,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/control llvm-toolchain-3.6_3.6~+final/
  Description: Modular compiler and toolchain technologies, IR interpreter
   LLVM is a collection of libraries and tools that make it easy to build
   compilers, optimizers, just-in-time code generators, and many other
-@@ -283,7 +250,6 @@
+@@ -297,7 +263,6 @@
  Architecture: any
  Depends: ${shlibs:Depends}, libffi-dev (>= 3.0.9), ${misc:Depends},
   llvm-3.6 (= ${binary:Version}), libtinfo-dev
@@ -213,7 +214,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/control llvm-toolchain-3.6_3.6~+final/
  Description: Modular compiler and toolchain technologies, libraries and headers
   LLVM is a collection of libraries and tools that make it easy to build
   compilers, optimizers, just-in-time code generators, and many other
-@@ -381,70 +347,3 @@
+@@ -393,70 +358,3 @@
   .
   This package contains examples for using LLVM, both in developing
   extensions to LLVM and in using it to compile code.
@@ -224,8 +225,8 @@ diff -urN ../../llvm-toolchain-3.6/debian/control llvm-toolchain-3.6_3.6~+final/
 -Package: lldb-3.6
 -Architecture: amd64 armel armhf i386  kfreebsd-amd64 kfreebsd-i386 s390 s390x sparc alpha hppa m68k powerpcspe ppc64 sh4 sparc64 x32 powerpc mips mipsel
 -# ia64 mips mipsel hurd ppc64el have been removed
--Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.6 (= ${binary:Version}), python, llvm-3.6-dev, python-lldb-3.6
--Conflicts: lldb-3.4, lldb-3.5
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.6v5 (= ${binary:Version}), python, llvm-3.6-dev, python-lldb-3.6
+-Conflicts: lldb-3.4, lldb-3.5, lldb-3.7, lldb-3.8
 -Pre-Depends: ${misc:Pre-Depends}
 -Description: Next generation, high-performance debugger
 - LLDB is a next generation, high-performance debugger. It is built as a set of
@@ -235,7 +236,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/control llvm-toolchain-3.6_3.6~+final/
 -Package: liblldb-3.6
 -Architecture: amd64 armel armhf i386  kfreebsd-amd64 kfreebsd-i386 s390 s390x sparc alpha hppa m68k powerpcspe ppc64 sh4 sparc64 x32 powerpc mips mipsel
 -# ia64 mips mipsel hurd ppc64el have been removed
--Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.6 (= ${binary:Version})
+-Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm3.6v5 (= ${binary:Version})
 -Pre-Depends: ${misc:Pre-Depends}
 -Section: libs
 -Replaces: lldb-3.6 (<= 1:3.6~svn215195-2)
@@ -252,7 +253,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/control llvm-toolchain-3.6_3.6~+final/
 -Section: python
 -Architecture: any
 -Depends: ${shlibs:Depends}, ${misc:Depends}, python
--Conflicts: python-lldb-3.4, python-lldb-3.5
+-Conflicts: python-lldb-3.4, python-lldb-3.5, python-lldb-3.7, python-lldb-3.8
 -Pre-Depends: ${misc:Pre-Depends}
 -Description: Next generation, high-performance debugger, python lib
 - LLDB is a next generation, high-performance debugger. It is built as a set of
@@ -285,17 +286,19 @@ diff -urN ../../llvm-toolchain-3.6/debian/control llvm-toolchain-3.6_3.6~+final/
 -Description: transitional dummy package to liblldb-3.6-dev
 - This is a transitional dummy package. It can safely be removed.
 diff -urN ../../llvm-toolchain-3.6/debian/libllvm-X.Y-ocaml-dev.dirs.in llvm-toolchain-3.6_3.6~+final/debian/libllvm-X.Y-ocaml-dev.dirs.in
---- ../../llvm-toolchain-3.6/debian/libllvm-X.Y-ocaml-dev.dirs.in	2015-01-15 03:45:58.000000000 +0900
+--- ../../llvm-toolchain-3.6/debian/libllvm-X.Y-ocaml-dev.dirs.in	2016-10-07 15:17:49.000000000 +0900
 +++ llvm-toolchain-3.6_3.6~+final/debian/libllvm-X.Y-ocaml-dev.dirs.in	2014-09-13 22:30:54.474778000 +0900
 @@ -1,2 +1,2 @@
 -@OCAML_STDLIB_DIR@/META/
 +@OCAML_STDLIB_DIR@/METAS
  
 diff -urN ../../llvm-toolchain-3.6/debian/llvm-X.Y-runtime.postinst.in llvm-toolchain-3.6_3.6~+final/debian/llvm-X.Y-runtime.postinst.in
---- ../../llvm-toolchain-3.6/debian/llvm-X.Y-runtime.postinst.in	2015-01-15 03:45:58.000000000 +0900
+--- ../../llvm-toolchain-3.6/debian/llvm-X.Y-runtime.postinst.in	2016-10-07 15:17:49.000000000 +0900
 +++ llvm-toolchain-3.6_3.6~+final/debian/llvm-X.Y-runtime.postinst.in	1970-01-01 09:00:00.000000000 +0900
-@@ -1,9 +0,0 @@
--#!/bin/sh -e
+@@ -1,11 +0,0 @@
+-#!/bin/sh
+-
+-set -e
 -
 -if test "$1" = "configure"; then
 -    if test -x /usr/sbin/update-binfmts; then
@@ -305,10 +308,12 @@ diff -urN ../../llvm-toolchain-3.6/debian/llvm-X.Y-runtime.postinst.in llvm-tool
 -
 -#DEBHELPER#
 diff -urN ../../llvm-toolchain-3.6/debian/llvm-X.Y-runtime.prerm.in llvm-toolchain-3.6_3.6~+final/debian/llvm-X.Y-runtime.prerm.in
---- ../../llvm-toolchain-3.6/debian/llvm-X.Y-runtime.prerm.in	2015-01-15 03:45:58.000000000 +0900
+--- ../../llvm-toolchain-3.6/debian/llvm-X.Y-runtime.prerm.in	2016-10-07 15:17:49.000000000 +0900
 +++ llvm-toolchain-3.6_3.6~+final/debian/llvm-X.Y-runtime.prerm.in	1970-01-01 09:00:00.000000000 +0900
-@@ -1,16 +0,0 @@
--#!/bin/sh -e
+@@ -1,18 +0,0 @@
+-#!/bin/sh
+-
+-set -e
 -
 -if test "$1" = "remove"; then
 -    if test -x /usr/sbin/update-binfmts; then
@@ -590,7 +595,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/patches/99-python-bindings.patch llvm-
 + def get_tu(source, lang='c', all_warnings=False, flags=[]):
 +     """Obtain a translation unit from source and language.
 diff -urN ../../llvm-toolchain-3.6/debian/patches/python-clangpath.diff llvm-toolchain-3.6_3.6~+final/debian/patches/python-clangpath.diff
---- ../../llvm-toolchain-3.6/debian/patches/python-clangpath.diff	2015-05-01 20:02:36.000000000 +0900
+--- ../../llvm-toolchain-3.6/debian/patches/python-clangpath.diff	2016-10-07 15:17:49.000000000 +0900
 +++ llvm-toolchain-3.6_3.6~+final/debian/patches/python-clangpath.diff	2015-05-01 11:19:04.276612078 +0900
 @@ -7,7 +7,7 @@
               file = 'libclang.dll'
@@ -602,15 +607,15 @@ diff -urN ../../llvm-toolchain-3.6/debian/patches/python-clangpath.diff llvm-too
           if Config.library_path:
               file = Config.library_path + '/' + file
 diff -urN ../../llvm-toolchain-3.6/debian/patches/series llvm-toolchain-3.6_3.6~+final/debian/patches/series
---- ../../llvm-toolchain-3.6/debian/patches/series	2015-05-01 20:02:36.000000000 +0900
-+++ llvm-toolchain-3.6_3.6~+final/debian/patches/series	2015-05-26 09:46:45.706470531 +0900
-@@ -35,3 +35,4 @@
- lldb-libname.diff
- bashsim.diff
- clang-analyzer-force-version.diff
+--- ../../llvm-toolchain-3.6/debian/patches/series	2016-10-07 15:18:14.000000000 +0900
++++ llvm-toolchain-3.6_3.6~+final/debian/patches/series	2017-04-16 13:56:24.913611666 +0900
+@@ -41,3 +41,4 @@
+ llvm-3.6.0-ocaml-ctypes-0.4.0.patch
+ rL235088.diff
+ no-version-script-for-executables.diff
 +99-python-bindings.patch
 diff -urN ../../llvm-toolchain-3.6/debian/pollycc.in llvm-toolchain-3.6_3.6~+final/debian/pollycc.in
---- ../../llvm-toolchain-3.6/debian/pollycc.in	2015-01-15 03:45:58.000000000 +0900
+--- ../../llvm-toolchain-3.6/debian/pollycc.in	2016-10-07 15:17:49.000000000 +0900
 +++ llvm-toolchain-3.6_3.6~+final/debian/pollycc.in	2014-09-14 17:29:37.805783000 +0900
 @@ -1,3 +1,3 @@
  #!/bin/sh
@@ -618,7 +623,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/pollycc.in llvm-toolchain-3.6_3.6~+fin
 -clang -Xclang -load -Xclang /usr/lib/llvm-@LLVM_VERSION@/lib/LLVMPolly.so $@
 +clang-@LLVM_VERSION@ -Xclang -load -Xclang /usr/lib/llvm-@LLVM_VERSION@/lib/LLVMPolly.so $@
 diff -urN ../../llvm-toolchain-3.6/debian/python-clang-X.Y.install.in llvm-toolchain-3.6_3.6~+final/debian/python-clang-X.Y.install.in
---- ../../llvm-toolchain-3.6/debian/python-clang-X.Y.install.in	2015-01-15 03:45:58.000000000 +0900
+--- ../../llvm-toolchain-3.6/debian/python-clang-X.Y.install.in	2016-10-07 15:17:49.000000000 +0900
 +++ llvm-toolchain-3.6_3.6~+final/debian/python-clang-X.Y.install.in	2015-05-01 11:29:50.500592825 +0900
 @@ -1 +1,4 @@
 -tools/clang/bindings/python/clang/ /usr/lib/python2.7/dist-packages/
@@ -627,18 +632,20 @@ diff -urN ../../llvm-toolchain-3.6/debian/python-clang-X.Y.install.in llvm-toolc
 +clang/bindings/python/examples		usr/share/doc/python-clang-@LLVM_VERSION@/
 +clang/bindings/python/tests		usr/share/doc/python-clang-@LLVM_VERSION@/
 diff -urN ../../llvm-toolchain-3.6/debian/rules llvm-toolchain-3.6_3.6~+final/debian/rules
---- ../../llvm-toolchain-3.6/debian/rules	2015-03-05 17:30:42.000000000 +0900
-+++ llvm-toolchain-3.6_3.6~+final/debian/rules	2015-05-26 09:50:24.890468615 +0900
-@@ -3,7 +3,7 @@
+--- ../../llvm-toolchain-3.6/debian/rules	2016-10-08 03:15:51.000000000 +0900
++++ llvm-toolchain-3.6_3.6~+final/debian/rules	2017-04-16 14:16:04.413577586 +0900
+@@ -3,9 +3,7 @@
  TARGET_BUILD	:= build-llvm
  DEB_INST		:= $(CURDIR)/debian/tmp/
  #GCC_VERSION     := 4.8
--GCC_VERSION     := $(shell dpkg-query -W -f '$${Version}' g++ | sed -rne 's,^([0-9]+:)?([0-9]+\.[0-9]+|[0-9]+).*$$,\2,p')
-+GCC_VERSION     := 4.8
+-# The 5|6| in the regexp is a crappy workaround. g++ 5.2 in Debian is not providing a g++-5.2 binary (only g++-5)
+-# accomodate that by hardcoding the 5 detection
+-GCC_VERSION     := $(shell dpkg-query -W -f '$${Version}' g++ | sed -rne 's,^([0-9]+:)?(5|6|[0-9]+\.[0-9]+|[0-9]+).*$$,\2,p')
++GCC_VERSION     := 4.7
  LLVM_VERSION	:= 3.6
- LLVM_VERSION_FULL := $(LLVM_VERSION).1
+ LLVM_VERSION_FULL := $(LLVM_VERSION).2
  SONAME_EXT      := 1
-@@ -11,9 +11,13 @@
+@@ -13,9 +11,13 @@
  DEBIAN_REVISION := $(shell dpkg-parsechangelog |  sed -rne "s,^Version: 1:([0-9.]+)(~|-)(.*),\3,p")
  ifneq (,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
    NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
@@ -653,7 +660,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/rules llvm-toolchain-3.6_3.6~+final/de
  
  DEB_HOST_MULTIARCH  = $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
  DEB_HOST_GNU_TYPE   = $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-@@ -30,11 +34,6 @@
+@@ -32,11 +34,6 @@
  LDFLAGS_EXTRA += -latomic
  endif
  
@@ -665,7 +672,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/rules llvm-toolchain-3.6_3.6~+final/de
  export CC=gcc-$(GCC_VERSION)
  export CXX=g++-$(GCC_VERSION)
  
-@@ -53,9 +52,9 @@
+@@ -55,9 +52,9 @@
  endif
  
  ifeq ($(shell dpkg --compare-versions $(shell dpkg-query -W -f '$${Version}' g++-$(GCC_VERSION)) ge 4.8-20121128-1~ ; echo $$?),0)
@@ -677,7 +684,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/rules llvm-toolchain-3.6_3.6~+final/de
  else
  	control_vars = '-Vdep:devlibs=libstdc++6-$(GCC_VERSION)-dev'
  endif
-@@ -70,8 +69,8 @@
+@@ -72,8 +69,8 @@
  
  # Enable polly (or not)
  POLLY_ENABLE=no
@@ -688,7 +695,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/rules llvm-toolchain-3.6_3.6~+final/de
  # polly upstream is now using the isl trunk. disabling it for now
  POLLY_ENABLE=no
  endif
-@@ -117,6 +116,7 @@
+@@ -119,6 +116,7 @@
  
  LLDB_ENABLE=yes
  LLDB_DISABLE_ARCHS := arm64 hurd-i386 ia64 ppc64el
@@ -696,7 +703,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/rules llvm-toolchain-3.6_3.6~+final/de
  # hurd has threading issues
  ifeq (,$(filter-out $(LLDB_DISABLE_ARCHS), $(DEB_HOST_ARCH)))
  # Disable LLDB for this arch.
-@@ -144,6 +144,8 @@
+@@ -146,6 +144,8 @@
  override_dh_ocamlclean:
  
  override_dh_auto_configure: preconfigure
@@ -705,7 +712,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/rules llvm-toolchain-3.6_3.6~+final/de
  	echo "Using gcc: "
  	$(CC) -v
  	mkdir -p $(TARGET_BUILD)
-@@ -286,9 +288,6 @@
+@@ -287,9 +287,6 @@
  	cd $(TARGET_BUILD)/tools/clang/runtime/compiler-rt/clang_linux && rm -rf $$(find . -mindepth 2 -maxdepth 2 -type d) && rm -rf $$(find -empty) && rm -rf */.dir; \
  	fi
  
@@ -715,7 +722,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/rules llvm-toolchain-3.6_3.6~+final/de
  # Create this fake directory to make the install libclang-common-dev happy
  # under the unsupported archs of compiler-rt
  	mkdir -p $(DEB_INST)/usr/lib/clang/$(LLVM_VERSION)/lib
-@@ -317,8 +316,6 @@
+@@ -318,8 +315,6 @@
  
  	cp -f $(CURDIR)/utils/vim/tablegen.vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim
  
@@ -724,7 +731,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/rules llvm-toolchain-3.6_3.6~+final/de
  	cp -f $(CURDIR)/clang/tools/clang-format/clang-format.py clang/tools/clang-format/clang-format-$(LLVM_VERSION).py
  
  	rm -rf clang/tools/scan-build-$(LLVM_VERSION)
-@@ -327,6 +324,8 @@
+@@ -328,6 +323,8 @@
  	rm -rf clang/tools/scan-view-$(LLVM_VERSION)
  	cp -fR $(CURDIR)/clang/tools/scan-view clang/tools/scan-view-$(LLVM_VERSION)
  
@@ -733,16 +740,16 @@ diff -urN ../../llvm-toolchain-3.6/debian/rules llvm-toolchain-3.6_3.6~+final/de
  # Remove some license files
  	rm -f $(DEB_INST)/usr/lib/llvm-$(LLVM_VERSION)/include/llvm/Support/LICENSE.TXT \
  	$(CURDIR)/debian/llvm-$(LLVM_VERSION)-dev/usr/lib/llvm-$(LLVM_VERSION)/build/autoconf/LICENSE.TXT
-@@ -355,8 +354,6 @@
+@@ -359,8 +356,6 @@
  
  
  override_dh_strip:
 -	dh_strip -p libclang$(SONAME_EXT)-$(LLVM_VERSION) --dbg-package=libclang$(SONAME_EXT)-$(LLVM_VERSION)-dbg
--	dh_strip -p libllvm$(LLVM_VERSION) --dbg-package=libllvm$(LLVM_VERSION)-dbg
+-	dh_strip -p libllvm$(LLVM_VERSION)v5 --dbg-package=libllvm$(LLVM_VERSION)-dbg
  	dh_strip -a
  
  
-@@ -374,6 +371,11 @@
+@@ -378,6 +373,11 @@
  # Remove auto generated python pyc
  	find $(CURDIR)/debian/llvm-$(LLVM_VERSION)-tools/usr/lib/llvm-$(LLVM_VERSION)/ -name '*.pyc' | xargs -r rm -f
  
@@ -754,7 +761,7 @@ diff -urN ../../llvm-toolchain-3.6/debian/rules llvm-toolchain-3.6_3.6~+final/de
  
  
  
-@@ -458,8 +460,21 @@
+@@ -462,8 +462,21 @@
  	rm -f tools/clang tools/polly tools/lldb projects/compiler-rt
  	rm -rf tools/clang/tools/extra clang/tools/extra/
  	rm -f $(CURDIR)/utils/vim/llvm-$(LLVM_VERSION).vim $(CURDIR)/utils/vim/tablegen-$(LLVM_VERSION).vim

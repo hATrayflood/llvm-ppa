@@ -21,7 +21,7 @@ atomic_library_2.diff
 python-clangpath.diff
 removeduplicatedeclaration.diff
 fix-clang-path-and-build.diff
-force-gcc-header-obj.diff
+#force-gcc-header-obj.diff
 do-not-fail-on-unexpected-pass.diff
 silent-more-tests.diff
 disable-display-PASS-UNSUPPORTED-XFAIL.diff
@@ -35,4 +35,10 @@ silent-MCJIIT-tests.diff
 lldb-libname.diff
 bashsim.diff
 clang-analyzer-force-version.diff
+bug783205.patch
+bug-24472.diff
+bug-790686-build-id.diff
+llvm-3.6.0-ocaml-ctypes-0.4.0.patch
+rL235088.diff
+no-version-script-for-executables.diff
 99-python-bindings.patch

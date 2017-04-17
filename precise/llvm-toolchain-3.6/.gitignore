@@ -1,4 +1,4 @@
 *.deb
-llvm-toolchain-3.6_3.6.1-*
+llvm-toolchain-3.6_3.6.2-*
 llvm-toolchain-3.6_3.6~+final/*
 !llvm-toolchain-3.6_3.6~+final/debian

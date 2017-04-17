@@ -8,7 +8,7 @@ License: U-OF-I-BSD-LIKE
 
 Files: */install-sh
 Copyright: 1994 X Consortium
-License:
+License: LLVM
  This script is licensed under the LLVM license, with the following
  additional copyrights and restrictions:
  .
@@ -106,19 +106,19 @@ Copyright: 2009-2013 Craig van Vliet
            2009-2013 Howard Hinnant
 License: U-OF-I-BSD-LIKE or MIT
 
-Files: compiler-rt/BlocksRuntime/Block.h
+Files: compiler-rt/lib/BlocksRuntime/Block.h
 Copyright: 2008-2010 Apple, Inc.
 License: MIT
 
-Files: compiler-rt/BlocksRuntime/Block_private.h
+Files: compiler-rt/lib/BlocksRuntime/Block_private.h
 Copyright: 2008-2010 Apple, Inc.
 License: MIT
 
-Files: compiler-rt/BlocksRuntime/data.c
+Files: compiler-rt/lib/BlocksRuntime/data.c
 Copyright: 2008-2010 Apple, Inc.
 License: MIT
 
-Files: compiler-rt/BlocksRuntime/runtime.c
+Files: compiler-rt/lib/BlocksRuntime/runtime.c
 Copyright: 2008-2010 Apple, Inc.
 License: MIT
 
@@ -134,7 +134,7 @@ License: BSD-3-clause
 
 Files: lib/Target/ARM/*
 Copyright: ARM Limited
-License:
+License: ARM
  ARM Limited
  .
  Software Grant License Agreement ("Agreement")
@@ -185,7 +185,7 @@ License:
 
 Files: lldb/*
 Copyright: 2010, 2012 Apple Inc.
-License:
+License: NCSA
  University of Illinois/NCSA
  Open Source License
  .
@@ -225,10 +225,10 @@ License:
  SOFTWARE.
 
 Files: lldb/test/pexpect-2.4/*
-Copyright: 
-License:
- Free, open source, and all that good stuff.
- Pexpect Copyright (c) 2008 Noah Spurrier
+Copyright: 2008 Noah Spurrier
+License: Expat
+
+License: Expat
  .
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -251,7 +251,7 @@ License:
 Files: lldb/test/unittest2/*
 Copyright: 1999-2003 Steve Purcell
            2003-2010 Python Software Foundation
-License:
+License: Python
  This module is free software, and you may redistribute it and/or modify
  it under the same terms as Python itself, so long as this copyright message
  and disclaimer are retained in their original form.
@@ -269,7 +269,7 @@ License:
 
 Files: polly/*
 Copyright: 2009-2013 Polly Team
-License:
+License: Polly
  ==============================================================================
  Polly Release License
  ==============================================================================
@@ -324,9 +324,9 @@ Files: test/YAMLParser/*
 Copyright: 2006 Kirill Simonov
 License: MIT
 
-Files: tools/debugserver/source/MacOSX/stack_logging.h
+Files: lldb/tools/debugserver/source/MacOSX/stack_logging.h
 Copyright: 1999-2007 Apple Inc.
-License:
+License: Apple
  This file contains Original Code and/or Modifications of Original Code
  as defined in and that are subject to the Apple Public Source License
  Version 2.0 (the 'License'). You may not use this file except in
@@ -345,6 +345,23 @@ License:
 Files: utils/unittest/googletest/*
 Copyright: 2006-2008, Google Inc.
 License: BSD-3-Clause
+
+License: BSD-3-Clause
+ This software is provided 'as-is', without any express or implied
+ warranty.  In no event will the authors be held liable for any damages
+ arising from the use of this software.
+ .
+ Permission is granted to anyone to use this software for any purpose,
+ including commercial applications, and to alter it and redistribute it
+ freely, subject to the following restrictions:
+ .
+ 1. The origin of this software must not be misrepresented; you must not
+    claim that you wrote the original software. If you use this software
+    in a product, an acknowledgment in the product documentation would be
+    appreciated but is not required.
+ 2. Altered source versions must be plainly marked as such, and must not be
+    misrepresented as being the original software.
+ 3. This notice may not be removed or altered from any source distribution.
 
 License: U-OF-I-BSD-LIKE
  ==============================================================================

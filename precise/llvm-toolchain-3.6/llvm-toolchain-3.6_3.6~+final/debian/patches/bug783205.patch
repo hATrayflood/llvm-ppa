@@ -1,0 +1,47 @@
+From: Steven Chamberlain <steven@pyro.eu.org>
+Date: Sun, 10 May 2015 19:46:59 +0100
+Subject: support Debian s390x multiarch paths
+
+--- a/clang/lib/Driver/ToolChains.cpp
++++ b/clang/lib/Driver/ToolChains.cpp
+@@ -2877,6 +2881,10 @@ static std::string getMultiarchTriple(co
+     if (llvm::sys::fs::exists(SysRoot + "/lib/powerpc64le-linux-gnu"))
+       return "powerpc64le-linux-gnu";
+     return TargetTriple.str();
++  case llvm::Triple::systemz:
++    if (llvm::sys::fs::exists(SysRoot + "/lib/s390x-linux-gnu"))
++      return "s390x-linux-gnu";
++    return TargetTriple.str();
+   }
+ }
+ 
+@@ -3230,6 +3238,9 @@ void Linux::AddClangSystemIncludeArgs(co
+   const StringRef PPC64LEMultiarchIncludeDirs[] = {
+     "/usr/include/powerpc64le-linux-gnu"
+   };
++  const StringRef SYSTEMZMultiarchIncludeDirs[] = {
++    "/usr/include/s390x-linux-gnu"
++  };
+   ArrayRef<StringRef> MultiarchIncludeDirs;
+   if (getTriple().getArch() == llvm::Triple::x86_64) {
+     MultiarchIncludeDirs = X86_64MultiarchIncludeDirs;
+@@ -3257,6 +3268,8 @@ void Linux::AddClangSystemIncludeArgs(co
+     MultiarchIncludeDirs = PPC64MultiarchIncludeDirs;
+   } else if (getTriple().getArch() == llvm::Triple::ppc64le) {
+     MultiarchIncludeDirs = PPC64LEMultiarchIncludeDirs;
++  } else if (getTriple().getArch() == llvm::Triple::systemz) {
++    MultiarchIncludeDirs = SYSTEMZMultiarchIncludeDirs;
+   }
+   for (StringRef Dir : MultiarchIncludeDirs) {
+     if (llvm::sys::fs::exists(SysRoot + Dir)) {
+--- a/clang/lib/Driver/Tools.cpp
++++ b/clang/lib/Driver/Tools.cpp
+@@ -7333,7 +7333,7 @@ static std::string getLinuxDynamicLinker
+       return "/lib64/ld64.so.1";
+     return "/lib64/ld64.so.2";
+   } else if (ToolChain.getArch() == llvm::Triple::systemz)
+-    return "/lib64/ld64.so.1";
++    return "/lib/ld64.so.1";
+   else if (ToolChain.getArch() == llvm::Triple::sparcv9)
+     return "/lib64/ld-linux.so.2";
+   else if (ToolChain.getArch() == llvm::Triple::x86_64 &&

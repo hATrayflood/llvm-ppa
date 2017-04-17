@@ -5,9 +5,9 @@ Maintainer: ABE Hiroki (hATrayflood) <h.rayflood@gmail.com>
 Build-Depends: debhelper (>= 9.0), flex, bison, dejagnu, tcl, expect,
     autoconf, automake, perl, libtool, chrpath, texinfo,
     sharutils, autotools-dev (>= 20060702.1), libffi-dev (>= 3.0.9),
-    lsb-release, patchutils, diffstat, xz-utils, chrpath, python-dev,
+    lsb-release, patchutils, diffstat, xz-utils, python-dev,
     libedit-dev, swig, python-sphinx, ocaml-nox, binutils-dev, libcloog-isl-dev-lts,
-    libisl-dev-lts (>= 0.11.1), libjsoncpp-dev, gcc-4.8, g++-4.8,
+    libisl-dev-lts (>= 0.11.1), libjsoncpp-dev, gcc-4.7, g++-4.7,
     lcov, procps, help2man, dh-ocaml, zlib1g-dev
 Build-Conflicts: oprofile, ocaml, libclang-common-3.6-dev, libllvm-3.4-ocaml-dev, libllvm-3.5-ocaml-dev,
  libllvm-3.6-ocaml-dev
@@ -50,7 +50,7 @@ Description: Tool to format C/C++/Obj-C code
 Package: cpp11-migrate-3.6
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, clang-modernize-3.6
-Description: Tool to convert C++98 and C++03 code to C++11
+Description: Tool to convert C++98 and C++03 code to C++11 - transition package
  The purpose of the C++11 Migrator is to do source-to-source translation to
  migrate existing C++ code to use C++11 features to enhance
  maintainability, readability, runtime performance, and compile-time
@@ -70,6 +70,17 @@ Description: Tool to convert C++98 and C++03 code to C++11
  performance. Development is still early and transforms fall mostly into
  the first two categories. The migrator is based on Clang's LibTooling and
  the AST Matching library.
+
+Package: clang-tidy-3.6
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Replaces: clang-3.6 (<< 1:3.6.2-2)
+Breaks: clang-3.6 (<< 1:3.6.2-2)
+Description: clang-based C++ linter tool
+ Provide an extensible framework for diagnosing and fixing typical programming
+ errors, like style violations, interface misuse, or bugs that can be deduced
+ via static analysis. clang-tidy is modular and provides a convenient interface
+ for writing new checks.
 
 
 Package: clang-3.6-doc
@@ -183,11 +194,13 @@ Description: Clang examples
 
 # ------------- LLVM -------------
 
-Package: libllvm3.6
+Package: libllvm3.6v5
 Architecture: any
 Section: libs
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Pre-Depends: ${misc:Pre-Depends}
+Conflicts: libllvm3.6
+Replaces: libllvm3.6
 Multi-Arch: same
 Description: Modular compiler and toolchain technologies, runtime library
  LLVM is a collection of libraries and tools that make it easy to build
@@ -265,8 +278,6 @@ Description: Modular compiler and toolchain technologies, libraries and headers
  .
  This package provides the libraries and headers to develop applications
  using llvm.
-
-
 
 Package: llvm-3.6-tools
 Architecture: any
